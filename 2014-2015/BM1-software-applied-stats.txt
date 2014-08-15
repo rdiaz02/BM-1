@@ -1,0 +1,138 @@
+ BM-1: Software for the "Applied Stastics" part
+ ===============================================
+
+
+ You will all have access to a computer (running the Windows operating
+ system) with all the software. However, you probably want to install the
+ software on your own computer at home. If you plan to bring your own
+ laptop to class, then you definitely MUST install the software before our
+ first day of class.
+
+ The following are the installation instructions and information. It is
+ best if you do the installation in this order (and, please, do follow
+ carefully)
+
+
+
+ 1. Install R (http://cran.r-project.org). The binaries for each operating
+     system are available here: http://cran.r-project.org/bin/
+
+     1.1. If you use Ubuntu, please read the instructions in
+     http://cran.r-project.org/bin/linux/ubuntu/README.html, since the
+     default Ubuntu packages are generally outdated.
+
+     1.2. If you use Windows, you want to install "base". It says so
+     clearly: "Binaries for base distribution (managed by Duncan
+     Murdoch). This is what you want to install R for the first time."
+
+     1.3. If you use Mac, if you play with installation options, note that
+     you need to install the tcl/Tk X11 libraries. If you run into trouble,
+     make sure to read the FAQ
+     (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
+
+     
+
+ 2. Install R commander.
+
+    There are installation instructions here:
+    http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
+
+
+    This is the summary, which should work for all operating systems (and will
+    install all dependencies)
+
+    2.1. Start R
+
+    2.2. Copy and paste the following in the console:
+
+
+    install.packages("Rcmdr")
+
+
+    Press Enter. It will ask your for a mirror. If you are in Madrid,
+    the one in Madrid is the best. If, for some reason, that is down, then
+    choose another (e.g., France or Switzerland).
+
+
+    2.3. When it is finished, in the R console do:
+       
+     library(Rcmdr)
+
+     Press Enter. It will tell you there are missing dependencies and it will
+     offer to install them. Allow it to install all the missing
+     dependencies (the defaults in the window of "Install Missing Packages"
+     should be fine; no need to touch anything; just press OK). This should
+     take a couple minutes.
+
+
+    2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11
+    is missing. Read the installation instructions for R commander given
+    above.
+
+
+   
+    
+ 3. Install a few R commander plugins.
+
+    3.1. In the same R console (the R console, not the R commander window)
+    session as before, copy and paste
+
+    install.packages(c("RcmdrPlugin.TeachingDemos",
+   "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
+   "RcmdrPlugin.mosaic", "RcmdrPlugin.plotByGroup", "RcmdrPlugin.doBy",
+   "tkrplot"))
+
+
+   and press Enter. That will download and install a few things (it should
+   be done in a couple of minutes).
+
+
+   
+
+    3.2. Exit R Commander and R. Under "File", in "R Commander", click on "Exit",
+    and in there on "Exit From Commander and R"
+   
+
+
+ 4. Install R studio (www.rstudio.com). We want to use the "Dektop", that
+    you can download from here:
+
+     https://www.rstudio.com/ide/download/desktop
+
+
+     Once installation is complete, make sure it works.
+
+     4.1. Install R studio.
+
+     4.2. Verify it works. Click on it and it should start, and you should
+     see an application with an R console (along with two or three other
+     windows)
+
+   
+
+     4.3. Make sure everything works including R commander.
+
+     4.3.1 In the R console in R Studio type
+         library("Rcmdr")
+ 	
+     4.3.2 Press enter.
+       You should see a new window that says "R Commander", and no warning
+       messages about missing dependencies.
+
+     4.3.3.If there are still missing dependencies, you should be given the
+       option to install them by just clicking a button. Do so now.
+
+
+ 5. Exit R Studio, RCommander, etc.
+
+    The simplest thing is to go to the R Studio Window and click on the
+    "File" menu, and there click on "Quit R Studio".
+
+    (If you get questions about "Save workspace image" just say "No".)
+
+
+***************************
+
+
+
+

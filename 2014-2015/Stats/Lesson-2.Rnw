@@ -45,7 +45,6 @@ require(doBy, quietly = TRUE)
 
 \usepackage{gitinfo}
 
-%Uncomment for BioC
 %\usepackage{datetime}
 %\newdateformat{mydate}{\THEDAY-\monthname[\THEMONTH]-\THEYEAR}
 

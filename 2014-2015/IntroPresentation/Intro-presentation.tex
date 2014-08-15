@@ -1,5 +1,3 @@
-%% pdfnup --nup 2x2 --frame true milan-acgh-course.pdf 
-
 \documentclass[xcolor=dvipsnames]{beamer}
 \mode<presentation>
 
@@ -95,10 +93,12 @@
 \vspace*{-8pt}
 }
 
-%% Viene de la charla en Albacete, 2011
 
-%%FIXIT and put the title
+\usepackage{gitinfo}
+
+
 \title{BM-1: Applied statistics}
+
 
 
 \author[R. Diaz-Uriarte]{Ramón Diaz-Uriarte} %% \\ \Burl{http://ligarto.org/rdiaz}}
@@ -111,7 +111,9 @@ Madrid, Spain\\
 }
 
 
-\date[22-09-2014]{22-September-2014}
+% \date[22-09-2014]{22-September-2014}
+% \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+\date[22-09-2014]{22-September-2014\\ {\scriptsize (Rev: \gitAbbrevHash)}}
 
 
 \begin{document}
@@ -269,6 +271,16 @@ Madrid, Spain\\
 
 
 
+\begin{frame}
+  \frametitle{One more package}
+  \begin{itemize}
+  \item You also need to install a modified version of the package ``RcmdrPlugin.doBy''.
+    %% FIXME!!!
+\item Download it from \red{zz FIXME}
+\item You can try installing it, but we will also explain it in class.
+\item But you MUST have downloaded it.
+  \end{itemize}
+\end{frame}
 
 \begin{frame}
   \frametitle{Software in your laptops}
