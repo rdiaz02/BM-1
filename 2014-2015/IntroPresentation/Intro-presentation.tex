@@ -1,0 +1,397 @@
+%% pdfnup --nup 2x2 --frame true milan-acgh-course.pdf 
+
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+
+\setbeamertemplate{itemize item}[ball]
+%\usetheme[secheader]{Boadilla}
+%\usetheme{boxes}
+\usetheme{myBoadilla}
+%\usetheme[secheader]{myBoadilla}
+%\usetheme[left]{Goettingen}
+
+%\usepackage{CSIC2}
+\setbeamertemplate{itemize item}[ball]
+ \setbeamertemplate{navigation symbols}{
+      \insertslidenavigationsymbol
+%%      \insertdocnavigationsymbol 
+%%    {\footnotesize \insertframenumber} %% FIXME: delete if we use CSIC2
+ }
+
+\usepackage[absolute,overlay]{textpos}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+%%\usepackage{fancybox}
+\usepackage[lined]{algorithm2e}
+
+\usepackage{url}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{\slshape\footnotesize #1}}
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+\newcommand{\gry}[1]{{\textcolor {gray} {#1}}}
+
+\newcommand{\hanging}[1]{ 
+\renewcommand{\baselinestretch}{0.7}\small\normalsize
+\setlength{\parskip}{1.5ex plus0ex minus0ex}
+  \noindent\hangindent=24pt
+  \hangafter=1 
+   {\scriptsize #1}
+  %\hangindent\parindent
+}   
+
+
+\newcommand{\hango}[1]{ 
+\renewcommand{\baselinestretch}{0.7}\small\normalsize
+\setlength{\parskip}{1.5ex plus0ex minus0ex}
+  \noindent\hangindent=24pt
+  \hangafter=1 
+   {\tiny #1}
+  %\hangindent\parindent
+}   
+
+
+\newcommand{\hanginp}[2]{ 
+  \renewcommand{\baselinestretch}{0.7}\small\normalsize
+  \setlength{\parskip}{1.5ex plus0ex minus0ex}
+  \noindent\hangindent=24pt
+  \hangafter=1 
+  {\scriptsize #1}{\hspace{2pt}\Large\red{#2}}
+  % \hangindent\parindent
+}   
+
+
+%% use for itemize wihtin description
+% \newenvironment{myitemize} {
+%   \setlength{\leftmarginii}{-10mm}
+%   \itemize
+% }
+
+% \newenvironment{myitemize}
+% {\setlength{\leftmarginii}{-10mm}
+% \begin{itemize}}
+% {\end{itemize}}
+
+
+\newenvironment{myitemize}
+{\begin{itemize}}{\end{itemize}}
+
+
+\newcommand{\mydes}[2][]{
+  \vspace*{-1pt}
+%%  \renewcommand{\baselinestretch}{0.7}\small\normalsize
+  \begin{description}\item[{#2}]{#1}\end{description}
+\vspace*{-8pt}
+}
+
+%% Viene de la charla en Albacete, 2011
+
+%%FIXIT and put the title
+\title{BM-1: Applied statistics}
+
+
+\author[R. Diaz-Uriarte]{Ramón Diaz-Uriarte} %% \\ \Burl{http://ligarto.org/rdiaz}}
+
+\institute[]{Department of Biochemistry\\
+Universidad Autónoma de Madrid\\
+Madrid, Spain\\
+\texttt{ramon.diaz@iib.uam.es}\\
+\Burl{http://ligarto.org/rdiaz}
+}
+
+
+\date[22-09-2014]{22-September-2014}
+
+
+\begin{document}
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+% \begin{frame}
+%    \frametitle{Outline}
+%  {\small
+%  \tableofcontents[subsectionstyle=hide]
+%  }
+%  \end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Objectives}
+  \begin{itemize}
+  \item Be able to conduct, and interpret correctly, some basic types of
+    statistical analysis of wide use in molecular biology et al.
+  \item Develop your statistical intuition.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Syllabus}
+  \begin{itemize}
+  \item Intro to R Commander
+  \item Comparing two groups (and a single one)
+  \item Comparing more than two groups: ANOVAs and linear models
+  \item Basic categorical data analysis
+  \item The multiple testing problem
+
+% \vspace*{0.5cm}
+% \item All sessions: computer work
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Why those topics}
+  \begin{itemize}
+  \item Indispensable
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Managing expectations}
+  Is this all the stats knowledge I need for \ldots
+
+\vspace*{15pt}
+  \begin{itemize}
+  \item my ``trabajo fin de master''? Most likely not.
+  \item doing research? \textbf{Definitely not}.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{\ldots eh????!!!!}
+  \begin{itemize}
+  \item We cannot cover all you might need
+  \item Develop statistical intuition: go learn on your own
+  \item Know when to consult a statistician ({\footnotesize hint: as soon
+      as possible})
+  \end{itemize}
+\vspace*{10pt}
+{\footnotesize
+(Remember analogy of first aid course vs.\ becoming a neurosurgeon)
+}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Why R?}
+  \begin{itemize}
+  \item Free (as in ``free beer'' and as in ``free speech''): free software
+  \item Available for all major operating systems
+  \item High quality
+  \item Huge library of contributed packages with added
+    functionality (including BioConductor); increasing weekly
+  \item The single most used statistical system in bioinformatics and
+    ``omics'' research
+  \item Available in popular ``scientific workflows''
+    (\Burl{http://en.wikipedia.org/wiki/Scientific_workflow_system}) such
+    as Kepler, Taverna, Galaxy or Knime.
+  \item \ldots
+
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{How? R Commander}
+  \begin{itemize}
+  \item We will use R Commander (\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/})
+  \item GUI + full transcript + markdown
+  \item Also RStudio (secondary)
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{How does it look?}
+\end{frame}
+
+%%% Say: I do not use for real, ever.
+
+
+\begin{frame}
+  \frametitle{(Don't tell anyone)}
+  Our hidden agenda
+  \begin{itemize}
+  \item That you finish the class with a burning desire (to learn) to use
+    R directly typing R commands. No menus with mouse clicks.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{What do I need?}
+  \begin{itemize}
+  \item Computers in class will have it installed
+  \item You MUST install it on your own computer
+    \begin{itemize}
+    \item if you bring your computer to class (highly recommended)
+    \item for out-of-class work
+    \item for the rest of your life
+    \end{itemize}
+  \end{itemize}
+
+  See email with instructions (sent on 2014-08-12) or link
+  \Burl{http://ligarto.org/rdiaz/BM1-software-applied-stats.txt}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Software in your laptops}
+  \textbf{\red{Please make sure it works BEFORE coming to class}}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Can I use \ldots}
+  \begin{itemize}
+  \item SAS
+  \item SPSS
+  \item Minitab
+  \item Matlab
+  \item Stata
+  \item Statgraphics
+  \item Excel (don't!)
+  \item \ldots
+  \end{itemize}
+  
+  yes, of course!! \ldots
+
+
+\pause 
+
+
+\ldots but you are on your own: we will not provide any help for systems
+  other than R.
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Class mechanics}
+  \begin{itemize}
+  \item A mixture of theory and practice
+  \item Introduce a problem, work through it
+  \item Much, much better if you take a look at the notes before class
+  \item Yes, there will be partial repetition between
+    classes/sections/teachers
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Class mechanics}
+  \begin{itemize}
+  \item Do NOT expect too much hand holding in terms of the ``where is the
+    pull down menu for importing a file'', etc
+  \item We (teachers) will:
+    \begin{itemize}
+    \item Explain concepts
+    \item Help you get going
+    \item Try to save you from despair
+    \end{itemize}
+  \item You do the rest: explore and learn by doing/exploring
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Grading}
+  \begin{itemize}
+  \item A final exam with practical cases
+  \item (We need to see how wifi/network access works to decide if
+    in-class or out-of-class)
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{And where will classes be held?}
+  \begin{itemize}
+  \item Seminarios 4 and 5.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Using my own computer}
+  \begin{itemize}
+  \item You are very welcome to bring your own laptop.
+  \item Make sure you install the required software {\scriptsize  \Burl{http://ligarto.org/rdiaz/BM1-software-applied-stats.txt}}
+  \item \textbf{Wi-fi (eduroam)}: \Burl{http://www.uam.es/servicios/ti/servicios/wifi/}
+  \item \textbf{\red{Please make sure it works BEFORE coming to class}}
+  \item Address questions/issues to CAU (we cannot help).
+  \item Note: wifi/internet will not be really needed for classes, but it
+    will be needed for the exam.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{}
+  \begin{itemize}
+  \item Who is planning on bringing his/her own laptop?
+  \end{itemize}
+\end{frame}
+
+
+% 1.  Average mark on Self-evaluation quiz (the post-class quiz). A skipped quiz
+% will count as a zero value in order to calculate the average. Please note that
+% answers to Problem Quiz (the pre-class quiz) do NOT contribute to this average
+% value.
+
+% 2.  Grade on the Final exam. Taking this exam is not mandatory (but it is highly
+% recommended).
+
+% The final mark for bioinformatics will be calculated as:
+
+% (0.6xSelf-Eval. average)+(0.4xExam)
+
+
+
+
+
+\end{document}
