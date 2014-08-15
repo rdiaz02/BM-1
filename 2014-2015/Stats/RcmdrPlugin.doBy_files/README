@@ -1,0 +1,4 @@
+This directory contains the original package RcmdrPlugin.doBy, by Jonathan
+Lee, downloaded from CRAN on 2014-08.12. I (RDU) have made a few minor
+modifications to the file RcmdrPlugin.doBy.R, in function splitByGUI. They
+are indicated by "## RDU"

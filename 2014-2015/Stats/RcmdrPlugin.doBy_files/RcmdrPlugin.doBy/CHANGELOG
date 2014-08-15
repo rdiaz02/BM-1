@@ -1,0 +1,12 @@
+0.1-0
+* Initial package
+
+0.1-1
+* Fixed 'help' buttons to point to the correct help file in all dialog boxes
+* Added URL to package description
+
+0.1-2
+* Replaced legacy .First.lib with .onAttach
+
+0.1-3
+* Fixed dialog box compatibility with Rcmdr 2.0.0
