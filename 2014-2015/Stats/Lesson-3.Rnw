@@ -1,0 +1,185 @@
+\documentclass[a4paper,11pt]{article}
+<<echo=FALSE,results='hide',error=FALSE>>=
+require(knitr, quietly = TRUE)
+opts_knit$set(concordance = TRUE)
+##opts_knit$set(stop_on_error = 2L)
+require(car, quietly = TRUE)
+## require(lme4, quietly = TRUE)
+@ 
+
+<<packages,echo=FALSE,results='hide',message=FALSE>>=
+## zz <- tempfile()
+## sink(file = zz)
+## require(Rcmdr, quietly = TRUE)
+## unlink(zz)
+## invisible(capture.output(library(Rcmdr, quietly=TRUE)))
+suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
+require(doBy, quietly = TRUE)
+@ 
+
+\usepackage{amsmath}
+\usepackage{ amssymb }
+\usepackage[authoryear,round,sort]{natbib}
+\usepackage{threeparttable}
+\usepackage{array}
+\usepackage{hyperref} %% not if using BiocStyle
+%%ditto
+\usepackage{geometry}
+\geometry{verbose,a4paper,tmargin=23mm,bmargin=26mm,lmargin=28mm,rmargin=28mm}
+\usepackage{url}
+\usepackage{xcolor}
+%\definecolor{light-gray}{gray}{0.72}
+%% \newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+%% \newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+%% \newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\Burl}[1]{{\textcolor{blue}{\url{#1}}}}
+
+%\usepackage{tikz}
+%\usetikzlibrary{arrows,shapes,positioning}
+
+\usepackage[latin1]{inputenc}
+%\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+
+\usepackage{gitinfo}
+
+%\usepackage{datetime}
+%\newdateformat{mydate}{\THEDAY-\monthname[\THEMONTH]-\THEYEAR}
+
+
+\title{Lesson 3. ANOVA and linear models}
+  
+\author{Ramon Diaz-Uriarte\\
+Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+Madrid, Spain\\
+{\small \texttt{ramon.diaz@iib.uam.es}} \\
+{\small \texttt{rdiaz02@gmail.com}} \\
+{\small \Burl{http://ligarto.org/rdiaz}} \\
+}
+
+
+\date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\clearpage
+
+\section{Introduction}
+
+Why linear models: key in stats
+
+\section{Comparing more than two groups}
+
+<<create_mit, echo=FALSE, results='hide'>>=
+set.seed(789)
+n1 <- 11
+n2 <- 12
+n3 <- 23
+m <- c(0, 0, 1.3)
+activ <- rnorm(n1 + n2 + n3) + rep(m, c(n1, n2, n3))
+activ <- activ - min(activ) + 0.2
+mit <- data.frame(activ = round(activ, 3),
+                  training = rep(c(1, 2, 3), c(n1, n2, n3)),
+                  id = 1:(n1 + n2 +n3))
+write.table(mit, file = "MIT.txt", col.names = TRUE,
+            row.names = FALSE, sep = "\t", quote = FALSE)
+rm(list = ls())
+@ 
+
+
+<<>>=
+mit <- read.table("MIT.txt", header = TRUE)
+@ 
+
+\subsection{Recoding variables}
+
+Import MIT.txt. These are data about mitochondrial activity related to
+three different training regimes. Whoever coded the data, however, used a
+number for ``training'', which is misleading, because this is really a
+categorical variable. 
+
+The first thing we must do, then, is fix that. Let's recode that, by going
+to ``Data'', ``Manage variables ...'', ``Convert numerical variables to
+factors''. We will want to label 1 as ``Morning'', 2 as ``Lunch'', and 3
+as ``Afternoon'', which are the times at which exercise was conducted and
+makes everything much more clear and explicit.
+
+After recoding, you should see this command. Note the ``factor'' function call:
+<<>>=
+mit$training <- factor(mit$training, labels=c('Morning','Lunch','Afternoon'))
+@ 
+
+
+As usual, make sure to look at the data set.
+
+\subsection{An ANOVA}
+
+We want to see if time of exercise makes any difference. Conducting three
+t-tests is not the best way to go here: our global null hypothesis is
+$\mu_{Morning} = \mu_{Lunch} = \mu_{Afternoon}$ and that is what ANOVA
+will allow us to test directly.
+
+Find you way around the menu and do a One-way ANOVA. You'll see this:
+
+<<>>=
+AnovaModel.1 <- aov(activ ~ training, data=mit)
+summary(AnovaModel.1)
+numSummary(mit$activ , groups=mit$training, statistics=c("mean", "sd"))
+@ 
+
+
+Can you interpret the output? Look at this first
+
+<<>>=
+summary(AnovaModel.1)
+@ 
+
+refit with ``compare means two by two''
+
+MMC plots
+effects plots
+
+
+
+Do not use the overlap in CI as a p-value
+
+
+Doing t-tests via ANOVA (which adds diagnostics)
+
+\subsection{Diagnostics}
+
+\section{Linear regression}
+
+\section{More than one independent variable}
+
+\subsection{Interactions}
+
+
+\section{Experimental design matters}
+
+Split-plot
+
+Mixed effects and dependencies
+
+\end{document}
+
+%% remember to use bibexport to keep just the minimal bib needed
+%% bibexport -o extracted.bib OncoSimulR.aux
+%% rm OncoSimulR.bib
+%% mv extracted.bib OncoSimulR.bib
+%% and then turn URL of packages into notes
+
+
+%%% Local Variables:
+%%% TeX-master: t
+%%% ispell-local-dictionary: "en_US"
+%%% coding: iso-8859-15
+%%% End:
+
+
+

@@ -61,7 +61,7 @@ Madrid, Spain\\
 }
 
 
-\date{\the\year-\the\month-\the\day}
+% \date{\the\year-\the\month-\the\day}
 
 \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
 \begin{document}
@@ -802,7 +802,8 @@ We focus here on the Wilcoxon test. This is often the way to go when we
 have \textbf{ordinal} scale measurements and we want to compare two
 independent groups. Note, however, that the Wilcoxon test \textbf{requires
   interval scale data} for the single-sample Wilcoxon and the paired
-Wilcoxon.
+Wilcoxon (this is something that many websites and some textbooks get
+wrong); a simple illustration is shown in section \ref{wpi}.
 
 
 However, \textbf{\red{the independence assumption}} is as important with
@@ -845,13 +846,14 @@ wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
 The idea here is to assess whether the within-pair differences are
 symmetrically distributed around zero. As we are talking about symmetry,
 this means that this test can be used \textbf{only with interval scale}
-data.
+data (see also section \ref{wpi}).
 
 In a nutshell, this is what the test does: for each pair, it computes the
 difference of the two measures (thus, taking differences must make sense,
-and it does not for ordinal data). These differences (discarding the sign)
-are then ranked, and then sum of the ranks of all the positive differences
-is computed and compared to the null distribution.
+and it does not for ordinal data but it does for interval data). These
+differences (discarding the sign) are then ranked, and then sum of the
+ranks of all the positive differences is computed and compared to the null
+distribution.
 
 
 Go do it with the dmyc data we used for the paired t-test (section
@@ -1276,7 +1278,7 @@ t.test(myc.nc, myc.cancer, paired = TRUE)
 
 
 
-\subsection{Wilcoxon's paired test and interval data}
+\subsection{Wilcoxon's paired test and interval data}\label{wpi}
 
 If you understand the logic of what the two Wilcoxon tests are doing, you
 should understand why the one for the two-sample case works with ordinal
@@ -1313,6 +1315,15 @@ wilcox.test(log(dmyc$myc[1:12]), log(dmyc$myc[13:24]), paired = TRUE)
 Notice how the statistic and the p-value change. That would not happen if
 the test could be applied to ordinal data.
 
+
+
+%% The example for the usual one-sample
+%% <<>>=
+%% x <- c(-2, -1, 0.9, 1.9)
+%% y <- c(-2, -1, 0.9, 2.9)
+%% wilcox.test(x)
+%% wilcox.test(y)
+%% @ 
 
 
 
