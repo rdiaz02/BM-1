@@ -416,13 +416,13 @@ The following data come from an experiment about the effects of three
 diets and two cholesterol-controlling drugs in the reduction of
 cholesterol levels. As usual, read the data and look at them. Since the
 author used names for the two factors, Diet and Drug, we do not need to
-transform them.
+transform them. Call the data ``dcholest''.
 
 <<create_tooth, echo=FALSE, results='hide'>>=
 
 set.seed(45)
 n <- c(4, 7, 9, 5, 7, 8)
-m <- c(0.9, 1, 2, -.2, 3, 4)
+m <- c(2.1, 1, 2, -.2, 4, 5)
 y <- round(unlist(mapply(function(x, y) rnorm(x, y), n, m)), 3)
 Drug <- c(rep("A", sum(n[1:3])),
           rep("B", sum(n[4:6])))
@@ -444,7 +444,7 @@ rm(chol)
 @ 
 
 <<>>=
-dchol <- read.table("Cholesterol.txt", header = TRUE)
+dcholest <- read.table("Cholesterol.txt", header = TRUE)
 @ 
 
 
@@ -456,23 +456,28 @@ ANOVA''. Call it ``cholanova''
 Look at the output, which I comment below
 <<>>=
 ## This fits the model. Pay attention to the "*"
-cholanova <- (lm(y ~ Diet*Drug, data=dchol))
+cholestanova <- (lm(y ~ Diet*Drug, data=dcholest))
 ## This shows the ANOVA table. Notice the "Type II"
-Anova(cholanova)
+Anova(cholestanova)
 
 ## Now we are show the 3 by 2 table of means, standard deviations, and number 
 ## of observations
-tapply(dchol$y, list(Diet=dchol$Diet, Drug=dchol$Drug), mean, na.rm=TRUE) # means
-tapply(dchol$y, list(Diet=dchol$Diet, Drug=dchol$Drug), sd, na.rm=TRUE) # std. deviations
-tapply(dchol$y, list(Diet=dchol$Diet, Drug=dchol$Drug), function(x) sum(!is.na(x))) # counts
+tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug), 
+       mean, na.rm=TRUE) # means
+tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug), 
+       sd, na.rm=TRUE) # std. deviations
+tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug), 
+       function(x) sum(!is.na(x))) # counts
 @ 
 
+
+\subsection{Interactions}
 
 Now, go to the ``Models'' menu and do a ``Effects plot''
 
 <<>>=
 trellis.device(theme="col.whitebg")
-plot(allEffects(cholanova), ask=FALSE)
+plot(allEffects(cholestanova), ask=FALSE)
 @ 
 
 
@@ -494,18 +499,124 @@ very common in life in general, and in biology you might have previously
 seen at as epistasis in genetics.
 
 
+
 You can also see interaction plots using this directly from R:
 
 <<>>=
-with(dchol, interaction.plot(Drug, Diet, y, type = "b"))
+with(dcholest, interaction.plot(Drug, Diet, y, type = "b"))
 @ 
 
 or, much nicer, using this from package ``HH'' (I will first load it)
 
 <<>>=
-require(HH)
-interaction2wt()
+library(HH)
+interaction2wt(y ~ Diet*Drug, data=dcholest)
 @ 
+
+Notice how this figure displays both main effects and interactions. So
+even if the main effect of Drug B is to lead to a larger change in
+cholesterol (as you can see in the upper right panel), Drug B actually
+leads to much smaller change in cholesterol if given to patients with diet
+HF (as seen in the bottom right panel). In fact, under Drug A, it seems
+that diet HF is actually slightly better than diet M1 (as seen in the
+bottom right panel or in the effects plot).
+
+
+Given these results, it makes no sense to report any global main effects
+and, in fact, we would rarely be interested in interpreting the
+significance (or not) of the Diet or Drug term, by themselves, in the
+presence of interactions.
+
+
+
+\subsection{The order of factors}
+
+Let's pretend there are no interactions. We can do that by creating a data
+set without the ``HF'' subjects. Go to ``Active data set'', ``Subset
+active data set''. 
+
+
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.60\paperwidth,keepaspectratio]{subset-chol.png}
+    \caption{\label{subset} Subset a data set. Note the ``Subset expression'.}
+  \end{center}
+\end{figure}
+
+
+<<>>=
+dcholest2 <- subset(dcholest, subset=Diet != "HF")
+@ 
+
+Now do a two-way ANOVA:
+
+<<>>=
+cholest2anova <- (lm(y ~ Diet*Drug, data=dcholest2))
+Anova(cholest2anova)
+@ 
+
+So no evidence whatsoever of interactions. We can go and refit the model
+without the interaction, and that we do in ``Statistics'', ``Fit models'',
+``Linear model''. We will actually fit two models, which differ only by
+the order in which we give Diet and Drug in the formula (we showed this
+already in Lesson 2) and we will call them lm1 and lm2
+
+<<>>=
+lm1 <- lm(y ~ Diet + Drug, data=dcholest2)
+lm2 <- lm(y ~ Drug + Diet, data=dcholest2)
+@ 
+
+
+Now, go to ``Models'', ``Hypothesis tests'' and do ``ANOVA table (Type I
+sums of squares)'' (if you do all of this via the GUI and mouse, remember
+to change the model clicking on ``Models'', ``Select active model'' or via
+the box that says ``Model:''):
+
+<<>>=
+anova(lm1)
+anova(lm2)
+@ 
+
+As you can see, the F statistic and the p-value are different!!! What
+gives here?
+
+Now, use Type II sums of squares:
+
+<<>>=
+Anova(lm1)
+Anova(lm2)
+@ 
+
+Nothing changes between those two. But if you look carefully, the F value
+(and p-value) of the Type II Sums of Squares ANOVA table are the same as
+those for the term that enters last in the Type I (those produced via
+``anova'', without a capital ``A'').
+
+
+This sounds crazy, irrelevant, and a huge wast of time. But it ain't. This
+is an \textbf{extremely common phenomenon} when data are not perfectly
+balanced (with categorical data) or there are correlations (with
+continuous covariates, as in regression). What is happening? 
+
+\begin{itemize}
+\item Type II sums of squares (as well as t-statistics from a linear
+  model) always show what that term contributes, \textbf{given all the
+    rest} are already in the model. In other words, given all the rest
+  have already been taken into account.
+  
+\item Type I (or sequential) sums of squares do not. They are sequential.
+\end{itemize}
+
+Biologically, this makes a lot of sense. Think about it. And this, of
+course, affects models with two, three, \ldots factors.
+
+
+\subsection{ANOVA/linear models with more than two factors}
+We will present no examples, but life is filled with them. Think about
+cholesterol: to the experiment with drug and diet add a third factor:
+an exercise program. Or maybe a fourth factor too: a stress reduction
+program. Or maybe \ldots.
 
 
 
@@ -529,6 +640,78 @@ statistical analysis using R, 2nd ed''.
 %% @ 
 
 
+
+\section{Simple linear regression}
+
+This is another form of a linear model. But now, the independent variable
+is continuous. So we will fit a line:
+
+\[Y = \alpha + \beta X + \epsilon\]
+where $Y$ is, as usual, the dependent variable, $X$ the independent,
+$\beta$ is the slope and $\alpha$ the intercept (this is just the equation
+for a line). The simple linear regression procedure will estimate $\alpha$
+and $\beta$, finding values that produce a \textbf{best fitting line}
+(note: it is a line, not an arbitrary curve).
+
+Let's use a data set from the base package, ``women''. Go to ``Data'',
+``Data in packages'' and select ``women'' (it is in package ``datasets'')
+
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.80\paperwidth,keepaspectratio]{women-data.png}
+    \caption{\label{women} Selecting the ``women'' dataset.}
+  \end{center}
+\end{figure}
+
+Get some help about the active data (look for it in the menu). Now go to
+``Statistics'', ``Fit models'', ``Linear regression''. Think about the
+model we want. Most likely, we want to model weight as a function of
+height. Let's do it (call the model ``r1'')
+
+<<>>=
+r1 <- lm(weight~height, data=women)
+summary(r1)
+@ 
+
+
+The row of the output that says ``(Intercept)'' gives you the estimate of
+the intercept. The t-statistic (under ``t value'') is testing that the
+intercept is zero. And it is not. But tests about the intercept are rarely
+interesting (except for cases with a natural 0). The second line is more
+interesting: that is the slope, how much weight increases per unit
+increase in height (to interpret this we need to know the units!). And the
+t-statistic tests if the slope is 0, so it is testing whether weight
+changes with height. It certainly does!
+
+
+\subsection{And how does it look like}
+Eh!!! We should probably have plotted the data as the first thing. A
+couple of plots will be good here. First, in ``Graphs'', ``Scatterplot''
+
+Work you way around the menu until you find the ``Confidence interval
+plot'' (you might want to unclick the ``Show spread''):
+
+<<>>=
+scatterplot(weight~height, reg.line=lm, smooth=TRUE, 
+            spread=FALSE, id.method='mahal', id.n = 2, boxplots='xy', 
+            span=0.5, data=women)
+@ 
+
+(and this figure suggests that the relation is not really linear, which
+should not be surprising in this case).
+
+The second plot we can get from ``Models'', ``Confidence interval plot'',
+which will show something like
+
+<<>>=
+ci.plot(r1)
+@ 
+
+(and this shows confidence and prediction intervals for the linear model).
+
+
+
 \section{Diagnostics}
 
 Wait!!! Does our model make sense? This is a model, so we can, and should,
@@ -548,16 +731,6 @@ Doing t-tests via ANOVA (which adds diagnostics)
 
 
 \section{Linear regression}
-
-\section{More than one independent variable}
-
-Which means differ
-
-Which means differ with covars
-
-
-\subsection{Interactions}
-
 
 \section{Experimental design matters}
 
