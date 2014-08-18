@@ -20,6 +20,10 @@ require(abind, quietly = TRUE)
 require(e1071, quietly = TRUE)
 require(effects, quietly = TRUE)
 require(lattice, quietly = TRUE)
+require(HH, quietly = TRUE)
+## require(rgl, quietly = TRUE)
+## library(mgcv, pos = 4)
+
 ## require(RcmdrPlugin.HH, quietly = TRUE)
 @ 
 
@@ -502,15 +506,15 @@ seen at as epistasis in genetics.
 
 You can also see interaction plots using this directly from R:
 
-<<>>=
+<<out.width = '10cm', out.height = '10cm'>>=
 with(dcholest, interaction.plot(Drug, Diet, y, type = "b"))
 @ 
 
-or, much nicer, using this from package ``HH'' (I will first load it)
+or, much nicer, using the ``RcmdrPlugin.HH'' and going to ``Graphs'',
+``Plot of two-way interactions'' %this from package ``HH'' (I will first load it)
 
 <<>>=
-library(HH)
-interaction2wt(y ~ Diet*Drug, data=dcholest)
+interaction2wt(y ~ Diet + Drug, data=dcholest)
 @ 
 
 Notice how this figure displays both main effects and interactions. So
@@ -521,11 +525,25 @@ HF (as seen in the bottom right panel). In fact, under Drug A, it seems
 that diet HF is actually slightly better than diet M1 (as seen in the
 bottom right panel or in the effects plot).
 
+Finally, a boxplot can also help show the interaction. I will use two
+different ones, that differ by the order in which factors are specified
+(one or the other might be easier to decode):
 
-Given these results, it makes no sense to report any global main effects
-and, in fact, we would rarely be interested in interpreting the
+<<out.width='7cm', out.height='7cm', fig.show='hold'>>=
+boxplot(y ~ Drug * Diet, data = dcholest, col = c("salmon", "gold"))
+boxplot(y ~ Diet * Drug, data = dcholest, col = c("salmon", "gold"))
+@ 
+
+
+
+Given these results, it makes little sense to report any global main
+effects and, in fact, we would rarely be interested in interpreting the
 significance (or not) of the Diet or Drug term, by themselves, in the
-presence of interactions.
+presence of interactions. In general, \textbf{in the presence of
+  interactions, we generally refrain from interpreting main
+  effects}\footnote{Properly formulated, and probably using other types of
+contrasts ---contr.sum--- marginal tests in the presence of interactions,
+what are called Type III, can make sense, but are not always of interest.}. 
 
 
 
@@ -641,6 +659,16 @@ statistical analysis using R, 2nd ed''.
 
 
 
+\subsection{Nonparametric alternatives}
+Are there nonparametric versions of the above procedures? For the one-way
+ANOVA the Kruskal-Wallis test is popular. For two-way designs with one
+observation per cell the Friedman test and the Quade test. But testing
+interactions is not easy; one needs to use more sophisticated approaches
+as in permutation tests conditioning on permuting only within rows or
+columns, etc. We will not pursue this any further.
+
+
+
 \section{Simple linear regression}
 
 This is another form of a linear model. But now, the independent variable
@@ -692,7 +720,7 @@ couple of plots will be good here. First, in ``Graphs'', ``Scatterplot''
 Work you way around the menu until you find the ``Confidence interval
 plot'' (you might want to unclick the ``Show spread''):
 
-<<>>=
+<<out.width = '10cm', out.height = '10cm'>>=
 scatterplot(weight~height, reg.line=lm, smooth=TRUE, 
             spread=FALSE, id.method='mahal', id.n = 2, boxplots='xy', 
             span=0.5, data=women)
@@ -704,7 +732,7 @@ should not be surprising in this case).
 The second plot we can get from ``Models'', ``Confidence interval plot'',
 which will show something like
 
-<<>>=
+<<out.width = '12cm', out.height = '12cm'>>=
 ci.plot(r1)
 @ 
 
@@ -712,15 +740,183 @@ ci.plot(r1)
 
 
 
+\section{Multiple regression}
+
+Before we had
+
+\[Y = \alpha + \beta X\]
+
+now we can have two or more independent variables. I will use the dataset
+``cystfibr'' from package ``ISwR''.
+
+<<>>=
+library(ISwR)
+data(cystfibr)
+@ 
+
+Look at the help for the dataset. I will use a simplified example here,
+where we model
+
+\[pemax = \alpha + \beta_1 age + \beta_2 height + \beta_3 weight + \epsilon\]
+
+You should know how to work around the menus and get something like:
+
+<<>>=
+mcyst <- lm(pemax ~ age + height + weight, data=cystfibr)
+summary(mcyst)
+@ 
+
+You should be able to interpret all output without problems. Can we add
+interactions? Yes, of course. Interactions between continuous variables,
+however, are harder to interpret (they represent curved surfaces, whereas
+an additive model is just a plane ---or hyperplane)\footnote{If you want
+  to play around with a regression plane or regression surfaces, go to
+  ``Graphs'', ``3D graph'', ``3D scatterplot''. In options, you can choose
+  a plane or three different surfaces ---you might need to play with the
+  degrees of freedom if you get errors. You can zoom in and out
+  with the mouse wheel and move/rotate the figure. Try doing that during
+  your TFM defense! Of course, that allows only for up to one dependent
+  variable and two independent ones. Our brains do not seem ready for 4D
+  and higher.}.
+
+%% <<>>=
+%% print(scatter3d(pemax~age+height, data=cystfibr, 
+%%           fit="linear", residuals=TRUE, bg="white", axis.scales=TRUE, 
+%%           grid=TRUE, ellipsoid=FALSE))
+%% @ 
+
+
+Now, use ANOVA tables with Type I sums of squares and Type II sums of squares:
+
+<<>>=
+anova(mcyst)
+Anova(mcyst)
+@ 
+
+Are you surprised? Age seems highly significant with the sequential sums
+of squares (when entered first and using anova, so Type I) but not when we
+test it after all other terms in the model (Type II). Why? One possible
+explanation is that there is correlation between explanatory variables,
+and ``the information of age relevant for predicting pmax is already
+contained in the height and weight'' (in fact, that age, height, and weigth
+are correlated is easy to check with a scatterplot matrix).
+
+<<>>=
+scatterplotMatrix(~age+height+pemax+weight, reg.line=lm, 
+                  smooth=TRUE, spread=FALSE, span=0.5, id.n=0, 
+                  diagonal = 'density', data=cystfibr)
+@ 
+
+In fact, if you refit the model and now put height first, and do a
+sequential test you find ... that height seems significant:
+
+<<>>=
+anova(lm(pemax ~ height + weight + age, data = cystfibr))
+@ 
+
+And similar if you place weight first.
+<<>>=
+anova(lm(pemax ~ weight + height + age, data = cystfibr))
+@ 
+
+
+Is this a problem? Well, you are trying to model pemax as a function of
+three variables, but those three variables are very highly correlated
+among themselves. Is this a common phenomenon: yes, it is rather common.
+
+\subsection{Variable selection}
+Variable selection is a touchy and delicate subject. We will summarize it
+as follows: please, distrust automated variable selection procedures that
+rely on p-values or F-statistics of individual variables (in all their
+variants, such as stepwise, etc). Much more reasonable are strategies
+based on criteria such as AIC and even better is bootstrapping the whole
+process to get estimates of error, predictive ability, etc. Even better,
+of course, is subject-matter guidance on how to proceed and what are and
+are not candidates for deletion and in what order. The book by Frank
+Harrell, ``Regression modelling strategies'' contains great discussions of
+these topics. The actual data set used here is discussed, also in the
+context of variable selection, by P.\ Dalgaard in chapter 11 of
+``Introductory statistics with R''.
+
+
+\section{Continuous and discrete independent variables 
+  and ANCOVA}
+
+Right now, nothing should stop us from thinking about models where the
+right hand side contains both continuous and discrete variables. Let's do
+it with the cystic fibrosis data set.  In terms of terminology, ANCOVA
+(which is still used, but not as widely as it used to be 20 years ago),
+refers to a model where we have a discrete and a continuous variable as
+independent variables.
+
+
+Let's fit a model where the independent variables are sex (discrete,
+obviously) and age. However, sex is coded with 0/1 and we want it to be a
+factor, explictly. Let's recode it.
+
+<<>>=
+cystfibr$sex <- factor(cystfibr$sex, labels=c('Male','Female'))
+@ 
+
+<<>>=
+mcyst2 <- lm(pemax ~ age * sex, data=cystfibr)
+summary(mcyst2)
+@ 
+
+There is no evidence of interaction. But, what would an interaction have
+looked like? Different slopes:
+
+<<>>=
+scatterplot(pemax~age | sex, reg.line=lm, smooth=FALSE, 
+            spread=FALSE, id.method='mahal', id.n = 2, boxplots='xy', 
+            span=0.5, by.groups=TRUE, data=cystfibr)
+@ 
+
+(yes, the best fitting slopes are slightly different, but they are not
+significantly different, as shown by the the ``age:sex[T.Female]'' term in
+the model above).
+
+
+One can visualize this also  with the function ``ancova'' in package
+``HH'' (which is loaded when we load ``RcmdrPlugin.HH'', so we do not need
+to load it again):
+
+<<>>=
+ancova(pemax ~ age * sex, data = cystfibr)
+@ 
+
+
+The different intercepts are captured by the term ``sex[T.Female]'' (that
+is not significant in this example either). Anyway, we can often have
+models where we have no evidence of different slopes, but evidence of
+different intercepts: these means parallel lines.
+
+
+
+
+\subsection{More variables}
+We can extend the models to incorporate more variables, add interactions,
+etc. Interactions can involve more than two variables, can involve
+continuous and discrete variables, etc.
+
+
 \section{Diagnostics}
 
-Wait!!! Does our model make sense? This is a model, so we can, and should,
-check some of its basic assumptions.
+Wait!!! Do our models make sense? These are models, so we can, and should,
+check some of their basic assumptions.
 
 
+\begin{itemize}
+\item Added variable plots and ``Component+Residual'' (or partial
+  residual) plots allow us to examine, in models with multiple regressors,
+  deviations from linearity and appropriate transformations.
+\item Various diagnostics related to dfbetas allow us to identify
+  influential observations in specific terms of the model.
+\item variance inflation factors help us detect possible problems caused
+  by collinearity.
+\end{itemize}
 
 
-Do not recode factor
 
 
 Do not use the overlap in CI as a p-value
@@ -730,7 +926,7 @@ Doing t-tests via ANOVA (which adds diagnostics)
 
 
 
-\section{Linear regression}
+
 
 \section{Experimental design matters}
 
