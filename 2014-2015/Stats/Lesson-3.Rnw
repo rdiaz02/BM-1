@@ -15,6 +15,12 @@ require(car, quietly = TRUE)
 ## invisible(capture.output(library(Rcmdr, quietly=TRUE)))
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
 require(doBy, quietly = TRUE)
+require(multcomp, quietly = TRUE)
+require(abind, quietly = TRUE)
+require(e1071, quietly = TRUE)
+require(effects, quietly = TRUE)
+require(lattice, quietly = TRUE)
+## require(RcmdrPlugin.HH, quietly = TRUE)
 @ 
 
 \usepackage{amsmath}
@@ -71,7 +77,17 @@ Madrid, Spain\\
 
 \section{Introduction}
 
-Why linear models: key in stats
+Linear models and their extensions (which include logistic regression, but
+also survival analysis, many classification problems, non-linear models,
+dealing with dependent data, etc, etc) are one fundamental topic in
+statistics. Here, we will only scratch the surface. But you should come
+away from this lesson understanding that these methods are extremely
+powerful and flexible and they can be used to address a huge variety of
+different research questions. You would spend your time wisely if you at
+least took a look at some of the references we provide at the end. 
+
+
+
 
 \section{Comparing more than two groups}
 
@@ -93,7 +109,7 @@ rm(list = ls())
 
 
 <<>>=
-mit <- read.table("MIT.txt", header = TRUE)
+dmit <- read.table("MIT.txt", header = TRUE)
 @ 
 
 \subsection{Recoding variables}
@@ -107,15 +123,35 @@ The first thing we must do, then, is fix that. Let's recode that, by going
 to ``Data'', ``Manage variables ...'', ``Convert numerical variables to
 factors''. We will want to label 1 as ``Morning'', 2 as ``Lunch'', and 3
 as ``Afternoon'', which are the times at which exercise was conducted and
-makes everything much more clear and explicit.
+makes everything much more clear and explicit. Use a new variable (e.g.,
+ftraining).
 
 After recoding, you should see this command. Note the ``factor'' function call:
 <<>>=
-mit$training <- factor(mit$training, labels=c('Morning','Lunch','Afternoon'))
+dmit$ftraining <- factor(dmit$training, labels=c('Morning','Lunch','Afternoon'))
 @ 
 
 
 As usual, make sure to look at the data set.
+
+If were to not recode the factor (or use training as it was originally) it
+would be a disaster. Look at the output in section \ref{nofactor}.
+
+
+
+
+\subsection{A few plots}
+As in Lesson 2, you are advised to also plot the data. For instance, this
+will do:
+
+<<>>=
+Boxplot(activ~ftraining, data=dmit, id.method="y")
+@ 
+
+
+(the ``2'' is the identifier ---row name in this case--- of a point that
+has been flagged as a potential outlier).
+
 
 \subsection{An ANOVA}
 
@@ -124,26 +160,384 @@ t-tests is not the best way to go here: our global null hypothesis is
 $\mu_{Morning} = \mu_{Lunch} = \mu_{Afternoon}$ and that is what ANOVA
 will allow us to test directly.
 
-Find you way around the menu and do a One-way ANOVA. You'll see this:
+Find you way around the menu and do a One-way ANOVA (``Statistics'',
+``Means''). You'll see this in the R Script window:
 
-<<>>=
-AnovaModel.1 <- aov(activ ~ training, data=mit)
+<<results='hide'>>=
+AnovaModel.1 <- aov(activ ~ ftraining, data=dmit)
 summary(AnovaModel.1)
-numSummary(mit$activ , groups=mit$training, statistics=c("mean", "sd"))
+numSummary(dmit$activ , groups=dmit$ftraining, statistics=c("mean", "sd"))
 @ 
 
 
-Can you interpret the output? Look at this first
+Can you interpret the output? Look first at the output right after
 
 <<>>=
 summary(AnovaModel.1)
 @ 
 
-refit with ``compare means two by two''
+We will cover this in more detail in class, in case you do not remember
+ANOVAs. Things to notice:
+\begin{itemize}
+\item The two rows; one of them is the effect you are interested in (ftraining)
+\item The ``Df'' column: those are the degrees of freedom (three groups -
+  1 for ``ftraining'').
+\item The two columns Sum Sq (Sum of Squares) and Mean Sq (Mean
+  Squares). Sum of Squares is a quantity related to the variance. Mean
+  Squares is obtained from the ratio of Sum Sq over Df. Then, we use Mean
+  Sq to compare how much variance there is between groups related to the
+  variance within groups: the F value is the ratio of Mean Sq of ftraining
+  over Mean Sq of the residuals. The larger that F value, the more
+  evidence there is of groups being different.
+\item There is a p-value associated with that F value. In this case it is
+  very small.
+\end{itemize}
 
-MMC plots
-effects plots
 
+By the way, notice how we created a ``Model'' which, by default, is called
+``AnovaModel.1''. But we could have named it differently.
+
+
+\subsection{So which means are different?}
+
+That small p-value leads us to reject the null hypothesis $\mu_{Morning} =
+\mu_{Lunch} = \mu_{Afternoon}$. So there is strong evidence that all three
+means are not equal. But which one(s) is(are) different from the other(s)?
+
+
+If you look at the second piece of output, that from
+
+<<>>=
+numSummary(dmit$activ , groups=dmit$ftraining, statistics=c("mean", "sd"))
+@ 
+
+you can get an idea: it seems that Morning and Lunch are very similar to
+each other, but Afternoon is very different. This agrees with the
+impression we got from the boxplot. But we would like a more formal
+procedure: we are going to compare all pairs of means and we will take
+into account that we are carrying out multiple comparisons.
+
+Before continuing, though, note that tests of pairs of means when the
+ANOVA is not significant are rarely justified.
+
+
+
+
+\textbf{Comparing all pairs of means} is done using the ANOVA model, so
+the results are not identical to comparing using t-tests (briefly: the
+estimate of the variance might be slightly different, and probably
+better).
+
+\textbf{Multiple testing corrections} are needed because we are now
+conducting three separate tests (in general, if there are $K$ groups and
+if you compare all pairs of means you carry out $\frac{K (K-1)}{2}$
+tests). Here, we will control the family-wise error rate (the probability
+of falsely rejecting one or more tests over the family of tests performed
+---three in our case). You will see more about multiple testing in the
+final lesson.
+
+
+
+To do this, carry out the ANOVA again, but now make sure to click on
+``Pairwise comparisons of means''. To be much more explicit, I will also
+name the model as ``AnovaMIT'' (entering that in ``Enter name for model'')
+
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.80\paperwidth,keepaspectratio]{anova-comps.png}
+    \caption{\label{pairwise} ANOVA, asking for pairwise comparisons of
+      means and naming the model.}
+  \end{center}
+\end{figure}
+
+
+A whole bunch of new commands are added to the R Script (I skip the one
+that asks for the means and sd of groups but commenting it out; I also add
+two comments to the last two commands)
+
+<<fig.width=5,fig.height=5>>=
+AnovaMIT <- aov(activ ~ ftraining, data=dmit)
+summary(AnovaMIT)
+
+## The next I comment out
+## numSummary(dmit$activ , groups=dmit$ftraining, statistics=c("mean", "sd"))
+.Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+summary(.Pairs) # pairwise tests
+confint(.Pairs) # confidence intervals
+cld(.Pairs) # compact letter display
+old.oma <- par(oma=c(0,5,0,0))
+plot(confint(.Pairs))
+par(old.oma) ## restore graphics windows settings
+remove(.Pairs) ## remove the object that stored the multiple comp. output
+@ 
+
+
+\subsubsection{The plot of pairwise differences}
+Look carefully at the plot: for each difference (for each
+\textbf{contrast}), it shows the estimate and a 95\% confidence interval
+around it. The plot title says ``95\% family-wise confidence interval'',
+and that indicates that multiple testing correction has been used.
+
+Given how far two of the contrasts are from 0.0, it seems those are highly
+significant differences. Let's go to the numerical output.
+
+
+
+
+
+\subsubsection{The numerical output}
+
+This
+
+<<>>=
+.Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+summary(.Pairs)
+@ 
+
+explicitly shows that we are using Tukey's method and it shows the
+p-values of each contrast (each comparison), and it makes it clear that we
+are being reported adjusted p values.
+
+There is strong evidence of a difference between Afternoon and the other
+two levels, but no evidence of differences between Lunch and
+Morning. %% Incidentally, note that the whole process is done using ``Tests
+%% for the general linear hypothesis'' and how the contrasts are explicitly
+%% shown: this is a very general and powerful procedure (see section
+%% \ref{othercontrasts}).
+
+
+
+The values that are plotted are generated here:
+
+<<>>=
+confint(.Pairs) 
+@ 
+
+Note how the usage of Tukey's procedure is again explicit.
+
+
+
+\subsubsection{And can I plot the means with s.e from the model?}
+
+Sure. Go to ``Models'', ``Graphs'', ``Effects plots'':
+
+<<>>=
+## trellis.device(theme="col.whitebg")
+plot(allEffects(AnovaMIT), ask=FALSE)
+@ 
+
+
+That shows the estimates for each group and a 95\% confidence interval
+(again, based on the whole ANOVA model). But from that figure it is not
+easy to tell which pairs differ, especially taking multiple comparisons
+into account.
+
+
+\subsubsection{This is a mess. What figures do I use?}
+That is up to you :-). But this can work: present both the original means
+and the plot with the contrasts. You can just copy and paste code
+judiciously. Note that I modify slightly the title of the first figure, so
+that the usage of Tukey contrasts is explicit and I modify the title of
+the second, so we use ``Training'' in the name, not ``ftraining'':
+
+
+<<out.width='7cm', out.height='7cm', fig.show='hold'>>=
+.Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+tmp <- cld(.Pairs) ## silent assignment 
+old.oma <- par(oma=c(0,5,0,0))
+plot(confint(.Pairs), 
+     main = "95% family-wise confidence interval using Tukey contrasts")
+par(old.oma) 
+plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
+@ 
+
+
+
+%% An alternative is to use the MMC plots provided by package ``RcmdrPlugin.HH'':
+
+%% <<>>=
+%% @ 
+
+
+
+
+
+\subsubsection{Side note: Interpreting confidence intervals}
+If this is not obvious to you, ask it in class: a figure that shows an
+estimate (e.g., a mean) and a 95\% confidence interval, where the interval
+goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
+there is a 95\% probability that the mean is between 1 and 2. That is not
+the correct interpretation of a confidence interval.
+
+Make sure you understand this!!!
+
+
+
+
+
+
+
+
+
+\subsubsection{Multiple comparisons, other contrasts,
+  etc} \label{othercontrasts} There is a wide literature on methods for
+adjusting for multiple comparisons in ANOVA and linear models. And
+sometimes a distinction is made between pre-planned and post-hoc
+comparisons. Tukey's approach is a widely accepted one (though there are
+others) and the distinction between pre-planned and post-hoc does not
+arise when researchers directly want to do all possible pairs right from
+the beginning. However, many of these issues can become important if you
+know, from the start, that some comparisons do not matter to you, and/or
+there are many groups. As well, we could be interested in other types of
+contrasts, for instance, that the mean of groups 2 and 3 is different from
+the mean of group 4. Etc, etc. We will not get into this. 
+
+
+
+
+\subsection{One way ANOVA: summary of steps}
+
+\begin{enumerate}
+\item Enter the data.
+\item Recode the factor (the dependent variable), if needed.
+\item Run the model.
+\item Assess model diagnostics.
+\item Carry out comparisons between pairs of means with appropriate
+  adjustment for multiple comparisons.
+\end{enumerate}
+
+
+
+
+\section{Two-way ANOVA}
+
+The following data come from an experiment about the effects of three
+diets and two cholesterol-controlling drugs in the reduction of
+cholesterol levels. As usual, read the data and look at them. Since the
+author used names for the two factors, Diet and Drug, we do not need to
+transform them.
+
+<<create_tooth, echo=FALSE, results='hide'>>=
+
+set.seed(45)
+n <- c(4, 7, 9, 5, 7, 8)
+m <- c(0.9, 1, 2, -.2, 3, 4)
+y <- round(unlist(mapply(function(x, y) rnorm(x, y), n, m)), 3)
+Drug <- c(rep("A", sum(n[1:3])),
+          rep("B", sum(n[4:6])))
+Diet <- rep(rep(c("HF", "M1", "M2"), 2), n)
+chol <- data.frame(y = y,
+                   Drug = Drug,
+                   Diet = Diet)
+rm(y, n, m, Drug, Diet)
+## lm1 <- lm(y ~ Drug * Diet, data = chol)
+## lm0 <- lm(y ~ Drug + Diet, data = chol)
+## anova(lm1)
+## Anova(lm1)
+## anova(lm0)
+## anova(lm(y ~ Diet + Drug, data = chol))
+## Anova(lm0)
+write.table(chol, file = "Cholesterol.txt", col.names = TRUE,
+            row.names = FALSE, sep = "\t", quote = FALSE)
+rm(chol)
+@ 
+
+<<>>=
+dchol <- read.table("Cholesterol.txt", header = TRUE)
+@ 
+
+
+\subsection{Fitting a two-way ANOVA}
+
+As usual, go to ``Statistics'', ``Means'', and then ``Multiway
+ANOVA''. Call it ``cholanova''
+
+Look at the output, which I comment below
+<<>>=
+## This fits the model. Pay attention to the "*"
+cholanova <- (lm(y ~ Diet*Drug, data=dchol))
+## This shows the ANOVA table. Notice the "Type II"
+Anova(cholanova)
+
+## Now we are show the 3 by 2 table of means, standard deviations, and number 
+## of observations
+tapply(dchol$y, list(Diet=dchol$Diet, Drug=dchol$Drug), mean, na.rm=TRUE) # means
+tapply(dchol$y, list(Diet=dchol$Diet, Drug=dchol$Drug), sd, na.rm=TRUE) # std. deviations
+tapply(dchol$y, list(Diet=dchol$Diet, Drug=dchol$Drug), function(x) sum(!is.na(x))) # counts
+@ 
+
+
+Now, go to the ``Models'' menu and do a ``Effects plot''
+
+<<>>=
+trellis.device(theme="col.whitebg")
+plot(allEffects(cholanova), ask=FALSE)
+@ 
+
+
+What do you see? Do you understand what an interaction is? Do you see it
+in the plot? Basically, an interaction means that the effect of one
+variable depends on the effect of the other. In this case, so even if Drug
+B leads to a larger change in cholesterol, its effects depend on the Diet:
+it has that effect on Diets M1 and M2, but it does not on the high fat
+diet (HF). This has practical consequences: is Drug B a better drug? It
+depends on the diet of the patient. 
+
+Interaction is also called ``non-additivity'' because the model deviates
+from a simple model like
+\[ y = Drug + Diet\]
+
+as the effect of Drug depends on the value of Diet (or the other way
+around). The phenomenon of interaction should be familiar to you: it is
+very common in life in general, and in biology you might have previously
+seen at as epistasis in genetics.
+
+
+You can also see interaction plots using this directly from R:
+
+<<>>=
+with(dchol, interaction.plot(Drug, Diet, y, type = "b"))
+@ 
+
+or, much nicer, using this from package ``HH'' (I will first load it)
+
+<<>>=
+require(HH)
+interaction2wt()
+@ 
+
+
+
+\subsection{Multiple comparisons of means}
+Can they be done? Yes. You can use the ``glht'' or the TukeyHDS functions
+directly. Or you fit the model using ``aov'' (not ``lm''), and then use
+the ``RcmdrPlugin.HH'', and ask for the MMC plot. We will not pursue this
+any further here (among other questions you should ask yourself, at what
+levels of one variable will you be comparing the other? How does lack of
+balance affect the contrasts? Do you really want
+all possible contrasts?) A good place to start reading on these issues is
+chapter 14 (and section 5.3.2) of Everitt and Hothorn's ``A handbook of
+statistical analysis using R, 2nd ed''.
+
+%% For instance, this would work. But this is not necessarily what you might
+%% really want:
+
+%% <<>>=
+%% cholaov <- aov(y ~ Diet * Drug, data = dchol)
+%% chol_tukey <- TukeyHSD()
+%% @ 
+
+
+\section{Diagnostics}
+
+Wait!!! Does our model make sense? This is a model, so we can, and should,
+check some of its basic assumptions.
+
+
+
+
+Do not recode factor
 
 
 Do not use the overlap in CI as a p-value
@@ -151,11 +545,16 @@ Do not use the overlap in CI as a p-value
 
 Doing t-tests via ANOVA (which adds diagnostics)
 
-\subsection{Diagnostics}
+
 
 \section{Linear regression}
 
 \section{More than one independent variable}
+
+Which means differ
+
+Which means differ with covars
+
 
 \subsection{Interactions}
 
@@ -165,6 +564,35 @@ Doing t-tests via ANOVA (which adds diagnostics)
 Split-plot
 
 Mixed effects and dependencies
+
+
+
+\section{Appendix}
+\subsection{What if we did not recode training?}\label{nofactor}
+Suppose we had not recoded training but we had fitted a linear model. This
+would have happened:
+
+<<>>=
+lmMITnofactor <- lm(activ ~ training, data=dmit)
+summary(lmMITnofactor)
+Anova(lmMITnofactor, type="II")
+@ 
+
+See how the degrees of freedom make no sense.
+
+
+
+
+\section{Additional reading}
+
+Many books have been devoted to linear models, ANOVA, et al. And in R (not
+necessarily through R Commander) there is a wide variety of procedures
+implemented. To begin with, look at the great book by Fox and Weisberg
+``An R companion to applied regression''. Take also a look at chapters 6
+and 7 of Dalgaard's ``Introductory statistics with R'' and chapters 8 and
+9 of Kabakoff's ``R in action''. This should get you going.
+
+
 
 \end{document}
 
