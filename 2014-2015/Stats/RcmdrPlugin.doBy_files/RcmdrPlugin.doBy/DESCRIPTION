@@ -1,7 +1,7 @@
 Package: RcmdrPlugin.doBy
 Type: Package
 Title: Rcmdr doBy Plug-In
-Version: 0.1-3
+Version: 0.1-4
 Date: 2013-07-12
 Author: Jonathan Lee <jlee253@uwo.ca>
 Maintainer: Jonathan Lee <jlee253@uwo.ca>
