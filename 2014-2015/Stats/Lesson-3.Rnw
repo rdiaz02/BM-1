@@ -3,7 +3,7 @@
 <<echo=FALSE,results='hide',error=FALSE>>=
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
-##opts_knit$set(stop_on_error = 2L)
+opts_knit$set(stop_on_error = 2L)
 @ 
 
 <<packages,echo=FALSE,results='hide',message=FALSE>>=
@@ -106,10 +106,10 @@ least took a look at some of the references we provide at the end.
 Files we will use:
 \begin{itemize}
 \item This one
-%% \item \Robject{MIT.txt}
-%% \item \Robject{Cholesterol.txt}
-%% \item \Robject{AnAge\_birds\_reptiles.txt}
-%% \item \Robject{CystFibr2.txt}
+\item \Robject{MIT.txt}
+\item \Robject{Cholesterol.txt}
+\item \Robject{AnAge\_birds\_reptiles.txt}
+\item \Robject{CystFibr2.txt}
 
 \end{itemize}
 

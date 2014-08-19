@@ -3,7 +3,7 @@
 <<echo=FALSE,results='hide',error=FALSE>>=
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
-##opts_knit$set(stop_on_error = 2L)
+opts_knit$set(stop_on_error = 2L)
 require(car, quietly = TRUE)
 @ 
 
@@ -1349,6 +1349,18 @@ the test could be applied to ordinal data.
 
 %% \bibliography{lesson2}
 
+
+\section{Session info and packages used}
+
+This is the information about the version of R and packages used when
+producing this document:
+<<echo=FALSE,results='hide',error=FALSE>>=
+options(width=60)
+@ 
+
+<<>>=
+sessionInfo()
+@ 
 \end{document}
 
 %% remember to use bibexport to keep just the minimal bib needed
