@@ -1,31 +1,29 @@
+%\VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
 <<echo=FALSE,results='hide',error=FALSE>>=
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
 ##opts_knit$set(stop_on_error = 2L)
 require(car, quietly = TRUE)
-## require(lme4, quietly = TRUE)
 @ 
 
 <<packages,echo=FALSE,results='hide',message=FALSE>>=
-## zz <- tempfile()
-## sink(file = zz)
-## require(Rcmdr, quietly = TRUE)
-## unlink(zz)
-## invisible(capture.output(library(Rcmdr, quietly=TRUE)))
+require(BiocStyle, quietly = TRUE)
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
 require(doBy, quietly = TRUE)
 @ 
 
+%% not if using BiocStyle
+%% \usepackage[authoryear,round,sort]{natbib}
+%% \usepackage{hyperref} 
+%%\usepackage{geometry}
+%%\geometry{verbose,a4paper,tmargin=23mm,bmargin=26mm,lmargin=28mm,rmargin=28mm}
+
+
 \usepackage{amsmath}
-\usepackage{ amssymb }
-\usepackage[authoryear,round,sort]{natbib}
+\usepackage{amssymb}
 \usepackage{threeparttable}
 \usepackage{array}
-\usepackage{hyperref} %% not if using BiocStyle
-%%ditto
-\usepackage{geometry}
-\geometry{verbose,a4paper,tmargin=23mm,bmargin=26mm,lmargin=28mm,rmargin=28mm}
 \usepackage{url}
 \usepackage{xcolor}
 %\definecolor{light-gray}{gray}{0.72}
@@ -48,20 +46,37 @@ require(doBy, quietly = TRUE)
 %\usepackage{datetime}
 %\newdateformat{mydate}{\THEDAY-\monthname[\THEMONTH]-\THEYEAR}
 
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+BiocStyle::latex()
+@
 
-\title{Lesson 2. Comparing two groups (and one group)}
-  
+%% %% Modify margins
+\geometry{verbose,a4paper,tmargin=23mm,bmargin=23mm,lmargin=28mm,rmargin=28mm}
+
+
+\bioctitle[Lesson 2: Comparing two groups (and one group)]{BM-1, Applied
+  Statistics, Lesson 2: Comparing two groups (and one group).}
+
 \author{Ramon Diaz-Uriarte\\
-Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
-Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
-Madrid, Spain\\
-{\small \texttt{ramon.diaz@iib.uam.es}} \\
-{\small \texttt{rdiaz02@gmail.com}} \\
+  Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Madrid, Spain{\footnote{ramon.diaz@iib.uam.es, rdiaz02@gmail.com}} \\
+%% {\footnote{rdiaz02@gmail.com}} \\
 {\small \Burl{http://ligarto.org/rdiaz}} \\
-}
+ }
 
 
-% \date{\the\year-\the\month-\the\day}
+%\title{Lesson 2. Comparing two groups (and one group)}
+  
+%% \author{Ramon Diaz-Uriarte\\
+%% Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+%% Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+%% Madrid, Spain\\
+%% {\small \texttt{ramon.diaz@iib.uam.es}} \\
+%% {\small \texttt{rdiaz02@gmail.com}} \\
+%% {\small \Burl{http://ligarto.org/rdiaz}} \\
+%% }
+
 
 \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
 \begin{document}
@@ -73,14 +88,6 @@ Madrid, Spain\\
 
 \section{Introduction}
 
-Files we will use:
-\begin{itemize}
-\item This one
-\item P53.txt
-\item MYC.txt
-\item BRCA2.txt
-%%  \item ACRB.txt
-\end{itemize}
 
 
 
@@ -90,6 +97,17 @@ took BM-1, you are in charge of looking at the data and answering the
 question ``Does the expression of the genes differ between patients with
 and without cancer?''.
 
+
+\subsection{Files we will use}
+
+
+\begin{itemize}
+\item This one
+\item \Robject{P53.txt}
+\item \Robject{MYC.txt}
+\item \Robject{BRCA2.txt}
+%%  \item ACRB.txt
+\end{itemize}
 
 
 
@@ -426,7 +444,8 @@ regression).
 
 \section{Paired tests}\label{pairedt}
 
-Load now the data set called ``MYC.txt''. As before, give it a reasonable name.
+Load now the data set called \Robject{MYC.txt}. As before, give it a
+reasonable name.
 
 
 <<create_myc, echo=FALSE, results = 'hide'>>=
@@ -520,9 +539,9 @@ A few comments:
 \subsection{Reshaping the data for a paired t-test, second approach}
 
 
-You can do this in a simpler way using the RcmdrPlugin.doBy (BEWARE: you
-must install and use the version of RcmdrPlugin.DoBy I
-provide\footnote{There is a bug in one of the functions in the original
+You can do this in a simpler way using the \CRANpkg{RcmdrPlugin.doBy}
+(BEWARE: you must install and use the version of\CRANpkg{RcmdrPlugin.DoBy}
+I provide\footnote{There is a bug in one of the functions in the original
   package, and I have fixed it. The version you can get from CRAN will not
   work; the version I provide you has the bug fixed ---I've emailed the
   author about this, but so far haven't reached him}).
@@ -922,30 +941,29 @@ Do you understand each one of these?
 
 
 Go play with the ``Teaching demos: Power of a test'' (from the
-``RcmdrPlugin.TeachingDemos''). 
+\CRANpkg{RcmdrPlugin.TeachingDemos}).
 
 
 \begin{figure}[h!]
  \begin{center}
  \includegraphics[width=0.80\paperwidth,keepaspectratio]{power.png}
  \caption{\label{power} Playing with power, from the
-   RcmdrPlugin.TeachingDemos, Power of the test.}
+   \CRANpkg{RcmdrPlugin.TeachingDemos}, Power of the test.}
  \end{center}
  \end{figure}
 
 
 
-There are simple, standard ways of
-figuring out the power. But they require you to specify the above
-values. Not always known (or easy to guess). The ``RcmdrPlugin.IPSUR''
-package provides some extra tools.
+ There are simple, standard ways of figuring out the power. But they
+ require you to specify the above values. Not always known (or easy to
+ guess). The \CRANpkg{RcmdrPlug.IPSUR} package provides some extra tools.
 
 
 \begin{figure}[h!]
  \begin{center}
  \includegraphics[width=0.60\paperwidth,keepaspectratio]{ipsur-power.png}
- \caption{\label{ipsurpower} Entry window for RmcdrPlugin.IPSUR: Power for
-   t-test, under ``Statistics'', ``Power (IPSUR)''.}
+ \caption{\label{ipsurpower} Entry window for \CRANpkg{RmcdrPlugin.IPSUR}:
+   Power for t-test, under ``Statistics'', ``Power (IPSUR)''.}
  \end{center}
  \end{figure}
 
@@ -1011,8 +1029,8 @@ dbrca <- read.table("BRCA2.txt", header = TRUE)
 @ 
 
 
-We will use the BRCA2.txt data set. Import it, etc. Look at the data
-carefully. It looks like there are \Sexpr{nn} observations per
+We will use the \Robject{BRCA2.txt} data set. Import it, etc. Look at the
+data carefully. It looks like there are \Sexpr{nn} observations per
 subject. Basically, each subject has been measured \Sexpr{nn} times. Thus,
 there are not \Sexpr{nn * (n1*n2)} independent measures. Again, ask
 yourself: what is the true ``experimental unit'' (or observational unit)?
@@ -1252,9 +1270,10 @@ myc.nc <- dmyc$myc[dmyc$cond == "NC"]
 t.test(myc.nc, myc.cancer, paired = TRUE)
 @ 
 
-Of course, this \textbf{crucially assumes} that the data are ordered the same way by
-patient: the first myc.cancer is the same patient as the same myc.nc,
-etc. This is the case in our data, but need not be. We can check it:
+Of course, this \textbf{crucially assumes} that the data are ordered the
+same way by patient: the first myc.cancer is the same patient as the same
+myc.nc, etc. This is the case in our data, but need not be. We can check
+it:
 
 <<>>=
 dmyc
@@ -1328,7 +1347,7 @@ the test could be applied to ordinal data.
 
 
 
-\bibliography{lesson2}
+%% \bibliography{lesson2}
 
 \end{document}
 
