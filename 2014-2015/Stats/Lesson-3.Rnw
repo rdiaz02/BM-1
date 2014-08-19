@@ -427,6 +427,10 @@ the mean of group 4. Etc, etc. We will not get into this.
 
 
 
+\subsubsection{t-test as ANOVA}
+Of course, in general, you can just carry out any two-group comparison as
+an ANOVA. There is nothing wrong with data (and there is a simple
+correspondence between a t statistic and an F statistic).
 
 \subsection{One way ANOVA: summary of steps}
 
