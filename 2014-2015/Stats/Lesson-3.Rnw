@@ -93,17 +93,17 @@ BiocStyle::latex()
 
 Linear models and their extensions (which include logistic regression, but
 also survival analysis, many classification problems, non-linear models,
-dealing with dependent data, etc, etc) are one fundamental topic in
-statistics. Here, we will only scratch the surface. But you should come
-away from this lesson understanding that these methods are extremely
-powerful and flexible and they can be used to address a huge variety of
-different research questions. You would spend your time wisely if you at
-least took a look at some of the references we provide at the end. 
+analysis of experiments, dealing with many types of dependent data, etc,
+etc) are one fundamental topic in statistics. Here, we will only scratch
+the surface. But you should come away from this lesson understanding that
+these methods are extremely powerful and flexible and that they can be
+used to address a huge variety of different research questions. You would
+spend your time wisely if you at least took a look at some of the
+references we provide at the end.
 
 
 \subsection{Files we will use}
 
-Files we will use:
 \begin{itemize}
 \item This one
 \item \Robject{MIT.txt}
@@ -116,7 +116,7 @@ Files we will use:
 
 
 
-
+\clearpage
 \section{Comparing more than two groups}
 
 <<create_mit, echo=FALSE, results='hide'>>=
@@ -137,41 +137,52 @@ rm(list = ls())
 
 
 
+\subsection{Recoding variables}
+
+Import \Robject{MIT.txt} and call the object \Robject{dmit}. These are
+data about mitochondrial activity related to three different training
+regimes. 
+
 <<>>=
 dmit <- read.table("MIT.txt", header = TRUE)
 @ 
 
 
-\subsection{Recoding variables}
 
-Import \Robject{MIT.txt}. These are data about mitochondrial activity
-related to three different training regimes. Whoever coded the data,
-however, used a number for ``training'', which is misleading, because this
-is really a categorical variable.
+Whoever entered the data, however, used a number for ``training'', which is
+misleading, because this is really a categorical variable. The first thing
+we must do, then, is fix that. Go to ``Data'', ``Manage variables ...'',
+``Convert numerical variables to factors''. We will want to label 1 as
+``Morning'', 2 as ``Lunch'', and 3 as ``Afternoon'', which are the times
+at which exercise was conducted and makes everything much more clear and
+explicit. Use a new variable (e.g., ftraining).
 
-The first thing we must do, then, is fix that. Let's recode that, by going
-to ``Data'', ``Manage variables ...'', ``Convert numerical variables to
-factors''. We will want to label 1 as ``Morning'', 2 as ``Lunch'', and 3
-as ``Afternoon'', which are the times at which exercise was conducted and
-makes everything much more clear and explicit. Use a new variable (e.g.,
-ftraining).
+\begin{figure}[h!]
+  %\begin{center}
+    \includegraphics[width=0.60\paperwidth,keepaspectratio]{recode-1.png} \includegraphics[width=0.40\paperwidth,keepaspectratio]{recode-2.png}
+    \caption{\label{recode1} Converting training to ftraining, using more
+      reasonable names.}
+ % \end{center}
+\end{figure}
 
+\clearpage
 After recoding, you should see this command. Note the \Rcode{factor}
 function call:
 <<>>=
-dmit$ftraining <- factor(dmit$training, labels=c('Morning','Lunch','Afternoon'))
+dmit$ftraining <- factor(dmit$training, 
+                         labels=c('Morning','Lunch','Afternoon'))
 @ 
 
 
 As usual, make sure to look at the data set.
 
-If were to not recode the factor (or use training as it was originally) it
-would be a disaster. Look at the output in section \ref{nofactor}.
+If we were to not recode the factor (or use the original ``training'') it
+would be a disaster (look at the output in section \ref{nofactor}).
 
 
 
 
-\subsection{A few plots}
+\subsection{A boxplot}
 As in Lesson 2, you are advised to also plot the data. For instance, this
 will do:
 
@@ -180,8 +191,9 @@ Boxplot(activ~ftraining, data=dmit, id.method="y")
 @ 
 
 
-(the ``2'' is the identifier ---row name in this case--- of a point that
-has been flagged as a potential outlier).
+(the ``2'' is the identifier ---row name--- of a point that
+has been flagged as a potential outlier and we will silent that output
+from now on in these notes).
 
 
 \subsection{An ANOVA}\label{oneway}
@@ -208,7 +220,7 @@ summary(AnovaModel.1)
 @ 
 
 We will cover this in more detail in class, in case you do not remember
-ANOVAs. Things to notice:
+ANOVA. Things to notice:
 \begin{itemize}
 \item The two rows; one of them is the effect you are interested in (ftraining)
 \item The ``Df'' column: those are the degrees of freedom (three groups -
@@ -246,10 +258,10 @@ you can get an idea: it seems that Morning and Lunch are very similar to
 each other, but Afternoon is very different. This agrees with the
 impression we got from the boxplot. But we would like a more formal
 procedure: we are going to compare all pairs of means and we will take
-into account that we are carrying out multiple comparisons.
-
-Before continuing, though, note that tests of pairs of means when the
-ANOVA is not significant are rarely justified.
+into account that we are carrying out multiple comparisons (tests of pairs
+of means when the ANOVA is not significant are rarely
+justified\footnote{Unless some specific, small number of, tests of
+  specific pairs had been planned before the experiment.}.
 
 
 
@@ -261,18 +273,34 @@ better).
 
 \textbf{Multiple testing corrections} are needed because we are now
 conducting three separate tests (in general, if there are $K$ groups and
-if you compare all pairs of means you carry out $\frac{K (K-1)}{2}$
-tests). Here, we will control the family-wise error rate (the probability
-of falsely rejecting one or more tests over the family of tests performed
----three in our case). You will see more about multiple testing in the
-final lesson.
+if you compare all pairs of means you carry out ${K \choose 2} = \frac{K
+  (K-1)}{2}$ tests). Here, we will control the family-wise error rate (the
+probability of falsely rejecting one or more tests over the family of
+tests performed ---three in our case). The logic is somewhat like that of
+being struck by lightning: the chances of it happening are extremely
+small, but every year people die from lightning because the probability
+that at least one person is killed is huge since we have lots of people
+exposed to the risk. So even if all null hypotheses for our three tests
+are true:
+\begin{itemize}
+\item $\mu_{Morning} = \mu_{Lunch}$
+\item $\mu_{Morning} = \mu_{Afternoon}$
+\item $\mu_{Lunch} = \mu_{Afternoon}$
+\end{itemize}
+
+if we run the three comparisons, the chances of incorrectly rejecting at
+least one of the null hypotheses is larger than, say, 0.05 if we simply
+look at each one of the three p-values and keep any with a p-value $\leq
+0.05$.  You will see more about multiple testing in the final lesson but
+if the reason why we need this here is not clear, ask it in class
+\textbf{now!}.
 
 
 
-To do this, carry out the ANOVA again, but now make sure to click on
-``Pairwise comparisons of means''. To be much more explicit, I will also
-name the model as \Robject{AnovaMIT} (entering that in ``Enter name for
-model'')
+To carry out all pairs of tests and control for multiple testing, carry
+out the ANOVA again, but now make sure to click on ``Pairwise comparisons
+of means''. To be much more explicit, I will also name the model as
+\Robject{AnovaMIT} (entering that in ``Enter name for model'')
 
 
 \begin{figure}[h!]
@@ -284,16 +312,22 @@ model'')
 \end{figure}
 
 
-A whole bunch of new commands are added to the R Script (I skip the one
-that asks for the means and sd of groups but commenting it out; I also add
-two comments to the last two commands)
+A whole bunch of new commands are added to the R Script and a figure is
+produced. I'll go over them (but I skip the one that asks for the means
+and sd of groups by commenting it out and I also add comments to some
+commands):
 
-<<fig.width=5,fig.height=5>>=
+
+
+<<tukey1,fig.cap='Plot of pairwise differences with Tukey contrasts', fig.lp='fig:', fig.width=5,fig.height=5, fig.show='hold', results='hide'>>=
 AnovaMIT <- aov(activ ~ ftraining, data=dmit)
 summary(AnovaMIT)
 
 ## The next I comment out
 ## numSummary(dmit$activ , groups=dmit$ftraining, statistics=c("mean", "sd"))
+
+## The next two lines carry out the multiple comparisons and the following
+## lines plot them
 .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
 summary(.Pairs) # pairwise tests
 confint(.Pairs) # confidence intervals
@@ -306,16 +340,14 @@ remove(.Pairs) ## remove the object that stored the multiple comp. output
 
 
 \subsubsection{The plot of pairwise differences}
-Look carefully at the plot: for each difference (for each
-\textbf{contrast}), it shows the estimate and a 95\% confidence interval
-around it. The plot title says ``95\% family-wise confidence interval'',
-and that indicates that multiple testing correction has been used.
+Look carefully at the plot in Figure \ref{fig:tukey1}: for each difference
+(for each \textbf{contrast}), it shows the estimate and a 95\% confidence
+interval around it. The plot title says ``95\% family-wise confidence
+interval'', and that indicates that multiple testing correction has been
+used.
 
 Given how far two of the contrasts are from 0.0, it seems those are highly
 significant differences. Let's go to the numerical output.
-
-
-
 
 
 \subsubsection{The numerical output}
@@ -329,10 +361,9 @@ summary(.Pairs)
 
 explicitly shows that we are using Tukey's method and it shows the
 p-values of each contrast (each comparison), and it makes it clear that we
-are being reported adjusted p values.
-
-There is strong evidence of a difference between Afternoon and the other
-two levels, but no evidence of differences between Lunch and
+are being reported adjusted p values. There is strong evidence of a
+difference between Afternoon and the other two levels, but no evidence of
+differences between Lunch and
 Morning. %% Incidentally, note that the whole process is done using ``Tests
 %% for the general linear hypothesis'' and how the contrasts are explicitly
 %% shown: this is a very general and powerful procedure (see section
@@ -354,7 +385,7 @@ Note how the usage of Tukey's procedure is again explicit.
 
 Sure. Go to ``Models'', ``Graphs'', ``Effects plots'':
 
-<<>>=
+<<out.width='9cm'>>=
 ## trellis.device(theme="col.whitebg")
 plot(allEffects(AnovaMIT), ask=FALSE)
 @ 
@@ -374,7 +405,7 @@ that the usage of Tukey contrasts is explicit and I modify the title of
 the second, so we use ``Training'' in the name, not ``ftraining'':
 
 
-<<out.width='8cm', out.height='8cm', fig.show='hold'>>=
+<<out.width='7cm', out.height='7cm', fig.show='hold'>>=
 .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
 tmp <- cld(.Pairs) ## silent assignment 
 old.oma <- par(oma=c(0,5,0,0))
@@ -400,9 +431,8 @@ If this is not obvious to you, ask it in class: a figure that shows an
 estimate (e.g., a mean) and a 95\% confidence interval, where the interval
 goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
 there is a 95\% probability that the mean is between 1 and 2. That is not
-the correct interpretation of a confidence interval.
-
-Make sure you understand this!!!
+the correct interpretation of a confidence interval. Make sure you
+understand this!!!
 
 
 
@@ -429,7 +459,7 @@ the mean of group 4. Etc, etc. We will not get into this.
 
 \subsubsection{t-test as ANOVA}
 Of course, in general, you can just carry out any two-group comparison as
-an ANOVA. There is nothing wrong with data (and there is a simple
+an ANOVA. There is nothing wrong with that (and there is a simple
 correspondence between a t statistic and an F statistic).
 
 \subsection{One way ANOVA: summary of steps}
@@ -438,21 +468,23 @@ correspondence between a t statistic and an F statistic).
 \item Enter the data.
 \item Recode the factor (the dependent variable), if needed.
 \item Run the model.
-\item Assess model diagnostics.
+\item Assess model diagnostics (see section \ref{diagnostics}).
 \item Carry out comparisons between pairs of means with appropriate
   adjustment for multiple comparisons.
 \end{enumerate}
 
 
 
-
+\clearpage
 \section{Two-way ANOVA}
 
 The following data come from an experiment about the effects of three
 diets and two cholesterol-controlling drugs in the reduction of
-cholesterol levels. As usual, read the data and look at them. Since the
-author used names for the two factors, Diet and Drug, we do not need to
-transform them. Call the data \Robject{dcholest}.
+cholesterol levels (note: the response variable is change in cholesterol,
+so the larger the value, the larger the reduction of cholesterol). As
+usual, read the data and look at them. Since the author used names for the
+two factors, Diet and Drug, we do not need to transform them. Call the
+data \Robject{dcholest}.
 
 <<create_tooth, echo=FALSE, results='hide'>>=
 
@@ -496,7 +528,7 @@ cholestanova <- (lm(y ~ Diet*Drug, data=dcholest))
 ## This shows the ANOVA table. Notice the "Type II"
 Anova(cholestanova)
 
-## Now we are show the 3 by 2 table of means, standard deviations, and number 
+## Now we are shown the 3 by 2 table of means, standard deviations, and number 
 ## of observations
 tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug), 
        mean, na.rm=TRUE) # means
@@ -507,23 +539,23 @@ tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
 @ 
 
 
-\subsection{Interactions}
+\subsection{Interactions}\label{2way-int}
 
 Now, go to the ``Models'' menu and do a ``Effects plot''
 
-<<>>=
-trellis.device(theme="col.whitebg")
+<<out.width='12cm', out.height='12cm'>>=
+## trellis.device(theme="col.whitebg")
 plot(allEffects(cholestanova), ask=FALSE)
 @ 
 
 
 What do you see? Do you understand what an interaction is? Do you see it
 in the plot? Basically, an interaction means that the effect of one
-variable depends on the effect of the other. In this case, so even if Drug
-B leads to a larger change in cholesterol, its effects depend on the Diet:
-it has that effect on Diets M1 and M2, but it does not on the high fat
-diet (HF). This has practical consequences: is Drug B a better drug? It
-depends on the diet of the patient. 
+variable depends on the effect of the other. In this case, even if Drug B
+overall leads to a larger change (decrease) in cholesterol, its effects
+depend on the Diet. This has practical consequences: is Drug B a better
+drug?  It depends on the diet of the patient: for the HF (high fat) diet,
+Drub B is clearly worse than Drug A.
 
 Interaction is also called ``non-additivity'' because the model deviates
 from a simple model like
@@ -542,14 +574,14 @@ You can also see interaction plots using this directly from R:
 with(dcholest, interaction.plot(Drug, Diet, y, type = "b"))
 @ 
 
-or, much nicer, using the \CRANpkg{RcmdrPlugin.HH} and going to ``Graphs'',
+or using the \CRANpkg{RcmdrPlugin.HH} and going to ``Graphs'',
 ``Plot of two-way interactions'' %this from package ``HH'' (I will first load it)
 
-<<>>=
+<<out.width='14cm', out.height='14cm'>>=
 interaction2wt(y ~ Diet + Drug, data=dcholest)
 @ 
 
-Notice how this figure displays both main effects and interactions. So
+Notice how this last figure displays both main effects and interactions. So
 even if the main effect of Drug B is to lead to a larger change in
 cholesterol (as you can see in the upper right panel), Drug B actually
 leads to much smaller change in cholesterol if given to patients with diet
@@ -559,25 +591,26 @@ bottom right panel or in the effects plot).
 
 Finally, a boxplot can also help show the interaction. I will use two
 different ones, that differ by the order in which factors are specified
-(one or the other might be easier to decode):
+(one or the other might be easier to decode visually):
 
-<<out.width='7cm', out.height='7cm', fig.show='hold'>>=
+<<out.width='8cm', out.height='8cm', fig.show='hold'>>=
 boxplot(y ~ Drug * Diet, data = dcholest, col = c("salmon", "gold"))
 boxplot(y ~ Diet * Drug, data = dcholest, col = c("salmon", "gold"))
 @ 
 
 
 
-Given these results, it makes little sense to report any global main
-effects and, in fact, we would rarely be interested in interpreting the
-significance (or not) of the Diet or Drug term, by themselves, in the
-presence of interactions. In general, \textbf{in the presence of
+Given these results (the strong interaction, that can even revert effects
+of one factor), it makes little sense to report any global main effects
+and we would rarely be interested in interpreting the significance (or
+not) of the Diet or Drug term. In general, \textbf{in the presence of
   interactions, we often refrain from interpreting main
   effects}\footnote{Properly formulated, which also generally involves
   using other types of contrasts ---such as contr.sum, in R parlance---
   marginal tests in the presence of interactions, what are called Type
   III, can make sense, but are not always of interest. See also footnote
-  in section \ref{orderfactors} for some entries and references.}.
+  \ref{fn:2} in section \ref{orderfactors} for some entries and
+  references.}.
 
 
 
@@ -591,7 +624,7 @@ active data set''.
 
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=0.60\paperwidth,keepaspectratio]{subset-chol.png}
+    \includegraphics[width=0.40\paperwidth,keepaspectratio]{subset-chol.png}
     \caption{\label{subset} Subset a data set. Note the ``Subset expression'.}
   \end{center}
 \end{figure}
@@ -608,11 +641,11 @@ cholest2anova <- (lm(y ~ Diet*Drug, data=dcholest2))
 Anova(cholest2anova)
 @ 
 
-So no evidence whatsoever of interactions. We can go and refit the model
-without the interaction, and that we do in ``Statistics'', ``Fit models'',
-``Linear model''. We will actually fit two models, which differ only by
-the order in which we give Diet and Drug in the formula (we showed this
-already in Lesson 2) and we will call them lm1 and lm2
+So no evidence whatsoever of interactions. For simplicity, we can go and
+refit the model without the interaction, and that we do in ``Statistics'',
+``Fit models'', ``Linear model''. We will actually fit two models, which
+differ only by the order in which we give Diet and Drug in the formula (we
+showed this already in Lesson 2) and we will call them lm1 and lm2
 
 <<>>=
 lm1 <- lm(y ~ Diet + Drug, data=dcholest2)
@@ -647,33 +680,41 @@ those for the term that enters last in the Type I (those produced via
 
 
 This sounds crazy, irrelevant, and a huge wast of time. But it ain't. This
-is an \textbf{extremely common phenomenon} when data are not perfectly
-balanced (with categorical data) or there are correlations (with
-continuous covariates, as in regression). What is happening? 
+is an \textbf{extremely common phenomenon} when the design is not
+perfectly balanced (with categorical independent variables) or there are
+correlations (with continuous covariates, as in regression). What is
+happening?
 
 \begin{itemize}
-\item Type II sums of squares (as well as t-statistics from a linear
+\item Type II sums of squares (similar to t-statistics from a linear
   model) show what that term contributes, \textbf{given all the rest} are
   already in the model. In other words, given all the other terms (that do
   not include this term) have already been taken into account. This is
   actually the output we would get from comparing two models, one with all
   terms, and one with all terms except the term in question. (Always
-  assuming interactions with the term in question are zero).
+  assuming interactions with the term in question are zero). The package
+  \CRANpkg{car}, by default, gives you this via \Rfunction{Anova}. I
+  routinely use \Rfunction{Anova}.
   
 \item Type I (or sequential) sums of squares do not. They are sequential,
-  in the order shown in the output.
+  in the order shown in the output. R, by default, gives you this via
+  \Rfunction{anova}.
 \end{itemize}
 
-Biologically, this makes a lot of sense. Think about it. And this, of
-course, affects models with two, three, \ldots factors.\footnote{The type of sums
-of squares used (and, actually, the type of hypothesis tested) is a
-debated topic. The book by John Fox ``Applied regression analysis and
-generalized linear models'' contains a great discussion (his book with S.\
-Weisberg ``An R companion to applied regression'', one of the recommended
-books, does too). An email-length discussion of these topics can be found
-here \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111854.html}
-and \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}
-}
+Biologically, that order can make a difference makes a lot of sense. Think
+about it. And this, of course, affects models with two, three, \ldots
+factors. Always pay attention to what it is you are being reported (and
+beware that the defaults used by R need not the same as those used by
+SPSS, SAS, etc.)\footnote{The type of sums of squares used (and,
+  actually, the type of hypothesis tested) is a debated topic. The book by
+  John Fox ``Applied regression analysis and generalized linear models''
+  contains a great discussion (his book with S.\ Weisberg ``An R companion
+  to applied regression'', one of the recommended books, does too). An
+  email-length discussion of these topics can be found here
+  \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111854.html} and
+  \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}. Please
+  beware
+\label{fn:2}}.
 
 
 \subsection{ANOVA/linear models with more than two factors}
@@ -714,17 +755,17 @@ as in permutation tests conditioning on permuting only within rows or
 columns, etc. We will not pursue this any further.
 
 
-
+\clearpage
 \section{Simple linear regression}\label{regr}
 
 This is another form of a linear model. But now, the independent variable
 is continuous. So we will fit a line:
 
-\[Y = \alpha + \beta X + \epsilon\]
-where $Y$ is, as usual, the dependent variable, $X$ the independent,
-$\beta$ is the slope and $\alpha$ the intercept (this is just the equation
-for a line). The simple linear regression procedure will estimate $\alpha$
-and $\beta$, finding values that produce a \textbf{best fitting line}
+\[Y = \alpha + \beta X + \epsilon\] where $Y$ is, as usual, the dependent
+variable, $X$ the independent, $\beta$ is the slope and $\alpha$ the
+intercept (this is just the equation for a line). The simple linear
+regression procedure will estimate $\alpha$ and $\beta$, finding values
+($\hat{\alpha}, \hat{\beta}$) that produce a \textbf{best fitting line}
 (note: it is a line, not an arbitrary curve).
 
 %% Let's use a simple data set that relates data set from the base package, ``women''. Go to ``Data'',
@@ -780,20 +821,22 @@ some birds and reptiles.
 %% a4 <- anage[-c(3618, 3052, 2376, 2831, 2449, 2349, 2752, 3252, 2444, 3619), ]; anage.mam <- a4[a4$Class == "Mammalia", ]
 %% @ 
 
-Read the full data and call it anage\_a\_r (aves, reptilia). 
+Read the full data and call it \Robject{anage\_a\_r} (the a and r stand
+for aves and reptilia, the proper Class names).
 
 <<create_anage, echo=FALSE, results='hide'>>=
 anage_a_r <-  read.table("AnAge_birds_reptiles.txt", 
                          header=TRUE, sep="", na.strings="NA", dec=".", 
                          strip.white=TRUE)
+
 @ 
 
 We want to take the log of all the relevant continuous variables (yes, you
-would not know this before hand, but I do, so create those new
-variables)\footnote{Creating these new variables is not really necessary
-  in general for fitting models. But some functions from the
-  \CRANpkg{HH} lead to problems if we don't.}. It is much faster to
-just do it by typing the code in the R Script or RStudio console:
+would not know this before hand, but I do, so create those new variables
+now to avoid going back later)\footnote{Creating these new variables is
+  not really necessary in general for fitting models. But some functions
+  from the \CRANpkg{HH} package lead to problems if we don't.}. It is much faster
+to just do it by typing the code in the R Script or RStudio console:
 
 <<>>=
 anage_a_r$logMetabolicRate <- log(anage_a_r$Metabolic.rate..W.)
@@ -803,8 +846,9 @@ anage_a_r$logLongevity <- log(anage_a_r$Maximum.longevity..yrs.)
 
 
 For now, we will only use the birds. So use subsetting to keep only birds
-and call it anage\_a (yes, you know how to do that; look at Figure
-\ref{subset}).
+and call it \Robject{anage\_a} (yes, you know how to do that; look at
+Figure \ref{subset}, and recall that the Class is ``Aves''; look at the
+data).
 
 <<create_anage_a, echo=FALSE, results='hide'>>=
 anage_a <- anage_a_r[anage_a_r$Class == "Aves",]
@@ -814,16 +858,18 @@ anage_a <- anage_a_r[anage_a_r$Class == "Aves",]
 We want to model metabolic rate as a function of body mass (note that this
 data set is rather nice, because column names are nicely labeled and
 include information about units). \textbf{Beware:} biologically, what we
-are going to do is not really correct, as the data are not really
-independent (species share common ancestors, and they are related in
-varying degrees); this is just for the sake of the example, and because
-they are a nice set of data\footnote{This can be done correctly,
-  incorporating phylogenetic information, but this is way out of the scope
-of this class}.
+are going to do is not really correct, as the data are not independent
+(species share common ancestors, and they are related in varying degrees,
+as any phylogenetic tree would show you, and as you should be able to tell
+from looking at the names of some species). What we are doing here is just
+for the sake of the example, and because this is a nice set of
+data\footnote{This can be done correctly, incorporating phylogenetic
+  information in the regression model, but this is way out of the scope of
+  this class. It is a really fascinating topic, though!}.
 
 
 Now go to ``Statistics'', ``Fit models'', ``Linear regression'' and fit
-that model. Let's call the model \Robject{metab})
+that model. Let's call the model \Robject{metab}
 
 <<>>=
 metab <- lm(Metabolic.rate..W. ~ Body.mass..g., data=anage_a)
@@ -842,17 +888,20 @@ need to know the units!). And the t-statistic tests if the slope is
 0. There is certainly strong evidence that Metabolic rate increases with
 body mass.
 
+Do you know what ``R-squared'' refers to? And the rest of the output?
+
+By the way, did you see the note about missingness? Do you know what that
+means? 
 
 \subsection{And how does it look like}
 Eh!!! We should probably have plotted the data as the first thing. A
-couple of plots will be good here. First, in ``Graphs'', ``Scatterplot''
+couple of plots will be good here. First, let's do a scatterplot (you
+might want to unclick the ``Show spread''\footnote{I find the spread
+  information to be confusing. But I like to leave the
+  smoothed line, as it can help me see errors in the model
+  specification.}):
 
-Work you way around the menu until you find the ``Confidence interval
-plot'' (you might want to unclick the ``Show spread''\footnote{I find the
-  spread information to be confusing, at least to me. But I like to leave
-  the smoothe line, as it can help me see errors in the model specification.}):
-
-<<out.width = '10cm', out.height = '10cm'>>=
+<<out.width = '10cm', out.height = '10cm', results='hide'>>=
 scatterplot(Metabolic.rate..W.~Body.mass..g., 
             reg.line=lm, smooth=TRUE, 
             spread=FALSE, id.method='mahal', id.n = 2, boxplots='xy', 
@@ -864,7 +913,7 @@ which will show something like
 
 <<out.width = '12cm', out.height = '12cm'>>=
 ci.plot(metab)
-@ 
+@
  
 (and this shows confidence and prediction intervals for the linear model).
 
@@ -873,14 +922,15 @@ ci.plot(metab)
 Hummm\ldots. Those plots do not look good. OK, let's refit a model, but
 this time let's transform both the dependent and independent variables
 with a log (why a log? theory and previous empirical evidence from the
-field of allometry and life history suggest that is a reasonable way to
+field of allometry and life history suggest that it is a reasonable way to
 go).
 
 You can refit the model by creating new variables, etc. That is up to
 you. An easier thing might be to copy the previous model, and modify it in
-the R Script/ RStudio console, giving it a new name (\Robject{metablog}). We will also replot,
-and pay attention because in the scatterplot menu you can tell it to log
-both axis.
+the R Script/ RStudio console, giving it a new name
+(\Robject{metablog}). We will also replot, and pay attention because in
+the scatterplot menu you can tell it to log both axis which is nicer than
+plotting the log-transformed data directly.
 
 First fit the model: \footnote{You could have fitted the model as\\ 
  \texttt{metablog <- lm(log(Metabolic.rate..W.) $\sim$ log(Body.mass..g.), data  = anage\_a)}\\
@@ -894,10 +944,14 @@ summary(metablog)
 
 Now the two plots:
 
-<<>>=
-scatterplot(Metabolic.rate..W.~Body.mass..g., log="xy", reg.line=lm, smooth=TRUE, spread=FALSE, 
-  id.method='mahal', id.n = 2, boxplots='xy', span=0.5, data=anage_a)
+<<fig.width=7, fig.height=7,results='hide'>>=
+scatterplot(Metabolic.rate..W.~Body.mass..g., log="xy", 
+            reg.line=lm, smooth=TRUE, spread=FALSE, 
+            id.method='mahal', id.n = 2, boxplots='xy', 
+            span=0.5, data=anage_a)
 @ 
+%% (I have suppressed the output that gives the flagged points and will do so
+%% for the rest of scatterplots)
 
 
 <<fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
@@ -905,18 +959,26 @@ ci.plot(metablog)
 @ 
 
 These are both much, much better. We will address this issue more formally
-below (section \ref{diagnostics}).
+below (section \ref{diagnostics}). Notice that the call to
+\Rfunction{scatterplot} uses the original variables but the axis are in
+log-scale, which is nicer than directly plotting (in linear scale) the
+log-transformed variables: you can see the original values.
 
-
+\clearpage
 \section{Multiple regression}\label{multreg}
 
-Before we had
+In the previous section we had
 
-\[Y = \alpha + \beta X\]
+\[Y = \alpha + \beta X + \epsilon\]
 
-now we can have two or more independent variables. I will a dataset that
-is small set of the original \Robject{cystfibr} data set from package
-\CRANpkg{ISwR} (by Peter Dalgaard, and prepared to go along the book
+Now we can have two or more independent variables:
+
+\[Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \ldots + \epsilon\]
+
+
+I will use a dataset that is a small subset from the original
+\Robject{cystfibr} data set from package \CRANpkg{ISwR} (by Peter
+Dalgaard; this package is also material to accompany Dalgaard's book
 ``Introductory statistics with R'')
 
 <<echo=FALSE,results='hide'>>=
@@ -939,8 +1001,6 @@ cystfibr2 <- read.table("CystFibr2.txt", header = TRUE)
 The meaning of the variables is (this is copied
 verbatim from the help of the original dataset):
 \begin{verbatim}
-     This data frame contains the following columns:
-
      'age' a numeric vector, age in years.
      'sex' a numeric vector code, 0: male, 1:female.
      'height' a numeric vector, height (cm).
@@ -960,18 +1020,7 @@ mcyst <- lm(pemax ~ age + height + weight, data=cystfibr2)
 summary(mcyst)
 @ 
 
-You should be able to interpret all output without problems. Can we add
-interactions? Yes, of course. Interactions between continuous variables,
-however, are harder to interpret (they represent curved surfaces, whereas
-an additive model is just a plane ---or hyperplane)\footnote{If you want
-  to play around with a regression plane or regression surfaces, go to
-  ``Graphs'', ``3D graph'', ``3D scatterplot''. In options, you can choose
-  a plane or three different surfaces ---you might need to play with the
-  degrees of freedom if you get errors. You can zoom in and out
-  with the mouse wheel and move/rotate the figure. Try doing that during
-  your TFM defense! Of course, that allows only for up to one dependent
-  variable and two independent ones. Our brains do not seem ready for 4D
-  and higher.}.
+You should be able to interpret all output without problems. 
 
 %% <<>>=
 %% print(scatter3d(pemax~age+height, data=cystfibr2, 
@@ -991,12 +1040,12 @@ Are you surprised? Age seems highly significant with the sequential sums
 of squares (when entered first and using \Rfunction{anova}, so Type I) but
 not when we test it after all other terms in the model (\Rfunction{Anova},
 or Type II). Why? One possible explanation is that there is correlation
-between explanatory variables, and ``the information of age relevant for
-predicting pmax is already contained in the height and weight'' (in fact,
-that age, height, and weigth are correlated is easy to check with a
-scatterplot matrix).
+between explanatory variables, and that the information of age relevant
+for predicting pmax is already contained in the height and weight. That
+age, height, and weigth are correlated is easy to check with a scatterplot
+matrix:
 
-<<>>=
+<<results='hide'>>=
 scatterplotMatrix(~age+height+pemax+weight, reg.line=lm, 
                   smooth=TRUE, spread=FALSE, span=0.5, id.n=0, 
                   diagonal = 'density', data=cystfibr2)
@@ -1020,20 +1069,39 @@ three variables, but those three variables are very highly correlated
 among themselves. Is this a common phenomenon: yes, it is rather common.
 
 \subsection{Variable selection}
-Variable selection is a touchy and delicate subject. We will summarize it
-as follows: please, distrust automated variable selection procedures that
-rely on p-values or F-statistics of individual variables (in all their
-variants, such as stepwise, etc). Much more reasonable are strategies
-based on criteria such as AIC and even better is bootstrapping the whole
-process to get estimates of error, predictive ability, etc. Even better,
-of course, is subject-matter guidance on how to proceed and what are and
-are not candidates for deletion and in what order. The book by Frank
-Harrell, ``Regression modelling strategies'' contains great discussions of
-these topics. The actual data set used here is discussed, also in the
-context of variable selection, by P.\ Dalgaard in chapter 11 of
-``Introductory statistics with R''.
+You say you want to select variables? Select them for what? Prediction?
+Interpretation?  Variable selection is a touchy and delicate
+subject. First, procedures based purely in statistical criteria might
+select ``statistically important'' variables (under some suitable
+definition of ``important''), but those need not be the most relevant,
+causally. And with regards to the statistical procedures, we will
+summarize it as follows: please, distrust automated variable selection
+procedures that rely on p-values or F-statistics of individual variables
+(in all their variants, such as stepwise, etc). Much more reasonable are
+strategies based on model-comparison criteria such as AIC and even better
+is bootstrapping the whole process to get estimates of error, predictive
+ability, etc. Even better, of course, is subject-matter guidance on how to
+proceed and what are and are not candidates for deletion and in what
+order. The book by Frank Harrell, ``Regression modelling strategies''
+contains great discussions of these topics. The actual data set used here
+is discussed, also in the context of variable selection, by P.\ Dalgaard
+in chapter 11 of ``Introductory statistics with R''.
 
+\subsection{Interactions between continuous variables}\label{regr-int}
+Can we add interactions? Yes, of course. Interactions between continuous
+variables, however, are harder to visualize (they represent curved
+surfaces, because the slope of one of the variable changes as the other
+variable changes, whereas an additive model is just a plane ---or
+hyperplane)\footnote{If you want to play around with a regression plane or
+  regression surfaces, go to ``Graphs'', ``3D graph'', ``3D
+  scatterplot''. In options, you can choose a plane or three different
+  surfaces ---you might need to play with the degrees of freedom if you
+  get errors. You can zoom in and out with the mouse wheel and move/rotate
+  the figure. Try doing that during your TFM defense! Of course, that
+  allows only for up to one dependent variable and two independent ones:
+  our brains do not seem ready for 4D and higher.}.
 
+\clearpage
 \section{Continuous and discrete independent variables 
   and ANCOVA}\label{ancova}
 
@@ -1047,7 +1115,7 @@ types of linear models.
 
 Let's fit a model where the independent variables are sex (discrete,
 obviously) and age. However, sex is coded with 0/1 and we want it to be a
-factor, explictly. Let's recode it.
+factor, explictly. Let's recode it:
 
 <<>>=
 cystfibr2$sex <- factor(cystfibr2$sex, labels=c('Male','Female'))
@@ -1058,10 +1126,13 @@ mcyst2 <- lm(pemax ~ age * sex, data=cystfibr2)
 summary(mcyst2)
 @ 
 
-There is no evidence of interaction. But, what would an interaction have
-looked like? Different slopes:
+Note we added a ``*'', so an interaction between a continuous and a
+discrete variable. Here there is no evidence of interaction. But, what
+would an interaction have looked like? Different slopes for each group.
 
-<<>>=
+Look at the plots:
+
+<<results='hide'>>=
 scatterplot(pemax~age | sex, reg.line=lm, smooth=FALSE, 
             spread=FALSE, id.method='mahal', id.n = 2, boxplots='xy', 
             span=0.5, by.groups=TRUE, data=cystfibr2)
@@ -1069,29 +1140,75 @@ scatterplot(pemax~age | sex, reg.line=lm, smooth=FALSE,
 
 (yes, the best fitting slopes are slightly different, but they are not
 significantly different, as shown by the the ``age:sex[T.Female]'' term in
-the model above).
+the model above, so no evidence for different slopes).
+
+The different intercepts are captured by the term ``sex[T.Female]'' (that
+is not significant in this example either). Anyway, we can often have
+models where we have no evidence of different slopes (no interaction), but
+evidence of different intercepts: these means parallel lines (we will see
+one below: \ref{ancova_rept}).
+
 
 
 One can visualize this also with the function \Rfunction{ancova} in
 package \CRANpkg{HH} (which is loaded when we load
-\CRANpkg{RcmdrPlugin.HH}, so we do not need to load it again):
+\CRANpkg{RcmdrPlugin.HH}, so we do not need to load it again);
+\Rfunction{ancova} also produces and anova table (with sequential sums of
+squares, Type I):
 
 <<>>=
 ancova(pemax ~ age * sex, data = cystfibr2)
 @ 
 
 
-The different intercepts are captured by the term ``sex[T.Female]'' (that
-is not significant in this example either). Anyway, we can often have
-models where we have no evidence of different slopes, but evidence of
-different intercepts: these means parallel lines.
+\subsection{Formally comparing models}\label{model-comp}
+In this case, the sequential anova table (as produced by
+\Rfunction{ancova} or \Rfunction{anova}) suggests that we could simplify
+our model a lot, and use one with a single intercept and slope (i.e., just
+like a simple linear regression as in section \ref{regr}) as neither
+``sex'' by itself nor the interaction is relevant. We will do that, and we
+will then do a global model comparison to verify the simplified model is a
+reasonable one (go to ``Models'', ``Hypothesis tests'', ``Compare two
+models''):
+
+<<>>=
+mcyst3 <- lm(pemax ~ age, data=cystfibr2)
+anova(mcyst3, mcyst2)
+@ 
+
+This is a comparison of two models using an F test: it tests whether the
+larger (more complex, with more terms) model is significantly better than
+the smaller one. It clearly shows that, in this case, that the larger
+model model (the one with both a main effect of ``sex'' and an
+interaction) is not significantly better than the one without ``sex''. So
+we can just keep model \Robject{mcyst3}: there is no statistical evidence
+of \Robject{mcyst2} being any better.
+
+
+Three comments here:
+\begin{itemize}
+\item These tests only make sense for nested models (where the terms of
+  one of the models is a subset of terms of the other). Beware that R does
+  not check this, and you could easily do meaningless
+  things\footnote{There are ways to compare non-nested models using other
+    procedures, for instance based on AIC.}.
+\item Whether you type \verb@anova(mcyst2, mcyst3)@ or
+  \verb@anova(mcyst3, mcyst2)@ is inconsequential for the F statistic and
+  p-values.
+\item This was a very clear-cut case. Often, people will proceed in steps:
+  first check no interaction and then, later, and if no interaction, check
+  if there is a need for different intercepts.
+\end{itemize}
+
+
+
 
 
 
 \subsection{ANCOVA with the birds and the reptiles}\label{ancova_rept}
-We will use the data we used in section \ref{regr}, but now the full one:
-\Robject{anage\_a\_r}. We will go pretty fast here (this is just a kind of
-review), and will examine two things:
+We will use the longevity and metabolic rate data we used in section
+\ref{regr}, but now the full one: \Robject{anage\_a\_r}. We will go pretty
+fast here (this is just a kind of review), and will examine two things:
 \begin{itemize}
 \item If the relationship between metabolic rate and body mass is
   different between reptiles and birds.
@@ -1099,28 +1216,45 @@ review), and will examine two things:
   different between reptiles and birds.
 \end{itemize}
 
-Again, these analyses are not fully correct as we ignore phylogenetic
-relatedness. But they are nice to illustrate a couple of points. We will
-directly use log transformations (again, theory and previous empirical
-evidence indicate this is the way to go).
+We will see interactions, parallel and non-parallel slopes, and more
+comparison of models. Again, these analyses are not fully correct as we
+ignore phylogenetic relatedness. But they are nice to illustrate a couple
+of points. We will directly use log transformations (again, theory and
+previous empirical evidence indicate this is the way to go ---and I looked
+at a couple of different models already).
 
 
-First, metabolic rate vs.\ body mass:
+First, metabolic rate vs.\ body mass allowing for interaction with
+``Class'' (bird vs.\ reptile):
 <<>>=
-metab_b_r <- lm(logMetabolicRate ~ logBodyMass * Class, 
-                data = anage_a_r)
+metab_b_r <- lm(logMetabolicRate ~ logBodyMass * Class, data = anage_a_r)
 summary(metab_b_r)
 @ 
 
 The output is clear: parallel lines (i.e., different intercepts, but same
 slope). Note that this is not a silly or irrelevant biological detail:
-metabolic rates scales with body mass the same way in an endothermic group
-(birds) and a ectothermic one (reptiles), but their rates are not the same
-(birds' are higher).
+metabolic rates scales with body mass in the same way in an endothermic
+group (birds) and a ectothermic one (reptiles), but their metabolic rates
+are not the same (birds' are higher). 
 
-Let's see the plots:
+
+We could simplify this model to a model without the interaction (so single
+slope, two intercepts):
 
 <<>>=
+metab_b_r_2 <- lm(logMetabolicRate ~ logBodyMass + Class, data = anage_a_r)
+summary(metab_b_r)
+anova(metab_b_r_2, metab_b_r)
+@ 
+
+(of course, the model comparison via \Rfunction{anova} here is really
+unneeded: we know what the p-value and F values should be, since we are
+only removing the interaction, for which we already saw a test).
+
+
+Let's see the plots:
+\clearpage
+<<results='hide'>>=
 scatterplot(Metabolic.rate..W.~Body.mass..g. | Class, 
             log="xy", reg.line=lm, smooth=FALSE, spread=FALSE, 
             id.method='mahal', 
@@ -1128,17 +1262,17 @@ scatterplot(Metabolic.rate..W.~Body.mass..g. | Class,
             data=anage_a_r)
 @ 
 
-<<echo=TRUE, results='hide'>>=
+\clearpage
+<<fig.width=7, fig.height=7,echo=TRUE, results='hide'>>=
 ancova(logMetabolicRate ~ logBodyMass * Class, 
                 data = anage_a_r)
 @ 
 
-
+\clearpage
 What about longevity?
 
 <<>>=
-longev_b_r <- lm(logLongevity ~ logBodyMass * Class, 
-                data = anage_a_r)
+longev_b_r <- lm(logLongevity ~ logBodyMass * Class, data = anage_a_r)
 summary(longev_b_r)
 @ 
 
@@ -1146,9 +1280,10 @@ In this case, lines are not parallel: the rate of change of longevity with
 body mass is faster in reptiles than in birds (note the coefficient
 ``logBodyMass:Class[T.Reptilia]'').
 
+
 How do things look?
 
-<<>>=
+<<results='hide'>>=
 scatterplot(Maximum.longevity..yrs.~Body.mass..g. | Class, 
             log="xy", reg.line=lm, smooth=FALSE, spread=FALSE, 
             id.method='mahal', 
@@ -1161,9 +1296,19 @@ ancova(logLongevity ~ logBodyMass * Class,
                 data = anage_a_r)
 @ 
 
-(Note: the tightness of the data around the lines in this model for
+Note: the tightness of the data around the lines in this model for
 longevity is not nearly as good as for metabolic rate, which probably does
-make sense).
+make biological sense.
+
+If we where we to remove ``Class'' and refit a simpler model we would see
+that the larger model is clearly better when using \Rfunction{anova} to
+compare the two models:
+
+<<>>=
+longev_b_r_2 <- lm(logLongevity ~ logBodyMass,  data = anage_a_r)
+anova(longev_b_r_2, longev_b_r)
+@ 
+
 
 
 
@@ -1184,6 +1329,27 @@ etc. Interactions can involve more than two variables, can involve
 continuous and discrete variables, etc.
 
 
+
+\section{Interactions, summary}\label{interaction-summ}
+The general pattern is always the same: the effect of one independent
+variable (say, A) depends on the setting of the other independent variable
+(say, B) with which it interacts. In other words, to say something about
+how a change of variable A affects the outcome, you need to also know the
+setting or value of variable B.
+
+The three main types are:
+
+\begin{description}
+\item[Between factors] There is one level for each combination of the
+  factors, as in the example in section \ref{2way-int}.
+\item[Betwen a factor and a continuous variable] What we saw in ANCOVA, in
+  section \ref{ancova}: a different slope for each group. (Parallel slopes
+  is not an interaction).
+\item[Between two continuous variables] We mentioned this in section
+  \ref{regr-int}: slope changes as we move the other variable which gives
+  curved surfaces.
+\end{description}
+\clearpage
 \section{Diagnostics}\label{diagnostics}
 
 Wait!!! Do our models make sense? These are models, so we can, and should,
@@ -1194,7 +1360,8 @@ In general, for linear models (ANOVAs, regressions, etc) we want to check:
 
 \begin{itemize}
 \item Constant variance (across groups or over the range of the independet
-  variables). Often referred to as ``homoscedasticity''.
+  variables). Often referred to as ``homoscedasticity'' (where
+  ``heteroscedasticity'' is the opposite).
 \item Linearity (for regression).
 \item Approximate normality of residuals.
 \item Possible highly influential points (i.e., do our results depend on
@@ -1205,9 +1372,9 @@ In general, for linear models (ANOVAs, regressions, etc) we want to check:
 
 \textbf{Independence} is also a crucial assumption. But often, checking
 independence is very difficult from the data themselves (or at least from
-the data we have been using, anyway). Lack of independence among data is
-the reason why the analysis with the AnAge data set are not really
-correct.
+the data we have been using, anyway). For example, lack of independence
+among data is the reason why the analysis with the AnAge data set are not
+really correct.
 
 
 
@@ -1215,7 +1382,7 @@ We will first use the two simple regression models we fitted in section
 \ref{regr}. Make the first one (\Robject{metab}) active and go to
 ``Models'', ``Graphs'', ``Basic diagnostic plots''. 
 
-<<>>=
+<<fig.show='hold'>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(metab)
 par(oldpar)
@@ -1225,8 +1392,8 @@ Before looking at the plots, two concepts should be clear:
 \begin{description}
 \item[Fitted value] The predicted, or fitted value: if we have an equation
   like $Y = \alpha + \beta_1 X + \beta_2 Z$, then the fitted values are
-  the $Y$ for the observe combinations of $X$ and $Z$ (with the values of
-  $\\alpha$ and $\beta$ returned from the model). It is just what the
+  the $Y$ for the observed combinations of $X$ and $Z$ (with the values of
+  $\alpha$ and $\beta$ returned from the model). It is just what the
   model predicts.
 
 \item[Residual] Basically, the difference between the observed and the
@@ -1237,7 +1404,7 @@ Before looking at the plots, two concepts should be clear:
 
 
 
-The one on the upper left is used to judge if the functional form of the
+The plot on the upper left is used to judge if the functional form of the
 model makes sense: if the relationship is really linear as modeled, you
 should see no systematic pattern here, but we see it (in this case, it
 suggests that out model is predicting too small a metabolic rate at
@@ -1245,12 +1412,12 @@ intermediate values, and the opposite at large values, which suggests a
 curvilinear relationship). This figure also helps spots systematic changes
 in variance (i.e., violations of homoscedasticity). But for this, the
 bottom left plot is better and it does suggest that violations of
-homoscedasticity are present (though, right now, with so strong evidence
-of non-linearity this is not a surprise). 
+homoscedasticity are present (though, right now, with such strong evidence
+of non-linearity, this is not a surprise). 
 
-The  upper  right plot  (a  ``q-q  plot'')is  used to  assess  approximate
+The  upper  right plot  (a  ``q-q  plot'') is  used to  assess  approximate
 normality of the residuals: you want points  to more or less lie along the
-dotted line (with a bit of  allowance for deviations in the tails); things
+dotted line (with some  allowance for deviations in the tails); things
 do  not look  great here,  and this  distribution has  several very  large
 residuals, is heavy tailed, and also somewhat skewed.
 
@@ -1265,8 +1432,8 @@ Cook's distance (function \Rfunction{cooks.distance}).
 
 
 
-Now, repeat the above with the mode that has taken logs:
-<<>>=
+Now, repeat the above with the model that has taken logs:
+<<fig.show='hold'>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(metablog)
 par(oldpar)
@@ -1277,16 +1444,16 @@ and you will see that all diagnostics look much better.
 
 You should also take a look at the diagnostics for some of the other
 models we have fitted, specifically \Robject{longev\_b\_r} and
-\Robject{metab\_b\_r} (section \ref{ancova_rept}), which are relatively
-decent. 
-
-\Robject{mcyst2} (section \ref{ancova}) and \Robject{mcyst} (section
-\ref{multreg}), the two models we fitted to the cystic fibrosis data, both
-look relatively decent, although there could be some concerns about
-increases in variance with fitted values.  However, it is not easy to
-tell, because of the relatively few points. This, of course, makes sense:
-if there are few points, we will only be able to detect if a model is a
-bad one if it really is very bad.
+\Robject{metab\_b\_r} (or \Robject{metab\_b\_r\_2}) (section
+\ref{ancova_rept}). The metabolism one are OK, but the longevity model is
+not fully satisfactory (small problems in all diagnostic plots, and one
+potentially influential value). \Robject{mcyst2} (section \ref{ancova})
+and \Robject{mcyst} (section \ref{multreg}), the two models we fitted to
+the cystic fibrosis data, both look relatively decent, although there
+could be some concerns about increases in variance with fitted values.
+However, it is not easy to tell, because of the relatively few
+points. This, of course, makes sense: if there are few points, we will
+only be able to detect if a model is a bad one if it really is very bad.
 
 \Robject{cholestanova}, from section \ref{twoway}, looks relatively OK
 (remember, this is an ANOVA, and there were six combinations of levels,
@@ -1294,32 +1461,34 @@ and thus the discrete values you observe in two of the plots). However,
 the qqplot of residuals is a little bit ugly, but it is hard to tell from
 relatively so little data\footnote{This is an interesting case, since
   these data are simulated from a normal distribution}. Finally,
-\Robject{AnovaModel.1}, from section \ref{oneway}, looks just fine.
+\Robject{AnovaModel.1}, from section \ref{oneway}, looks just fine. Please
+look at all of these yourself to see them.
 
 
-For you to look further:
+For you to read and play around further:
 
 \begin{itemize}
 \item A very nice type of qqplot is available from package \CRANpkg{car},
   and in R Commander under ``Residual quantile comparison plots''.
 \item Added variable plots and ``Component+Residual'' (or partial
   residual) plots allow us to examine, in models with multiple regressors,
-  deviations from linearity and appropriate transformations. 
+  deviations from linearity and could suggest appropriate transformations.
 \item Various diagnostics related to dfbetas allow us to identify
   influential observations in specific terms of the model.
-\item variance inflation factors help us detect possible problems caused
-  by collinearity.
+\item Variance inflation factors help us detect possible problems caused
+  by collinearity (correlations between independent variables).
 \item Added variable plots are particularly useful in multiple regression
-  problems with multiple independent variables; they can help identify
+  problems with multiple independent variables; they can help to identify
   influential points (which are easily masked with multiple variables) and
-  to try to find a good functional relationship.
+  can also help to try to find a good functional relationship (but
+  Component+Residual are more useful here).
 \item A variety of numerical tests and diagnostics are also available
   (e.g., tests for nonlinearity or for homoscedasticity).
 \item Package \CRANpkg{car} and the accompanying book ``An R companion to
   applied regression'' contain excellent and detailed comments about those
   and other diagnostics, and several functions. Take also a look, for a
-  summary, at the very nice sections 83 to 8.5 in Kabakoff's ``R in
-  action'.'
+  summary, at the very nice sections 8.3 to 8.5 in Kabakoff's ``R in
+  action.''
 \end{itemize}
 
 
@@ -1342,10 +1511,11 @@ as this:
 
 
 \begin{itemize}
-\item 20 mice
-\item 10 assigned to drug A, 10 assigned to drug B
-\item Each mouse, in one leg a corticoid ointment, on the other a placebo ointment
-\item ointment: nested within mouse
+\item 20 mice.
+\item 10 assigned to drug A, 10 assigned to drug B.
+\item Each mouse in one leg gets a corticoid ointment, on another leg gets
+  a placebo ointment.
+%% \item Ointment: it is thus nested within mouse.
 \item What is the experimental unit?
 \end{itemize}
 
@@ -1370,9 +1540,9 @@ should you randomize over and what should you block over? Should you use a
 factorial design? Matched pairs? Should each one of two technicians each
 take care of half of the samples, randomly assigned to each, or should one
 technician deal with all male sample and the other with all the female
-samples? Should we start each one of the four different diets in different
-days of the week, or should we have similar sized groups of each diet
-starting every day of the week? Do you give treatment A to all even
+samples? Should we start mice in each one of the four different diets in
+different days of the week, or should we have similar sized groups of each
+diet starting every day of the week? Do you give treatment A to all even
 numbered samples and treatment B to all odd numbered ones, or do you
 randomize order? Etc, etc.
 
@@ -1381,9 +1551,14 @@ Understanding what is the experimental unit is \textbf{absolutely
   crucial}. And sometimes things are complicated: talk to (collaborate
 with) a statistician as soon as you can. Some high-profile mistakes in the
 literature are derived from misunderstanding experimental design (a
-half-page comment about this by G.\ Churchill in \textit{Science}, 2013,
-v.\ 343, p.\ 370). In fact, some mistakes made during the experimental
-design phase just cannot be corrected later.
+somewhat amusing half-page comment about this by G.\ Churchill in
+\textit{Science}, 2013, v.\ 343, p.\ 370). In fact, some mistakes made
+during the experimental design phase just cannot be corrected
+later\footnote{R.\ Fisher, one of the fathers of modern statistics, and
+  modern quantitative and evolutionary genetics, is often quoted in this
+  context because he said ``To consult the statistician after an
+  experiment is finished is often merely to ask him to conduct a post
+  mortem examination. He can perhaps say what the experiment died of.''}
 
 
 
