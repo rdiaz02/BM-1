@@ -973,7 +973,7 @@ Go play with the ``Teaching demos: Power of a test'' (from the
 
 \begin{figure}[h!]
  \begin{center}
- \includegraphics[width=0.60\paperwidth,keepaspectratio]{ipsur-power.png}
+ \includegraphics[width=0.40\paperwidth,keepaspectratio]{ipsur-power.png}
  \caption{\label{ipsurpower} Entry window for \CRANpkg{RmcdrPlugin.IPSUR}:
    Power for t-test, under ``Statistics'', ``Power (IPSUR)''.}
  \end{center}
@@ -1278,7 +1278,7 @@ they will be placed on the right, with a ``+'' sign by default).
 
 \begin{figure}[h!]
  \begin{center}
- \includegraphics[width=0.80\paperwidth,keepaspectratio]{lm-myc.png}
+ \includegraphics[width=0.70\paperwidth,keepaspectratio]{lm-myc.png}
  \caption{ Our first linear model.}
  \end{center}
  \end{figure}
@@ -1303,24 +1303,6 @@ Anova(LinearModel.1, type="II")
 
 Relate this to the figures above. This should all make sense. Regardless,
 linear models and ANOVAs will be covered in much more detail in a few days.
-
-
-
-
-
-\subsection{Relations between variables}
-This was about comparing two groups. But we had several variables
-(genes). An obvious thing to do is to look at how they are related AND
-display the different (two, in this case) groups. Playing
-around, you should be able to reproduce this figure (note: I've left the
-smoothed histograms, though they are of questionable application here,
-with so few data).
-
-<<fig.width=8, fig.height=8,echo=FALSE>>=
-scatterplotMatrix(~brca1+brca2+p53+pten | cond, reg.line=FALSE, 
-  smooth=FALSE, spread=FALSE, span=0.5, id.n=0, diagonal= 'density', 
-  by.groups=TRUE, data=dp53)
-@ 
 
 
 
@@ -1406,6 +1388,8 @@ It is also easy to create examples that show that the one-sample Wilcoxon
 does require interval data. This is left as a simple exercise.
 
 
+
+
 %% The example for the usual one-sample
 %% <<>>=
 %% x <- c(-2, -1, 0.9, 1.9)
@@ -1413,6 +1397,22 @@ does require interval data. This is left as a simple exercise.
 %% wilcox.test(x)
 %% wilcox.test(y)
 %% @ 
+
+
+\subsection{Relations between variables}
+This was about comparing two groups. But we had several variables
+(genes). An obvious thing to do is to look at how they are related AND
+display the different (two, in this case) groups. Playing
+around, you should be able to reproduce this figure (note: I've left the
+smoothed histograms, though they are of questionable application here,
+with so few data).
+
+<<fig.width=8, fig.height=8,echo=FALSE>>=
+scatterplotMatrix(~brca1+brca2+p53+pten | cond, reg.line=FALSE, 
+  smooth=FALSE, spread=FALSE, span=0.5, id.n=0, diagonal= 'density', 
+  by.groups=TRUE, data=dp53)
+@ 
+
 
 
 
