@@ -11,6 +11,7 @@ require(car, quietly = TRUE)
 require(BiocStyle, quietly = TRUE)
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
 require(doBy, quietly = TRUE)
+require(RcmdrPlugin.plotByGroup, quietly = TRUE)
 @ 
 
 %% not if using BiocStyle
@@ -140,7 +141,7 @@ rm(list = ls())
 \section{Types of data}
 We need to get this out of the way, as we will refer to it
 frequently. Data can be measured in different scales. From ``less
-information to more information'' we can organize them this way:
+information to more information'' we can organize scales this way:
 
 \begin{description}
 \item[Nominal or categorical scale] We use a scale that simply
@@ -165,7 +166,7 @@ information to more information'' we can organize them this way:
 \item[Ordinal scale] The data can be ordered in the sense that you can say
   that something is larger or smaller than something else. For instance,
   you can rank your preference for food as: ``chocolate > jamon serrano >
-  shrimp > liver''. You might assign the value 1 to chocolate (your most
+  toasted crickets > liver''. You might assign the value 1 to chocolate (your most
   preferred food) and a 4 to liver (the least preferred) but differences
   or ratios between those numbers have no meaning. 
   
@@ -175,17 +176,19 @@ information to more information'' we can organize them this way:
 \item[Interval or ratio scale] You can take differences and ratios, and
   they do have meaning\footnote{Some authors make a distinction between
     ratio and interval scales; I won't. The only difference is that ratio
-    scales have a natural zero.}. If a subject has a value of 6 for PTEN,
-  another a value of 3, and another a value of 1, then the first has six
-  times more than the last, and two times more than the second.
+    scales have a natural zero.}. If a subject has a value of 6 for the
+  expression of gene PTEN, another a value of 3, and another a value of 1,
+  then the first has six times more RNA of PTEN than the last, and two
+  times more than the second.
   
 \end{description}
 
 
-We will try to be careful. Nominal data we will always try to keep as
-``things without numbers'', so that we make no mistakes (i.e., keep the
-aminoacids names, not just a bunch of 1 to 20). Ordinal scale are
-trickier, and we will need to think about the type of data and the analyses.
+We will try to be careful. With nominal data we will always try to keep
+them as ``things without numbers'', so that we make no mistakes (i.e.,
+keep the aminoacids names, not just a bunch of 1 to 20). Ordinal scale are
+trickier, and we will need to think about the type of data and the
+analyses.
 
 
 
@@ -193,10 +196,10 @@ trickier, and we will need to think about the type of data and the analyses.
 
 \section{Looking at the data: plots}
 
-We first need to import the data (from ``Data'', ``Import data''). Make
-sure you name it sensibly; for instance, dp53. When you do that, you will
-see something similar to (not identical! because I did it suppressing
-unneeded stuff):
+We first need to import the data (from ``Data'', ``Import data'', ``from
+text file, clipboard, or URL, \ldots''). Make sure you name it sensibly;
+for instance, dp53. When you do that, you will see something similar to
+(not identical! because I did it suppressing unneeded stuff):
 
 <<>>=
 dp53 <- read.table("P53.txt", header = TRUE)
@@ -209,18 +212,38 @@ set''). Resist the temptation to modify it there. \red{Why?}
 
 
 \subsection{Plots to do}
-For all except the trivially tiny datasets we want to use graphics. 
-Make sure you do the following plots:
+For all except the trivially tiniest datasets we want to use graphics.
+Make sure you do the following plots (in the menu, under ``Graphs''):
 \begin{itemize}
-\item histogram for each gene, using condition (``cond'') as the conditioning or grouping
-  variable (``Plot by:'');
-\item boxplot, using condition (``cond'') as the conditioning or grouping
-  variable (``Plot by:'');
-\item plot of means (and make sure you get nicer axes labels);
-\item stripchart, and make sure you use ``jitter'', not ``stack'': \red{can
+\item Histogram for each gene, using condition (``cond'') as the conditioning or grouping
+  variable (``Plot by:'').
+\item Boxplot, using condition (``cond'') as the conditioning or grouping
+  variable (``Plot by:'').
+\item Plot of means (and make sure you get nicer axes labels).
+\item Stripchart, and make sure you use ``jitter'', not ``stack'': \red{can
   you tell for which one of the variables this matters a lot?}
-\item density plots
+\item Density plots (``Density estimates'')
 \end{itemize}
+
+
+To get you going, I show all those for p53.
+<<out.width='11cm',out.height='11cm'>>=
+with(dp53, Hist(p53, groups=cond, scale="frequency", breaks="Sturges",
+                col="darkgray"))
+@
+
+<<fig.height=10, fig.width=8,results='hide'>>=
+op <- par(mfrow = c(3, 2)) ## to show 2 by 2
+Boxplot(p53~cond, data=dp53, id.method="y")
+plotMeans(dp53$p53, dp53$cond, error.bars="se", 
+  xlab="Condition", ylab="P53 expression levels")
+stripchart(p53 ~ cond, vertical=TRUE, method="jitter", 
+  ylab="p53", data=dp53)
+densityPlot(p53~cond, data=dp53, bw="SJ", adjust=1, 
+  kernel="gaussian")
+par(op)
+@ 
+
 
 
 Now load the ``plotByGroup'' plugin and you'll find a new menu entry,
@@ -230,6 +253,14 @@ under ``Graphs'', that says ``Plot by group''. Use
 \item histogram by group
 \item boxplot by group
 \end{itemize}
+
+
+<<out.width='10cm',out.height='9cm'>>=
+histogram(~p53 | cond, data=dp53)
+@
+<<out.width='10cm',out.height='9cm'>>=
+bwplot(~p53 | cond, data=dp53)
+@ 
 
 
 \subsection{What are the plots telling you?}
@@ -254,22 +285,23 @@ Now, think about what these plots tell you:
 
 
 
-\subsection{Multiple plots per page}
+\subsection{Multiple plots per page again}
 If we access R directly we can do something like:
 
-<<fig.width=7, fig.height=5>>=
-par(mfrow=c(1,2))
+<<fig.width=7, fig.height=5, results='hide', fig.show = 'hold'>>=
+op <- par(mfrow=c(1,2))
 Boxplot(p53~cond, data=dp53, id.method="y")
 plotMeans(dp53$p53, dp53$cond, error.bars="se", xlab="Condition", 
           ylab="Mean of P53")
-
+par(op)
 @ 
 
 Note that all I really did was add the \verb@par(mfrow=c(1,2))@ and then
 copy the appropriate lines provided by the ``R Script'' window. And I clicked
-``Submit''. %% (It is simpler if you copy, then clear, then paste and modify).
+``Submit''. The \verb@op <- par(mfrow=c(1,2))@ and \verb@par(op)@ are a
+minor detail to restore options as they were.%% (It is simpler if you copy, then clear, then paste and modify).
 
-
+\clearpage
 \section{Saving the things we do}
 
 
@@ -317,7 +349,7 @@ can obtain those from ``Save graph to file''.
 
 
 
-
+\clearpage
 \section{Comparing two groups with a t-test}
 
 Let's start with p53. Compare the mean between the two groups
@@ -343,7 +375,8 @@ t.test(p53 ~ cond, data = dp53)
 \item Oh, in fact: can we interpret the results?
 \end{itemize}
 
-(We will spend time in class making sure all this is understood).
+(We will spend time in class making sure all this is understood if you
+have forgotten your stats classes).
 
 Repeat the above with brca1.
 
@@ -354,11 +387,11 @@ Repeat the above with brca1.
 One key assumption is \textbf{independence} of the data. This is the case
 for the t-test but is also the case for many statistical tests. We return
 to this below several times because it is a \textbf{crucial} assumption
-(e.g., section \ref{pseudorep}). Lack of independence is a serious and
-pervasive problem (and one form of non-indpendence is also referred to as
-``pseudoreplication'' \footnote{A major paper, a long while ago, in
-  \textup{Ecological Monographs} by Hurlbert dealt with this and made
-  ``pseudoreplication'' a well known term.}).
+(e.g., section \ref{pseudorep} and also Lesson 3). Lack of independence is
+a serious and pervasive problem (and one form of non-independence is also
+referred to as ``pseudoreplication'' \footnote{A major paper, a long while
+  ago, in \textup{Ecological Monographs} by Hurlbert dealt with this and
+  made ``pseudoreplication'' a well known term.}).
 
 
 When comparing two means, \textbf{equality of variances} is also
@@ -374,13 +407,12 @@ size gets larger. Deviations from normality because of skewness
 (asymmetry) can have a large effect. Deviations because of kurtosis (tails
 heavier than the normal) have very minor effects. That is why we often say
 ``data are sufficiently close to normality''. And in the ``sufficiently
-close'' we worry mainly about asymmetries (that tails are heavier is
-rarely a concern). And things tend to get ``sufficiently close'' as sample
-size grows larger (a consequence of the central limit theorem); how large
-is large enough? Oh, it depends on how far the distribution of the data is
-from the normal distribution, but often 10 is large enough, and 50 is
-generally well large enough (but in certain cases 100 might not be even
-close to large enough).
+close'' we worry mainly about asymmetries. And things tend to get
+``sufficiently close'' as sample size grows larger (a consequence of the
+central limit theorem); how large is large enough? Oh, it depends on how
+far the distribution of the data is from the normal distribution, but
+often 10 is large enough, and 50 is generally well large enough (but in
+certain cases 100 might not be even close to large enough).
 
 Of course, although this should be obvious: when we talk about symmetry
 we are talking about the data distribution of \textbf{each group
@@ -388,18 +420,18 @@ we are talking about the data distribution of \textbf{each group
 
 Finally, \textbf{outliers} can be a serious concern (by the way, outliers,
 or potential outliers ---under some definition of outlier--- get flagged
-by boxplots). In general, points very far from the rest of the points will
-have severe effects on the value computed for the mean (not the median
----this is also related to why nonparametric procedures can be more
-robust). What to do, however, is not obvious. An outlier might be the
-consequence of an error in data recording. But it might also be a
-perfectly valid point and it might actually be the ``interesting
-stuff''. Sometimes people carry out (and, of course, \textbf{should
-  explicitly report}) analysis with and without the outlier; sometimes the
-same qualitative conclusions are reached, sometimes not. Please, think
-carefully about what an outlier is before proceeding with your analysis
-but do not get into the habit of automatically getting rid of potential
-outliers. And whatever you do, you should report it.
+by function \Rfunction{Boxplots} in R). In general, points very far from
+the rest of the points will have severe effects on the value computed for
+the mean (not the median ---this is also related to why nonparametric
+procedures can be more robust). What to do, however, is not obvious. An
+outlier might be the consequence of an error in data recording. But it
+might also be a perfectly valid point and it might actually be the
+``interesting stuff''. Sometimes people carry out (and, of course,
+\textbf{should explicitly report}) analysis with and without the outlier;
+sometimes the same qualitative conclusions are reached, sometimes
+not. Please, think carefully about what an outlier is before proceeding
+with your analysis but do not get into the habit of automatically getting
+rid of potential outliers. And whatever you do, you should report it.
 
 
 The book by Ruper Miller ``Beyond Anova'' (Chapman and Hall, 1997)
@@ -430,17 +462,43 @@ A few ideas that should be clear after this section:
 
 \section{Data transformations}\label{transform}
 
-Let us look at the boxplot for ``pten''. What does it look like? Take the log
-transformation: create a new variable. (Yes, find this out).
+Let us look at the boxplot for ``pten''. What does it look like? Take the
+log transformation: create a new variable. Yes, find this out; it is
+under ``Data'', ``Manage variables'', ``Compute new variable'' and you
+enter ``log(pten)'' as the ``Expression to compute''; take a look at
+Figure \ref{ucla} for an example; or you can be much faster and do it by
+typing code directly in the R Script or the RStudio console:
 
-Now, plot pten and its log (a boxplot). And do t-tests of the original and
+<<>>=
+dp53$logpten <- log(dp53$pten)
+@
+
+
+Now, plot the log of pten. And do t-tests of the original and
 log-transformed variable.
+
+<<results='hide', fig.show='hold', fig.width=5, fig.height=5>>=
+op <- par(mfrow = c(1, 2))
+Boxplot(pten~cond, data=dp53, id.method="y")
+Boxplot(logpten~cond, data=dp53, id.method="y")
+par(op)
+@ 
 
 
 Do we expect multiplicative or additive effects? (With a two-group
 comparisons it isn't always easy to think this, but can be crucial in
-regression). 
+regression; we will see it in Lesson 3). 
 
+
+
+
+<<>>=
+t.test(pten ~ cond, data = dp53)
+t.test(logpten ~ cond, data = dp53)
+@ 
+
+
+\clearpage
 
 \section{Paired tests}\label{pairedt}
 
@@ -496,13 +554,16 @@ idea of using each subject as its own control.
 
 \subsection{Reshaping the data for a paired t-test}
 
-We cannot do a paired t-test directly with our data. We first need to
-reshape the data as R Commander ---in contrast to using directly R--- will
-not allow us to carry out a paired t-test on these data as they are.cc
+We cannot do a paired t-test directly with our data because of the way the
+data have been given to us. We first need to reshape the data as R
+Commander ---in contrast to using directly R--- will not allow us to carry
+out a paired t-test on these data as they are. Of course, you could also
+do this outside R if you want and then import the data so that the two
+values of myc expression for a subject are on the same row.
 
 
-We want the values of myc of the same subject to be on the same row. This
-is what we will do:
+So that is what we want: the values of myc of the same subject to be on
+the same row. This is what we will do:
 
 \begin{enumerate}
 \item Create a data set that contains only the values for observations
@@ -530,8 +591,8 @@ A few comments:
 \begin{itemize}
 \item This data reshaping is not strictly necessary from doing a paired
   t-test in R but it is for R Commander (see below ---section \ref{ptr}).
-\item We will see below a way to accomplish the same with a linear
-  model. And no reshaping needed.
+\item We will see below a way to accomplish the same with a linear model
+  (section \ref{lm-paired}). And no reshaping needed.
 \end{itemize}
 
 
@@ -541,12 +602,11 @@ A few comments:
 
 You can do this in a simpler way using the \CRANpkg{RcmdrPlugin.doBy}
 (BEWARE: you must install and use the version of\CRANpkg{RcmdrPlugin.DoBy}
-I provide\footnote{There is a bug in one of the functions in the original
+I provided you\footnote{There is a bug in one of the functions in the original
   package, and I have fixed it. The version you can get from CRAN will not
   work; the version I provide you has the bug fixed ---I've emailed the
-  author about this, but so far haven't reached him}).
+  author about this, but so far haven't reached him.}).
 
-\red{FIXME!zz: make sure I provide the zip file for windows!}
 
 \begin{enumerate}
 \item Split the dmyc data set according to ``cond'', using the ``Split by''
@@ -628,56 +688,57 @@ test).
 
 
 
-
+\clearpage
 \subsection{Plots for paired data}
 
 What do you think of this plot?
 
-<<fig.width=5, fig.height=5>>=
-plotMeans(dmyc$myc, dmyc$cond, error.bars="se", 
-          ylab = "MYC", xlab = "Condition")
+<<fig.width=3.5, fig.height=3.5>>=
+plotMeans(dmyc$myc, dmyc$cond, error.bars="se", ylab = "MYC",
+          xlab = "Condition")
 @ 
 
 (By the way, this is a plot that you must be sure you know how
 to generate from R commander.)
 
+So what is a reasonable plot for paired data? A boxplot (or stripchart if
+few points) of the within-individual (or Intra-subject) differences is a
+very good idea. % In fact, I will now create them from scratch directly from R
+% (this \textbf{assumes} that the data are ordered the same way by patient:
+% the first myc.cancer is the same patient as the same myc.nc, etc. This is
+% the case in our data, but need not be; see details in section \ref{ptr})
 
 
-The cleanest thing to plot? A boxplot (or stripchart if few points) of the
-within-individual (or Intra-subject) differences. In fact, I will now
-create them from scratch directly from R (this \textbf{assumes} that the
-data are ordered the same way by patient: the first myc.cancer is the same
-patient as the same myc.nc, etc. This is the case in our data, but need
-not be; see details in section \ref{ptr})
-
-
-
-<<fig.width=5, fig.height=5, echo=TRUE>>=
-diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
-Boxplot( ~ diffs, xlab = "", ylab = "Intra-subject difference in MYC")
+<<fig.width=3.5, fig.height=3.5, echo=TRUE, fig.show = 'hold'>>=
+Boxplot( ~ diff.nc.c, data = m3, xlab = "",
+        ylab = "Intra-subject difference (C - NC)", main = "MYC")
 @ 
 
 
+% <<fig.width=5, fig.height=5, echo=TRUE>>=
+% diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
+% Boxplot( ~ diffs, xlab = "", ylab = "Intra-subject difference", main = "MYC")
+% @ 
+
+
+
+\clearpage
 A more elaborate plot directly shows both the NC and Cancer data, with a
 segment connecting the two observations of a subject. For that, though, we
 need to use R code directly. For example this will do (beware: this code
 does the job but it is not very efficient or elegant):
 
-<<>>=
+<<fig.show='hold'>>=
 stripchart(myc ~ cond, vertical=TRUE, data=dmyc)
-
 for(i in unique(dmyc$id)) 
   segments(x0 = 1, x1 = 2, 
            y0 = dmyc$myc[dmyc$cond == "Cancer" & dmyc$id == i], 
            y1 = dmyc$myc[dmyc$cond == "NC" & dmyc$id == i], 
            col = "red")
-
 @ 
 
 You can copy the above code in the R Script window and click on
 ``Submit'', or you can copy it in the RStudio console. 
-
-
 
 Now, look at these plots carefully, and understand that there are
 different sources of variation. In this particular example, there was a
@@ -692,58 +753,6 @@ have added a few plots to beef it up. Seriously.)
 
 
 
-\subsection{A first taste of linear models}
-
-So we implicitly have a model like this:
-
-\[Expression.of.MYC = function(subject and condition) + \epsilon\]
-
-which we make simpler (assuming additive contributions of each factor) as
-
-
-\[Expression.of.MYC = effect.of.subject + effect.of.condition + \epsilon\]
-
-
-
-Lets go and fit that model! Do it under ``Fit models'', ``Linear models'',
-using the full dmyc data set. You will see
-
-\verb@myc ~ cond + id@ (or, equivalently here, \verb@myc ~ id + cond@)
-
-(if you just double click on the dependent variables, here id and cond,
-they will be placed on the right, with a ``+'' sign by default).
-
-\begin{figure}[h!]
- \begin{center}
- \includegraphics[width=0.80\paperwidth,keepaspectratio]{lm-myc.png}
- \caption{ Our first linear model.}
- \end{center}
- \end{figure}
-
-<<>>=
-LinearModel.1 <- lm(myc ~ id + cond, data=dmyc)
-summary(LinearModel.1)
-@ 
-
-Run it and look at the line that has ``cond'' (so, using your common
-sense, ignore all the ``id[blablablabla]'' lines). What is the t-value and
-the p-value for ``cond''?
-
-
-This is a linear model. And this particular one is also a two-way
-ANOVA. If you go to ``Models'', ``Hypothesis tests'', ``Anova table'' you
-will get
-
-<<>>=
-Anova(LinearModel.1, type="II")
-@ 
-
-Relate this to the figures above. This should all make sense. Regardless,
-linear models and ANOVAs will be covered in much more detail in a few days.
-
-
-
-
 
 \subsection{Choosing between paired and two-sample t-tests}
 \textbf{How the data were collected dictates the type of analysis}. This
@@ -752,12 +761,13 @@ are paired because your data are NOT independent (see also section
 \ref{pseudorep}).
 
 This section is not about the analysis, but about the design. It is about
-``should I collect data so that data are paired or not?'' A paired test
+``should I collect data so that data are paired or not?'' A paired design
 controls for subject effects (correlation between the two measures of the
 same subject) but if there are none, then we are decreasing the degrees of
 freedom (by half): compare the degrees of freedom from the paired and the
 non-paired tests on the myc data. In most cases with biological data there
-really are subject effects. But not always.
+really are subject effects that lead to large correlations of
+within-subject measurements. But not always.
 
 This is a major topic (that cannot be done justice to in a
 paragraph). Sometimes the type of data are something you have no control
@@ -810,7 +820,8 @@ considerations that come into play are:
   more power, or the correct Type I error, etc. Note that very, very, very
   small p-values are often not achievable with non-parametric methods
   (because of the way they work), and this is a concern with multiple
-  testing adjustments.
+  testing adjustments in omics experiments (this will be covered in the
+  last lesson).
 \item Is this test flexible enough? In particular, can I accommodate
   additional experimental factors?
 \end{itemize}
@@ -844,7 +855,7 @@ categorical data analysis'').
 
 This test applies to data of ordinal and interval scales. The basic logic
 is: put all the observations together, rank them, and examine if the sum
-of the ranks of one of the populations is larger (or smaller) than the
+of the ranks of one of the groups is larger (or smaller) than the
 sum of the ranks from the other. If this makes sense to you, you should
 understand why you can use both ordinal and interval scales.
 
@@ -927,7 +938,8 @@ There are several problems with the above procedure, among them:
 
 
 \section{Power of a test}
-How likely we are to detect a difference that really exists depends on:
+How likely we are to detect a difference that really exists (power)
+depends on:
 
 \begin{itemize}
 \item The threshold ($\alpha$ level, or Type I error).
@@ -1031,13 +1043,14 @@ dbrca <- read.table("BRCA2.txt", header = TRUE)
 
 We will use the \Robject{BRCA2.txt} data set. Import it, etc. Look at the
 data carefully. It looks like there are \Sexpr{nn} observations per
-subject. Basically, each subject has been measured \Sexpr{nn} times. Thus,
-there are not \Sexpr{nn * (n1*n2)} independent measures. Again, ask
-yourself: what is the true ``experimental unit'' (or observational unit)?
-It is arguably the subject, which is the one that has, or has not, cancer
-in this case. The \Sexpr{nn} measures per subject are just that: multiple
-measures of the same experimental unit. This is an idea that should be
-crystal clear; make sure you understand that.
+subject in a total of \Sexpr{n1+n2} subjects. Basically, each subject has
+been measured \Sexpr{nn} times. Thus, there are not \Sexpr{nn * (n1+n2)}
+independent measures. Again, ask yourself: what is the true ``experimental
+unit'' (or observational unit)?  It is arguably the subject, which is the
+one that has, or has not, cancer in this case. The \Sexpr{nn} measures per
+subject are just that: multiple measures of the same experimental
+unit. This is an idea that should be crystal clear; make sure you
+understand that.
 
 We can do a t-test ignoring this fact, but it would be wrong. Look at the
 degrees of freedom:
@@ -1053,7 +1066,7 @@ here\footnote{A general approach is a mixed-effects linear model with
   random effects for subjects; alternatively, and in this simple case, we
   can use an ANOVA with the correct error term, for instance from a
   multistratum linear model similar to the ones used to analyze split-plot
-  experiments}. However, fortunately for us in \textbf{this particular
+  experiments.}. However, fortunately for us in \textbf{this particular
   case}, all subjects have been measured the same number of times. Thus,
 we can simply take the mean per subject, and then do a t-test on those
 mean values per subject.
@@ -1066,12 +1079,13 @@ is a double check that each subject is in one, and only one, of the
 groups. Call this data ``aggbrca''.
 
 <<>>=
-aggbrca <- aggregate(dbrca[,c("brca2"), drop=FALSE], by=list(cond=dbrca$cond, 
-  id=dbrca$id), FUN=mean)
+aggbrca <- aggregate(dbrca[,c("brca2"), drop=FALSE],
+                     by=list(cond=dbrca$cond, 
+                         id=dbrca$id), FUN=mean)
 @ 
 
 We want to double check that we have the exact same number of measures per
-subject. How? A simple thing is to aggregate again (give the output
+subject. How? A simple procedure is to aggregate again (give the output
 another name) but using ``length'' instead of ``mean''. Now we will be
 aggregating over only ``id'' (so we aggregate brca2 and cond) and also
 over both ``id'' and ``cond'', to double check. Do you understand why we
@@ -1088,7 +1102,7 @@ t.test(brca2~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE,
 @ 
 
 You can see that doing things correctly makes, in this case, a large
-difference. When we do them incorrectly, we can end up believing that
+difference. When we do things incorrectly, we can end up believing that
 there is a strong effect when, really, there is no evidence of effect.
 
 
@@ -1117,9 +1131,9 @@ seems we can carry out an independent samples t-test with about 38 degrees
 of freedom. However, on asking questions, this is what you find out:
 
 \begin{itemize}
-\item A total of two female mice were used. One was given food with DHA
-  one without. They were fed the specified diet, and then they mated and
-  got pregnant.
+\item A total of two female mice were used. One female was given food with
+  DHA and one female without. They were fed the specified diet, and then
+  they mated and got pregnant.
 \item From the litter for each female, five newborn mice were sacrificed
   immediately after birth, and four tissue slides were prepared from each
   brain (thus, 20 data points per female).
@@ -1133,7 +1147,7 @@ no way to estimate the variance.  To put it simply, there is no way to
 tell whether any differences that could be seen are due to DHA or to the
 female herself or to any other factor that might have been confounded with
 the single female per treatment (color of the gloves of the technician or
-side in the animal room or how nice the male was or \ldots).
+side in the animal room or how nice the male was while mating or \ldots).
 
 It is this simple: \textbf{nothing} can be said from this data about the
 effects of DHA. (It is not even worth importing the data for this
@@ -1142,14 +1156,14 @@ intra-brain variation in mielinization, but not for the original question
 of the DHA effect).
 
 
-There are some recent papers about issues like this (e.g., Lazic, 2010,
-\textit{BMC Neuroscience}) and this is probably a pervasive (but difficult
-to detect) problem. This kind of meaningless analysis can lead to lots of
-non-reproducible results.
+There are some recent papers about issues like this that go over the
+pseudoreplication idea (e.g., Lazic, 2010, \textit{BMC Neuroscience}) and
+this is probably a pervasive (but difficult to detect) problem. This kind
+of meaningless analysis can lead to lots of non-reproducible results.
 
-This leads us to the fundamental idea of \textbf{thinking carefully about
-  the experimental design}, something we will take a quick look at in
-Lesson 3.
+Which brings us to the fundamental idea of \textbf{thinking carefully
+  about the experimental design}, something we will take a quick look at
+in Lesson 3.
 
 %% The opposite can also happen, as you can see from the ACRB.txt file (do it
 %% at home).
@@ -1216,15 +1230,15 @@ To make the point more clear, this is an example from the data for the TFM
   true. I am not making it up.}. Briefly, she was interested in the rates
 of chromosomal aberrations in different types of couples that went to a
 fertility clinic. For instance, suppose you want to examine incidence of
-aneuploidy in embryos from two groups of fathers, ``younger fathers''
-and ``older fathers'' (wait, not older, just ``fathers that so far have
+aneuploidy in embryos from two groups of fathers, ``younger fathers'' and
+``older fathers'' (wait, not older, just ``fathers that so far have
 accumulated more hours of life on Earth''). The simplest idea here is to
 use a chi-square ($\mathcal{X}^2$) test to compare the frequency of
 aneuploidies between older and younger fathers (you will see chi-square
 tests in Lesson 4). But the problem is that each couple (each father in
 this case) contributes multiple embryos and we cannot simply do a
 chi-square counting embryos, as we would again run into a non-independence
-problem. A simple approach, assuming each father contributes the same
+problem. A simple approach, especially if each father contributes the same
 number of embryos, is to calculate, for each father, the proportion of
 embryos with aneuploidies. And then, to examine if that per-father
 proportion of aneuplodies differs between older and younger fathers with,
@@ -1240,6 +1254,59 @@ or a two-samples Wilcoxon test.
 
 
 \section{Appendix}
+
+\subsection{A first taste of linear models}\label{lm-paired}
+
+In the paired test, we implicitly have a model like this:
+
+\[Expression.of.MYC = function(subject and condition) + \epsilon\]
+
+which we make simpler (assuming additive contributions of each factor) as
+
+
+\[Expression.of.MYC = effect.of.subject + effect.of.condition + \epsilon\]
+
+
+
+Lets go and fit that model! Do it under ``Fit models'', ``Linear models'',
+using the full dmyc data set. You will see
+
+\verb@myc ~ cond + id@ (or, equivalently here, \verb@myc ~ id + cond@)
+
+(if you just double click on the dependent variables, here id and cond,
+they will be placed on the right, with a ``+'' sign by default).
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.80\paperwidth,keepaspectratio]{lm-myc.png}
+ \caption{ Our first linear model.}
+ \end{center}
+ \end{figure}
+
+<<>>=
+LinearModel.1 <- lm(myc ~ id + cond, data=dmyc)
+summary(LinearModel.1)
+@ 
+
+Run it and look at the line that has ``cond'' (so, using your common
+sense, ignore all the ``id[blablablabla]'' lines). What is the t-value and
+the p-value for ``cond''?
+
+
+This is a linear model. And this particular one is also a two-way
+ANOVA. If you go to ``Models'', ``Hypothesis tests'', ``Anova table'' you
+will get
+
+<<>>=
+Anova(LinearModel.1, type="II")
+@ 
+
+Relate this to the figures above. This should all make sense. Regardless,
+linear models and ANOVAs will be covered in much more detail in a few days.
+
+
+
+
 
 \subsection{Relations between variables}
 This was about comparing two groups. But we had several variables
@@ -1334,6 +1401,9 @@ wilcox.test(log(dmyc$myc[1:12]), log(dmyc$myc[13:24]), paired = TRUE)
 Notice how the statistic and the p-value change. That would not happen if
 the test could be applied to ordinal data.
 
+
+It is also easy to create examples that show that the one-sample Wilcoxon
+does require interval data. This is left as a simple exercise.
 
 
 %% The example for the usual one-sample
