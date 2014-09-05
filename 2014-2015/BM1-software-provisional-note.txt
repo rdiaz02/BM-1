@@ -1,0 +1,13 @@
+ BM-1: Software for the "Applied Stastics" part
+ ===============================================
+
+
+ You will all have access to a computer (running the Windows operating
+ system) with all the software, but you will need to install some software
+ in your computers for the Applied Statistics part. However, due to some
+ recent (and possibly ongoing) changes in some packages, we will provide a
+ link with the most up-to-date instructions during the presentation on
+ 22-September.
+
+
+

@@ -97,7 +97,7 @@
  4. Install R studio (www.rstudio.com). We want to use the "Dektop", that
     you can download from here:
 
-     https://www.rstudio.com/ide/download/desktop
+    http://www.rstudio.com/products/rstudio/download/	
 
 
      Once installation is complete, make sure it works.
