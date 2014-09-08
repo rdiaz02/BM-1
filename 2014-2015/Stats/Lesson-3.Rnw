@@ -918,7 +918,7 @@ ci.plot(metab)
 (and this shows confidence and prediction intervals for the linear model).
 
 
-
+\subsubsection{Transforming the data}
 Hummm\ldots. Those plots do not look good. OK, let's refit a model, but
 this time let's transform both the dependent and independent variables
 with a log (why a log? theory and previous empirical evidence from the
@@ -963,6 +963,17 @@ below (section \ref{diagnostics}). Notice that the call to
 \Rfunction{scatterplot} uses the original variables but the axis are in
 log-scale, which is nicer than directly plotting (in linear scale) the
 log-transformed variables: you can see the original values.
+
+
+
+But this was a particularly simple example since I told you how to
+transform the data. You should be asking yourself: how do I know what
+transformation to use? Often, theory (should allometric patterns scale
+with the log?  shouldn't we use the square root for phenomena that take
+place on surfaces?  etc) can guide us. Otherwise, there are procedures to
+try to identify transformations, including some diagnostic plots that can
+help (e.g., component+residual plots, section \ref{diagnostics}).
+
 
 \clearpage
 \section{Multiple regression}\label{multreg}
@@ -1470,9 +1481,9 @@ For you to read and play around further:
 \begin{itemize}
 \item A very nice type of qqplot is available from package \CRANpkg{car},
   and in R Commander under ``Residual quantile comparison plots''.
-\item Added variable plots and ``Component+Residual'' (or partial
-  residual) plots allow us to examine, in models with multiple regressors,
-  deviations from linearity and could suggest appropriate transformations.
+\item ``Component+Residual'' (or partial residual) plots allow us to
+  examine, in models with multiple regressors, deviations from linearity
+  and could suggest the appropriate transformation.
 \item Various diagnostics related to dfbetas allow us to identify
   influential observations in specific terms of the model.
 \item Variance inflation factors help us detect possible problems caused

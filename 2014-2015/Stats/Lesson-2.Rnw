@@ -462,6 +462,9 @@ A few ideas that should be clear after this section:
 
 \section{Data transformations}\label{transform}
 
+(Look at this section briefly if we do not have a lot of time. Many things
+will be clearer after we play with transformations in Lesson 3.)
+
 Let us look at the boxplot for ``pten''. What does it look like? Take the
 log transformation: create a new variable. Yes, find this out; it is
 under ``Data'', ``Manage variables'', ``Compute new variable'' and you
