@@ -1114,6 +1114,25 @@ would be the problems of simply taking the averages over subjects?
 
 
 
+\subsection{Nested or hierarchical sources of variation}
+A general way of thinking about these issues is that we can have nested,
+or hierarchical, levels of variation (e.g., multiple measures per cell,
+multiple cells per subject, multiple subjects for two different
+treatments) and it is crucial to understand what each level of variation
+is measuring (e.g., the difference between technical and biological
+variation) and to conduct the statistical analysis in a way that do
+incorporate this nestedness. A very recent 2-page paper is Blainey et al.,
+2014, ``Points of significance: Replication'', in \textit{Nature Methods},
+2014, 11, 879--880, where they discuss issues of sample size choice at
+different levels.
+
+By the way, not surprisingly, split-plot ANOVA and nested ANOVA are
+typical, traditional, ways of analyzing these kinds of designs. Many of
+these issues are, thus, naturally addressed in the context of linear
+models (Lesson 3).
+
+
+
 \subsection{Non independent data: extreme cases}
 In the extreme, this problem can lead to data that should not be analyzed
 at all because there is, plainly, no statistical analysis that can be
