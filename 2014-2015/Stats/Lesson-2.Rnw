@@ -1000,8 +1000,9 @@ after the fact. It tells you nothing valuable.
 
 
 
-\section{Non-independent data: multiple measures per
-  subject}\label{pseudorep}
+\section{Non-independent data}\label{pseudorep}
+
+\subsection{Multiple measures per  subject}
 Paired data are non-independent: they are associated via the subject, or
 id. There are other forms of non-dependency. Many. We will now look at the
 most common one: multiple measures per subject.
@@ -1121,10 +1122,10 @@ multiple cells per subject, multiple subjects for two different
 treatments) and it is crucial to understand what each level of variation
 is measuring (e.g., the difference between technical and biological
 variation) and to conduct the statistical analysis in a way that do
-incorporate this nestedness. A very recent 2-page paper is Blainey et al.,
-2014, ``Points of significance: Replication'', in \textit{Nature Methods},
-2014, 11, 879--880, where they discuss issues of sample size choice at
-different levels.
+incorporate this nestedness. A very recent introductory 2-page paper with
+biomedical applications is Blainey et al., 2014, ``Points of significance:
+Replication'', in \textit{Nature Methods}, 2014, 11, 879--880, where they
+discuss issues of sample size choice at different levels.
 
 By the way, not surprisingly, split-plot ANOVA and nested ANOVA are
 typical, traditional, ways of analyzing these kinds of designs. Many of

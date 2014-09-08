@@ -1541,7 +1541,8 @@ additional covariates, etc, are nowadays analyzed using mixed-effects
 models.
 
 
-This also relates to questions we asked in Lesson 2: What if we had
+This also relates to questions we asked in Lesson 2 (see the section on
+``Non-independent data''): What if we had
 repeated measures on the same subjects over time? Or if we had some data
 that came from brothers, cousins, etc?
 
@@ -1555,7 +1556,8 @@ samples? Should we start mice in each one of the four different diets in
 different days of the week, or should we have similar sized groups of each
 diet starting every day of the week? Do you give treatment A to all even
 numbered samples and treatment B to all odd numbered ones, or do you
-randomize order? Etc, etc.
+randomize order? Etc, etc. And, of course, how should we allocate sample
+sizes to the different \textbf{levels of variation}?
 
 
 Understanding what is the experimental unit is \textbf{absolutely
@@ -1565,9 +1567,9 @@ literature are derived from misunderstanding experimental design (a
 somewhat amusing half-page comment about this by G.\ Churchill in
 \textit{Science}, 2013, v.\ 343, p.\ 370). In fact, some mistakes made
 during the experimental design phase just cannot be corrected
-later\footnote{R.\ Fisher, one of the fathers of modern statistics, and
-  modern quantitative and evolutionary genetics, is often quoted in this
-  context because he said ``To consult the statistician after an
+later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
+  well as modern quantitative and evolutionary genetics, is often quoted
+  in this context because he said ``To consult the statistician after an
   experiment is finished is often merely to ask him to conduct a post
   mortem examination. He can perhaps say what the experiment died of.''}
 
