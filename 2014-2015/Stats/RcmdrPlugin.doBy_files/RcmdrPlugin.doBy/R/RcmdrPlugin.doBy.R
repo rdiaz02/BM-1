@@ -1,5 +1,6 @@
 # Some Rcmdr dialogs for the doBy package
 # Last modified: 4 January 2013 by Jonathan Lee
+# Minor modifications by RDU, August and September 2014.
 
 # to satisify NOTEs about missing global binding (from John Fox's findGlobals() function - http://r.789695.n4.nabble.com/globalVariables-td4634291.html)
 if (getRversion() >= '2.15.1') globalVariables(c('top', 'dir1Variable', 'dir2Variable', 'dir3Variable',
@@ -24,7 +25,7 @@ if (getRversion() >= '2.15.1') globalVariables(c('top', 'dir1Variable', 'dir2Var
 }
 
 summaryByGUI <- function(){  
-  require(doBy)
+  ## require(doBy)
   .activeDataSet <- ActiveDataSet()
 	initializeDialog(title=gettextRcmdr("Summary by..."))
 	dsname <- tclVar("")
@@ -102,7 +103,7 @@ summaryByGUI <- function(){
 }
 
 orderByGUI <- function(){
-  require(doBy)
+  ## require(doBy)
   .activeDataSet <- ActiveDataSet()
   initializeDialog(title=gettextRcmdr("Order by..."))
 	dsname <- tclVar("OrderedData")
@@ -189,7 +190,7 @@ orderByGUI <- function(){
 }
 
 splitByGUI <- function(){
-  require(doBy)
+  ## require(doBy)
   .activeDataSet <- ActiveDataSet()
   initializeDialog(title=gettextRcmdr("Split by..."))
 	dsname <- tclVar("SplitData")
@@ -284,7 +285,7 @@ splitByGUI <- function(){
 }
 
 sampleByGUI <- function(){
-  require(doBy)
+  ## require(doBy)
   .activeDataSet <- ActiveDataSet()
   initializeDialog(title=gettextRcmdr("Sample by..."))
   dsname <- tclVar("SampledData")
