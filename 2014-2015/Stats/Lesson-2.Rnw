@@ -900,13 +900,18 @@ wilcox.test(m3$NC.myc, m3$Cancer.myc, alternative='two.sided', paired=TRUE)
 
 You can verify that the results are the same as doing a single sample
 Wilcoxon, or a Wilcoxon signed-rank test, on the within-subject
-differences (this test is not directly available from R Commander)
+differences. The single sample Wilcoxon test is not directly available
+from R Commander of versions before 2.1-0 and you can run it from
+the console as:
 
 <<>>=
 diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
 wilcox.test(diffs)
 @ 
 
+For versions of R Commander 2.1-0 or later you can run it directly from
+the menu (you will have to create a data frame of the within-subject
+differences).
 
 
 
