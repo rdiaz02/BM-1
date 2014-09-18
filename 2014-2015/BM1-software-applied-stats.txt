@@ -11,8 +11,9 @@
  The following are the installation instructions and information. It is
  best if you do the installation in this order and, please, do follow
  carefully. If you have questions or problems AND you have followed the
- instructions carefully, post your questions, with detailed information of
- the errors or problems in the Applied Statistics forum.
+ instructions carefully, post your questions, with detailed information
+ (maybe including screen captures) of the errors, in the Applied
+ Statistics forum.
 
 
 
