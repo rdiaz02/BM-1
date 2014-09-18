@@ -9,8 +9,10 @@
  first day of class.
 
  The following are the installation instructions and information. It is
- best if you do the installation in this order (and, please, do follow
- carefully)
+ best if you do the installation in this order and, please, do follow
+ carefully. If you have questions or problems AND you have followed the
+ instructions carefully, post your questions, with detailed information of
+ the errors or problems in the Applied Statistics forum.
 
 
 
@@ -62,20 +64,27 @@
     install.packages("Rcmdr")
 
 
-    Press Enter. It will ask your for a mirror. If you are in Madrid,
-    the one in Madrid is the best. If, for some reason, that is down, then
-    choose another (e.g., France or Switzerland).
+    Press Enter.
+
+    It might tell you (depending on operating systems and other settings)
+    that the system library is not writable, and will ask you if you want
+    to install to a personal library. Say yes.
+    
+    It will ask your for a mirror. If you are in Madrid, the one in Madrid
+    is the best. If, for some reason, that is down, then choose another
+    (e.g., France or Switzerland).
 
 
     2.3. When it is finished, in the R console do:
        
      library(Rcmdr)
 
-     Press Enter. It will tell you there are missing dependencies and it will
-     offer to install them. Allow it to install all the missing
-     dependencies (the defaults in the window of "Install Missing Packages"
-     should be fine; no need to touch anything; just press OK). This should
-     take a couple minutes.
+     Press Enter. It will tell you there are missing dependencies ("The
+     following packages used by Rcmdr are missing ...") and it will offer
+     to install them. Allow it to install all the missing dependencies
+     (the defaults in the window of "Install Missing Packages" should be
+     fine; no need to touch anything; just press OK). This should take a
+     couple minutes.
 
 
     2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11
@@ -109,13 +118,15 @@
     
  3. Install a few R commander plugins.
 
-    3.1. In the same R console (the R console, not the R commander window)
-    session as before, copy and paste
+    3.1. In the same R console (the R console, not the R commander window
+    ---the R console is the console or window that oppened first when you
+    started R, and it says "R console" at the top) session as before, copy
+    and paste
 
     install.packages(c("RcmdrPlugin.TeachingDemos",
    "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
    "RcmdrPlugin.mosaic", "RcmdrPlugin.plotByGroup", 
-   "tkrplot"))
+   "tkrplot", "doBy"))
 
 
     and press Enter. That will download and install a few things (it
@@ -145,7 +156,8 @@
 
     4.3. Make sure everything works including R commander.
 
-     4.3.1 In the R console in R Studio type
+     4.3.1 In RStudio, go to the R console (the left panel or the
+         bottom-left panel) and type
          library("Rcmdr")
  	
      4.3.2 Press enter.
@@ -167,28 +179,57 @@
     2014-08-20. I have fixed the bug, and you can get the fixed version
     from Moodle. Install it this way:
 
-     5.1 Download the file from Moodle (RmcdrPlugin.doBy)
+     5.1 Download the file from Moodle: RmcdrPlugin.doBy_0.1-4.tar.gz.
+     (Beware that, after download, some operating systems that want to
+     outsmart you might hide the extension ---tar.gz--). Remember where
+     your web browser (IE, Firefox, Google Chrome, Safari, whatever)
+     leaves the file.
+    
 
      5.2 In RStudio go to ``Tools'', ``Install Packages''.
 
      5.3 In the entry ``Install from'', select ``Package Archive File''
 
      5.4 In the second entry, ``Package archive'', select the file you
-       got (RcmdrPlugin.doBy_0.1-4.tar.gz)
+       got (RcmdrPlugin.doBy_0.1-4.tar.gz). You will need to know (or
+       find) where your web browser left the file.
 
      5.5 Install
    
 
        
- 6. Exit R Studio, RCommander, etc.
+6. Exit R Studio, RCommander, etc.
 
-    The simplest thing is to go to the R Studio Window and click on the
-    "File" menu, and there click on "Quit R Studio".
+   6.1. In R Commander, go to "File", "Exit", "From commander"
 
-    (If you get questions about "Save workspace image" just say "No".)
+   6.2. In RStudio go to "File", "Quit RStudio".
+
+   6.3. (There are other ways of exiting, like simply going to RStudio and
+    in the "File" menu clicking on "Quit R Studio". This looks abrupt and
+    in Windows can give you worrying messages, but it is OK. Similar
+    things can be done directly from R Commander, by exiting from "From
+    Commander and R").
 
 
+  6.4. If you get questions about "Save workspace image" just say "No".
 
+
+7. Double check things work:
+
+   7.1 Start RStudio.
+   
+   7.2 On the left or bottom-left panel type
+       library(Rcmdr)
+
+   7.3 When you get R Commander running, go to the menu and under "Tools",
+   "Load Rcmdr plugin(s)" select all of them.
+
+   7.4. You will get a message that says that the plugin will not be
+   available until the Commander is restarted. Click Yes to restart the
+   Commander.
+
+   7.5. If everything worked, you can now exit. If things did not, retrace
+   your steps or start all over and follow instructions carefully.
     
 ***************************
 
