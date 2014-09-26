@@ -1,3 +1,5 @@
+
+
 %\VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
 <<echo=FALSE,results='hide',error=FALSE>>=
@@ -7,6 +9,7 @@ opts_knit$set(stop_on_error = 2L)
 require(car, quietly = TRUE)
 @ 
 
+%% Packages needed: knitr, BiocStyle needs to be 1.2.0 or above
 <<packages,echo=FALSE,results='hide',message=FALSE>>=
 require(BiocStyle, quietly = TRUE)
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
@@ -304,6 +307,9 @@ minor detail to restore options as they were.%% (It is simpler if you copy, then
 \clearpage
 \section{Saving the things we do}
 
+(This material is completely optional, so we will not spend any time on it
+unless all the rest is clear).
+
 
 \subsection{The R script}
 Notice we have a complete R script: the whole transcript of all we did.
@@ -434,7 +440,7 @@ with your analysis but do not get into the habit of automatically getting
 rid of potential outliers. And whatever you do, you should report it.
 
 
-The book by Ruper Miller ``Beyond Anova'' (Chapman and Hall, 1997)
+The book by Rupert Miller ``Beyond Anova'' (Chapman and Hall, 1997)
 contains a great discussion of assumptions, consequences of deviations
 from them, what to do, etc.
 
@@ -447,10 +453,12 @@ from them, what to do, etc.
 \subsection{Ideas that should be clear from the t-test part}
 A few ideas that should be clear after this section:
 
-\begin{itemize}
+\begin{enumerate}
 \item The difference between a sample and a population
 \item What a statistic is
+\item What a t-statistic is
 \item That statistics have distributions
+\item The difference between standard deviation and standard error
 \item That sampling introduces variability
 \item That some procedures ``ask more from the data'' (e.g., interval data)
 \item p-values
@@ -458,7 +466,10 @@ A few ideas that should be clear after this section:
 \item Distribution of the statistic under the null hypothesis
 \item The logic behind a statistical test
 \item The difference between estimation and hypothesis testing
-\end{itemize}
+\end{enumerate}
+
+
+If any one of the above is not clear, please ask it in class.
 
 
 \section{Data transformations}\label{transform}
@@ -618,8 +629,8 @@ I provided you\footnote{There is a bug in one of the functions in the original
 \item For each of the new data sets, turn the id column into the rownames
   as we did before: under ``Data'', ``Active data set'', ``Set case
   names''.
-\item Merge the two new data sets, again using ``Merge columns''. Call
-  this m3, for instance.
+\item Merge the two new data sets, again using ``Merge'' and doing it by
+  columns. Call this m3, for instance.
 \end{enumerate}
 
 Once you have done all of the above, you will have this on the R Script
@@ -641,6 +652,11 @@ m3$Row.names <- NULL
 
 
 Please, before continuing, make sure you look at the data: ``View data set''.
+
+
+
+%% There is a third approach, with aggregate and using id as aggregate by,
+%% and function function(x) {return(x)}
 
 
 \subsection{The paired t-test}
@@ -1011,7 +1027,8 @@ after the fact. It tells you nothing valuable.
 \subsection{Multiple measures per  subject}
 Paired data are non-independent: they are associated via the subject, or
 id. There are other forms of non-dependency. Many. We will now look at the
-most common one: multiple measures per subject.
+most common one: multiple measures per subject. (This, by the way, you saw
+in Lesson 1).
 
 <<create_brca, echo=FALSE, results='hide'>>=
 set.seed(27)
