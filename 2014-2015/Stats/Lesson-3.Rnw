@@ -241,8 +241,8 @@ By the way, notice how we created a ``Model'' which, by default, is called
 \Robject{AnovaModel.1}. But we could have named it differently.
 
 
-\subsection{So which means are different?}
-
+\subsection{So which means are different? Multiple comparisons}
+\label{multcomp1}
 That small p-value leads us to reject the null hypothesis $\mu_{Morning} =
 \mu_{Lunch} = \mu_{Afternoon}$. So there is strong evidence that all three
 means are not equal. But which one(s) is(are) different from the other(s)?
@@ -274,9 +274,9 @@ better).
 \textbf{Multiple testing corrections} are needed because we are now
 conducting three separate tests (in general, if there are $K$ groups and
 if you compare all pairs of means you carry out ${K \choose 2} = \frac{K
-  (K-1)}{2}$ tests). Here, we will control the family-wise error rate (the
+  (K-1)}{2}$ tests). Here, we will control the family-wise error rate, the
 probability of falsely rejecting one or more tests over the family of
-tests performed ---three in our case). The logic is somewhat like that of
+tests performed ---three in our case. The logic is somewhat like that of
 being struck by lightning: the chances of it happening are extremely
 small, but every year people die from lightning because the probability
 that at least one person is killed is huge since we have lots of people
@@ -291,8 +291,8 @@ are true:
 if we run the three comparisons, the chances of incorrectly rejecting at
 least one of the null hypotheses is larger than, say, 0.05 if we simply
 look at each one of the three p-values and keep any with a p-value $\leq
-0.05$.  You will see more about multiple testing in the final lesson but
-if the reason why we need this here is not clear, ask it in class
+0.05$.  You will see more about multiple testing below
+(\ref{sec:mult-comp-fdr}). 
 \textbf{now!}.
 
 
@@ -476,6 +476,207 @@ correspondence between a t statistic and an F statistic).
 
 
 \clearpage
+
+
+\section{Multiple comparisons: FWER and FDR}
+\label{sec:mult-comp-fdr}
+
+\subsection{Family-wise error rate}
+\label{sec:family-wise-error}
+
+
+In section \ref{multcomp1} we covered multiple comparisons. Here we go
+into a little bit more detail before continuing with ANOVA. As in section
+\ref{multcomp1}, suppose we are testing a number of null hypothesis. Table
+\ref{table-multcomp} shows a depiction of what we are concerned about,
+where the letters in each cell refer to the number of means tested that fall in
+each case.
+
+
+
+\begin{table}[t!]
+\begin{tabular}{p{5.5cm}|>{\centering}p{2.5cm}|>{\centering}p{2.5cm}|}
+  \multicolumn{1}{c}{} & \multicolumn{1}{>{\centering}p{2.5cm}}{Null hypothesis not rejected} & 
+  \multicolumn{1}{>{\centering}p{2.5cm}}{Null hypothesis rejected}\tabularnewline
+  \cline{2-3} 
+  Means do not differ ($H_0$ \textit{true}) & U & V\tabularnewline
+  \cline{2-3} 
+  Means differ ($H_0$ \textit{false}) & T & S\tabularnewline
+  \cline{2-3} 
+\end{tabular}
+
+
+% \begin{tabular}{p{5.5cm}p{2.5cm}p{2.5cm}}
+%   & Null hypothesis not rejected & Null hypothesis rejected \\
+%   \cline{2-3}
+%   Means do not differ ($H_0$ \textit{true}) & U &  V \\
+%   \cline{2-3}
+%   Means differ ($H_0$ \textit{false}) & T  & S  \\
+%   \cline{2-3}
+% \end{tabular}
+\caption{\label{table-multcomp} Multiple comparisons. In rows is the ``truth'' (how things really
+  are), and in columns the output from our testing procedure (what we end
+  up claiming or believing). The sum of all entries is the total number of
+  comparisons made.}
+
+\end{table}
+
+
+
+
+
+
+
+In the example in section \ref{multcomp1} $U + V + T + S = 3$ (beware, 3
+is the number of \textbf{hipothesis tests}, it is not the number of means;
+in our case, both are three, but Table \ref{table-multcomp} reflects
+number of hypothesis, not tests). Procedures such as the one we used
+(Tukey) or Bonferroni or similar ones, try to control the probability that
+$V \geq 1$. They control what is called the ``family-wise error rate''
+(FWER).
+
+The intuitive idea is: ``I want to control very tightly the probability of
+falsely rejecting any hypothesis'', and that is the same as saying ``I
+want to control very tightly the probability that $V$ is equal or larger
+than 1''. (I use the expression ``control very tightly'' because if we
+insist in ``I NEVER want to falsely reject any null hypothesis'' then
+$\ldots$ we will never reject any null hypothesis). What Tukey,
+Bonferroni, and other procedures for controlling the family wise error
+rate provide are mechanisms for ensuring that $Pr(V \geq 1)$ is below a
+number you specify (e.g., 0.05).
+
+
+Note that, in our usage of Tukey, we did not pre-specify that $Pr(V \geq
+1)$. The procedure is run, and it gives us ``adjusted p-values''. And what
+is an adjusted p-value?  The classical paper from Wright, 1992, ``Adjusted
+p-values for simultaneous inference'', \textit{Biometrics}, 48:
+1005--1013, has in p.\ 1006 this definition of adjusted p-value: ``The
+adjusted $P$-value for a particular hypothesis within a collection of
+hypotheses, then, is the smaleest overall (i.e., 'experimentwise')
+significance level at which the particular hypothesis would be rejected.''
+This might sound like a mess, but it really ain't. Think about it. It is
+so nice that it makes comparisons very simple, as Wright explains: ``An
+adjusted $P$-value can be compared directly with any chosen significance
+level $\alpha$: If the adjusted $P$-value is less than or equal to
+$\alpha$, the hypothesis is rejected.''
+
+
+
+
+\subsection{False discovery rate (FDR)}
+\label{fdr}
+
+There is a different approach to the multiple testing problem. In this
+approach we focus on controlling the fraction of false positives. The
+total number of null hypothesis we reject is $V+S$. The intuitive idea
+behind the control of the false discovery rate (\textbf{FDR}) is to bound
+(to set an upper limit to) to the ratio $\frac{V}{V+S}$\footnote{There are
+  several different approaches. The most common one is to control $FDR =
+  E(Q)$ where $Q=V/(V+S)$ if $V + S > 0$ (and $Q = 0$ otherwise). But
+  there are others, such as the $pFDR$, etc.}.
+
+
+One key difference is that the FDR can be kept reasonably low (say,
+0.01) even when it is almost sure that $V\geq 1$. When could this happen?
+For instance, when we are conducting tens of thousands of hypothesis
+tests. Again, the FDR will control the fraction of false discoveries
+whereas the control of the family wise error rate (FWER) is emphasizing
+that $V$ don't become 1 or more.
+
+
+As we did with Tukey and the FWER procedures, we generally do not
+pre-specify the level of FDR we want to attain but, rather, we obtain
+``adjusted p-values''. The difference in the meaning of ``adjusted'' is
+that now these p-values are adjusted for FDR (not adjusted for control of
+the family wise error rate).  So, when we deal with FDR, the adjusted
+p-value of an individual hypothesis is the lowest level of FDR for which
+the hypothesis is first included in the set of rejected hypotheses (e.g.,
+Reiner et al., 2003, \textit{Bioinformatics}).
+
+
+The FDR is usually employed in screening procedures, where we are willing
+to allow some false discoveries, because we are screening over thousands
+of hypothesis. The cost of requiring $V = 0$ would be to miss many
+discoveries. One example? Suppose that you have measured the expression of
+20000 genes in two sets of subjects some with colon cancer and some
+without.  Now, you can do the equivalent of 20000 t-tests. So you will get
+20000 p-values, and you will want to adjust those 20000 tests for multiple
+testing. % When you declare some of these genes as ``significant'' under the
+% control of the FDR, you are not claiming you have tightly controlled that
+% $V = 0$, but rather you are controlling the rate or fraction of false
+% discoveries.
+
+
+How do you adjust for multiple testing in R? This is easily done with the
+function \Rfunction{p.adjust} (there is no menu entry in R Commander, so
+we will type it by hand). When you are applying FDR you often have a
+collection of p-values already. 
+
+
+I will make a simple example up and will only use four p-values (not
+20000) for the sake of simplicity. Suppose we have done a screening
+procedure, testing four genes. You get the p-values I show below. To use
+an FDR correction method I use \Rfunction{p.adjust} with the
+\texttt{method = ``BH''} argument (BH is one of several possible types of
+FDR correction). To show what happens, I have then combined the two, side
+by side, so you can see the original p-value and the FDR-adjusted one.
+
+<<>>=
+p.values <- c(0.001, 0.01, 0.03, 0.05)
+adjusted.p.values <- p.adjust(p.values, method = "BH")
+cbind(p.values, adjusted.p.values)
+@ 
+
+
+How do we interpret this? Here I will only cover the very basics (if you
+want more details, sing up for BM-13 :-) ). But go back a couple of
+paragraphs, and re-read the definition of adjusted p-value for the
+FDR. So, for example, if we keep as ``significant'' all the genes with a
+p-value (not adjusted p-value, but p-value, so the last first three) $\leq
+0.30$, the FDR (the expected number of false discoveries) will be 0.40
+(the FDR-adjusted p-value for the gene with $p-$value of 0.03).
+
+
+
+
+Note that the FDR applies not just to comparisons between means or
+t-tests, but to any kind of test (comparing variances, correlations, etc).
+
+
+
+
+
+\subsection{Multiple comparisons: struck by lightning}
+
+This has been a short section, because we are skipping the technicalities
+and focus just on the big ideas. But this is a \textbf{VERY IMPORTANT}
+section to remember. When you do many tests, some of them might have low
+p-values just by chance and you need to adjust for this. If any gene with
+a low p-value is declared significant (regardless of the size of the
+collection of tests) you will be likely to start claiming that many purely
+chance results are ``significant''. And you do not want that.
+
+
+Remember that very rare events do happen, and they are almost certain to
+happen if the experiment is repeated many times (by the way, this is why
+most of us are not afraid of dying from lighting, even if every year some
+people do in fact die from lightning).
+
+
+When you screen 20000 genes, you are running 20000 times the experiment of
+the p-value and the null hypothesis. And remember the rules: for one true
+null hypothesis, the probability of finding a p-value $\le 0.05$ is
+$0.05$. Now imagine you do that 20000 times; you are almost certain to
+have many p-values $\le 0.05$. (Some thing with lightning: even if the
+chances of dying from lightning are $\le \frac{1}{300000}$, with millions
+of people on earth, some are almost sure to die from lightning).
+
+
+There are many reviews about multiple testing, FDR, etc. You might want to
+take a look at a three-page one by W.\ Noble, in \textit{nature
+  Biotechnology}, 2009, 27: 1135--1136, ``How does multiple testing work''.
+
+
 \section{Two-way ANOVA}
 
 The following data come from an experiment about the effects of three
@@ -701,6 +902,7 @@ happening?
   \Rfunction{anova}.
 \end{itemize}
 
+
 Biologically, that order can make a difference makes a lot of sense. Think
 about it. And this, of course, affects models with two, three, \ldots
 factors. Always pay attention to what it is you are being reported (and
@@ -716,7 +918,6 @@ SPSS, SAS, etc.)\footnote{The type of sums of squares used (and,
   beware
 \label{fn:2}}.
 
-
 \subsection{ANOVA/linear models with more than two factors}
 We will present no examples, but life is filled with them. Think about
 cholesterol: to the experiment with drug and diet add a third factor:
@@ -725,7 +926,7 @@ program. Or maybe \ldots.
 
 
 
-\subsection{Multiple comparisons of means}
+\subsection{Multiple comparisons of means in two-way ANOVA}
 Can they be done? Yes. You can use the \Rfunction{glht} or the TukeyHDS
 functions directly. Or you fit the model using \Rfunction{aov} (not
 \Rfunction{lm}), and use the package \CRANpkg{RcmdrPlugin.HH}, and ask for
@@ -754,8 +955,11 @@ interactions is not easy; one needs to use more sophisticated approaches
 as in permutation tests conditioning on permuting only within rows or
 columns, etc. We will not pursue this any further.
 
-
 \clearpage
+
+
+
+
 \section{Simple linear regression}\label{regr}
 
 This is another form of a linear model. But now, the independent variable
