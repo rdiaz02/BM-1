@@ -233,7 +233,7 @@ with(dp53, Hist(p53, groups=cond, scale="frequency", breaks="Sturges",
 @
 
 <<fig.height=10, fig.width=8,results='hide'>>=
-op <- par(mfrow = c(3, 2)) ## to show 2 by 2
+op <- par(mfrow = c(2, 2)) ## to show 2 by 2 on the same figure
 Boxplot(p53~cond, data=dp53, id.method="y")
 plotMeans(dp53$p53, dp53$cond, error.bars="se", 
   xlab="Condition", ylab="P53 expression levels")
@@ -326,7 +326,7 @@ provide).
 This is all very nice, but you might want to intersperse your figures with
 comments and notes and have something to hand to your colleagues. Let's
 give them something more useful. Go the the ``R Markdown'' tab and
-generate the HTML report. That is and HTML file you can put on a web page,
+generate the HTML report. That is an HTML file you can put on a web page,
 send around, etc.
 
 Edit the Markdown file and:
@@ -390,8 +390,8 @@ to this below several times because it is a \textbf{crucial} assumption
 (e.g., section \ref{pseudorep} and also Lesson 3). Lack of independence is
 a serious and pervasive problem (and one form of non-independence is also
 referred to as ``pseudoreplication'' \footnote{A major paper, a long while
-  ago, in \textup{Ecological Monographs} by Hurlbert dealt with this and
-  made ``pseudoreplication'' a well known term.}).
+  ago, in the journal \textit{Ecological Monographs} by Hurlbert dealt
+  with this and made ``pseudoreplication'' a well known term.}).
 
 
 When comparing two means, \textbf{equality of variances} is also
@@ -414,9 +414,9 @@ far the distribution of the data is from the normal distribution, but
 often 10 is large enough, and 50 is generally well large enough (but in
 certain cases 100 might not be even close to large enough).
 
-Of course, although this should be obvious: when we talk about symmetry
-we are talking about the data distribution of \textbf{each group
-  separately}. 
+Of course, although this should be obvious: when we talk about symmetry,
+normality, etc, we are talking about the data distribution of \textbf{each
+  group separately}.
 
 Finally, \textbf{outliers} can be a serious concern (by the way, outliers,
 or potential outliers ---under some definition of outlier--- get flagged
@@ -435,7 +435,8 @@ rid of potential outliers. And whatever you do, you should report it.
 
 
 The book by Ruper Miller ``Beyond Anova'' (Chapman and Hall, 1997)
-contains a great discussion of these issues.
+contains a great discussion of assumptions, consequences of deviations
+from them, what to do, etc.
 
 
 
@@ -604,7 +605,7 @@ A few comments:
 
 
 You can do this in a simpler way using the \CRANpkg{RcmdrPlugin.doBy}
-(BEWARE: you must install and use the version of\CRANpkg{RcmdrPlugin.DoBy}
+(BEWARE: you must install and use the version of \CRANpkg{RcmdrPlugin.DoBy}
 I provided you\footnote{There is a bug in one of the functions in the original
   package, and I have fixed it. The version you can get from CRAN will not
   work; the version I provide you has the bug fixed ---I've emailed the
@@ -816,15 +817,15 @@ considerations that come into play are:
 \item Do the data look bad enough that a parametric procedure will lead to
   trouble?
 \item What about the relative efficiency of the non parametric procedure?
-  (the sample size required for two different procedures that are equally
-  good in power and type I error rate). When assumptions are met,
-  parametric methods do have more power (though not always a lot
-  more). When assumptions are not met, nonparametric methods might have
-  more power, or the correct Type I error, etc. Note that very, very, very
-  small p-values are often not achievable with non-parametric methods
-  (because of the way they work), and this is a concern with multiple
-  testing adjustments in omics experiments (this will be covered in the
-  last lesson).
+  (relative efficiency refers to the sample size required for two
+  different procedures that are equally good in power and type I error
+  rate). When assumptions are met, parametric methods do have more power
+  (though not always a lot more). When assumptions are not met,
+  nonparametric methods might have more power, or the correct Type I
+  error, etc. Note that very, very, very small p-values are often not
+  achievable with non-parametric methods (because of the way they work),
+  and this is a concern with multiple testing adjustments in omics
+  experiments (this will be covered in the last lesson).
 \item Is this test flexible enough? In particular, can I accommodate
   additional experimental factors?
 \end{itemize}
