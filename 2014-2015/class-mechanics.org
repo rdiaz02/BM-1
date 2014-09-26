@@ -4,3 +4,4 @@
 4. C-c C-v to get pdf and check move back and forth
 5. Open R and launch Rcmdr
 6. Hide buffer with .Rnw
+
