@@ -29,7 +29,8 @@ require(ISwR, quietly = TRUE)
 %%\usepackage{geometry}
 %%\geometry{verbose,a4paper,tmargin=23mm,bmargin=26mm,lmargin=28mm,rmargin=28mm}
 
-
+\usepackage[margin=10pt,font=small,labelfont=bf,
+labelsep=endash]{caption}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{threeparttable}
