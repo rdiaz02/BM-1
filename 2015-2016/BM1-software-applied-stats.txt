@@ -1,0 +1,269 @@
+ BM-1: Software for the "Applied Stastics" part
+ ===============================================
+
+
+ You will all have access to a computer (running the Windows operating
+ system) with all the software. However, you probably want to install the
+ software on your own computer at home. If you plan to bring your own
+ laptop to class, then you definitely MUST install the software before our
+ first day of class.
+
+ The following are the installation instructions and information. It is
+ best if you do the installation in this order and, please, do follow
+ carefully. If you have questions or problems AND you have followed the
+ instructions carefully, post your questions, with detailed information
+ (maybe including screen captures) of the errors, in the Applied
+ Statistics forum.
+
+
+
+ 1. Install R (http://cran.r-project.org). The binaries for each operating
+     system are available here: http://cran.r-project.org/bin/
+
+     1.1. For Linux, most distros have pre-built binaries, so with Debian
+     use apt-get install r-base r-base-dev, with Fedora and RH yum install
+     whatever, etc. There are instructions in the CRAN page if you need
+     them, though, for many distros.
+
+     However, if you use Ubuntu, please read the instructions in
+     http://cran.r-project.org/bin/linux/ubuntu/README.html, since the
+     default Ubuntu packages can be  outdated.
+
+     
+     1.2. If you use Windows, you want to install "base". It says so
+     clearly: "Binaries for base distribution (managed by Duncan
+     Murdoch). This is what you want to install R for the first time."
+
+     Instead of installing R in the standard location, C:\Program
+     Files\R\R-3.1.1, I suggest that you use C:\R\R-3.1.1. This will allow
+     you to install packages without running R with administrator
+     privileges and will avoid problems that sometimes occur when there
+     are spaces in paths.
+
+     In the Startup options screen, I suggest that you select Yes
+     (customized startup). Then select the SDI (single-document interface)
+     in preference to the default MDI (multiple-document interface); feel
+     free to make other changes, but you may take all the remaining
+     defaults.
+
+     (The last two great suggestions are taken from
+     http://socserv.mcmaster.ca/jfox/Courses/R/ICPSR/R-install-instructions.html)
+
+     
+     1.3. If you use Mac, if you play with installation options, note that
+     you need to install the tcl/Tk X11 libraries. If you run into trouble,
+     make sure to read the FAQ
+     (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
+
+
+     1.4. However you do it, please make sure you have version 3.1.1 of R
+     (if you know what you are doing, it is also OK to use development
+     versions). Any version of R >= 3.0.0 should work, but it is best if
+     you use a current one.
+
+     
+     
+
+ 2. Install R commander.
+
+    There are installation instructions here:
+    http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
+
+
+    This is the summary, which should work for all operating systems (and will
+    install all dependencies)
+
+    2.1. Start R
+
+    2.2. Copy and paste the following in the console:
+
+
+    install.packages("Rcmdr")
+
+
+    Press Enter.
+
+    It might tell you (depending on operating systems and other settings)
+    that the system library is not writable, and will ask you if you want
+    to install to a personal library. Say yes.
+    
+    It will ask your for a mirror. If you are in Madrid, the one in Madrid
+    is the best. If, for some reason, that is down, then choose another
+    (e.g., France or Switzerland).
+
+
+    2.3. When it is finished, in the R console do:
+       
+     library(Rcmdr)
+
+     Press Enter. It will tell you there are missing dependencies ("The
+     following packages used by Rcmdr are missing ...") and it will offer
+     to install them. Allow it to install all the missing dependencies
+     (the defaults in the window of "Install Missing Packages" should be
+     fine; no need to touch anything; just press OK). This should take a
+     couple minutes.
+
+
+    2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11
+    is missing. Read the installation instructions for R commander given
+    above.
+
+
+
+    2.5. Please, try to use version 2.1-1 of Rcmdr. How can you tell the
+    version? Two ways:
+
+    2.5.1 From R itself do "library(help  = Rcmdr)" and it will procude
+    output that includes the Version number.
+
+    2.5.1. From Rcmdr itself: go to "Help" and click on "About Rcmdr"
+
+
+
+    2.6. Linux: some Linux distros ship pre-compiled versions of Rcmdr. So
+    you might install Rmcdr this way. But beware that some Linux distros
+    ship versions of Rcmdr that can be very outdated.
+
+	
+
+    2.7. Does the version of Rcmdr matter? Not a lot (assuming it is
+    anything > 2.0), but newer versions have more functionality. And yes,
+    those in the class computers will use v. 2.0-4, not 2.1.1.
+    
+
+   
+    
+ 3. Install a few R commander plugins.
+
+    3.1. In the same R console (the R console, not the R commander window
+    ---the R console is the console or window that oppened first when you
+    started R, and it says "R console" at the top) session as before, copy
+    and paste
+
+    install.packages(c("RcmdrPlugin.TeachingDemos",
+   "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
+   "RcmdrPlugin.mosaic", "RcmdrPlugin.plotByGroup", 
+   "tkrplot", "doBy"))
+
+
+    and press Enter. That will download and install a few things (it
+    should be done in a couple of minutes).
+
+
+    3.2. Exit R Commander and R. Under "File", in "R Commander", click on
+    "Exit", and in there on "Exit From Commander and R"
+   
+
+
+ 4. Install RStudio (www.rstudio.com). We want to use the "Dektop", that
+    you can download from here:
+
+    http://www.rstudio.com/products/rstudio/download/	
+
+
+ 
+    4.1. Install RStudio. RStudio has new releases almost daily, but
+    anything with version 0.98.945 should be more than enough.
+
+    4.2. Verify it works. Click on it and it should start, and you should
+    see an application with an R console (along with two or three other
+    windows)
+
+   
+
+   4.3 When you first run RStudio, it should detect your R installation
+   and start the R 3.1.1 console. To configure RStudio to your taste,
+   select Tools > Global Options (Windows) or RStudio > Preferences (Mac
+   OS X) from the RStudio menus. In particular, I suggest that on the
+   General options screen you deselect Restore .RData into workspace at
+   startup, and set Save workspace to .RData on exit to Never. If you
+   encounter difficulties, consult the RStudio troubleshooting guide
+   (https://support.rstudio.com/hc/en-us/articles/200488498-Troubleshooting-Guide-Using-RStudio)
+   [This is taken from
+   http://socserv.mcmaster.ca/jfox/Courses/R/ICPSR/R-install-instructions.html]
+   
+    
+    
+    4.4. Make sure everything works including R commander.
+
+     4.4.1 In RStudio, go to the R console (the left panel or the
+         bottom-left panel) and type
+         library("Rcmdr")
+ 	
+     4.4.2 Press enter.
+       You should see a new window that says "R Commander", and no warning
+       messages about missing dependencies.
+
+     4.4.3.If there are still missing dependencies, you should be given the
+       option to install them by just clicking a button. Do so now.
+
+
+       
+       
+
+       
+5. Install RcmdrPlugin.doBy.
+
+    This is a nice plugin that used to be available (though with at least
+    one bug) but that was moved out of the CRAN repository on
+    2014-08-20. I have fixed the bug, and you can get the fixed version
+    from Moodle. Install it this way:
+
+     5.1 Download the file from Moodle: RmcdrPlugin.doBy_0.1-4.tar.gz.
+     (Beware that, after download, some operating systems that want to
+     outsmart you might hide the extension ---tar.gz--). Remember where
+     your web browser (IE, Firefox, Google Chrome, Safari, whatever)
+     leaves the file.
+    
+
+     5.2 In RStudio go to ``Tools'', ``Install Packages''.
+
+     5.3 In the entry ``Install from'', select ``Package Archive File''
+
+     5.4 In the second entry, ``Package archive'', select the file you
+       got (RcmdrPlugin.doBy_0.1-4.tar.gz). You will need to know (or
+       find) where your web browser left the file.
+
+     5.5 Install
+   
+
+       
+6. Exit R Studio, RCommander, etc.
+
+   6.1. In R Commander, go to "File", "Exit", "From commander"
+
+   6.2. In RStudio go to "File", "Quit RStudio".
+
+   6.3. (There are other ways of exiting, like simply going to RStudio and
+    in the "File" menu clicking on "Quit R Studio". This looks abrupt and
+    in Windows can give you worrying messages, but it is OK. Similar
+    things can be done directly from R Commander, by exiting from "From
+    Commander and R").
+
+
+  6.4. If you get questions about "Save workspace image" just say "No".
+
+
+7. Double check things work:
+
+   7.1 Start RStudio.
+   
+   7.2 On the left or bottom-left panel type
+       library(Rcmdr)
+
+   7.3 When you get R Commander running, go to the menu and under "Tools",
+   "Load Rcmdr plugin(s)" select all of them.
+
+   7.4. You will get a message that says that the plugin will not be
+   available until the Commander is restarted. Click Yes to restart the
+   Commander.
+
+   7.5. If everything worked, you can now exit. If things did not, retrace
+   your steps or start all over and follow instructions carefully.
+    
+***************************
+
+
+(Some of these notes follow suggestions from
+http://socserv.mcmaster.ca/jfox/Courses/R/ICPSR/R-install-instructions.html)
+
