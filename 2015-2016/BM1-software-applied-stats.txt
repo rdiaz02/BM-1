@@ -38,7 +38,9 @@
      Files\R\R-3.1.1, I suggest that you use C:\R\R-3.1.1. This will allow
      you to install packages without running R with administrator
      privileges and will avoid problems that sometimes occur when there
-     are spaces in paths.
+     are spaces in paths. (Telling the installer where to install is
+     something you will be asked in the third or fourth screen of the
+     installer, when it asks you "Select Destination Location").
 
      In the Startup options screen, I suggest that you select Yes
      (customized startup). Then select the SDI (single-document interface)
