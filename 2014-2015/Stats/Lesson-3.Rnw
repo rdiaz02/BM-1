@@ -56,6 +56,7 @@ labelsep=endash]{caption}
 BiocStyle::latex()
 @
 
+
 %% %% Modify margins
 \geometry{verbose,a4paper,tmargin=23mm,bmargin=23mm,lmargin=28mm,rmargin=28mm}
 
@@ -1113,8 +1114,9 @@ scatterplot(Metabolic.rate..W.~Body.mass..g.,
             span=0.5, data=anage_a)
 @ 
 
-The second plot we can get from ``Models'', ``Confidence interval plot'',
-which will show something like
+The second plot we can get from ``Models'', ``Confidence interval plot''
+(you need to have the \CRANpkg{RcmdrPlugin.HH} loaded) which will show
+something like
 
 <<out.width = '12cm', out.height = '12cm'>>=
 ci.plot(metab)

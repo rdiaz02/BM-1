@@ -141,7 +141,7 @@ rm(list = ls())
 %% t.test(log(p53) ~ cond, data = dp53) ## no effect: we don't see it
 %% @ 
 
-%% ביםףתהכןüח
+
 \section{Types of data}
 We need to get this out of the way, as we will refer to it
 frequently. Data can be measured in different scales. From ``less
@@ -583,8 +583,9 @@ the same row. This is what we will do:
 
 \begin{enumerate}
 \item Create a data set that contains only the values for observations
-  with status ``Cancer''. (``Subset'', under ``Active data set''). Call
-  this, say, cc. 
+  with status ``Cancer''. (``Subset'', under ``Active data set''). Use the
+  ``Subset expression'' you want; in this case \verb@Condition ==
+  ``Cancer''@. Call this data set cc.
   
 \item Make sure ``id'' is used as row name. Do this using ``Set case
   names'' under ``Active data set''. Can you understand why we are doing
@@ -666,14 +667,24 @@ t-test as if they were two independent samples. The differences are rather
 dramatic!
 
 <<>>=
-## Two-sample
-t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
-  paired=FALSE)
-## Paired
+## Paired; you can get this from R commander
 t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
   paired=TRUE)
 
 @ 
+
+<<>>=
+## Two-sample
+t.test(myc~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE, 
+       data=dmyc)
+@ 
+
+%% <<>>=
+%% ## Two-sample. Type this directly in the R Script and submit.
+%% t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
+%%   paired=FALSE)
+
+%% @ 
 
 
 \subsection{The paired t-test again: a single-sample t-test}\label{paired-single}
@@ -699,7 +710,7 @@ m3$diff.nc.c <- with(m3, Cancer.myc - NC.myc)
 
 Now, do a single-sample t-test:
 <<>>=
-t.test(m3$diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)
+with(m3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)))
 @ 
 
 Compare the t-statistic, the degrees of freedom and the p-value with the
@@ -994,7 +1005,7 @@ Go play with the ``Teaching demos: Power of a test'' (from the
 
  There are simple, standard ways of figuring out the power. But they
  require you to specify the above values. Not always known (or easy to
- guess). The \CRANpkg{RcmdrPlug.IPSUR} package provides some extra tools.
+ guess). The \CRANpkg{RcmdrPlugin.IPSUR} package provides some extra tools.
 
 
 \begin{figure}[h!]
