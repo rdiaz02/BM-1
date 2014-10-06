@@ -1378,6 +1378,8 @@ squares, Type I):
 ancova(pemax ~ age * sex, data = cystfibr2)
 @ 
 
+Note that function \Rfunction{ancova} is not available from the menus. You
+have to type the above expression directly.
 
 \subsection{Formally comparing models}\label{model-comp}
 In this case, the sequential anova table (as produced by
