@@ -139,7 +139,7 @@ rm(list = ls())
 
 
 
-\subsection{Recoding variables}
+\subsection{Recoding variables}\label{recode}
 
 Import \Robject{MIT.txt} and call the object \Robject{dmit}. These are
 data about mitochondrial activity related to three different training
@@ -679,6 +679,9 @@ take a look at a three-page one by W.\ Noble, in \textit{nature
   Biotechnology}, 2009, 27: 1135--1136, ``How does multiple testing work''.
 
 
+
+% FIXME: start first without interactions!!! Use the data from orderfactors
+
 \section{Two-way ANOVA}
 
 The following data come from an experiment about the effects of three
@@ -686,8 +689,9 @@ diets and two cholesterol-controlling drugs in the reduction of
 cholesterol levels (note: the response variable is change in cholesterol,
 so the larger the value, the larger the reduction of cholesterol). As
 usual, read the data and look at them. Since the author used names for the
-two factors, Diet and Drug, we do not need to transform them. Call the
-data \Robject{dcholest}.
+levels within each of the two factors, Diet and Drug, we do not need to
+transform them into factors, in contrast to what we did in section
+\ref{recode}. Call the data \Robject{dcholest}.
 
 <<create_tooth, echo=FALSE, results='hide'>>=
 
@@ -916,8 +920,7 @@ SPSS, SAS, etc.)\footnote{The type of sums of squares used (and,
   to applied regression'', one of the recommended books, does too). An
   email-length discussion of these topics can be found here
   \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111854.html} and
-  \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}. Please
-  beware
+  \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}. 
 \label{fn:2}}.
 
 \subsection{ANOVA/linear models with more than two factors}
