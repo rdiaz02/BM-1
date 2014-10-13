@@ -410,12 +410,18 @@ the second, so we use ``Training'' in the name, not ``ftraining'':
 <<out.width='7cm', out.height='7cm', fig.show='hold'>>=
 .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
 tmp <- cld(.Pairs) ## silent assignment 
-old.oma <- par(oma=c(0,5,0,0))
+old.oma <- par(oma=c(0,5,0,0), mfrow = c(1, 2))
 plot(confint(.Pairs), 
      main = "95% family-wise confidence interval using Tukey contrasts")
-par(old.oma) 
 plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
+par(old.oma) 
 @ 
+
+\red{FIXME}:
+
+
+\red{This will actually produce two figures!!! I can include
+  it as one, because of the way I do it from latex}
 
 
 
