@@ -1845,3 +1845,8 @@ sessionInfo()
 
 
 
+
+
+
+%% Examples prediction and confidence intervals
+%% x <- c(rep(1, 50), rep(5, 50)); x <- x + rnorm(100, sd = 0.1); y <- 3 * x + rnorm(100); ci.plot(lm(y ~ x)); mean(x)
