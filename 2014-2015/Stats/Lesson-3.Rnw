@@ -929,6 +929,16 @@ SPSS, SAS, etc.)\footnote{The type of sums of squares used (and,
   \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}. 
 \label{fn:2}}.
 
+
+
+
+
+\red{FIXME}
+\red{Explain why order of factors matter with unbalanced designs and how
+  it relates to correlation of indep. vars. with regression. Example of
+  hegith on left and right arms}
+
+
 \subsection{ANOVA/linear models with more than two factors}
 We will present no examples, but life is filled with them. Think about
 cholesterol: to the experiment with drug and diet add a third factor:
