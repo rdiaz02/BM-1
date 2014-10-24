@@ -470,6 +470,18 @@ Of course, in general, you can just carry out any two-group comparison as
 an ANOVA. There is nothing wrong with that (and there is a simple
 correspondence between a t statistic and an F statistic).
 
+
+
+\subsection{Anova as lm, etc (zz: put this better)}
+FIXME:
+
+add examples of variables with three or more levels, and show what lm and
+anova show
+
+yes, show here. Also below
+
+
+
 \subsection{One way ANOVA: summary of steps}
 
 \begin{enumerate}
@@ -1305,7 +1317,10 @@ Is this a problem? Well, you are trying to model pemax as a function of
 three variables, but those three variables are very highly correlated
 among themselves. Is this a common phenomenon: yes, it is rather common.
 
-\subsection{Variable selection}
+
+
+
+\subsection{Variable and model selection}
 You say you want to select variables? Select them for what? Prediction?
 Interpretation?  Variable selection is a touchy and delicate
 subject. First, procedures based purely in statistical criteria might
@@ -1400,6 +1415,11 @@ ancova(pemax ~ age * sex, data = cystfibr2)
 Note that function \Rfunction{ancova} is not available from the menus. You
 have to type the above expression directly.
 
+
+FIXME: use a model with only age + sex, to go slow.
+
+
+
 \subsection{Formally comparing models}\label{model-comp}
 In this case, the sequential anova table (as produced by
 \Rfunction{ancova} or \Rfunction{anova}) suggests that we could simplify
@@ -1480,9 +1500,10 @@ are not the same (birds' are higher).
 We could simplify this model to a model without the interaction (so single
 slope, two intercepts):
 
+%% this was wrong in previous version; I had the summary of metab_b_r
 <<>>=
 metab_b_r_2 <- lm(logMetabolicRate ~ logBodyMass + Class, data = anage_a_r)
-summary(metab_b_r)
+summary(metab_b_r_2)
 anova(metab_b_r_2, metab_b_r)
 @ 
 
@@ -1559,6 +1580,15 @@ variables, using the \Robject{hellung} dataset included in \CRANpkg{ISwR}.
 
 
 
+\subsection{Anova as lm, etc (zz: put this better)}
+FIXME:
+
+add examples of variables with three or more levels, and show what lm and
+anova show
+
+yes, show here. Also mentioned above So for ancova, use a factor with
+three levels (maybe mammals, birds, reptiles)
+
 
 
 
@@ -1590,6 +1620,9 @@ The three main types are:
 \end{description}
 \clearpage
 \section{Diagnostics}\label{diagnostics}
+
+\red{FIXME: add from a fully balanced designs, and explain differences in
+  last plot ---all have same leverage?}
 
 Wait!!! Do our models make sense? These are models, so we can, and should,
 check some of their basic assumptions. We cannot do justice to this
