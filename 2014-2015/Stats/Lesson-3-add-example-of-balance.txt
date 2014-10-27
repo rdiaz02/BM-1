@@ -1,0 +1,308 @@
+Dear All,
+
+This relates to the question I was asked during the 2nd session (10:30 to
+12) about what happens if things are balanced, and how order affects. I
+managed to be very confusing the first time, but I think also the
+second. I'll try here a third, with a commented example and actual
+numbers. Note that this covers material that we haven't really discussed
+in class (so it will not be in the exam :-), but it might be very
+interesting anyway.
+
+
+Suppose an experiment like the one we discussed in class: cholesterol as a
+function of sex and drug. Two sexes and two drugs. These are the sample
+sizes:
+
+************
+> with(chol.data, tapply(chol, list(sex, drug), function(x)
+  sum(!is.na(x))))
+
+        A  B
+Female 10 10
+Male   10 10
+*************
+
+
+Note the perfect balance.
+
+
+And these are the means for the four groups:
+**************
+> with(chol.data, tapply(chol, list(sex, drug), mean))
+
+        A     B
+Female 11.8 16.18
+Male   10.2 13.37
+*************
+
+
+Just by eye, it seems the difference between sexes is around 2, and the
+difference between drugs of about 4.
+
+
+Let us fit two models, simply changing the order (we assume no
+interaction, for simplicity ---there is none, in fact)
+
+
+m1 <- lm(chol ~ sex + drug, data = chol.data)
+m2 <- lm(chol ~ drug + sex, data = chol.data)
+
+
+
+And we also fit two small models, one only with sex, the other only with
+drug:
+
+
+msex <- lm(chol ~ sex, data = chol.data)
+mdrug <- lm(chol ~ drug, data = chol.data)
+
+
+Now, the output for the coefficients for m1 and m2 is the same (these are
+always the coefficients as if entered last in the model)
+
+
+*****************
+
+
+> summary(m1)
+
+Call:
+lm(formula = chol ~ sex + drug, data = chol.data)
+
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   12.101      0.379   31.93  < 2e-16
+sexMale       -2.205      0.438   -5.04  1.3e-05
+drugB          3.778      0.438    8.63  2.1e-10
+
+Residual standard error: 1.38 on 37 degrees of freedom
+Multiple R-squared:  0.73,	Adjusted R-squared:  0.715 
+F-statistic: 49.9 on 2 and 37 DF,  p-value: 3.08e-11
+
+> summary(m2)
+
+Call:
+lm(formula = chol ~ drug + sex, data = chol.data)
+
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   12.101      0.379   31.93  < 2e-16
+drugB          3.778      0.438    8.63  2.1e-10
+sexMale       -2.205      0.438   -5.04  1.3e-05
+
+Residual standard error: 1.38 on 37 degrees of freedom
+Multiple R-squared:  0.73,	Adjusted R-squared:  0.715 
+F-statistic: 49.9 on 2 and 37 DF,  p-value: 3.08e-11
+
+
+
+******************
+
+So nothing new up to here. Now look at what happens if we get the
+coefficients for the small models, those with only sex or only drug:
+
+
+*********************
+
+> summary(msex)
+
+Call:
+lm(formula = chol ~ sex, data = chol.data)
+
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)    13.99       0.53   26.39   <2e-16
+sexMale        -2.21       0.75   -2.94   0.0056
+
+Residual standard error: 2.37 on 38 degrees of freedom
+Multiple R-squared:  0.185,	Adjusted R-squared:  0.164 
+F-statistic: 8.64 on 1 and 38 DF,  p-value: 0.00556
+
+> summary(mdrug)
+
+Call:
+lm(formula = chol ~ drug, data = chol.data)
+
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   10.999      0.396   27.74  < 2e-16
+drugB          3.778      0.561    6.74  5.6e-08
+
+Residual standard error: 1.77 on 38 degrees of freedom
+Multiple R-squared:  0.544,	Adjusted R-squared:  0.532 
+F-statistic: 45.4 on 1 and 38 DF,  p-value: 5.57e-08
+
+
+*********************
+
+
+
+In both cases, the estimate is the same from the model with the two
+factors, or with only a single factor. For example, the differences
+between sexes are of about 2.2 (the coefficient that says "sexMale") and
+the differences between drugs of about 3.8 (the coefficient that says
+"drugB").  However, the standard error, and thus the t value and the
+p-value change. In the case of sex, they change a lot.
+
+Again, the key is to understand that even if the coefficient does not
+change whether or not the other factor is included in the model (and it
+does not change because there is complete balance), the t statistic and
+the p-value do change. Why? Because the other factor explains a large part
+of variance, and thus makes the residual standard error much smaller if we
+include it in the model.
+
+
+
+
+
+And what about the ANOVA tables?
+
+*******************************
+> anova(m1)
+Analysis of Variance Table
+
+Response: chol
+          Df Sum Sq Mean Sq F value  Pr(>F)
+sex        1   48.6    48.6    25.4 1.3e-05
+drug       1  142.8   142.8    74.5 2.1e-10
+Residuals 37   70.9     1.9                
+
+> anova(m2)
+Analysis of Variance Table
+
+Response: chol
+          Df Sum Sq Mean Sq F value  Pr(>F)
+drug       1  142.8   142.8    74.5 2.1e-10
+sex        1   48.6    48.6    25.4 1.3e-05
+Residuals 37   70.9     1.9                
+
+********************
+
+Order does not change anything. Why? Because the contributions of each
+factor do not depend at all on the other (i.e., the Mean Squares of each
+factor does not depend on the other). And since the F is the ratio of the
+Mean Squares of the factor over the Mean Squares of the residuals (and
+this is whatever is left after we have fitted everything), the order does
+not affect the F statistic or the p-value.
+
+
+Of course, an "Anova" (Type II tests) would show the same:
+
+***********
+> Anova(m1)
+Anova Table (Type II tests)
+
+Response: chol
+          Sum Sq Df F value  Pr(>F)
+sex         48.6  1    25.4 1.3e-05
+drug       142.8  1    74.5 2.1e-10
+Residuals   70.9 37                
+> 
+************
+
+
+
+To understand this better, look at the anova tables for the models with
+only one factor:
+
+*****************************
+> anova(msex)
+Analysis of Variance Table
+
+Response: chol
+          Df Sum Sq Mean Sq F value Pr(>F)
+sex        1   48.6    48.6    8.64 0.0056
+Residuals 38  213.6     5.6               
+
+
+
+> anova(mdrug)
+Analysis of Variance Table
+
+Response: chol
+          Df Sum Sq Mean Sq F value  Pr(>F)
+drug       1    143   142.8    45.4 5.6e-08
+Residuals 38    120     3.1                
+> 
+*********************
+
+
+Notice how the Mean Sq for each factor is the same as in the previous
+tables. So the Mean Squares for Sex do not depend on whether or not drug
+is in the model. But the F statistic (and the p-value) do change a
+lot. Why? Because what changes a lot are the Mean Sq. of the
+residuals. And why is that? Because the other factor, the one we have not
+included, does indeed explain a lot of variability, but in these two last
+tables, since the other factor is not in the model, that variability is
+included now in the error term.
+
+
+
+So, to summarize: when there is perfect balance, order does not change a
+thing if we include both factors in the model.
+
+However, having or not the other factor in the model can make a difference
+for the standard errors, the residual standard errors, and thus the
+p-values.
+
+
+
+Best,
+
+
+R.
+
+
+
+
+P.S. If you are curious, I made this data up. This is the complete R code
+for all of the above. I add some comments.
+
+
+
+library(car) ## the Anove function
+set.seed(1) ## so we always get the same results, fix random number seed
+
+## create the data
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+chol <- rep(c(10, 13, 12, 16), rep(10, 4))
+chol <- chol + rnorm(length(chol), sd = 1.5)
+chol.data <- data.frame(chol, sex, drug)
+
+
+# table of sample size and means
+with(chol.data, tapply(chol, list(sex, drug), function(x) sum(!is.na(x))))
+with(chol.data, tapply(chol, list(sex, drug), mean))
+
+# verify we did not, by bad luck, get a significant interaction
+summary(lm(chol ~ sex * drug, data = chol.data))
+
+# Fit the four models
+m1 <- lm(chol ~ sex + drug, data = chol.data)
+m2 <- lm(chol ~ drug + sex, data = chol.data)
+msex <- lm(chol ~ sex, data = chol.data)
+mdrug <- lm(chol ~ drug, data = chol.data)
+
+
+# Get all output
+summary(m1)
+summary(m2)
+
+
+summary(msex)
+summary(mdrug)
+
+
+anova(m1)
+anova(m2)
+
+Anova(m1)
+
+anova(msex)
+anova(mdrug)
+
