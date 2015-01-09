@@ -702,7 +702,8 @@ of myc in the NC and Cancer subjects (``Data'', ``Manage variables'',
   \end{center}
 \end{figure}
 
-
+% FIXME this is Cancer - NC, but I keep referring to it the other way
+% around in the reshaping, later below And check consistency with \ref{ptr}
 You will see this in the R Script:
 <<>>=
 m3$diff.nc.c <- with(m3, Cancer.myc - NC.myc)
@@ -1374,7 +1375,7 @@ all in a single step)
 <<>>=
 myc.cancer <- dmyc$myc[dmyc$cond == "Cancer"]
 myc.nc <- dmyc$myc[dmyc$cond == "NC"]
-t.test(myc.nc, myc.cancer, paired = TRUE)
+t.test(myc.cancer, myc.nc, paired = TRUE)
 @ 
 
 Of course, this \textbf{crucially assumes} that the data are ordered the
