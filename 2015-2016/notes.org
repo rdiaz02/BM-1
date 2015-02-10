@@ -5,3 +5,12 @@
   - Label forum posts appropriately: Lesson 1, Lesson 2, etc
   - Do not just read the notes: work through them (do exercises, repeat
     figures, etc)
+
+** Mechanics and difficulties
+  - You need to learn the concepts
+  - You need to learn to do it (at least one program):
+    - We choose one
+  - Exam will focus MAINLY on concepts
+    - We do not want to penalize you if you have some technical problem
+      with R during the exam.
+    - But the output you have to interpret will be output from R.
