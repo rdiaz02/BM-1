@@ -6,6 +6,7 @@
   - Do not just read the notes: work through them (do exercises, repeat
     figures, etc)
 
+
 ** Mechanics and difficulties
   - You need to learn the concepts
   - You need to learn to do it (at least one program):
@@ -14,3 +15,9 @@
     - We do not want to penalize you if you have some technical problem
       with R during the exam.
     - But the output you have to interpret will be output from R.
+
+
+* Linear models
+  - use examples of figures for representing large models. E.g., my plots
+    of coefficientes in paper oncotrees, fig. 2 and 3.
+
