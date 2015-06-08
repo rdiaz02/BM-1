@@ -171,11 +171,21 @@
 
  
     4.1. Install RStudio. RStudio has new releases almost daily, but
-    anything with version 0.98.945 should be more than enough.
+    anything with version 0.99.441 should be more than enough.
+
+    Of course, you want the RStudio for your operating system (Windows,
+    Mac, whatever).
+
+       4.1.1. Under Windows, you probably do not want to change the path
+       (we changed it for R, but we don't change it for RStudio).
+
 
     4.2. Verify it works. Click on it and it should start, and you should
     see an application with an R console (along with two or three other
-    windows)
+    windows).
+ 
+    Under Windows, you might see a warning that sterror_s is not found. It
+    seems inocuous: just type OK, and the thing will continue.
 
    
 
@@ -195,65 +205,38 @@
 
        
        
+      
+5. Exit R Studio, RCommander, etc.
 
-       
-5. Install RcmdrPlugin.doBy.
+   5.1. In R Commander, go to "File", "Exit", "From commander"
 
-    This is a nice plugin that used to be available (though with at least
-    one bug) but that was moved out of the CRAN repository on
-    2014-08-20. I have fixed the bug, and you can get the fixed version
-    from Moodle. Install it this way:
+   5.2. In RStudio go to "File", "Quit RStudio".
 
-     5.1 Download the file from Moodle: RmcdrPlugin.doBy_0.1-4.tar.gz.
-     (Beware that, after download, some operating systems that want to
-     outsmart you might hide the extension ---tar.gz--). Remember where
-     your web browser (IE, Firefox, Google Chrome, Safari, whatever)
-     leaves the file.
-    
-
-     5.2 In RStudio go to ``Tools'', ``Install Packages''.
-
-     5.3 In the entry ``Install from'', select ``Package Archive File''
-
-     5.4 In the second entry, ``Package archive'', select the file you
-       got (RcmdrPlugin.doBy_0.1-4.tar.gz). You will need to know (or
-       find) where your web browser left the file.
-
-     5.5 Install
-   
-
-       
-6. Exit R Studio, RCommander, etc.
-
-   6.1. In R Commander, go to "File", "Exit", "From commander"
-
-   6.2. In RStudio go to "File", "Quit RStudio".
-
-   6.3. (There are other ways of exiting, like simply going to RStudio and
+   5.3. (There are other ways of exiting, like simply going to RStudio and
     in the "File" menu clicking on "Quit R Studio". This looks abrupt and
     in Windows can give you worrying messages, but it is OK. Similar
     things can be done directly from R Commander, by exiting from "From
     Commander and R").
 
 
-  6.4. If you get questions about "Save workspace image" just say "No".
+  5.4. If you get questions about "Save workspace image" just say "No".
 
 
-7. Double check things work:
+6. Double check things work:
 
-   7.1 Start RStudio.
+   6.1 Start RStudio.
    
-   7.2 On the left or bottom-left panel type
+   6.2 On the left or bottom-left panel type
        library(Rcmdr)
 
-   7.3 When you get R Commander running, go to the menu and under "Tools",
+   6.3 When you get R Commander running, go to the menu and under "Tools",
    "Load Rcmdr plugin(s)" select all of them.
 
-   7.4. You will get a message that says that the plugin will not be
+   6.4. You will get a message that says that the plugin will not be
    available until the Commander is restarted. Click Yes to restart the
    Commander.
 
-   7.5. If everything worked, you can now exit. If things did not, retrace
+   6.5. If everything worked, you can now exit. If things did not, retrace
    your steps or start all over and follow instructions carefully.
     
 ***************************

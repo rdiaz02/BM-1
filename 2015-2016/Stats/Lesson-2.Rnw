@@ -584,8 +584,8 @@ the same row. This is what we will do:
 \begin{enumerate}
 \item Create a data set that contains only the values for observations
   with status ``Cancer''. (``Subset'', under ``Active data set''). Use the
-  ``Subset expression'' you want; in this case \verb@Condition ==
-  ``Cancer''@. Call this data set cc.
+  ``Subset expression'' you want; in this case 
+  \verb@Condition == ``Cancer''@. Call this data set cc.
   
 \item Make sure ``id'' is used as row name. Do this using ``Set case
   names'' under ``Active data set''. Can you understand why we are doing
@@ -614,51 +614,51 @@ A few comments:
 
 
 
-\subsection{Reshaping the data for a paired t-test, second approach}
+%% \subsection{Reshaping the data for a paired t-test, second approach}
 
 
-You can do this in a simpler way using the \CRANpkg{RcmdrPlugin.doBy}
-(BEWARE: you must install and use the version of \CRANpkg{RcmdrPlugin.DoBy}
-I provided you\footnote{There is a bug in one of the functions in the original
-  package, and I have fixed it. The version you can get from CRAN will not
-  work; the version I provide you has the bug fixed ---I've emailed the
-  author about this, but so far haven't reached him.}).
+%% You can do this in a simpler way using the \CRANpkg{RcmdrPlugin.doBy}
+%% (BEWARE: you must install and use the version of \CRANpkg{RcmdrPlugin.DoBy}
+%% I provided you\footnote{There is a bug in one of the functions in the original
+%%   package, and I have fixed it. The version you can get from CRAN will not
+%%   work; the version I provide you has the bug fixed ---I've emailed the
+%%   author about this, but so far haven't reached him.}).
 
 
-\begin{enumerate}
-\item Split the dmyc data set according to ``cond'', using the ``Split by''
-  under the new ``doBy'' menu.
-\item For each of the new data sets, turn the id column into the rownames
-  as we did before: under ``Data'', ``Active data set'', ``Set case
-  names''.
-\item Merge the two new data sets, again using ``Merge'' and doing it by
-  columns. Call this m3, for instance.
-\end{enumerate}
+%% \begin{enumerate}
+%% \item Split the dmyc data set according to ``cond'', using the ``Split by''
+%%   under the new ``doBy'' menu.
+%% \item For each of the new data sets, turn the id column into the rownames
+%%   as we did before: under ``Data'', ``Active data set'', ``Set case
+%%   names''.
+%% \item Merge the two new data sets, again using ``Merge'' and doing it by
+%%   columns. Call this m3, for instance.
+%% \end{enumerate}
 
-Once you have done all of the above, you will have this on the R Script
-(and the Output)
-<<>>=
-SplitData <- splitBy(~ cond, data = dmyc)
-SplitData.Cancer <- SplitData["Cancer"]
-SplitData.NC <- SplitData["NC"]
-SplitData.Cancer <- as.data.frame(SplitData.Cancer)
-SplitData.NC <- as.data.frame(SplitData.NC)
-row.names(SplitData.Cancer) <- as.character(SplitData.Cancer$Cancer.id)
-SplitData.Cancer$Cancer.id <- NULL
-row.names(SplitData.NC) <- as.character(SplitData.NC$NC.id)
-SplitData.NC$NC.id <- NULL
-m3 <- merge(SplitData.NC, SplitData.Cancer, all=TRUE, by="row.names")
-rownames(m3) <- m3$Row.names
-m3$Row.names <- NULL
-@ 
-
-
-Please, before continuing, make sure you look at the data: ``View data set''.
+%% Once you have done all of the above, you will have this on the R Script
+%% (and the Output)
+%% <<>>=
+%% SplitData <- splitBy(~ cond, data = dmyc)
+%% SplitData.Cancer <- SplitData["Cancer"]
+%% SplitData.NC <- SplitData["NC"]
+%% SplitData.Cancer <- as.data.frame(SplitData.Cancer)
+%% SplitData.NC <- as.data.frame(SplitData.NC)
+%% row.names(SplitData.Cancer) <- as.character(SplitData.Cancer$Cancer.id)
+%% SplitData.Cancer$Cancer.id <- NULL
+%% row.names(SplitData.NC) <- as.character(SplitData.NC$NC.id)
+%% SplitData.NC$NC.id <- NULL
+%% m3 <- merge(SplitData.NC, SplitData.Cancer, all=TRUE, by="row.names")
+%% rownames(m3) <- m3$Row.names
+%% m3$Row.names <- NULL
+%% @ 
 
 
+%% Please, before continuing, make sure you look at the data: ``View data set''.
 
-%% There is a third approach, with aggregate and using id as aggregate by,
-%% and function function(x) {return(x)}
+
+
+%% %% There is a third approach, with aggregate and using id as aggregate by,
+%% %% and function function(x) {return(x)}
 
 
 \subsection{The paired t-test}
@@ -666,12 +666,13 @@ Just do a paired t-test. What is the result? Compare it with doing a
 t-test as if they were two independent samples. The differences are rather
 dramatic!
 
-<<>>=
-## Paired; you can get this from R commander
-t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
-  paired=TRUE)
+FIXME: re-do this with new R-commander options
+%% <<>>=
+%% ## Paired; you can get this from R commander
+%% t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
+%%   paired=TRUE)
 
-@ 
+%% @ 
 
 <<>>=
 ## Two-sample
@@ -704,14 +705,19 @@ of myc in the NC and Cancer subjects (``Data'', ``Manage variables'',
 
 % FIXME this is Cancer - NC, but I keep referring to it the other way
 % around in the reshaping, later below And check consistency with \ref{ptr}
+
+
+%% FIXME: ditto: this is the old m3
 You will see this in the R Script:
 <<>>=
-m3$diff.nc.c <- with(m3, Cancer.myc - NC.myc)
+# m3$diff.nc.c <- with(m3, Cancer.myc - NC.myc)
 @ 
 
+
+FIXME: here too
 Now, do a single-sample t-test:
 <<>>=
-with(m3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)))
+# with(m3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)))
 @ 
 
 Compare the t-statistic, the degrees of freedom and the p-value with the
@@ -742,9 +748,10 @@ very good idea. % In fact, I will now create them from scratch directly from R
 % the case in our data, but need not be; see details in section \ref{ptr})
 
 
+FIXME: xx: 
 <<fig.width=3.5, fig.height=3.5, echo=TRUE, fig.show = 'hold'>>=
-Boxplot( ~ diff.nc.c, data = m3, xlab = "",
-        ylab = "Intra-subject difference (C - NC)", main = "MYC")
+## Boxplot( ~ diff.nc.c, data = m3, xlab = "",
+##         ylab = "Intra-subject difference (C - NC)", main = "MYC")
 @ 
 
 
@@ -925,7 +932,7 @@ Go do it with the dmyc data we used for the paired t-test (section
 
 
 <<>>=
-wilcox.test(m3$NC.myc, m3$Cancer.myc, alternative='two.sided', paired=TRUE)
+## wilcox.test(m3$NC.myc, m3$Cancer.myc, alternative='two.sided', paired=TRUE)
 @ 
 
 You can verify that the results are the same as doing a single sample

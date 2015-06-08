@@ -20,7 +20,12 @@
 * Linear models
   - use examples of figures for representing large models. E.g., my plots
     of coefficientes in paper oncotrees, fig. 2 and 3.
+  - what do I do with the "Lesson-3-add-example-of-balance" (in 2014-2015)
 
+
+* t-test
+  - fix the m3 object usage: it was created with the plugin. Create it in
+    a different way!!
 
 
 
