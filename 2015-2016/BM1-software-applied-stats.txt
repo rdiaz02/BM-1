@@ -151,7 +151,7 @@
     install.packages(c("RcmdrPlugin.TeachingDemos",
    "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
    "RcmdrPlugin.mosaic", "RcmdrPlugin.plotByGroup", 
-   "tkrplot", "doBy"))
+   "tkrplot", "doBy", "vcd"))
 
 
     and press Enter. That will download and install a few things (it
