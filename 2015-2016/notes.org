@@ -1,6 +1,9 @@
 * Software installation:
   - First day of class, after they have wifi access
 
+* Why:
+  - cite "Adventures with R", Nature, 2015, by Tippman
+
 * General intro
   - Label forum posts appropriately: Lesson 1, Lesson 2, etc
   - Do not just read the notes: work through them (do exercises, repeat
