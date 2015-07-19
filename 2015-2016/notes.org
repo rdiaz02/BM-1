@@ -30,5 +30,8 @@
   - fix the m3 object usage: it was created with the plugin. Create it in
     a different way!!
 
+* an example of aggregate
+  - have an example of something like
+    aggregate( ~ subject + whatever, mean)?
 
 
