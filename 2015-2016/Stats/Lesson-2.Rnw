@@ -3,6 +3,7 @@
 %\VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
 <<echo=FALSE,results='hide',error=FALSE>>=
+suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
@@ -11,10 +12,11 @@ require(car, quietly = TRUE)
 
 %% Packages needed: knitr, BiocStyle needs to be 1.2.0 or above
 <<packages,echo=FALSE,results='hide',message=FALSE>>=
-require(BiocStyle, quietly = TRUE)
+## suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
+suppressMessages(require(BiocStyle, quietly = TRUE))
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
-require(doBy, quietly = TRUE)
-require(RcmdrPlugin.plotByGroup, quietly = TRUE)
+suppressMessages(require(doBy, quietly = TRUE))
+suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
 @ 
 
 %% not if using BiocStyle
@@ -40,6 +42,8 @@ labelsep=endash]{caption}
 
 %\usepackage{tikz}
 %\usetikzlibrary{arrows,shapes,positioning}
+
+\synctex=1
 
 \usepackage[latin1]{inputenc}
 %\usepackage[utf8]{inputenc}
@@ -686,6 +690,10 @@ t.test(myc~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE,
 %%   paired=FALSE)
 
 %% @ 
+
+
+
+
 
 
 \subsection{The paired t-test again: a single-sample t-test}\label{paired-single}
