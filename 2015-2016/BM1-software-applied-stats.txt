@@ -64,7 +64,7 @@
      (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
 
 
-     1.4. However you do it, please make sure you have version 3.2.0 of R
+     1.4. However you do it, please make sure you have version 3.2.1 of R
      (if you know what you are doing, it is also OK to use development
      versions). Any version of R >= 3.0.0 should work, but it is best if
      you use a current one.
