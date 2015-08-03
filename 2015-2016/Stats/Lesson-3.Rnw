@@ -1,6 +1,7 @@
 %\VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
 <<echo=FALSE,results='hide',error=FALSE>>=
+suppressMessages(library(SparseM, quietly = TRUE, warn.conflicts = FALSE))
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
@@ -168,7 +169,7 @@ explicit. Use a new variable (e.g., ftraining).
 \end{figure}
 
 \clearpage
-After recoding, you should see this command. Note the \Rcode{factor}
+After recoding, you should see this command. Note the \Rfunction{factor}
 function call:
 <<>>=
 dmit$ftraining <- factor(dmit$training, 
@@ -400,35 +401,35 @@ into account.
 
 
 \subsubsection{This is a mess. What figures do I use?}
-That is up to you :-). But this can work: present both the original means
+That is up to you. But this can work: present both the original means
 and the plot with the contrasts. You can just copy and paste code
-judiciously. Note that I modify slightly the title of the first figure, so
-that the usage of Tukey contrasts is explicit and I modify the title of
-the second, so we use ``Training'' in the name, not ``ftraining'':
+judiciously. %% Note that I modify slightly the title of the first figure, so
+%% that the usage of Tukey contrasts is explicit and I modify the title of
+%% the second, so we use ``Training'' in the name, not ``ftraining'':
 
 
-<<out.width='7cm', out.height='7cm', fig.show='hold'>>=
-.Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
-tmp <- cld(.Pairs) ## silent assignment 
-old.oma <- par(oma=c(0,5,0,0), mfrow = c(1, 2))
-plot(confint(.Pairs), 
-     main = "95% family-wise confidence interval using Tukey contrasts")
-plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
-par(old.oma) 
-@ 
-
-\red{FIXME}:
-
-
-\red{This will actually produce two figures!!! I can include
-  it as one, because of the way I do it from latex}
-
-
-
-%% An alternative is to use the MMC plots provided by package ``RcmdrPlugin.HH'':
-
-%% <<>>=
+%% <<out.width='7cm', out.height='7cm', fig.show='hold'>>=
+%% .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+%% tmp <- cld(.Pairs) ## silent assignment 
+%% old.oma <- par(oma=c(0,5,0,0), mfrow = c(1, 2))
+%% plot(confint(.Pairs), 
+%%      main = "95% family-wise confidence interval using Tukey contrasts")
+%% ## plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
+%% par(old.oma) 
 %% @ 
+
+%% \red{FIXME}:
+
+
+%% \red{This will actually produce two figures!!! I can include
+%%   it as one, because of the way I do it from latex}
+
+%% Nope, it was not working.
+
+%% %% An alternative is to use the MMC plots provided by package ``RcmdrPlugin.HH'':
+
+%% %% <<>>=
+%% %% @ 
 
 
 
@@ -470,15 +471,6 @@ Of course, in general, you can just carry out any two-group comparison as
 an ANOVA. There is nothing wrong with that (and there is a simple
 correspondence between a t statistic and an F statistic).
 
-
-
-\subsection{Anova as lm, etc (zz: put this better)}
-FIXME:
-
-add examples of variables with three or more levels, and show what lm and
-anova show
-
-yes, show here. Also below
 
 
 
@@ -687,13 +679,13 @@ When you screen 20000 genes, you are running 20000 times the experiment of
 the p-value and the null hypothesis. And remember the rules: for one true
 null hypothesis, the probability of finding a p-value $\le 0.05$ is
 $0.05$. Now imagine you do that 20000 times; you are almost certain to
-have many p-values $\le 0.05$. (Some thing with lightning: even if the
+have many p-values $\le 0.05$. (Same thing with lightning: even if the
 chances of dying from lightning are $\le \frac{1}{300000}$, with millions
 of people on earth, some are almost sure to die from lightning).
 
 
 There are many reviews about multiple testing, FDR, etc. You might want to
-take a look at a three-page one by W.\ Noble, in \textit{nature
+take a look at a three-page one by W.\ Noble, in \textit{Nature
   Biotechnology}, 2009, 27: 1135--1136, ``How does multiple testing work''.
 
 
@@ -734,8 +726,8 @@ rm(y, n, m, Drug, Diet)
 write.table(chol, file = "Cholesterol.txt", col.names = TRUE,
             row.names = FALSE, sep = "\t", quote = FALSE)
 rm(chol)
-@ 
 
+@ 
 <<>>=
 dcholest <- read.table("Cholesterol.txt", header = TRUE)
 @ 
@@ -837,6 +829,18 @@ not) of the Diet or Drug term. In general, \textbf{in the presence of
   \ref{fn:2} in section \ref{orderfactors} for some entries and
   references.}.
 
+
+
+\subsection{An ANOVA without interactions}\label{anovanoint}
+Could we fit a model without interactions? Yes, of course, but not from the
+the above menu. The idea is to change the ``*'' by a ``+'' (and we will
+see that again when we deal with multiple regression et al. in section
+\ref{regr-int}).
+
+<<>>=
+amodelnoint <- (lm(y ~ Diet + Drug, data=dcholest))
+Anova(amodelnoint)
+@ 
 
 
 \subsection{The order of factors}\label{orderfactors}
@@ -1374,6 +1378,9 @@ help (e.g., component+residual plots, section \ref{diagnostics}).
 
 
 \clearpage
+
+
+
 \section{Multiple regression}\label{multreg}
 
 In the previous section we had
@@ -1514,6 +1521,50 @@ hyperplane)\footnote{If you want to play around with a regression plane or
   our brains do not seem ready for 4D and higher.}.
 
 \clearpage
+
+
+
+\section{Anova tables from \Rfunction{lm} et al.}\label{anovaaslm}
+
+We've said this: ANOVAs are a type of linear models. Thus, in R (and in
+most statistical packages) you can get the output for an ANOVA by
+different routes. Let us make sure we understand this, and can interpret
+the output from using the different routes available to us. In fact, we
+have jumped from using \Rfunction{aov} to \Rfunction{lm}. Let us see a
+simple example:
+
+<<>>=
+asAnova <- aov(activ ~ ftraining, data = dmit)
+summary(asAnova)
+@ 
+
+
+Not let us fit the same model using \Rfunction{lm}. 
+
+<<>>=
+asLm <- lm(activ ~ ftraining, data = dmit)
+anova(asLm)
+@ 
+
+The ANOVA table is the same.
+
+But what is this output?
+
+<<>>=
+asLm
+summary(asLm)
+@ 
+
+We are being shown the fitted coefficients. They are expressed as
+deviations with respect to a baseline level, in this case the first level.
+
+
+I've used \Rfunction{anova} but I could have used \Rfunction{Anova}, and
+the above applies to more than one factor, and to factors with an
+arbitrary number of levels. 
+
+
+
 \section{Continuous and discrete independent variables 
   and ANCOVA}\label{ancova}
 
@@ -1569,7 +1620,7 @@ package \CRANpkg{HH} (which is loaded when we load
 squares, Type I):
 
 <<>>=
-ancova(pemax ~ age * sex, data = cystfibr2)
+ancova(pemax ~ age * sex, data = cystfibr2, pch = 1)
 @ 
 
 Note that function \Rfunction{ancova} is not available from the menus. You
@@ -1685,7 +1736,7 @@ scatterplot(Metabolic.rate..W.~Body.mass..g. | Class,
 \clearpage
 <<fig.width=7, fig.height=7,echo=TRUE, results='hide'>>=
 ancova(logMetabolicRate ~ logBodyMass * Class, 
-                data = anage_a_r)
+                data = anage_a_r, pch = 1)
 @ 
 
 \clearpage
@@ -1713,7 +1764,7 @@ scatterplot(Maximum.longevity..yrs.~Body.mass..g. | Class,
 
 <<echo=TRUE, results='hide'>>=
 ancova(logLongevity ~ logBodyMass * Class, 
-                data = anage_a_r)
+                data = anage_a_r, pch = 1)
 @ 
 
 Note: the tightness of the data around the lines in this model for
@@ -1740,14 +1791,14 @@ variables, using the \Robject{hellung} dataset included in \CRANpkg{ISwR}.
 
 
 
-\subsection{Anova as lm, etc (zz: put this better)}
-FIXME:
+%% \subsection{Anova as lm, etc (zz: put this better)}
+%% FIXME:
 
-add examples of variables with three or more levels, and show what lm and
-anova show
+%% add examples of variables with three or more levels, and show what lm and
+%% anova show
 
-yes, show here. Also mentioned above So for ancova, use a factor with
-three levels (maybe mammals, birds, reptiles)
+%% yes, show here. Also mentioned above So for ancova, use a factor with
+%% three levels (maybe mammals, birds, reptiles)
 
 
 
