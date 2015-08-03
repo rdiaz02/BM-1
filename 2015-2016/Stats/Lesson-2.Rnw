@@ -945,10 +945,12 @@ Go do it with the dmyc data we used for the paired t-test (section
 
 You can verify that the results are the same as doing a single sample
 Wilcoxon, or a Wilcoxon signed-rank test, on the within-subject
-differences. The single sample Wilcoxon test is not directly available
-from R Commander of versions before 2.1-0 and you can run it from
-the console as:
+differences. %% The single sample Wilcoxon test is not directly available
+%% from R Commander of versions before 2.1-0 and you can run it from
+%% the console as: %% it is in 2.1-7
 
+
+xx: eh, we can use diffs before. Leave it there, and reuse here
 <<>>=
 diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
 wilcox.test(diffs)
@@ -1522,3 +1524,11 @@ sessionInfo()
 
 
 
+
+
+
+%% reshape in Rcmdr?
+%% paired tests in Rcmdr?
+
+
+%% could use unstack, from the command line, after sorting
