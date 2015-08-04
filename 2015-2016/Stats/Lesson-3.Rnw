@@ -408,6 +408,21 @@ judiciously. %% Note that I modify slightly the title of the first figure, so
 %% the second, so we use ``Training'' in the name, not ``ftraining'':
 
 
+I would actually modify slightly the title of both figures, so that they
+look better:
+
+<<out.width='7cm', out.height='7cm', fig.show='hold'>>=
+plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
+@ 
+
+<<out.width='7cm', out.height='7cm'>>=
+.Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+tmp <- cld(.Pairs) ## silent assignment 
+plot(confint(.Pairs), 
+     main = "95% family-wise confidence interval using Tukey contrasts")
+@ 
+
+
 %% <<out.width='7cm', out.height='7cm', fig.show='hold'>>=
 %% .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
 %% tmp <- cld(.Pairs) ## silent assignment 
@@ -843,6 +858,10 @@ Anova(amodelnoint)
 @ 
 
 
+There are, however, good reasons to start fitting a model \textbf{with}
+interactions first, and \textbf{only} if there are no interactions, fit a
+simpler, additive model.
+
 \subsection{The order of factors}\label{orderfactors}
 
 Let's pretend there are no interactions. We can do that by creating a data
@@ -1113,6 +1132,50 @@ residual standard errors, and thus the p-values.
 %% @ 
 
 
+
+\subsection{One observation per cell}\label{one-obs-cell}
+
+So far, we have had more than one observation for each combination of
+levels (i.e., more than one observation per cell, where cell means each of
+the ``places'' or ``boxes'' in a table that shows the combinations of
+treatments). What if we only had one?
+
+
+Let us simulate some data:
+
+<<>>=
+
+set.seed(3)
+df1 <- data.frame(y = runif(6),
+                  A = rep(c("a1", "a2", "a3"), 2),
+                  B = rep(c("b1", "b2"), rep(3, 2)))
+df1
+
+@ 
+
+Some summaries of data:
+<<>>=
+(means <- with(df1, tapply(y, list(A, B), mean)))
+@ 
+
+
+We can fit the additive model (but only 1 df left)
+<<>>=
+m1 <- lm(y ~ A + B, data = df1)
+anova(m1)
+summary(m1)
+@ 
+
+But we can't really fit the interaction model:
+<<>>=
+m2 <- lm(y ~ A * B, data = df1)
+anova(m2)
+summary(m2)
+ 
+@ 
+
+
+Do you understand what is going on?
 
 
 \subsection{ANOVA/linear models with more than two factors}
@@ -1572,8 +1635,12 @@ Right now, nothing should stop us from thinking about models where the
 right hand side contains both continuous and discrete variables. Let's do
 it with the cystic fibrosis data set.  ANCOVA refers to this mixture of
 ANOVA and regression and stands for ``Analysis of
-covariance''. Regardless, all of ANOVA, regression, and ANCOVA are special
-types of linear models.
+covariance''\footnote{But this does not mean that we are comparing
+  covariances, as in comparing correlations, between groups; we are
+  comparing groups after adjusting for possible covariates, if that is
+  warranted by the absence of interactions between the continuous and
+  discrete predictors.}. Regardless, all of ANOVA, regression, and ANCOVA
+are special types of linear models.
 
 
 Let's fit a model where the independent variables are sex (discrete,
@@ -1584,9 +1651,17 @@ factor, explictly. Let's recode it:
 cystfibr2$sex <- factor(cystfibr2$sex, labels=c('Male','Female'))
 @ 
 
+
+Now, fit a model. You have to do it from the ``Statistics'', ``Fit
+models'', and then the ``Linear model'', not the ``Linear regression'',
+because one of the explanatory variables (sex in this case) is a
+factor.
+
+
 <<>>=
 mcyst2 <- lm(pemax ~ age * sex, data=cystfibr2)
 summary(mcyst2)
+Anova(mcyst2)
 @ 
 
 Note we added a ``*'', so an interaction between a continuous and a
@@ -1627,7 +1702,21 @@ Note that function \Rfunction{ancova} is not available from the menus. You
 have to type the above expression directly.
 
 
-FIXME: use a model with only age + sex, to go slow.
+
+\subsection{A parallel slopes model}
+\label{parallel-slopes}
+
+We could have started by fitting a model with parallel slopes:
+
+<<>>=
+mcyst0 <- lm(pemax ~ age + sex, data = cystfibr2)
+summary(mcyst0)
+Anova(mcyst0)
+@ 
+
+Make sure you understand the differences with respect to the previous
+model. What are we fitting here? What are we saying, biologically, in this
+model? 
 
 
 
@@ -1655,6 +1744,8 @@ we can just keep model \Robject{mcyst3}: there is no statistical evidence
 of \Robject{mcyst2} being any better.
 
 
+
+
 Three comments here:
 \begin{itemize}
 \item These tests only make sense for nested models (where the terms of
@@ -1668,7 +1759,29 @@ Three comments here:
 \item This was a very clear-cut case. Often, people will proceed in steps:
   first check no interaction and then, later, and if no interaction, check
   if there is a need for different intercepts.
+
+In fact, we could have done this in a more step-by-step way:
+
+<<>>=
+anova(mcyst0, mcyst2)
+@ 
+
+where we compare the model and without interaction (though this is the
+same, of course, as the term for interaction in \Robject{Anova(mcyst2)}).
+
+And then
+<<>>=
+anova(mcyst3, mcyst0)
+@ 
+
+but, again, this is just the same as the term for \texttt{sex} in
+\Robject{Anova(mcyst0)}.
+
+
+
 \end{itemize}
+
+
 
 
 
