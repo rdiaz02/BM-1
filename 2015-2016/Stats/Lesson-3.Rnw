@@ -1,8 +1,10 @@
 %\VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
+\synctex=1
 <<echo=FALSE,results='hide',error=FALSE>>=
 suppressMessages(library(SparseM, quietly = TRUE, warn.conflicts = FALSE))
 require(knitr, quietly = TRUE)
+library(patchSynctex)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
 @ 
@@ -102,7 +104,11 @@ the surface. But you should come away from this lesson understanding that
 these methods are extremely powerful and flexible and that they can be
 used to address a huge variety of different research questions. You would
 spend your time wisely if you at least took a look at some of the
-references we provide at the end.
+references we provide at the end. To emphasize again: ANOVAs, regression,
+ANCOVAs, are just special type of linear models; the terminology is not
+that important, but I'll use those terms as they might be more familiar to
+you. 
+
 
 
 \subsection{Files we will use}
@@ -194,7 +200,7 @@ Boxplot(activ~ftraining, data=dmit, id.method="y")
 @ 
 
 
-(the ``2'' is the identifier ---row name--- of a point that
+(The output might show a  ``2''; that  is the identifier ---row name--- of a point that
 has been flagged as a potential outlier and we will silent that output
 from now on in these notes).
 
@@ -347,7 +353,8 @@ Look carefully at the plot in Figure \ref{fig:tukey1}: for each difference
 (for each \textbf{contrast}), it shows the estimate and a 95\% confidence
 interval around it. The plot title says ``95\% family-wise confidence
 interval'', and that indicates that multiple testing correction has been
-used.
+used. (You might want to make that even more explicit by using a title
+such as ``95\% family-wise confidence interval using Tukey contrasts'').
 
 Given how far two of the contrasts are from 0.0, it seems those are highly
 significant differences. Let's go to the numerical output.
@@ -487,6 +494,36 @@ an ANOVA. There is nothing wrong with that (and there is a simple
 correspondence between a t statistic and an F statistic).
 
 
+\subsubsection{Other ways of obtaining summaries}
+
+(This is a detail for those of you who want to see how to directly get
+things done in R).
+
+We have used above the \Rfunction{numSummary} function from
+\CRANpkg{RcmdrMisc} but we could have done it with other functions in R.
+  
+For example with \Rfunction{aggregate}
+
+<<>>=
+with(dmit, aggregate(activ, list(Training = ftraining), 
+                      function(x) c(mean = mean(x), 
+                                    sd = sd(x), 
+                                    n = sum(!is.na(x)))
+                      ))
+@ 
+
+or \Rfunction{by}:
+<<>>=
+with(dmit, by(activ, ftraining, 
+              function(x) c(mean = mean(x), 
+                             sd = sd(x), 
+                             n = sum(!is.na(x)))
+              ))
+@ 
+
+
+
+
 
 
 \subsection{One way ANOVA: summary of steps}
@@ -579,7 +616,7 @@ is an adjusted p-value?  The classical paper from Wright, 1992, ``Adjusted
 p-values for simultaneous inference'', \textit{Biometrics}, 48:
 1005--1013, has in p.\ 1006 this definition of adjusted p-value: ``The
 adjusted $P$-value for a particular hypothesis within a collection of
-hypotheses, then, is the smaleest overall (i.e., 'experimentwise')
+hypotheses, then, is the smallest overall (i.e., 'experimentwise')
 significance level at which the particular hypothesis would be rejected.''
 This might sound like a mess, but it really ain't. Think about it. It is
 so nice that it makes comparisons very simple, as Wright explains: ``An
@@ -656,7 +693,7 @@ cbind(p.values, adjusted.p.values)
 
 
 How do we interpret this? Here I will only cover the very basics (if you
-want more details, sing up for BM-13 :-) ). But go back a couple of
+want more details, sing up for some of the other classes we teach :-) ). But go back a couple of
 paragraphs, and re-read the definition of adjusted p-value for the
 FDR. So, for example, if we keep as ``significant'' all the genes with a
 p-value (not adjusted p-value, but p-value, so the last first three) $\leq
@@ -706,7 +743,7 @@ take a look at a three-page one by W.\ Noble, in \textit{Nature
 
 
 % FIXME: start first without interactions!!! Use the data from orderfactors
-
+%% we can't if we use Rstudio
 \section{Two-way ANOVA}
 
 The following data come from an experiment about the effects of three
@@ -787,7 +824,7 @@ variable depends on the effect of the other. In this case, even if Drug B
 overall leads to a larger change (decrease) in cholesterol, its effects
 depend on the Diet. This has practical consequences: is Drug B a better
 drug?  It depends on the diet of the patient: for the HF (high fat) diet,
-Drub B is clearly worse than Drug A.
+Drug B is clearly worse than Drug A.
 
 Interaction is also called ``non-additivity'' because the model deviates
 from a simple model like
@@ -964,6 +1001,11 @@ SPSS, SAS, etc.)\footnote{The type of sums of squares used (and,
   \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}. 
 \label{fn:2}}.
 
+Some of this might still seem mysterious. Think about doing a regression
+of body height on the length of both the left and right arms. And think
+about how unbalanced data, with categorical independent variables, is
+somewhat similar to inducing a correlation between variables. We will
+discuss this in class. 
 
 
 
@@ -1550,24 +1592,24 @@ among themselves. Is this a common phenomenon: yes, it is rather common.
 
 
 
-\subsection{Variable and model selection}
-You say you want to select variables? Select them for what? Prediction?
-Interpretation?  Variable selection is a touchy and delicate
-subject. First, procedures based purely in statistical criteria might
-select ``statistically important'' variables (under some suitable
-definition of ``important''), but those need not be the most relevant,
-causally. And with regards to the statistical procedures, we will
-summarize it as follows: please, distrust automated variable selection
-procedures that rely on p-values or F-statistics of individual variables
-(in all their variants, such as stepwise, etc). Much more reasonable are
-strategies based on model-comparison criteria such as AIC and even better
-is bootstrapping the whole process to get estimates of error, predictive
-ability, etc. Even better, of course, is subject-matter guidance on how to
-proceed and what are and are not candidates for deletion and in what
-order. The book by Frank Harrell, ``Regression modelling strategies''
-contains great discussions of these topics. The actual data set used here
-is discussed, also in the context of variable selection, by P.\ Dalgaard
-in chapter 11 of ``Introductory statistics with R''.
+%% \subsection{Variable and model selection}
+%% You say you want to select variables? Select them for what? Prediction?
+%% Interpretation?  Variable selection is a touchy and delicate
+%% subject. First, procedures based purely in statistical criteria might
+%% select ``statistically important'' variables (under some suitable
+%% definition of ``important''), but those need not be the most relevant,
+%% causally. And with regards to the statistical procedures, we will
+%% summarize it as follows: please, distrust automated variable selection
+%% procedures that rely on p-values or F-statistics of individual variables
+%% (in all their variants, such as stepwise, etc). Much more reasonable are
+%% strategies based on model-comparison criteria such as AIC and even better
+%% is bootstrapping the whole process to get estimates of error, predictive
+%% ability, etc. Even better, of course, is subject-matter guidance on how to
+%% proceed and what are and are not candidates for deletion and in what
+%% order. The book by Frank Harrell, ``Regression modelling strategies''
+%% contains great discussions of these topics. The actual data set used here
+%% is discussed, also in the context of variable selection, by P.\ Dalgaard
+%% in chapter 11 of ``Introductory statistics with R''.
 
 \subsection{Interactions between continuous variables}\label{regr-int}
 Can we add interactions? Yes, of course. Interactions between continuous
@@ -1609,7 +1651,8 @@ asLm <- lm(activ ~ ftraining, data = dmit)
 anova(asLm)
 @ 
 
-The ANOVA table is the same.
+The ANOVA table is the same. I've used \Rfunction{anova} but I could have
+used \Rfunction{Anova}.
 
 But what is this output?
 
@@ -1619,15 +1662,27 @@ summary(asLm)
 @ 
 
 We are being shown the fitted coefficients. They are expressed as
-deviations with respect to a baseline level, in this case the first level.
+deviations with respect to a baseline level, in this case the first level:
+
+<<>>=
+means <- with(dmit, tapply(activ, ftraining, mean)) ## instead of "tapply", 
+                                                    ## "by" would 
+                                                    ## also work here
+means[1]
+means[2] - means[1]
+means[3] - means[1]
+rm(means) ## let's remove it, so as not the leave
+          ## garbage around
+@ 
+
+This is the default parameterization in R. But is is not the only one available.
 
 
-I've used \Rfunction{anova} but I could have used \Rfunction{Anova}, and
-the above applies to more than one factor, and to factors with an
-arbitrary number of levels. 
+Of course, the above applies to more than one factor, and to factors with
+an arbitrary number of levels.
 
 
-
+\clearpage
 \section{Continuous and discrete independent variables 
   and ANCOVA}\label{ancova}
 
@@ -1640,7 +1695,7 @@ covariance''\footnote{But this does not mean that we are comparing
   comparing groups after adjusting for possible covariates, if that is
   warranted by the absence of interactions between the continuous and
   discrete predictors.}. Regardless, all of ANOVA, regression, and ANCOVA
-are special types of linear models.
+are especial types of linear models.
 
 
 Let's fit a model where the independent variables are sex (discrete,
@@ -1978,7 +2033,7 @@ We will first use the two simple regression models we fitted in section
 \ref{regr}. Make the first one (\Robject{metab}) active and go to
 ``Models'', ``Graphs'', ``Basic diagnostic plots''. 
 
-<<fig.show='hold'>>=
+<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation '>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(metab)
 par(oldpar)
@@ -2029,7 +2084,7 @@ Cook's distance (function \Rfunction{cooks.distance}).
 
 
 Now, repeat the above with the model that has taken logs:
-<<fig.show='hold'>>=
+<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model after log transformation '>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(metablog)
 par(oldpar)
@@ -2062,13 +2117,19 @@ look at all of these yourself to see them.
 
 
 For you to read and play around further:
-
 \begin{itemize}
-\item A very nice type of qqplot is available from package \CRANpkg{car},
-  and in R Commander under ``Residual quantile comparison plots''.
-\item ``Component+Residual'' (or partial residual) plots allow us to
+\item An extended qqplot is available from package \CRANpkg{car},
+  \Rfunction{qqPlot} (and in R Commander under ``Residual quantile
+  comparison plots'').
+\item ``Component+Residual'' (or partial residual\footnote{These plots,
+    for each variable, shows a plot of the independent variable, say $x$, on the
+    horizontal axis and, on the ordinates, the ``partial residuals'' $=
+    residual + \hat{\beta}x$.}) plots allow us to
   examine, in models with multiple regressors, deviations from linearity
-  and could suggest the appropriate transformation.
+  and could suggest the appropriate transformation. ``CERES plots'' are a
+  variation of ``Component + Residual'' plots that work well even if
+  relationships are strongly nonlinear. Both also available from
+  \CRANpkg{car}.
 \item Various diagnostics related to dfbetas allow us to identify
   influential observations in specific terms of the model.
 \item Variance inflation factors help us detect possible problems caused
@@ -2077,7 +2138,8 @@ For you to read and play around further:
   problems with multiple independent variables; they can help to identify
   influential points (which are easily masked with multiple variables) and
   can also help to try to find a good functional relationship (but
-  Component+Residual are more useful here).
+  Component+Residual are more useful here). Again, available from
+  \CRANpkg{car}. 
 \item A variety of numerical tests and diagnostics are also available
   (e.g., tests for nonlinearity or for homoscedasticity).
 \item Package \CRANpkg{car} and the accompanying book ``An R companion to
@@ -2089,6 +2151,32 @@ For you to read and play around further:
 
 
 
+%% \begin{itemize}
+%% \item A very nice type of qqplot is available from package \CRANpkg{car},
+%%   and in R Commander under ``Residual quantile comparison plots''.
+%% \item ``Component+Residual'' (or partial residual) plots allow us to
+%%   examine, in models with multiple regressors, deviations from linearity
+%%   and could suggest the appropriate transformation.
+%% \item Various diagnostics related to dfbetas allow us to identify
+%%   influential observations in specific terms of the model.
+%% \item Variance inflation factors help us detect possible problems caused
+%%   by collinearity (correlations between independent variables).
+%% \item Added variable plots are particularly useful in multiple regression
+%%   problems with multiple independent variables; they can help to identify
+%%   influential points (which are easily masked with multiple variables) and
+%%   can also help to try to find a good functional relationship (but
+%%   Component+Residual are more useful here).
+%% \item A variety of numerical tests and diagnostics are also available
+%%   (e.g., tests for nonlinearity or for homoscedasticity).
+%% \item Package \CRANpkg{car} and the accompanying book ``An R companion to
+%%   applied regression'' contain excellent and detailed comments about those
+%%   and other diagnostics, and several functions. Take also a look, for a
+%%   summary, at the very nice sections 8.3 to 8.5 in Kabakoff's ``R in
+%%   action.''
+%% \end{itemize}
+
+
+
 
 %% Do not use the overlap in CI as a p-value
 
@@ -2096,6 +2184,47 @@ For you to read and play around further:
 %% Doing t-tests via ANOVA (which adds diagnostics)
 
 
+\section{Variable and model selection}
+You say you want to select variables? Select them for what? Prediction?
+Interpretation?  Variable selection is a touchy and delicate
+subject. First, procedures based purely in statistical criteria might
+select ``statistically important'' variables (under some suitable
+definition of ``important''), but those need not be the most relevant from
+a biological point of view, or causally, etc
+
+And with regards to the statistical procedures, we will summarize it as
+follows: please, please, please, distrust automated variable selection
+procedures that rely on p-values or F-statistics of individual variables
+(in all their variants, such as stepwise, etc). Careful model comparison,
+for instance using something like \verb@ anova(model1, model2) @, as we
+have seen (e.g., section \ref{model-comp} or \ref{ancova_rept}), might be
+a good idea. Notice, again, that \verb@ anova(model1, model2) @ is all
+about comparing models.
+
+
+If you really need automated or semiautomated procedures, then reasonable
+strategies use model-comparison criteria such as AIC (e.g., with the
+\Rfunction{stepAIC} function from \CRANpkg{MASS}) and even better is then
+bootstrapping the whole process to get estimates of error, predictive
+ability, etc. Even better, of course, is subject-matter guidance on how to
+proceed and what are and are not candidates for deletion and in what
+order. The book by Frank Harrell, ``Regression modeling strategies''
+contains great discussions of these topics. The actual data set used here
+is discussed, also in the context of variable selection, by P.\ Dalgaard
+in chapter 11 of ``Introductory statistics with R''.
+
+
+To give some examples (look at them carefully, and compare with what we
+did by hand, and with whether or not these are the models you would
+use). This is more advanced material, though:
+
+<<results='hide'>>=
+library(MASS)
+stepAIC(mcyst2, direction = "both")
+stepAIC(mcyst, direction = "both")
+stepAIC(longev_b_r, direction = "both")
+stepAIC(metab_b_r, direction = "both")
+@ 
 
 
 
@@ -2159,6 +2288,18 @@ later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
   mortem examination. He can perhaps say what the experiment died of.''}
 
 
+\section{Additional reading}
+
+Many books have been devoted to linear models, ANOVA, et al. And in R (not
+necessarily through R Commander) there is a wide variety of procedures
+implemented. To begin with, look at the great book by Fox and Weisberg
+``An R companion to applied regression''. Take also a look at chapters 6
+and 7 of Dalgaard's ``Introductory statistics with R'' and chapters 8 and
+9 of Kabakoff's ``R in action''. This should get you going. From here, you
+will probably want to look at generalized linear models, survival
+analysis, mixed effects models, nonlinear models, and generalized additive
+models to name some extensions of linear models.
+
 
 
 \section{Appendix}
@@ -2177,14 +2318,6 @@ See how the degrees of freedom make no sense.
 
 
 
-\section{Additional reading}
-
-Many books have been devoted to linear models, ANOVA, et al. And in R (not
-necessarily through R Commander) there is a wide variety of procedures
-implemented. To begin with, look at the great book by Fox and Weisberg
-``An R companion to applied regression''. Take also a look at chapters 6
-and 7 of Dalgaard's ``Introductory statistics with R'' and chapters 8 and
-9 of Kabakoff's ``R in action''. This should get you going.
 
 
 
@@ -2201,6 +2334,8 @@ options(width=60)
 sessionInfo()
 @ 
 
+
+
 \end{document}
 
 %% remember to use bibexport to keep just the minimal bib needed
@@ -2211,7 +2346,7 @@ sessionInfo()
 
 
 %%% Local Variables:
-%%% TeX-master: t
+%%% TeX-master: "Lesson-3"
 %%% ispell-local-dictionary: "en_US"
 %%% coding: iso-8859-15
 %%% End:
