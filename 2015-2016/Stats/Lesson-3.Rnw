@@ -1016,7 +1016,7 @@ discuss this in class.
 %%   hegith on left and right arms}
 
 
-\subsection{Does order always matter?}
+\subsection{Does order always matter?}\label{ordermatter}
 Nope. When the design is balanced, order does not
 matter\footnote{Technically, orthogonality of the design matrix does not
   require identical cell counts; if row/column counts are proportional,
@@ -1356,7 +1356,8 @@ and call it \Robject{anage\_a} (yes, you know how to do that; look at
 Figure \ref{subset}, and recall that the Class is ``Aves''; look at the
 data).
 
-<<create_anage_a, echo=FALSE, results='hide'>>=
+This is how you can do it directly in R:
+<<create_anage_a, results='hide'>>=
 anage_a <- anage_a_r[anage_a_r$Class == "Aves",]
 @ 
 
@@ -2000,8 +2001,6 @@ The three main types are:
 \clearpage
 \section{Diagnostics}\label{diagnostics}
 
-\red{FIXME: add from a fully balanced designs, and explain differences in
-  last plot ---all have same leverage?}
 
 Wait!!! Do our models make sense? These are models, so we can, and should,
 check some of their basic assumptions. We cannot do justice to this
@@ -2028,17 +2027,6 @@ among data is the reason why the analysis with the AnAge data set are not
 really correct.
 
 
-
-We will first use the two simple regression models we fitted in section
-\ref{regr}. Make the first one (\Robject{metab}) active and go to
-``Models'', ``Graphs'', ``Basic diagnostic plots''. 
-
-<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation '>>=
-oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
-plot(metab)
-par(oldpar)
-@ 
-
 Before looking at the plots, two concepts should be clear:
 \begin{description}
 \item[Fitted value] The predicted, or fitted value: if we have an equation
@@ -2054,23 +2042,118 @@ Before looking at the plots, two concepts should be clear:
 \end{description}
 
 
+\subsection{Diagnostics: an example with a designed experiment with
+  factors} \label{diag-factors}
+
+
+We will first use the fake data from a perfectly balanced experimental
+design, the data used in section \ref{ordermatter}. The diagnostic plots
+from these kinds of designed experiments can look slightly different from
+those for regression, which makes sense if you think about it. I will
+recreate the data here. However, to make things more interesting, I will
+create a very large outlier:
+
+<<>>=
+## Create the data 
+set.seed(1)
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+y <- rep(c(10, 13, 12, 16), rep(10, 4))
+y <- y + rnorm(length(y), sd = 1.5)
+y.data <- data.frame(y, sex, drug)
+y.data[1, 1] <- 25
+## Fit the model
+myAdditive <- lm(y ~ sex + drug, data = y.data)
+myInteract <- lm(y ~ sex * drug, data = y.data)
+## What are they saying?
+summary(myAdditive)
+summary(myInteract)
+@ 
+
+<<fig.show='hold', fig.cap='Model diagnostics for designed experiment, additive model '>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(myAdditive)
+par(oldpar)
+@ 
+
+<<fig.show='hold', fig.cap='Model diagnostics for designed experiment, interaction model '>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(myInteract)
+par(oldpar)
+@ 
+
+
+First, look at the plots. Try to see what they are about. See how there is
+one point that stands out in several plots, look at the regularity of the
+patterns.
+
 
 The plot on the upper left is used to judge if the functional form of the
-model makes sense: if the relationship is really linear as modeled, you
-should see no systematic pattern here, but we see it (in this case, it
-suggests that out model is predicting too small a metabolic rate at
-intermediate values, and the opposite at large values, which suggests a
-curvilinear relationship). This figure also helps spots systematic changes
-in variance (i.e., violations of homoscedasticity). But for this, the
-bottom left plot is better and it does suggest that violations of
-homoscedasticity are present (though, right now, with such strong evidence
-of non-linearity, this is not a surprise). 
+model makes sense, especially for regression models (not so much for
+designed experiments with factors, but it is still helpful).  This figure
+also helps spots systematic changes in variance (i.e., violations of
+homoscedasticity). But for this, the bottom left plot is better which, in
+this case, does not suggest anything serious, except for the outlier.
 
-The  upper  right plot  (a  ``q-q  plot'') is  used to  assess  approximate
-normality of the residuals: you want points  to more or less lie along the
-dotted line (with some  allowance for deviations in the tails); things
-do  not look  great here,  and this  distribution has  several very  large
-residuals, is heavy tailed, and also somewhat skewed.
+The upper right plot (a ``q-q plot'') is used to assess approximate
+normality of the residuals: you want points to more or less lie along the
+dotted line (with some allowance for deviations in the tails). Here the
+``q-q plot'' is not perfect (even if we discount the outlier), even when
+data did come from a normal; this is totally normal (remember, we are
+sampling).
+
+The bottom right differs in regression models and experiments with
+factors. Here you are shown residuals vs.\ factor level combinations. (The
+idea of leverage that makes a lot of sense in regression ---see below---
+is not that useful here). Notice how this plot shows four vertical lines
+in both models, the additive and the interaction one, but plots on the
+upper left and bottom left differ in the apparent number of vertical
+lines. Do you understand why?
+
+
+\subsection{Diagnostics: examples with some of the regression models}\label{diag-regr}
+
+We will now use the two simple regression models we fitted in section
+\ref{regr}. Make the first one (\Robject{metab}) active and go to
+``Models'', ``Graphs'', ``Basic diagnostic plots''. 
+
+<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation '>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(metab)
+par(oldpar)
+@ 
+
+%% Before looking at the plots, two concepts should be clear:
+%% \begin{description}
+%% \item[Fitted value] The predicted, or fitted value: if we have an equation
+%%   like $Y = \alpha + \beta_1 X + \beta_2 Z$, then the fitted values are
+%%   the $Y$ for the observed combinations of $X$ and $Z$ (with the values of
+%%   $\alpha$ and $\beta$ returned from the model). It is just what the
+%%   model predicts.
+
+%% \item[Residual] Basically, the difference between the observed and the
+%%   fitted value. There are different types of residuals (residuals,
+%%   standardized and studentized being the most common).
+
+%% \end{description}
+
+
+
+Now you can see why with regression models we can use the plot on the
+upper left to judge if the functional form of the model makes sense: if
+the relationship is really linear as modeled, you should see no systematic
+pattern here, but we see it (in this case, it suggests that out model is
+predicting too small a metabolic rate at intermediate values, and the
+opposite at large values, which suggests a curvilinear
+relationship). Again, this figure also helps spots systematic changes in
+variance (i.e., violations of homoscedasticity). But for this, the bottom
+left plot is better and it does suggest that violations of
+homoscedasticity are present (though, right now, with such strong evidence
+of non-linearity, this is not a surprise).
+
+What about the ``q-q plot'': things do not look great here, and this
+distribution has several very large residuals, is heavy tailed, and also
+somewhat skewed.
 
 The bottom right can be hard to interpret: it shows two quantities
 (residuals and leverage) that, together, are part of Cook's distance, that
@@ -2110,7 +2193,7 @@ only be able to detect if a model is a bad one if it really is very bad.
 (remember, this is an ANOVA, and there were six combinations of levels,
 and thus the discrete values you observe in two of the plots). However,
 the qqplot of residuals is a little bit ugly, but it is hard to tell from
-relatively so little data\footnote{This is an interesting case, since
+relatively so little data\footnote{Again, this is an interesting case, since
   these data are simulated from a normal distribution}. Finally,
 \Robject{AnovaModel.1}, from section \ref{oneway}, looks just fine. Please
 look at all of these yourself to see them.
