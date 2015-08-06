@@ -95,6 +95,11 @@ BiocStyle::latex()
 
 \clearpage
 
+\section*{Warning: eternally provisional}
+This file can get changed often. When asking questions in class or in the
+forum, refer to the section numbers which change less than the page numbers.
+\clearpage
+
 \section{Introduction}
 
 
