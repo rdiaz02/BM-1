@@ -8,6 +8,7 @@ zip -r Lesson-2-files.zip Lesson-2-files
 runKnitr-2.sh Lesson-3.Rnw 1
 rm Lesson-3-files.zip
 mkdir Lesson-3-files
-cp Lesson-3.pdf MIT.txt Cholesterol.txt AnAge_birds_reptiles.txt CystFibr2.txt ./Lesson-3-files/.
+rm Lesson-3-files/*
+cp MIT.txt Cholesterol.txt AnAge_birds_reptiles.txt CystFibr2.txt ./Lesson-3-files/.
 zip -r Lesson-3-files.zip Lesson-3-files
 
