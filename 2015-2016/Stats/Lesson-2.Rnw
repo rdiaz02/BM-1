@@ -579,16 +579,73 @@ idea of using each subject as its own control.
 
 \subsection{Reshaping the data for a paired t-test}
 
-We cannot do a paired t-test directly with our data because of the way the
-data have been given to us. We first need to reshape the data as R
-Commander ---in contrast to using directly R--- will not allow us to carry
-out a paired t-test on these data as they are. Of course, you could also
-do this outside R if you want and then import the data so that the two
-values of myc expression for a subject are on the same row.
+\subsubsection{The shape of the data}\label{datashape}
+Often, when you know you are only going to do a paired test you can
+organize your data in a table structure like:
 
+\begin{table}
+\begin{tabular}{ccc}
+  SubjectID&Tumor&Non-Tumor\\
+  \hline
+  pepe&23&45\\
+  maria&29&56\\
+  \ldots&\ldots&\ldots\\
+\end{tabular}
+\caption{Paired data in a ``unstacked'' shape/format.}
+\end{table}
+
+
+That looks ok, but is really a very limiting format for the data. Think
+about what would you do if you had additional ``tumor'' ``non-tumor'' data
+per subject, or you had additional covariates for each measure, etc. That
+is why we often want to have the data in a ``stacked'' format as:
+
+
+\begin{table}
+\begin{tabular}{ccc}
+  SubjectID&Myc&Condition\\
+  \hline
+  pepe&23&tumor\\
+  pepe&45&nontumor\\
+  maria&29&tumor\\
+  maria&56&nontumor\\
+  \ldots&\ldots&\ldots\\
+\end{tabular}
+\caption{Paired data in a ``stacked'' shape/format.}
+\end{table}
+
+This is arguably a much more useful way of storing the data for most
+general analyses and we can keep adding additional information. Whole
+papers have been written about these issues\footnote{For example,
+  Wickham's ``Tidy data'', in the \textit{Journal of Statistical
+    Software}: \Burl{http://www.jstatsoft.org/v59/i10}}, but we will stop here.
+
+\subsubsection{Reshaping our data}
+
+In our case, we cannot do a paired t-test directly with our data because
+of the way the data have been given to us. We first need to reshape the
+data as R Commander ---in contrast to using directly R--- will not allow
+us to carry out a paired t-test on these data as they are. Of course, you
+could also do this outside R if you want and then import the data so that
+the two values of myc expression for a subject are on the same row but
+that is ugly.
 
 So that is what we want: the values of myc of the same subject to be on
-the same row. This is what we will do:
+the same row. We will do this reshaping in four different ways.
+
+There are many alternative approaches for reshaping the data directly from
+the command line. Many, many, many\footnote{For instance:
+  \Burl{http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/}
+  or \Burl{https://rpubs.com/bradleyboehmke/data_wrangling}; these are
+  heavily biased toward the ``Hadely's way''.}. And yes, it is unavoidable
+that this will get a little bit complicated. But manipulating and
+reshaping data must be done with a lot of care. You do not need to
+remember the details here, you just need to be aware of the issues.
+
+
+\subsubsection{Reshaping using the menus}\label{reshapemenu}
+
+
 
 \begin{enumerate}
 \item Create a data set that contains only the values for observations
@@ -612,6 +669,77 @@ the same row. This is what we will do:
 \end{enumerate}
 
 
+\subsubsection{Reshaping with \Rfunction{unstack}}\label{reshapestack}
+
+%%  I will use just one here,
+%% which might be the easiest to begin with, with data with a structure as
+%% simple as ours (I'd probably very rarely use this approach for real, with
+%% my own data, but doing it differently would require us to take a longer
+%% diversion).
+We will first use the R function \Rfunction{unstack}. This is the natural
+reverse operation of ``stacking''.
+
+
+<<>>=
+unstack(x = dmyc, form = myc ~  cond)
+@ 
+
+That seems to do it but \ldots how can you be sure each row corresponds to
+the same subject? We are counting on it to work, but it might not if the
+data had not been ordered by subject id. (See also section \ref{ptr}). So
+we will be explicit here, ordering by condition and then id:
+
+<<>>=
+dmyc0 <- dmyc[order(dmyc$cond, dmyc$id), ]
+dmyc0
+@ 
+
+Now, we unstack:
+
+<<>>=
+merged2 <- unstack(dmyc0, form = myc ~ cond)
+merged2
+@ 
+
+We could directly use the data, but we are missing the IDs. We will add them:
+
+<<>>=
+(merged2$id <- dmyc0$id[1:12])
+@ 
+
+Verify we are now ok comparing merged2 with dmyc.
+
+
+
+\subsubsection{Reshaping with \Rfunction{reshape}}
+\label{reshapereshape}
+
+This is another built-in function in R, \Rfunction{reshape}. This can be a
+complicated function to use, but it is extremely powerful. I'll use it
+here fully specifying all the needed arguments:
+
+<<>>=
+(merged3 <- reshape(dmyc, direction = "wide", idvar = "id", 
+                    timevar = "cond", v.names = "myc"))
+@ 
+
+
+
+\subsubsection{Reshaping with  \Rfunction{spread}}\label{spread}
+
+OK, so we will do it in a third way. You need to install the
+\CRANpkg{tidyr} package. If you don't have it, install it. This is not a
+big deal: it is just to show you a third way.
+
+<<>>=
+(merged4 <- spread(dmyc, cond, myc))
+@ 
+
+You can compare with \texttt{merged3} and \texttt{merged2} and \texttt{merged},
+and verify they have the same data.
+
+
+\subsubsection{Reshaping et al: final comments}
 
 A few comments:
 \begin{itemize}
@@ -673,15 +801,19 @@ A few comments:
 \subsection{The paired t-test}
 Just do a paired t-test. What is the result? Compare it with doing a
 t-test as if they were two independent samples. The differences are rather
-dramatic!
+dramatic! 
 
-FIXME: re-do this with new R-commander options
-%% <<>>=
-%% ## Paired; you can get this from R commander
-%% t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
-%%   paired=TRUE)
 
-%% @ 
+I'll use \texttt{merged2}; you can use \texttt{merged} or \texttt{merged3}
+or or \texttt{merged4}
+if you want. I'll type the expressions directly. You can of course get
+this from R Commander (under ``Statistics'', ``Means'').
+
+<<>>=
+## Paired; you can get this from R Commander too
+t.test(merged2$Cancer, merged2$NC, alternative='two.sided', conf.level=.95, 
+  paired=TRUE)
+@ 
 
 <<>>=
 ## Two-sample
