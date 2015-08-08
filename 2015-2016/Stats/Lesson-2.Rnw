@@ -1,10 +1,10 @@
-
-
 %\VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
+\synctex=1
 <<echo=FALSE,results='hide',error=FALSE>>=
 suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
 require(knitr, quietly = TRUE)
+library(patchSynctex)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
 require(car, quietly = TRUE)
@@ -15,7 +15,7 @@ require(car, quietly = TRUE)
 ## suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
 suppressMessages(require(BiocStyle, quietly = TRUE))
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
-suppressMessages(require(doBy, quietly = TRUE))
+## suppressMessages(require(doBy, quietly = TRUE))
 suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
 @ 
 
@@ -43,7 +43,7 @@ labelsep=endash]{caption}
 %\usepackage{tikz}
 %\usetikzlibrary{arrows,shapes,positioning}
 
-\synctex=1
+
 
 \usepackage[latin1]{inputenc}
 %\usepackage[utf8]{inputenc}
@@ -581,9 +581,10 @@ idea of using each subject as its own control.
 
 \subsubsection{The shape of the data}\label{datashape}
 Often, when you know you are only going to do a paired test you can
-organize your data in a table structure like:
+organize your data in a table structure like the one in Table 
+\ref{unstacked}:
 
-\begin{table}
+\begin{table}[h!]
 \begin{tabular}{ccc}
   SubjectID&Tumor&Non-Tumor\\
   \hline
@@ -591,17 +592,17 @@ organize your data in a table structure like:
   maria&29&56\\
   \ldots&\ldots&\ldots\\
 \end{tabular}
-\caption{Paired data in a ``unstacked'' shape/format.}
+\caption{Paired data in a ``unstacked'' shape/format.}\label{unstacked}
 \end{table}
 
 
 That looks ok, but is really a very limiting format for the data. Think
 about what would you do if you had additional ``tumor'' ``non-tumor'' data
 per subject, or you had additional covariates for each measure, etc. That
-is why we often want to have the data in a ``stacked'' format as:
+is why we often want to have the data in a ``stacked'' format as in Table \ref{stacked}:
 
 
-\begin{table}
+\begin{table}[h!]
 \begin{tabular}{ccc}
   SubjectID&Myc&Condition\\
   \hline
@@ -611,7 +612,7 @@ is why we often want to have the data in a ``stacked'' format as:
   maria&56&nontumor\\
   \ldots&\ldots&\ldots\\
 \end{tabular}
-\caption{Paired data in a ``stacked'' shape/format.}
+\caption{Paired data in a ``stacked'' shape/format.}\label{stacked}
 \end{table}
 
 This is arguably a much more useful way of storing the data for most
@@ -620,7 +621,7 @@ papers have been written about these issues\footnote{For example,
   Wickham's ``Tidy data'', in the \textit{Journal of Statistical
     Software}: \Burl{http://www.jstatsoft.org/v59/i10}}, but we will stop here.
 
-\subsubsection{Reshaping our data}
+\subsubsection{Reshaping our data}\label{reshaping}
 
 In our case, we cannot do a paired t-test directly with our data because
 of the way the data have been given to us. We first need to reshape the
@@ -637,7 +638,7 @@ There are many alternative approaches for reshaping the data directly from
 the command line. Many, many, many\footnote{For instance:
   \Burl{http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/}
   or \Burl{https://rpubs.com/bradleyboehmke/data_wrangling}; these are
-  heavily biased toward the ``Hadely's way''.}. And yes, it is unavoidable
+  heavily biased towards the ``Hadely's way''.}. And yes, it is unavoidable
 that this will get a little bit complicated. But manipulating and
 reshaping data must be done with a lot of care. You do not need to
 remember the details here, you just need to be aware of the issues.
@@ -716,7 +717,9 @@ Verify we are now ok comparing merged2 with dmyc.
 
 This is another built-in function in R, \Rfunction{reshape}. This can be a
 complicated function to use, but it is extremely powerful. I'll use it
-here fully specifying all the needed arguments:
+here fully specifying all the needed arguments\footnote{In this case, you
+  do not need to specify the \texttt{v.names} argument, for example, but
+  I'd rather be explicit.}:
 
 <<>>=
 (merged3 <- reshape(dmyc, direction = "wide", idvar = "id", 
@@ -727,11 +730,12 @@ here fully specifying all the needed arguments:
 
 \subsubsection{Reshaping with  \Rfunction{spread}}\label{spread}
 
-OK, so we will do it in a third way. You need to install the
-\CRANpkg{tidyr} package. If you don't have it, install it. This is not a
-big deal: it is just to show you a third way.
+OK, so we will do it in a fourth way. You need to install the
+\CRANpkg{tidyr} package. If you don't have it, install it if you
+want. This is not a big deal: it is just to show you a fourth way.
 
 <<>>=
+library(tidyr)
 (merged4 <- spread(dmyc, cond, myc))
 @ 
 
@@ -804,33 +808,33 @@ t-test as if they were two independent samples. The differences are rather
 dramatic! 
 
 
-I'll use \texttt{merged2}; you can use \texttt{merged} or \texttt{merged3}
-or or \texttt{merged4}
+I'll use \texttt{merged3}; you can use \texttt{merged} or \texttt{merged2}
+or \texttt{merged4}
 if you want. I'll type the expressions directly. You can of course get
 this from R Commander (under ``Statistics'', ``Means'').
 
 <<>>=
 ## Paired; you can get this from R Commander too
-t.test(merged2$Cancer, merged2$NC, alternative='two.sided', conf.level=.95, 
-  paired=TRUE)
+t.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided', 
+       conf.level=.95,  paired=TRUE)
 @ 
+
 
 <<>>=
 ## Two-sample
-t.test(myc~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE, 
-       data=dmyc)
+t.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided', 
+       conf.level=.95,  paired=FALSE)
 @ 
 
-%% <<>>=
-%% ## Two-sample. Type this directly in the R Script and submit.
-%% t.test(m3$Cancer.myc, m3$NC.myc, alternative='two.sided', conf.level=.95, 
-%%   paired=FALSE)
+The last is of course the same as
+<<>>=
+t.test(myc~cond, alternative='two.sided', conf.level=.95, 
+       var.equal=FALSE,  data=dmyc)
 
-%% @ 
+@ 
 
-
-
-
+(Is there a sign difference? Why? What happens if you change the order of
+NC and Cancer in the paired test?)
 
 
 \subsection{The paired t-test again: a single-sample t-test}\label{paired-single}
@@ -838,7 +842,8 @@ What is the above test doing?
 
 Create a new variable (e.g., call it ``diff.nc.c'') that is the difference
 of myc in the NC and Cancer subjects (``Data'', ``Manage variables'',
-``Compute new variable''). 
+``Compute new variable''). You have to fill up (modify to your needs) the
+boxes ``New variable name'' and ``Expression to compute''
 
 \begin{figure}[h!]
   \begin{center}
@@ -848,21 +853,16 @@ of myc in the NC and Cancer subjects (``Data'', ``Manage variables'',
   \end{center}
 \end{figure}
 
-% FIXME this is Cancer - NC, but I keep referring to it the other way
-% around in the reshaping, later below And check consistency with \ref{ptr}
 
-
-%% FIXME: ditto: this is the old m3
 You will see this in the R Script:
 <<>>=
-# m3$diff.nc.c <- with(m3, Cancer.myc - NC.myc)
+merged3$diff.nc.c <- with(merged3, myc.NC - myc.Cancer)
 @ 
 
 
-FIXME: here too
 Now, do a single-sample t-test:
 <<>>=
-# with(m3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)))
+with(merged3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)))
 @ 
 
 Compare the t-statistic, the degrees of freedom and the p-value with the
@@ -877,7 +877,7 @@ test).
 
 What do you think of this plot?
 
-<<fig.width=3.5, fig.height=3.5>>=
+<<fig.width=5.5, fig.height=5.5>>=
 plotMeans(dmyc$myc, dmyc$cond, error.bars="se", ylab = "MYC",
           xlab = "Condition")
 @ 
@@ -893,10 +893,10 @@ very good idea. % In fact, I will now create them from scratch directly from R
 % the case in our data, but need not be; see details in section \ref{ptr})
 
 
-FIXME: xx: 
-<<fig.width=3.5, fig.height=3.5, echo=TRUE, fig.show = 'hold'>>=
-## Boxplot( ~ diff.nc.c, data = m3, xlab = "",
-##         ylab = "Intra-subject difference (C - NC)", main = "MYC")
+
+<<fig.width=5.5, fig.height=5.5, echo=TRUE, fig.show = 'hold'>>=
+Boxplot( ~ diff.nc.c, data = merged3, xlab = "",
+         ylab = "Intra-subject difference (NC - Cancer)", main = "MYC")
 @ 
 
 
@@ -908,6 +908,7 @@ FIXME: xx:
 
 
 \clearpage
+
 A more elaborate plot directly shows both the NC and Cancer data, with a
 segment connecting the two observations of a subject. For that, though, we
 need to use R code directly. For example this will do (beware: this code
@@ -1072,12 +1073,13 @@ distribution.
 
 
 Go do it with the dmyc data we used for the paired t-test (section
-\ref{pairedt}). Remember we had to reshape the data so I will reuse our
-``m3'' data set:
+\ref{pairedt}). Remember we had to reshape the data (section
+\ref{reshaping}) so I will reuse our \texttt{merged3} data set:
 
 
 <<>>=
-## wilcox.test(m3$NC.myc, m3$Cancer.myc, alternative='two.sided', paired=TRUE)
+wilcox.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided', 
+            paired=TRUE)
 @ 
 
 You can verify that the results are the same as doing a single sample
@@ -1087,15 +1089,15 @@ differences. %% The single sample Wilcoxon test is not directly available
 %% the console as: %% it is in 2.1-7
 
 
-xx: eh, we can use diffs before. Leave it there, and reuse here
+Remember we computed intra-subject differences before
+(section \label{paired-single}), so we will reuse them: 
+
 <<>>=
-diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
-wilcox.test(diffs)
+wilcox.test(merged3$diff.nc.c)
 @ 
 
-For versions of R Commander 2.1-0 or later you can run it directly from
-the menu (you will have to create a data frame of the within-subject
-differences).
+For versions of R Commander 2.1-0 or later you can run the Wilcoxon signed
+rank test directly from the menu.
 
 
 
@@ -1543,7 +1545,7 @@ dmyc
 
 However, to ensure that order is OK we could have pre-ordered the data
 by patient ID and by condition within patient (this second step isn't
-really needed):
+really needed here), as we did before (see section \ref{reshapestack}):
 
 <<>>=
 dmycO <- dmyc[order(dmyc$id, dmyc$cond), ]
@@ -1654,7 +1656,7 @@ sessionInfo()
 
 
 %%% Local Variables:
-%%% TeX-master: t
+%%% TeX-master: "Lesson-2"
 %%% ispell-local-dictionary: "en_US"
 %%% coding: iso-8859-15
 %%% End:
@@ -1662,10 +1664,3 @@ sessionInfo()
 
 
 
-
-
-%% reshape in Rcmdr?
-%% paired tests in Rcmdr?
-
-
-%% could use unstack, from the command line, after sorting
