@@ -70,3 +70,4 @@ anova(lm(y1 ~ z * tf))
 
 
 
+## NOTE: of course, diagnostics might/ought to help us choose the model.
