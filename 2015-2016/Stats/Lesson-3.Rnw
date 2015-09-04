@@ -528,6 +528,30 @@ with(dmit, by(activ, ftraining,
 
 
 
+\subsubsection{Can you do an ANOVA with only one sample per group?}\label{anova-only-one}
+Why or why not?
+
+
+What happens here?
+<<>>=
+y <- c(1, 2, 3)
+gr <- factor(c("g1", "g2", "g3"))
+anova(lm(y ~ gr))
+summary(aov(y ~ gr))
+@ 
+
+
+
+And here?
+
+
+<<>>=
+y2 <- c(1, 2, 3, 4)
+gr2 <- factor(c("g1", "g2", "g3", "g3"))
+anova(lm(y2 ~ gr2))
+summary(aov(lm(y2 ~ gr2)))
+@
+
 
 
 
@@ -2434,7 +2458,6 @@ sessionInfo()
 
 
 %%% Local Variables:
-%%% TeX-master: "Lesson-3"
 %%% ispell-local-dictionary: "en_US"
 %%% coding: iso-8859-15
 %%% End:
@@ -2446,3 +2469,5 @@ sessionInfo()
 
 %% Examples prediction and confidence intervals
 %% x <- c(rep(1, 50), rep(5, 50)); x <- x + rnorm(100, sd = 0.1); y <- 3 * x + rnorm(100); ci.plot(lm(y ~ x)); mean(x)
+
+% TeX-master: "Lesson-3"
