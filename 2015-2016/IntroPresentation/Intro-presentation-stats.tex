@@ -85,6 +85,8 @@
 \newenvironment{myitemize}
 {\begin{itemize}}{\end{itemize}}
 
+\newenvironment{wideitemize}
+{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
 
 \newcommand{\mydes}[2][]{
   \vspace*{-1pt}
@@ -143,12 +145,37 @@ Madrid, Spain\\
 \end{frame}
 
 
+
+
+\begin{frame}
+  \frametitle{Why?}
+  Because the world is a noisy place and we need statistics to do science.
+  And we always come back to statistics.
+
+\vspace*{18pt}
+
+\begin{verse}
+  Go ahead, tell me you'll leave again\\
+  You'll just come back running\\
+  Holding your scarred heart in hand\\
+  It's all the same
+
+  And I'll take you for who you are\\
+  If you take me for everything\\
+  And do it all over again\\
+  It's all the same
+\end{verse}
+
+{\fontfamily{ppl}\selectfont Sick Puppies, \textit{All the Same} (from their 2007 album \textit{Dressed Up as Life}).}
+\end{frame}
+
 \begin{frame}
   \frametitle{Objectives}
   \begin{itemize}
   \item Be able to conduct, and interpret correctly, some basic types of
     statistical analysis of wide use in molecular biology et al.
   \item Develop your statistical intuition.
+  \item Understand the fundamental relevance of good experimental design.
   \end{itemize}
 \end{frame}
 
@@ -228,10 +255,11 @@ What are we leaving out? Almost everything.
   \item Available in popular ``scientific workflows''
     (\Burl{http://en.wikipedia.org/wiki/Scientific_workflow_system}) such
     as Kepler, Taverna, Galaxy or Knime.
+  \item Becoming a key piece in reproducible research
   \item They even mention it in \textit{Nature} editorials (\textit{The
       digital toolbox}, 4-September-2014) and \textit{Nature} toolboxes
     articles (Tippman, 2015, \textit{Programming tools: adventurs with R},
-    January 2015).
+    January 2015)
   \item \ldots
 
   \end{itemize}
@@ -280,6 +308,8 @@ What are we leaving out? Almost everything.
   \begin{itemize}
   \item That you finish the class with a burning desire (to learn) to use
     R directly typing R commands (i.e., no mouse clicks).
+  \item That you finish the class with a burning desire to learn more
+    statistics. 
   \end{itemize}
 \end{frame}
 
@@ -297,7 +327,7 @@ What are we leaving out? Almost everything.
 
 
 \begin{frame}
-  \frametitle{What will ideally happen?}
+  \frametitle{What would ideally happen?}
   \begin{itemize}
   \item That you never again use Excel for figures.
   \item That you do your statistics with R, from simple t-tests to complex
@@ -426,13 +456,24 @@ notes \textbf{before} class.
 
 
 
+\begin{frame}
+  \frametitle{Schedule}
+  \begin{itemize}
+  \item From Moodle.
+  \item Pay attention to days 23, 24, 25, 28 September and groups A and B (B
+    has class on 24 and 25 for Lesson 1, A has class on 23 and 28 for
+    Lesson 1).
+  \item Review and Exam: same day for both groups. First group A (10--12)
+    then group B (12--14).
+  \end{itemize}
+\end{frame}
 
 \begin{frame}
   \frametitle{Class mechanics}
   \begin{itemize}
   \item A mixture of theory and practice
   \item Introduce a problem, work through it
-  \item Much, much better if you work through the notes before class
+  \item You need to work through the notes before class
   \item Yes, there will be partial repetition between
     classes/sections/teachers
   \end{itemize}
@@ -487,7 +528,8 @@ Because you will learn the material a lot better (\textbf{Active
 
 
 \vspace*{15pt}
-Because there is a lot of material to cover (really: A LOT)
+Because there is a lot of material to cover (really: A LOT ---look at the
+number of pages and topics in the notes)
 
 \begin{itemize}
 \item No time to cover every single thing in the notes
@@ -570,7 +612,7 @@ Working in groups a good idea
     \item we will all end up frustrated
     \end{itemize}
   \item (If some of you do work through it and some won't \ldots most
-    likely those who don't will be left way behind ---and ``tutorias'' are
+    likely those who don't will be left way behind ---and ``tutorías'' are
     not the way to fix not working through the notes before class)
   \end{itemize}
 \end{frame}
@@ -578,7 +620,7 @@ Working in groups a good idea
 
 \begin{frame}
   \frametitle{In case it was not clear}
-  Please, do work on this on your own before coming to class.
+  Please, do work on the notes on your own before coming to class.
 
 \vspace*{15pt}
 
@@ -613,47 +655,49 @@ What you get out of this class depends a lot on what you put into
   \begin{itemize}
   \item Use the forum.
   \item Do not expect us to always be the ones who answer.
-  \item \textbf{Label your questions appropriately}. 
+  \item \textbf{Label your questions appropriately}. The title/subject of
+    the question is \textbf{very} important.
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}
   \frametitle{Forum: examples of poor question titles/subjects}
-The title/subject of the question is \textbf{very} important.
-  \begin{itemize}
+
+  \begin{wideitemize}
   \item R does not run. \textit{What does not run, exactly?}
   \item I cannot install R. \textit{Where and what fails?}
   \item I don't understand statistics. \textit{Eh? Which part? All of
-      statistics? What statistics is about?}
-  \item I hate statistics. \textit{Fair enough. Now, what is the question,
-    exactly? Or is this just to make us sad?}
+      statistics? }
+  \item I hate statistics. \textit{Fair enough. Now, what exactly is the
+      question? Or is this just to make us sad?}
   \item I do not understand a t-test. \textit{What in a t-test is not clear?}
-  \end{itemize}
+  \end{wideitemize}
 \end{frame}
 
 
 
 \begin{frame}
   \frametitle{Forum: examples of good question titles/subjects}
-  \begin{itemize}
+  \begin{wideitemize}
   \item Lesson 3, Section 10.2, Diagnostics regression: why outliers?
   \item Installing R: cannot install rJava.
-  \end{itemize}
+  \end{wideitemize}
 \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Forum: attachment and error messages}
+  \frametitle{Forum: attachments and error messages}
   \begin{itemize}
-  \item   Whenever possible, copy and paste the error message(s) as text in the
-  body of the question.
+  \item Whenever possible, copy and paste the error message(s) as
+    \textbf{text} in the body of the question.
 
   \item Avoid capturing screens and pasting them in a word document, power
-    point document, or other such thing. 
-  \item (Yes, copying and pasting the text error is much simpler and
-    faster for you too.)
+    point document, or other such perverse thing. 
+
+  \item (Yes, copying and pasting the text error in an email message is
+    much simpler and faster for you too.)
   \end{itemize}
 \end{frame}
 
@@ -687,10 +731,10 @@ The title/subject of the question is \textbf{very} important.
   \begin{itemize}
   \item You are very welcome to bring your own laptop.
   \item Make sure you install the required software %% {\scriptsize  \Burl{http://ligarto.org/rdiaz/BM1-software-applied-stats.txt}}
-  \item \textbf{Wi-fi (eduroam)}: (google for ``wifi UAM'') %\Burl{http://www.uam.es/servicios/ti/servicios/wifi/}
+  \item \textbf{Wi-Fi (eduroam)}: (google for ``wifi UAM'') %\Burl{http://www.uam.es/servicios/ti/servicios/wifi/}
   \item \textbf{\red{Please make sure it works BEFORE coming to class}}
-  \item Address questions/issues to CAU (we cannot help).
-  \item Note: wifi/internet should not be really needed for classes, but it
+  \item Address Wi-Fi questions/issues to CAU (we cannot help).
+  \item Note: Wi-Fi/internet should not be really needed for classes, but it
     will be needed for the exam.
   \end{itemize}
 \end{frame}
