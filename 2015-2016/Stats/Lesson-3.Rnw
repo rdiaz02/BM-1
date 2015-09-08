@@ -2008,7 +2008,7 @@ continuous and discrete variables, etc.
 
 
 \section{Dealing with ratios}\label{ratios}
-%% zz
+
 In biology (as well as in other disciplines) it is common for researchers
 to use ratios of variables to try to standardize/normalize a
 variable. This procedure looks deceptively simple, but it is not. Here, we
