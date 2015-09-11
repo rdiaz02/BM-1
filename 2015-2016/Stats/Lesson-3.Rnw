@@ -2019,20 +2019,98 @@ will explore some of the problems\footnote{I thank Alba Concepción, a
   in the X variable, an issue we have not covered here} in this commentary
 from Curran-Everett:
 \Burl{http://ajpadvan.physiology.org/cgi/doi/10.1152/advan.00053.2013}.
-Note, however, that this section should not really be necessary after
-previous sections.
 
-
-So that everything is in the open, I will simulate the data here, but in
-these notes I won't provide details about how/why the data have been
-simulated that way. We will pretend there is a response variable, called
-``Y'', two groups (``g1'' and ``g2'') and another variable, called
-``Z''. Z might be some reporter protein, or something that can be taken as
-a proxy for cell volume, etc. 
+Before we start, though, note that this section should not really be
+necessary after previous sections :-).
 
 
 
 
+So that nothing is hidden, I will simulate the data here, but in these
+notes I won't provide details about how/why the data have been simulated
+that way (the code is below; look at it if you want). We will pretend
+there is a response variable, called ``Y'', two groups (``g1'' and ``g2'')
+and another variable, called ``Z''. Z might be some reporter protein, or
+something that can be taken as a proxy for cell volume, etc.
+
+
+<<>>=
+set.seed(1) ## irrelevant, but so that we all 
+            ## get the same numbers
+n <- 20
+sd <- 0.5
+@ 
+
+
+
+\subsection{A misleading case with parallel lines}
+\label{mislead-ratios-1}
+
+
+<<>>=
+z1 <- runif(n, 1, 10)
+t1 <- factor(rep(c("g1", "g2"), rep(n, 2)))
+y1 <-  2 * z1 + 3 * as.numeric(t1) + rnorm(n, 0, sd)
+data1 <- data.frame(Y = y1, Z = z1, Group = t1, Ratio = y1/z1)
+@ 
+
+
+%%, fig.cap="Parallel slopes but ratio differences?">>=
+<<fig.height=6>>= 
+par(mfrow = c(1, 2))
+with(data1, plot(Ratio ~ Group))
+with(data1, plot(Y ~ Z, col = c("red", "blue")[Group]))
+abline(lm(Y ~ Z, subset(data1, Group == "g1")), col = "red")
+abline(lm(Y ~ Z, subset(data1, Group == "g2")), col = "blue")
+@ 
+
+<<>>=
+summary(lm(Y ~ Z * Group, data = data1))
+t.test(Ratio ~ Group, data = data1)
+@ 
+
+The lines are perfectly parallel, but the test for ratios says they
+differ. Why? Because it is forcing a regression through the origin. Note
+the the linear model does get the results right: there are no differences
+in the rate of change of Y relative to Z, but the groups differ in
+intercept. As you can see, the analysis with ratios is misleading.
+
+
+\subsection{A misleading case where ratios differ}
+\label{mislead-ratios2}
+
+<<>>=
+set.seed(123)
+sd <- 0.1
+z2 <- seq(from = 1, to = 3, length.out = n)
+ya <- z2 + rnorm(n, 0, sd)
+yb <- 0.5 * z2 + 1 + rnorm(n, 0, sd)
+y <- c(ya, yb)
+tf <- factor(rep(c("g1", "g2"), rep(n, 2)))
+z <- rep(z2, 2)
+data2 <- data.frame(Y = y, Z = z, Group = tf, Ratio = y/z)
+@ 
+
+%% fig.cap="Different slopes and no ratio differences?">>=
+<<fig.height=6>>=
+par(mfrow = c(1, 2))
+with(data2, plot(Ratio ~ Group))
+with(data2, plot(Y ~ Z, col = c("red", "blue")[Group]))
+abline(lm(Y ~ Z, subset(data2, Group == "g1")), col = "red")
+abline(lm(Y ~ Z, subset(data2, Group == "g2")), col = "blue")
+@ 
+
+<<>>=
+summary(lm(Y ~ Z * Group, data = data2))
+t.test(Ratio ~ Group, data = data2)
+@ 
+
+
+The ratios do differ, if we do not force them through the origin: the rate
+of change of Y relative to Z differs between the two groups. But just
+comparing the ratios will not detect it. Again, a linear model does detect
+it just fine: you see a strong interaction between slope and
+group. And, again, the analysis of ratios is misleading.
 
 
 
