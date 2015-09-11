@@ -2056,17 +2056,23 @@ data1 <- data.frame(Y = y1, Z = z1, Group = t1, Ratio = y1/z1)
 
 
 %%, fig.cap="Parallel slopes but ratio differences?">>=
-<<fig.height=6>>= 
+<<fig.height=6,fig.cap='Parallel slopes but ratio differences?'>>= 
 par(mfrow = c(1, 2))
 with(data1, plot(Ratio ~ Group))
 with(data1, plot(Y ~ Z, col = c("red", "blue")[Group]))
 abline(lm(Y ~ Z, subset(data1, Group == "g1")), col = "red")
 abline(lm(Y ~ Z, subset(data1, Group == "g2")), col = "blue")
+legend(x = 3, y = 20, legend = c("g1", "g2"), col = c("blue", "red"),
+       pch = 1)
+
 @ 
 
 <<>>=
 summary(lm(Y ~ Z * Group, data = data1))
 t.test(Ratio ~ Group, data = data1)
+## This is the equivalent to the t-test, except the
+## t-test used by default by R does not assume equal variances
+summary(aov(Ratio ~ Group, data = data1))
 @ 
 
 The lines are perfectly parallel, but the test for ratios says they
@@ -2079,6 +2085,7 @@ intercept. As you can see, the analysis with ratios is misleading.
 \subsection{A misleading case where ratios differ}
 \label{mislead-ratios2}
 
+Generate  the data:
 <<>>=
 set.seed(123)
 sd <- 0.1
@@ -2091,18 +2098,22 @@ z <- rep(z2, 2)
 data2 <- data.frame(Y = y, Z = z, Group = tf, Ratio = y/z)
 @ 
 
+
+The figure and analysis:
 %% fig.cap="Different slopes and no ratio differences?">>=
-<<fig.height=6>>=
+<<fig.height=6,fig.cap='Different slopes and no ratio differences?'>>=
 par(mfrow = c(1, 2))
 with(data2, plot(Ratio ~ Group))
 with(data2, plot(Y ~ Z, col = c("red", "blue")[Group]))
 abline(lm(Y ~ Z, subset(data2, Group == "g1")), col = "red")
 abline(lm(Y ~ Z, subset(data2, Group == "g2")), col = "blue")
+legend(x = 1.5, y = 2.5, legend = c("g1", "g2"), col = c("blue", "red"),
+       pch = 1)
 @ 
 
 <<>>=
 summary(lm(Y ~ Z * Group, data = data2))
-t.test(Ratio ~ Group, data = data2)
+t.test(Ratio ~ Group, data = data2) ## or do an ANOVA, as above
 @ 
 
 
@@ -2111,6 +2122,22 @@ of change of Y relative to Z differs between the two groups. But just
 comparing the ratios will not detect it. Again, a linear model does detect
 it just fine: you see a strong interaction between slope and
 group. And, again, the analysis of ratios is misleading.
+
+
+
+\subsection{Diagnostics et al.\ and other warning signs}
+
+If you look closely, the data show warning signals, such as possible
+differences in variances of ratios. And if you have no idea about the
+model, you might be able to compare several and use diagnostics, as
+explained in section \ref{diagnostics} to choose among models. But, in
+general, ratios are not the way to. And using diagnostics might require a
+decently large sample size. Summary: only use ratios if you really know
+what you are doing and have good reasons to do it. Otherwise, use linear
+models.
+
+By the way: we have covered just two very simple examples. Things can of
+course get a lot more complicated with non-linear relationships, etc.
 
 
 
