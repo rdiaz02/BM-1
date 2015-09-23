@@ -97,7 +97,8 @@ BiocStyle::latex()
 
 \section*{Warning: eternally provisional}
 This file can get changed often. When asking questions in class or in the
-forum, refer to the section numbers which change less than the page numbers.
+forum, refer to the section numbers AND section names, which change less
+than the page numbers.
 \clearpage
 
 \section{Introduction}
@@ -220,8 +221,9 @@ dp53 <- read.table("P53.txt", header = TRUE)
 
 
 The first step ever is to look at the data. In fact, here we can look at
-all the original data. So go take a look at the data (``View data
-set''). Resist the temptation to modify it there. \red{Why?}
+all the original data. So go take a look at the data (``View data set'',
+there is a button next to ``dp53''). Resist the temptation to modify it
+there. \red{Why?}
 
 
 \subsection{Plots to do}
@@ -258,9 +260,11 @@ par(op)
 @ 
 
 
-
-Now load the ``plotByGroup'' plugin and you'll find a new menu entry,
-under ``Graphs'', that says ``Plot by group''. Use
+%% If loaded silently, as above, will not get in the menuse. So do not do
+%% that for interactive usage
+Now load the ``plotByGroup'' plugin \footnote{You don't have it installed?
+  Install it, then. You should know how to do it by now.} and you'll find
+a new menu entry, under ``Graphs'', that says ``Plot by group''. Use
 
 \begin{itemize}
 \item histogram by group
@@ -357,6 +361,9 @@ Edit the Markdown file and:
 
 And note that you have, in here, also a record of all of your
 commands. But the proper file to carefully save is the R script. \red{Why?}
+
+%% the R Markdown file gets updated whenever you submit something from R
+%% script.
 
 
 \subsection{Saving the figures ``for real''}
@@ -597,9 +604,10 @@ organize your data in a table structure like the one in Table
 
 
 That looks ok, but is really a very limiting format for the data. Think
-about what would you do if you had additional ``tumor'' ``non-tumor'' data
-per subject, or you had additional covariates for each measure, etc. That
-is why we often want to have the data in a ``stacked'' format as in Table \ref{stacked}:
+about what you would do if you had additional ``tumor'' and ``non-tumor''
+data per subject, or you had additional covariates for each measure,
+etc. That is why we often want to have the data in a ``stacked'' format as
+in Table \ref{stacked}:
 
 
 \begin{table}[h!]
@@ -616,10 +624,11 @@ is why we often want to have the data in a ``stacked'' format as in Table \ref{s
 \end{table}
 
 This is arguably a much more useful way of storing the data for most
-general analyses and we can keep adding additional information. Whole
-papers have been written about these issues\footnote{For example,
-  Wickham's ``Tidy data'', in the \textit{Journal of Statistical
-    Software}: \Burl{http://www.jstatsoft.org/v59/i10}}, but we will stop here.
+general analyses and we can keep adding additional information if we need
+to. Whole papers have been written about these issues\footnote{For
+  example, Wickham's ``Tidy data'', in the \textit{Journal of Statistical
+    Software}: \Burl{http://www.jstatsoft.org/v59/i10}}, but we will stop
+here.
 
 \subsubsection{Reshaping our data}\label{reshaping}
 
@@ -638,7 +647,7 @@ There are many alternative approaches for reshaping the data directly from
 the command line. Many, many, many\footnote{For instance:
   \Burl{http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/}
   or \Burl{https://rpubs.com/bradleyboehmke/data_wrangling}; these are
-  heavily biased towards the ``Hadely's way''.}. And yes, it is unavoidable
+  heavily biased towards the ``Hadley's way''.}. And yes, it is unavoidable
 that this will get a little bit complicated. But manipulating and
 reshaping data must be done with a lot of care. You do not need to
 remember the details here, you just need to be aware of the issues.
@@ -652,7 +661,7 @@ remember the details here, you just need to be aware of the issues.
 \item Create a data set that contains only the values for observations
   with status ``Cancer''. (``Subset'', under ``Active data set''). Use the
   ``Subset expression'' you want; in this case 
-  \verb@Condition == ``Cancer''@. Call this data set cc.
+  \verb@cond == ``Cancer''@. Call this data set cc.
   
 \item Make sure ``id'' is used as row name. Do this using ``Set case
   names'' under ``Active data set''. Can you understand why we are doing
@@ -667,6 +676,9 @@ remember the details here, you just need to be aware of the issues.
 \item Rename this ``myc'' to ``myc.nc''.
   
 \item Merge nc and cc. Call it ``merged''. Use the option to merge columns!
+
+\item (Why can we trust that it did get it right? Look at the code that
+  shows \verb@merge(cc, nc, all=TRUE, by="row.names")@).
 \end{enumerate}
 
 
@@ -749,8 +761,8 @@ A few comments:
 \begin{itemize}
 \item This data reshaping is not strictly necessary from doing a paired
   t-test in R but it is for R Commander (see below ---section \ref{ptr}).
-\item We will see below a way to accomplish the same with a linear model
-  (section \ref{lm-paired}). And no reshaping needed.
+\item We will see below a way to carry out these same analyses with a
+  linear model (section \ref{lm-paired}). And no reshaping needed.
 \end{itemize}
 
 
@@ -862,7 +874,8 @@ merged3$diff.nc.c <- with(merged3, myc.NC - myc.Cancer)
 
 Now, do a single-sample t-test:
 <<>>=
-with(merged3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, conf.level=.95)))
+with(merged3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, 
+                      conf.level=.95)))
 @ 
 
 Compare the t-statistic, the degrees of freedom and the p-value with the
@@ -1000,14 +1013,14 @@ considerations that come into play are:
   trouble?
 \item What about the relative efficiency of the non parametric procedure?
   (relative efficiency refers to the sample size required for two
-  different procedures that are equally good in power and type I error
-  rate). When assumptions are met, parametric methods do have more power
-  (though not always a lot more). When assumptions are not met,
-  nonparametric methods might have more power, or the correct Type I
-  error, etc. Note that very, very, very small p-values are often not
-  achievable with non-parametric methods (because of the way they work),
-  and this is a concern with multiple testing adjustments in omics
-  experiments (this will be covered in the last lesson).
+  different procedures that have similar type I error rate to achieve the
+  same power ---more on power later). When assumptions are met, parametric
+  methods do have more power (though not always a lot more). When
+  assumptions are not met, nonparametric methods might have more power, or
+  the correct Type I error, etc. Note that very, very, very small p-values
+  are often not achievable with non-parametric methods (because of the way
+  they work), and this is a concern with multiple testing adjustments in
+  omics experiments (this will be covered in the next lesson).
 \item Is this test flexible enough? In particular, can I accommodate
   additional experimental factors?
 \end{itemize}
@@ -1067,7 +1080,7 @@ data (see also section \ref{wpi}).
 In a nutshell, this is what the test does: for each pair, it computes the
 difference of the two measures (thus, taking differences must make sense,
 and it does not for ordinal data but it does for interval data). These
-differences (discarding the sign) are then ranked, and then sum of the
+differences (discarding the sign) are then ranked, and then the sum of the
 ranks of all the positive differences is computed and compared to the null
 distribution.
 
@@ -1190,7 +1203,7 @@ Please note: \textbf{it makes little sense} to compute the power of a test
 after the fact. It tells you nothing valuable.
 
 
-
+\clearpage
 \section{Non-independent data}\label{pseudorep}
 
 \subsection{Multiple measures per  subject}
@@ -1446,8 +1459,9 @@ To make the point more clear, this is an example from the data for the TFM
 of chromosomal aberrations in different types of couples that went to a
 fertility clinic. For instance, suppose you want to examine incidence of
 aneuploidy in embryos from two groups of fathers, ``younger fathers'' and
-``older fathers'' (wait, not older, just ``fathers that so far have
-accumulated more hours of life on Earth''). The simplest idea here is to
+``older fathers''%% (wait, not older, just ``fathers that so far have
+%% accumulated more hours of life on Earth'')
+. The simplest idea here is to
 use a chi-square ($\mathcal{X}^2$) test to compare the frequency of
 aneuploidies between older and younger fathers (you will see chi-square
 tests in Lesson 4). But the problem is that each couple (each father in
@@ -1474,12 +1488,12 @@ or a two-samples Wilcoxon test.
 
 In the paired test, we implicitly have a model like this:
 
-\[Expression.of.MYC = function(subject and condition) + \epsilon\]
+\[Expression.of.MYC = function(subject\ and\ condition) + \epsilon\]
 
 which we make simpler (assuming additive contributions of each factor) as
 
 
-\[Expression.of.MYC = effect.of.subject + effect.of.condition + \epsilon\]
+\[Expression.of.MYC = \mathit{effect.of.subject} + \mathit{effect.of.condition} + \epsilon\]
 
 
 
@@ -1656,11 +1670,13 @@ sessionInfo()
 
 
 %%% Local Variables:
-%%% TeX-master: "Lesson-2"
 %%% ispell-local-dictionary: "en_US"
 %%% coding: iso-8859-15
 %%% End:
 
 
+
+
+% thisusedtosayTeX-master: "Lesson-2"
 
 
