@@ -13,7 +13,7 @@
 
 ## In other words, we take one cultivo, split it into two, one of the two
 ## gets one level of I and the other the other level. Once grown, we split
-## each of them into two again, and to each one we give on level of H.
+## each of them into two again, and to each one we give one level of H.
 
 
 ## some unbalance
@@ -139,3 +139,9 @@ summary(aov(Y ~ I * H + Error(R1/I), data = df))
 m3 <- lmer(Y ~ I * H + (1|R1) + (1|R2), data = df)
 m4 <- lmer(Y ~ I +  H + (1|R1) + (1|R2), data = df)
 anova(m3, m4)
+
+
+
+
+
+

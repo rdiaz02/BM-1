@@ -11,6 +11,10 @@
 ## https://stat.ethz.ch/mailman/listinfo/r-sig-teaching
 
 
+## My answer is available here:
+## https://stat.ethz.ch/pipermail/r-sig-teaching/2015q1/000604.html
+
+
 ## I refer to tables in what is the 8th edition. But I only have access to
 ## 5th, where all of this is in chapter 13, pp. 561 and ff.
 
