@@ -678,7 +678,8 @@ remember the details here, you just need to be aware of the issues.
 \item Merge nc and cc. Call it ``merged''. Use the option to merge columns!
 
 \item (Why can we trust that it did get it right? Look at the code that
-  shows \verb@merge(cc, nc, all=TRUE, by="row.names")@).
+  shows \\
+  \verb@merge(cc, nc, all=TRUE, by="row.names")@).
 \end{enumerate}
 
 
@@ -1680,3 +1681,6 @@ sessionInfo()
 % thisusedtosayTeX-master: "Lesson-2"
 
 
+
+
+%%% en clase, decir xq p-value es type I error rate e inversión de CI
