@@ -730,7 +730,7 @@ Verify we are now ok comparing merged2 with dmyc.
 
 This is another built-in function in R, \Rfunction{reshape}. This can be a
 complicated function to use, but it is extremely powerful. I'll use it
-here fully specifying all the needed arguments\footnote{In this case, you
+here fully specifying all the  arguments\footnote{In this case, you
   do not need to specify the \texttt{v.names} argument, for example, but
   I'd rather be explicit.}:
 
@@ -764,6 +764,11 @@ A few comments:
   t-test in R but it is for R Commander (see below ---section \ref{ptr}).
 \item We will see below a way to carry out these same analyses with a
   linear model (section \ref{lm-paired}). And no reshaping needed.
+
+\item Data manipulation can be tricky: you \textbf{must} be sure to get it
+  right. What would I do? Do it in two different ways, and compare. Among
+  those two I'd probably have \Rfunction{reshape} because, even if
+  complicated, it allows you to be completely explicit about what is what.
 \end{itemize}
 
 
@@ -861,7 +866,7 @@ boxes ``New variable name'' and ``Expression to compute''
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=0.80\paperwidth,keepaspectratio]{compute-diff-var.png}
-    \caption{\label{ucla} Creating a new variable, that is the difference
+    \caption{\label{ucla} Creating a new variable that is the difference
       between the two values for a subject.}
   \end{center}
 \end{figure}
@@ -1201,7 +1206,10 @@ Power can be computed before hand to:
 
 
 Please note: \textbf{it makes little sense} to compute the power of a test
-after the fact. It tells you nothing valuable.
+after the fact. It tells you nothing valuable\footnote{The paper by Hoenig
+and Heisey, ``The abuse of power: the pervasive fallacy of power
+calculations for data analysis'', \textit{The American Statistician},
+2001, 55: 19--24, explains this in more detail.}
 
 
 \clearpage
@@ -1209,7 +1217,7 @@ after the fact. It tells you nothing valuable.
 
 \subsection{Multiple measures per  subject}
 Paired data are non-independent: they are associated via the subject, or
-id. There are other forms of non-dependency. Many. We will now look at the
+id. There are other forms of dependency. Many. We will now look at the
 most common one: multiple measures per subject. (This, by the way, you saw
 in Lesson 1).
 
@@ -1260,7 +1268,7 @@ unit'' (or observational unit)?  It is arguably the subject, which is the
 one that has, or has not, cancer in this case. The \Sexpr{nn} measures per
 subject are just that: multiple measures of the same experimental
 unit. This is an idea that should be crystal clear; make sure you
-understand that.
+understand it.
 
 We can do a t-test ignoring this fact, but it would be wrong. Look at the
 degrees of freedom:
@@ -1289,10 +1297,17 @@ is a double check that each subject is in one, and only one, of the
 groups. Call this data ``aggbrca''.
 
 <<>>=
-aggbrca <- aggregate(dbrca[,c("brca2"), drop=FALSE],
-                     by=list(cond=dbrca$cond, 
-                         id=dbrca$id), FUN=mean)
+aggbrca <- aggregate(brca2 ~ cond + id, data = dbrca, FUN = mean)
 @ 
+
+%% In this case, you can also call \Rfunction{aggregate} in a simpler way if
+%% you directly type it:
+
+%% <<>>=
+%% aggbrca <- aggregate(brca2 ~ cond + id, data = dbrca, FUN = mean)
+%% @ 
+
+
 
 We want to double check that we have the exact same number of measures per
 subject. How? A simple procedure is to aggregate again (give the output
@@ -1301,6 +1316,12 @@ aggregating over only ``id'' (so we aggregate brca2 and cond) and also
 over both ``id'' and ``cond'', to double check. Do you understand why we
 are doing this?
 
+
+<<>>=
+aggregate(brca2 ~ cond + id, data = dbrca, FUN = length)
+aggregate(brca2 ~ id, data = dbrca, FUN = length)
+aggregate(. ~ id, data = dbrca, FUN = length)
+@ 
 
 
 Now, let's do a t-test on the aggregated data. Pay attention to the
