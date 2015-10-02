@@ -560,7 +560,7 @@ summary(aov(lm(y2 ~ gr2)))
 
 \begin{enumerate}
 \item Enter the data.
-\item Recode the factor (the dependent variable), if needed.
+\item Recode the factor (the independent variable), if needed.
 \item Run the model.
 \item Assess model diagnostics (see section \ref{diagnostics}).
 \item Carry out comparisons between pairs of means with appropriate
