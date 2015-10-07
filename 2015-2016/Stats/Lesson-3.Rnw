@@ -46,6 +46,7 @@ labelsep=endash]{caption}
 %% \newcommand{\Burl}[1]{\blu{\url{#1}}}
 \newcommand{\red}[1]{{\textcolor {red} {#1}}}
 \newcommand{\Burl}[1]{{\textcolor{blue}{\url{#1}}}}
+\usepackage[copyright]{ccicons} %% for the CC license icons
 
 
 \usepackage[latin1]{inputenc}
@@ -98,6 +99,25 @@ BiocStyle::latex()
 This file can get changed often. When asking questions in class or in the
 forum, refer to the section names and section numbers (these change less
 than the page numbers).
+
+
+\section*{License and copyright}\label{license}
+This work is Copyright, \copyright, 2014, 2015, Ramon Diaz-Uriarte, and is
+licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
+International License:
+\Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+
+\centerline \ccbysa
+
+
+
+All the original files for the document are available (again, under a
+Creative Commons license) from
+\Burl{https://github.com/rdiaz02/BM-1}. (Note that in the github repo you
+will not see the PDF, or R files, nor many of the data files, since those
+are derived from the Rnw file).
+
+
 \clearpage
 
 \section{Introduction}
