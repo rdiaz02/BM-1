@@ -1686,8 +1686,28 @@ We've said this: ANOVAs are a type of linear models. Thus, in R (and in
 most statistical packages) you can get the output for an ANOVA by
 different routes. Let us make sure we understand this, and can interpret
 the output from using the different routes available to us. In fact, we
-have jumped from using \Rfunction{aov} to \Rfunction{lm}. Let us see a
-simple example:
+have jumped from using \Rfunction{aov} to \Rfunction{lm}. 
+
+This is also a good time to recap and make sure we understand ideas we
+have used like ``more complex models'' and ``number of
+parameters''. Before we see the examples with code below, make sure we can
+understand how many parameters (and how many degrees of freedom are taken
+by the model) and what they represent in models like:
+\begin{itemize}
+\item A simple linear regression like \verb@ y ~ x@.
+\item A multiple linear regression like \verb@ y ~ x + z@.
+\item A one-way ANOVA like the one for the training regimes, with three
+  possible training regimes: \verb@y ~ ftraining@.
+\item A two-way ANOVA with interactions, like the one about Drug (two
+  levels) and Diet (three levels): \verb@y ~ Drug*Diet@.
+\item A two-way ANOVA without interactions, like one we might fit to the
+  Drug and Diet data: \verb@y ~ Drug + Diet@.
+\end{itemize}
+
+
+
+
+Let us now see a simple example:
 
 <<>>=
 asAnova <- aov(activ ~ ftraining, data = dmit)
@@ -1731,6 +1751,48 @@ This is the default parameterization in R. But is is not the only one available.
 
 Of course, the above applies to more than one factor, and to factors with
 an arbitrary number of levels.
+
+
+
+
+%% Explaining parameters for a two-way. The interaction is simple, since we
+%% just have each cell mean in contr.treatment. The additive is messier. A
+%% numerical example
+%% <<>>=
+%% y <- c(1:9, 20, 21, 22)
+%% X <- rep(rep(c("1", "2"), c(3, 3)), 2)
+%% U <- rep(c("1", "2"), c(6, 6))
+%% anova(lm(y ~ U * X))
+%% tapply(y, list(X, U), mean)
+%% summary(lm(y ~ X * U))
+%% ## the X2:U2 = 21 - (2 + 3 + 6)
+%% summary(lm(y ~ X  + U))
+%% m1 <- lm(y ~ X + U)
+%% model.matrix(m1)
+%% fitted(m1)
+%% ## fitted for first group are the intercept term
+%% mean(y) ## 9
+
+%% ## effect of X:2: 0.5 * ((5 -2) + (21 - 8)) = 8
+%% ## effect of U:2: 0.5 * ((8 -2) + (21 - 5)) = 11
+
+%% ## what is the first cell? the overall mean with the effect of X:1 and
+%% ## U:1, which is the overall mean minus half the effects
+
+%% 9 - 11/2 - 8/2
+
+%% ## Yes, the first cell is the first cell UNDER that additive model. You can't 
+%% ## just put the first cell mean in there.
+%% @ 
+
+
+
+
+
+
+
+
+
 
 
 \clearpage
