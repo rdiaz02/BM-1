@@ -2145,7 +2145,7 @@ with(data1, plot(Ratio ~ Group))
 with(data1, plot(Y ~ Z, col = c("red", "blue")[Group]))
 abline(lm(Y ~ Z, subset(data1, Group == "g1")), col = "red")
 abline(lm(Y ~ Z, subset(data1, Group == "g2")), col = "blue")
-legend(x = 3, y = 20, legend = c("g1", "g2"), col = c("blue", "red"),
+legend(x = 3, y = 20, legend = c("g1", "g2"), col = c("red", "blue"),
        pch = 1)
 
 @ 
@@ -2190,7 +2190,7 @@ with(data2, plot(Ratio ~ Group))
 with(data2, plot(Y ~ Z, col = c("red", "blue")[Group]))
 abline(lm(Y ~ Z, subset(data2, Group == "g1")), col = "red")
 abline(lm(Y ~ Z, subset(data2, Group == "g2")), col = "blue")
-legend(x = 1.5, y = 2.5, legend = c("g1", "g2"), col = c("blue", "red"),
+legend(x = 1.5, y = 2.5, legend = c("g1", "g2"), col = c("red", "blue"),
        pch = 1)
 @ 
 
