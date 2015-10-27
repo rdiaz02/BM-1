@@ -1,0 +1,7 @@
+* Notas leccion 2: 
+  - do not just sya that p-value, CI, statistic, etc, should be
+    clear. Give a simple definition.
+* R and Rcmdr installation
+  - Disable antiviruses
+  - Use the SDI interface
+  - Install package translations
