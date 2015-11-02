@@ -1,3 +1,11 @@
+* Teaching strategies
+  - make them think about their data or some question and come up with
+    examples for each of the major topics (t-tests, anova, linear models,
+    etc) and have some of them explain them!
+  - diagnostics: introduce better:
+    - get them to think about asumptions
+    - spell out the main diagnostics
+
 * Notas leccion 2: 
   - do not just sya that p-value, CI, statistic, etc, should be
     clear. Give a simple definition.
