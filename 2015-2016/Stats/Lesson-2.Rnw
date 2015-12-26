@@ -776,6 +776,15 @@ You can compare with \texttt{merged3} and \texttt{merged2} and \texttt{merged},
 and verify they have the same data.
 
 
+\subsubsection{\Rfunction{dcast} from \CRANpkg{reshape2}?}
+\label{sec:rfunct-from-cranpkgr}
+
+As it says, you could try doing the reshaping using \Rfunction{dcast} from
+\CRANpkg{reshape2}. Try it if you want to.
+
+
+
+
 \subsubsection{Reshaping et al: final comments}
 
 A few comments:
