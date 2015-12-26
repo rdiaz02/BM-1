@@ -760,7 +760,7 @@ here fully specifying all the  arguments\footnote{In this case, you
 @ 
 
 
-
+%% FIXME: or dcast from reshape2?
 \subsubsection{Reshaping with  \Rfunction{spread}}\label{spread}
 
 OK, so we will do it in a fourth way. You need to install the
