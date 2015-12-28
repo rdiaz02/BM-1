@@ -2685,10 +2685,10 @@ myAdditive3 <- lm(y ~ sex + drug, data = y.data3)
 plot(myAdditive3, which = 1:5) ## see Cook's
 
 ## some details, from plot.lm
-lm.influence(myAdditive2b, do.coef = FALSE)$hat ## constant
-lm.influence(myAdditive3, do.coef = FALSE)$hat ##nope
-diff(range(hii))
-
+(hii2b <- lm.influence(myAdditive2b, do.coef = FALSE)$hat) ## constant
+(hii3 <- lm.influence(myAdditive3, do.coef = FALSE)$hat) ##nope
+diff(range(hii2b))
+diff(range(hii3))
 @ 
 
 \subsection{Diagnostics: further issues}
