@@ -815,6 +815,8 @@ Some summaries of data:
 (means <- with(df1, tapply(y, list(A, B), mean)))
 @ 
 
+And now, several ANOVA models. We will explain each of the terms in turn
+in class if this is not familiar to you:
 
 \subsubsection{No interaction model}
 <<>>=
@@ -1851,7 +1853,8 @@ We've said this: ANOVAs are a type of linear models. Thus, in R (and in
 most statistical packages) you can get the output for an ANOVA by
 different routes. Let us make sure we understand this, and can interpret
 the output from using the different routes available to us. In fact, we
-have jumped from using \Rfunction{aov} to \Rfunction{lm}. 
+have jumped from using \Rfunction{aov} to \Rfunction{lm} several times by
+now..
 
 This is also a good time to recap and make sure we understand ideas we
 have used like ``more complex models'' and ``number of
@@ -2761,7 +2764,9 @@ For you to read and play around further:
 %% Doing t-tests via ANOVA (which adds diagnostics)
 
 
+
 \section{Variable and model selection}
+
 You say you want to select variables? Select them for what? Prediction?
 Interpretation?  Variable selection is a touchy and delicate
 subject. First, procedures based purely in statistical criteria might
@@ -2781,28 +2786,35 @@ about comparing models.
 
 If you really need automated or semiautomated procedures, then reasonable
 strategies use model-comparison criteria such as AIC (e.g., with the
-\Rfunction{stepAIC} function from \CRANpkg{MASS}) and even better is then
-bootstrapping the whole process to get estimates of error, predictive
-ability, etc. Even better, of course, is subject-matter guidance on how to
-proceed and what are and are not candidates for deletion and in what
-order. The book by Frank Harrell, ``Regression modeling strategies''
-contains great discussions of these topics. The actual data set used here
-is discussed, also in the context of variable selection, by P.\ Dalgaard
-in chapter 11 of ``Introductory statistics with R''.
+\Rfunction{step} function) and even better is then bootstrapping the whole process
+to get estimates of error, predictive ability, etc. Even better, of
+course, is subject-matter guidance on how to proceed and what are and are
+not candidates for deletion and in what order. The book by Frank Harrell,
+``Regression modeling strategies'' contains great discussions of these
+topics. The actual data set used here is discussed, also in the context of
+variable selection, by P.\ Dalgaard in chapter 11 of ``Introductory
+statistics with R''.
 
 
 To give some examples (look at them carefully, and compare with what we
-did by hand, and with whether or not these are the models you would
-use). This is more advanced material, though:
+did by hand, and with whether or not these are the models you would use):
 
-<<results='hide'>>=
-library(MASS)
-stepAIC(mcyst2, direction = "both")
-stepAIC(mcyst, direction = "both")
-stepAIC(longev_b_r, direction = "both")
-stepAIC(metab_b_r, direction = "both")
+<<>>=
+step(mcyst2, direction = "both")
 @ 
 
+<<>>=
+step(mcyst, direction = "both")
+@ 
+
+
+<<>>=
+## In metab, we drop the interaction
+step(metab_b_r, direction = "both")
+ 
+## But nothing can be dropped here
+step(longev_b_r, direction = "both")
+@ 
 
 
 \section{Experimental design matters}
