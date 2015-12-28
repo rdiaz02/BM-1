@@ -791,10 +791,175 @@ take a look at a three-page one by W.\ Noble, in \textit{Nature
   Biotechnology}, 2009, 27: 1135--1136, ``How does multiple testing work''.
 
 
-
+\clearpage
 % FIXME: start first without interactions!!! Use the data from orderfactors
 %% we can't if we use Rstudio
 \section{Two-way ANOVA}
+
+\subsection{A very simple two-way ANOVA}\label{simpletwo}
+
+Let us create some fake data
+
+<<>>=
+set.seed(3)
+df1 <- data.frame(y = runif(8),
+                  A = rep(c("a1", "a2"), 4),
+                  B = rep(c("b1", "b1", "b2", "b2"), 2))
+
+
+df1
+@ 
+
+Some summaries of data:
+<<>>=
+(means <- with(df1, tapply(y, list(A, B), mean)))
+@ 
+
+
+\subsubsection{No interaction model}
+<<>>=
+m1 <- lm(y ~ A + B, data = df1)
+anova(m1)
+summary(m1)
+@ 
+
+Remember we are using an additive model, so here we are estimating only
+three things from a four-means design.  How do we interpret the
+coefficients? We are using \texttt{contr.treatment}, the default in R,
+that compares each mean against the reference, the first level (``a1b1''
+here, but that is not just the first cell; see below if you want).
+
+
+Note what are the estimates of the effects of A and B: the mean deviation
+of the second level from the first:
+<<>>=
+## A2 
+mean(means[2, ] - means[1, ])
+## B2
+mean(means[, 2] - means[, 1])
+@ 
+
+
+
+We can change the reference, and that changes what we are comparing. For
+instance, let us recode A and run the model again:
+
+<<>>=
+df1b <- df1
+df1b$A <- factor(df1b$A, levels = c("a2", "a1"))
+table(df1b$A, df1$A) ## double check
+@ 
+
+<<>>=
+summary(lm(y ~ A + B, data = df1b))
+@ 
+
+\subsubsection{Interaction model}
+
+Now all cell means are modeled:
+
+<<>>=
+m2 <- lm(y ~ A * B, data = df1)
+anova(m2)
+summary(m2)
+@ 
+
+Check the interpretation of the interaction coefficient:
+<<>>=
+means[2, 2] - 
+    (means[1, 1] + coefficients(m2)[2] + coefficients(m2)[3])
+@ 
+
+
+\subsubsection{One observation per cell}
+\label{sec:one-observation-per}
+
+
+What if we only had one observation per cell?
+
+We can fit the additive model (but only 1 df left)
+<<>>=
+df2 <- df1[1:4, ]
+m3 <- lm(y ~ A + B, data = df2)
+anova(m3)
+summary(m3)
+@ 
+
+But we can't really fit the interaction model:
+<<>>=
+m4 <- lm(y ~ A * B, data = df2)
+anova(m4)
+summary(m4)
+ 
+@ 
+
+
+
+%% \subsubsection{What is the overall intercept with \texttt{contr.treatment}
+%%   in the no-interaction model?*}
+
+%% If you recall the model we write, then, if we look at the cells, with
+%% \texttt{contr.treatment}, the intercept (the abstract ``a1b1'' reference
+%% level) is either:
+
+%% Use the first row, all those that are ``a1''
+%% <<>>=
+%% 1/2 * (means[1, 1] + (means[1, 2] - coefficients(m1)["Bb2"]))
+%% @ 
+
+%% or the first column, those that are ``b1''
+
+%% <<>>=
+%% 1/2 * (means[1, 1] + (means[2, 1] - coefficients(m1)["Aa2"]))
+%% @ 
+
+%% (I am keeping things simple here; we could have looked at
+%% \Rfunction{model.matrix}, etc, too)
+
+\subsubsection{Other types of coding: \texttt{contr.sum}}
+
+(We will use \Rfunction{contr.Sum} from \CRANpkg{car}, since clearer labeling)
+
+<<>>=
+opt <- options(contrasts = c("contr.Sum", "contr.poly"))
+m11 <- lm(y ~ A + B, data = df1)
+anova(m11)
+summary(m11)
+@ 
+
+
+<<>>=
+(overallMean <- mean(df1$y))
+mA <- with(df1, tapply(y, A, mean))
+mA - overallMean
+
+mB <- with(df1, tapply(y, B, mean))
+mB - overallMean
+@ 
+
+Interaction now (note the estimates!)
+<<>>=
+m12 <- lm(y ~ A * B, data = df1)
+anova(m12)
+summary(m12)
+@ 
+
+
+What if we changed the reference?
+<<>>=
+summary(lm(y ~ A + B, data = df1b))
+@ 
+
+Return contrasts to usual state
+<<>>=
+options(opt)
+@ 
+
+
+
+
+
+\subsection{Fitting a two-way ANOVA: cholesterol}\label{twoway}
 
 The following data come from an experiment about the effects of three
 diets and two cholesterol-controlling drugs in the reduction of
@@ -835,7 +1000,7 @@ dcholest <- read.table("Cholesterol.txt", header = TRUE)
 @ 
 
 
-\subsection{Fitting a two-way ANOVA}\label{twoway}
+\subsection{Fitting a two-way ANOVA}\label{twowayfit}
 
 As usual, go to ``Statistics'', ``Means'', and then ``Multiway
 ANOVA''. Call it ``cholanova''
