@@ -914,7 +914,7 @@ different ones, that differ by the order in which factors are specified
 
 <<out.width='8cm', out.height='8cm', fig.show='hold'>>=
 boxplot(y ~ Drug * Diet, data = dcholest, col = c("salmon", "gold"))
-boxplot(y ~ Diet * Drug, data = dcholest, col = c("salmon", "gold"))
+boxplot(y ~ Diet * Drug, data = dcholest, col = c("salmon", "gold", "lightblue"))
 @ 
 
 
