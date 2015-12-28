@@ -602,6 +602,13 @@ paired t-test. \red{Why?} When answering this question think about the
 idea of using each subject as its own control.
 
 
+How can we check the above? (Why is this doing what I want?)
+
+<<>>=
+all(with(dmyc, table(id, cond)) == 1)
+@ 
+
+
 
 
 \subsection{Reshaping the data for a paired t-test}
