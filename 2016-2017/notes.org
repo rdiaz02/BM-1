@@ -13,3 +13,5 @@
   - Disable antiviruses
   - Use the SDI interface
   - Install package translations
+* references
+  Mention http://www.nature.com/collections/qghhqm/
