@@ -78,9 +78,9 @@
 
 
      1.4. However you do it, please make sure you have version 3.2.1 of R
-     (if you know what you are doing, it is also OK to use development
-     versions). Any version of R >= 3.0.0 should work, but it is best if
-     you use a current one.
+     or later (if you know what you are doing, it is also OK to use
+     development versions). Any version of R >= 3.0.0 should work, but it
+     is best if you use a current one.
 
 
  2. Install R commander.
