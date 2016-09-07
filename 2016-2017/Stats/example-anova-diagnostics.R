@@ -87,3 +87,19 @@ lm.influence(myAdditive3, do.coef = FALSE)$hat ##nope
 diff(range(hii))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
