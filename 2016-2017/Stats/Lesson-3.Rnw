@@ -7,6 +7,7 @@ require(knitr, quietly = TRUE)
 library(patchSynctex)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
+options(width = 65)
 @ 
 
 <<packages,echo=FALSE,results='hide',message=FALSE>>=
@@ -102,7 +103,7 @@ than the page numbers).
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014, 2015, Ramon Diaz-Uriarte, and is
+This work is Copyright, \copyright, 2014, 2015, 2016, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
