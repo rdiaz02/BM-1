@@ -132,7 +132,7 @@
 
 
 
-    2.5. Please, try to use version 2.2-5 or later of Rcmdr (this, or a
+    2.5. Please, try to use version 2.3-0 or later of Rcmdr (this, or a
     later one, will be installed by default). How can you tell the
     version? Two ways:
 
