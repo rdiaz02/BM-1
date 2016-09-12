@@ -177,7 +177,7 @@
    
 
 
- 4. Install RStudio (www.rstudio.com). We want to use the "Dektop", that
+ 4. Install RStudio (www.rstudio.com). We want to use the "Desktop", that
     you can download from here:
 
     http://www.rstudio.com/products/rstudio/download/	
