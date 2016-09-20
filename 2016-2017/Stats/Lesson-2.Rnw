@@ -791,7 +791,11 @@ and verify they have the same data.
 As it says, you could try doing the reshaping using \Rfunction{dcast} from
 \CRANpkg{reshape2}. Try it if you want to.
 
+%% Probably the preferred way now is tidyr
 
+%% dcast(dmyc, id ~ cond, value.var = "myc")
+
+%% see here for nice summary: http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/
 
 
 \subsubsection{Reshaping et al: final comments}
