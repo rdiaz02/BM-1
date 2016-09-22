@@ -284,8 +284,9 @@ par(op)
 %% If loaded silently, as above, will not get in the menuse. So do not do
 %% that for interactive usage
 Now load the ``plotByGroup'' plugin \footnote{You don't have it installed?
-  Install it, then. You should know how to do it by now.} and you'll find
-a new menu entry, under ``Graphs'', that says ``Plot by group''. Use
+  Install it, then. You should know how to do it by now. The name is
+  ``RcmdrPlugin.plotByGroup''} and you'll find a new menu entry, under
+``Graphs'', that says ``Plot by group''. Use
 
 \begin{itemize}
 \item histogram by group
