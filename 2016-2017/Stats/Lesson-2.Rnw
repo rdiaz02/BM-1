@@ -1118,6 +1118,58 @@ wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
 
 
 
+
+% Contrary to Conover, not really testing F(x)= G(x)
+
+% <<>>=
+% ## Will not reject
+% x <- rnorm(10000, mean = 0, sd = 1)
+% y <- rnorm(10000, mean = 0, sd = 20)
+% wilcox.test(x, y)
+% @ 
+
+
+% Not about medians or means either
+
+% <<>>=
+% ## Will reject, medians the same
+% x <- c(rep(10, 1000), 11, rep(12, 1000))
+% y <- c(rep(10, 1000), 11, rep(13, 1000))
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+
+% ## Will reject, means the same
+% x <- seq(from = 10, to = 20, length.out = 1000)
+% y <- c(rep(0, 999), 15000)
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+
+% @ 
+
+
+
+% <<>>=
+
+% ## Will accept, medians differ
+% x <- c(rep(10, 1000), 11, rep(12, 1000))
+% y <- c(rep(10, 1000), 10.1, rep(12, 1000))
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+
+
+% ## Will accept, means differ
+% x <- c(rep(10, 1000), 1e9, rep(1000, 1000))
+% y <- c(rep(10, 1000), -1e9, rep(1000, 1000))
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+% @ 
+
+
+
 \subsection{Wilcoxon matched-pairs test}
 
 The idea here is to assess whether the within-pair differences are
