@@ -1757,12 +1757,26 @@ summary(mcyst)
 
 You should be able to interpret all output without problems. 
 
-%% <<>>=
-%% print(scatter3d(pemax~age+height, data=cystfibr2, 
-%%           fit="linear", residuals=TRUE, bg="white", axis.scales=TRUE, 
-%%           grid=TRUE, ellipsoid=FALSE))
-%% @ 
+%% For surface plots
 
+% <<>>=
+% print(scatter3d(pemax~age+height, data=cystfibr2, 
+%           fit="linear", residuals=TRUE, bg="white", axis.scales=TRUE, 
+%           grid=TRUE, ellipsoid=FALSE))
+% @ 
+
+% print(scatter3d(pemax~age+height, data=cystfibr2, 
+%           fit="quad", residuals=TRUE, bg="white", axis.scales=TRUE, 
+%           grid=TRUE, ellipsoid=FALSE))
+          
+% The surface
+% http://stackoverflow.com/questions/18147595/plot-3d-plane-true-regression-surface
+
+% also with rms
+
+% library(rms)
+% lm2 <- lm(pemax~age*height, data=cystfibr2)
+% persp.lm(lm2, ~ age + height)
 
 Now, use ANOVA tables with Type I sums of squares and Type II sums of squares:
 
