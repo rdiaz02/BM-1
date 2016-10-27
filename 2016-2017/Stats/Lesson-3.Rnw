@@ -748,7 +748,7 @@ want more details, sing up for some of the other classes we teach :-) ). But go 
 paragraphs, and re-read the definition of adjusted p-value for the
 FDR. So, for example, if we keep as ``significant'' all the genes with a
 p-value (not adjusted p-value, but p-value, so the last first three) $\leq
-0.30$, the FDR (the expected number of false discoveries) will be 0.40
+0.030$, the FDR (the expected number of false discoveries) will be 0.040
 (the FDR-adjusted p-value for the gene with $p-$value of 0.03).
 
 
