@@ -2874,11 +2874,11 @@ myInteract2 <- lm(y ~ sex * drug, data = y.data1)
 summary(myAdditive2)
 summary(myInteract2)
 
-dev.off()
+## dev.off()
 par(mfrow = c(2, 3))
 plot(myAdditive2, which = c(1:5)) ## look at first plot
 
-dev.off()
+## dev.off()
 par(mfrow = c(2, 3))
 plot(myInteract2, which = c(1:5))
 
