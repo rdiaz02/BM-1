@@ -22,6 +22,8 @@
  the Applied Statistics forum.
 
 
+Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
+
 
  1. Install R (http://cran.r-project.org). The binaries for each operating
      system are available here: http://cran.r-project.org/bin/
@@ -51,13 +53,14 @@
      	  into
 	  
 	       C:\R\
+	       (so you can have, for instance, C:\R\R-3.4.0)
 
 	  Choosing the installation directory is something you do
      	  immediately after you click accept on the license. It is a
      	  screen that says "Select Destination Location". In there, type
      	  the above path: "C:\R" (without the quotes).
 
-	  Please, really do try to install to "C:\R" under Windows. Many
+	  Please, REALLY INSTALL TO "C:\R" UNDER WINDOWS. Many
      	  people experience problems when they don't related to
      	  permissions and local language settings. Those are solvable, but
      	  we cannot help. So do as we say: install to "C:\R" or deal with
@@ -154,7 +157,7 @@
 
    
     
- 3. Install a few R commander plugins.
+ 3. Install a few R commander plugins and additional packages.
 
     3.1. In the same R console (the R console, not the R commander window
     ---the R console is the console or window that oppened first when you
@@ -164,7 +167,7 @@
     install.packages(c("RcmdrPlugin.TeachingDemos",
    "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
    "RcmdrPlugin.mosaic", "RcmdrPlugin.plotByGroup", 
-   "tkrplot", "doBy", "vcd"))
+   "tkrplot", "doBy", "vcd", "ISwR"))
 
 
     and press Enter. That will download and install a few things (it
