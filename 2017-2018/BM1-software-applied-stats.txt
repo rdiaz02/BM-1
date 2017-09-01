@@ -2,24 +2,23 @@
  ===============================================
 
 
- You will all have access to a computer (running the Windows operating
- system) with all the software. However, you probably want to install the
- software on your own computer at home. If you plan to bring your own
- laptop to class, then you definitely MUST install the software before our
- first day of class.
-
- The following are the installation instructions and information. Please:
+ You need to install software on your own laptop/computer at home. The
+ following are the installation instructions and information. Please:
 
  1. Follow these instructions carefully.
+ 
  2. Follow the instructions in this order.
- 3. Do all of this from a place where you have a reliable (and fast)
- internet connection.
+
+ 3. Do all of this from a place where you have a reliable and fast
+ internet connection. If the connection fails during installation, things
+ can become a mess. 
+
 
  If you have questions or problems AND you have followed the instructions
- carefully, come the class where we will see the installation. If you
- still have problems after that (you shouldn't) post your questions, with
- detailed information (maybe including screen captures) of the errors, in
- the Applied Statistics forum.
+ carefully, come the class where we will see the installation
+ (14-Sept-2017). If you still have problems after that (you shouldn't)
+ post your questions, with detailed information (maybe including screen
+ captures) of the errors, in the Applied Statistics forum.
 
 
 Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
@@ -53,21 +52,21 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
      	  into
 	  
 	       C:\R\
-	       (so you can have, for instance, C:\R\R-3.4.0)
+	       (so you can have, for instance, C:\R\R-3.4.1)
 
 	  Choosing the installation directory is something you do
      	  immediately after you click accept on the license. It is a
      	  screen that says "Select Destination Location". In there, type
      	  the above path: "C:\R" (without the quotes).
 
-	  Please, REALLY INSTALL TO "C:\R" UNDER WINDOWS. Many
-     	  people experience problems when they don't related to
-     	  permissions and local language settings. Those are solvable, but
-     	  we cannot help. So do as we say: install to "C:\R" or deal with
-     	  the issues on you own.
+	  Please, REALLY INSTALL TO "C:\R" UNDER WINDOWS. Many people
+     	  experience problems when they don't related to permissions and
+     	  local language settings. Those are solvable, but we cannot
+     	  help. So do as we say: install to "C:\R" or deal with the issues
+     	  on you own.
 
-	  1.2.3. Do clik on "Install package translations" to make sure
-	  you get messages in English and in other languages (Spanish, or
+	  1.2.3. Click on "Install package translations" to make sure you
+	  get messages in English and in other languages (Spanish, or
 	  whatever).
 
 	  1.2.4. You probably want to check on the "Use the SDI interface"
@@ -80,7 +79,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
      (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
 
 
-     1.4. However you do it, please make sure you have version 3.4.0 of R
+     1.4. However you do it, please make sure you have version 3.4.1 of R
      (if you know what you are doing, it is also OK to use development
      versions). Any version of R >= 3.3.0 should work, but it is best if
      you use a current one.
