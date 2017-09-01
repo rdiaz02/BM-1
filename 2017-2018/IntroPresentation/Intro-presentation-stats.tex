@@ -1,0 +1,819 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+
+\setbeamertemplate{itemize item}[ball]
+%\usetheme[secheader]{Boadilla}
+%\usetheme{boxes}
+\usetheme{myBoadilla}
+%\usetheme[secheader]{myBoadilla}
+%\usetheme[left]{Goettingen}
+
+%\usepackage{CSIC2}
+\setbeamertemplate{itemize item}[ball]
+ \setbeamertemplate{navigation symbols}{
+      \insertslidenavigationsymbol
+%%      \insertdocnavigationsymbol 
+%%    {\footnotesize \insertframenumber} %% FIXME: delete if we use CSIC2
+ }
+
+\usepackage[absolute,overlay]{textpos}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+%%\usepackage{fancybox}
+\usepackage[lined]{algorithm2e}
+
+\usepackage{url}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{\slshape\footnotesize #1}}
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+\newcommand{\gry}[1]{{\textcolor {gray} {#1}}}
+
+\newcommand{\hanging}[1]{ 
+\renewcommand{\baselinestretch}{0.7}\small\normalsize
+\setlength{\parskip}{1.5ex plus0ex minus0ex}
+  \noindent\hangindent=24pt
+  \hangafter=1 
+   {\scriptsize #1}
+  %\hangindent\parindent
+}   
+
+
+\newcommand{\hango}[1]{ 
+\renewcommand{\baselinestretch}{0.7}\small\normalsize
+\setlength{\parskip}{1.5ex plus0ex minus0ex}
+  \noindent\hangindent=24pt
+  \hangafter=1 
+   {\tiny #1}
+  %\hangindent\parindent
+}   
+
+
+\newcommand{\hanginp}[2]{ 
+  \renewcommand{\baselinestretch}{0.7}\small\normalsize
+  \setlength{\parskip}{1.5ex plus0ex minus0ex}
+  \noindent\hangindent=24pt
+  \hangafter=1 
+  {\scriptsize #1}{\hspace{2pt}\Large\red{#2}}
+  % \hangindent\parindent
+}   
+
+
+%% use for itemize wihtin description
+% \newenvironment{myitemize} {
+%   \setlength{\leftmarginii}{-10mm}
+%   \itemize
+% }
+
+% \newenvironment{myitemize}
+% {\setlength{\leftmarginii}{-10mm}
+% \begin{itemize}}
+% {\end{itemize}}
+
+
+\newenvironment{myitemize}
+{\begin{itemize}}{\end{itemize}}
+
+\newenvironment{wideitemize}
+{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+
+\newcommand{\mydes}[2][]{
+  \vspace*{-1pt}
+%%  \renewcommand{\baselinestretch}{0.7}\small\normalsize
+  \begin{description}\item[{#2}]{#1}\end{description}
+\vspace*{-8pt}
+}
+
+
+\usepackage{gitinfo}
+
+
+\title{BM-1: Applied statistics}
+
+
+
+\author[R. Diaz-Uriarte]{Ramón Diaz-Uriarte} %% \\ \Burl{http://ligarto.org/rdiaz}}
+
+\institute[]{Department of Biochemistry\\
+Universidad Autónoma de Madrid\\
+Madrid, Spain\\
+\texttt{ramon.diaz@iib.uam.es}\\
+\Burl{http://ligarto.org/rdiaz}
+}
+
+
+% \date[22-09-2014]{22-September-2014}
+% \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+\date[11-09-2017]{11-September-2017\\ {\scriptsize (Rev: \gitAbbrevHash)}}
+
+
+\begin{document}
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+% \begin{frame}
+%    \frametitle{Outline}
+%  {\small
+%  \tableofcontents[subsectionstyle=hide]
+%  }
+%  \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{People}
+  \begin{itemize}
+  \item Luis del Peso Ovalle, \texttt{luis.peso@uam.es}
+  \item Gonzalo Gómez, \texttt{gonzalo.gomez@uam.es}
+  \item Ramon Diaz-Uriarte, \texttt{ramon.diaz@iib.uam.es}
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Why, o why? (Oh, no, statistics again!)}
+  \begin{itemize}
+  \item (In the past) serious deficiencies in elementary usage of
+    statistics have been detected (e.g., during TFM).
+
+\item   Because the world is a noisy place and we need statistics to do science.
+  And we always come back to statistics.
+
+  \end{itemize}
+
+% \vspace*{18pt}
+
+% \begin{verse}
+%   Go ahead, tell me you'll leave again\\
+%   You'll just come back running\\
+%   Holding your scarred heart in hand\\
+%   It's all the same
+
+%   And I'll take you for who you are\\
+%   If you take me for everything\\
+%   And do it all over again\\
+%   It's all the same
+% \end{verse}
+
+% {\fontfamily{ppl}\selectfont Sick Puppies, \textit{All the Same} (from
+% their 2007 album \textit{Dressed Up as Life}).}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Objectives}
+  \begin{itemize}
+  \item Be able to conduct, and interpret correctly, some \textbf{basic} types of
+    statistical analysis of wide use in molecular biology et al.
+  \item Develop your statistical intuition.
+  \item Understand the fundamental relevance of experimental design.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Syllabus}
+  \begin{itemize}
+  \item Reading and handling data. Graphics.
+  \item Comparing two groups (and a single one).
+  \item Comparing more than two groups: ANOVAs and linear models. The multiple testing problem.
+  \item Basic categorical data analysis.
+% \vspace*{0.5cm}
+% \item All sessions: computer work
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Why those topics}
+  \begin{itemize}
+  \item Indispensable
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Managing expectations}
+  Is this all the stats knowledge I need for \ldots
+
+\vspace*{15pt}
+  \begin{itemize}
+  \item my ``trabajo fin de master''? Most likely not.
+  \item doing research for the rest of my life? \textbf{Definitely not}.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{\ldots eh????!!!!}
+  \begin{itemize}
+  \item We cannot cover all you might need
+  \item Develop statistical intuition: go learn on your own
+  \item Know when to consult a statistician ({\footnotesize hint: as soon
+      as possible})
+  \end{itemize}
+\vspace*{10pt}
+
+What are we leaving out? Almost everything.
+
+
+\vspace*{10pt}
+
+
+{\footnotesize
+(Analogy of first aid/CPR course vs.\ becoming a neurosurgeon)
+}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Statistics with R}
+  \begin{itemize}
+  \item Key concepts:
+    \begin{itemize}
+    \item basic statistical analysis
+    \item basic graphical procedures
+    \end{itemize}
+  \item But this is done with something (some piece of software).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why R?}
+  \begin{itemize}
+  \item Free (as in ``free beer'' and as in ``free speech''): free software
+  \item Available for all major operating systems
+  \item High quality
+  \item Huge library of contributed packages with added
+    functionality (including BioConductor); increasing weekly
+  \item The most used statistical system in bioinformatics and
+    ``omics'' research
+  \item Available in popular ``scientific workflows''
+    (\Burl{http://en.wikipedia.org/wiki/Scientific_workflow_system}) such
+    as Kepler, Taverna, Galaxy or Knime.
+  \item A key piece in reproducible research
+  \item They even mention it in \textit{Nature} editorials (\textit{The
+      digital toolbox}, 4-September-2014) and \textit{Nature} toolboxes
+    articles (Tippman, 2015, \textit{Programming tools: adventurs with R},
+    January 2015) :-)
+  \item \ldots
+
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{How? R Commander}
+  \begin{itemize}
+  \item We will use R Commander (\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/})
+  \item GUI + full transcript + markdown
+  \item Also RStudio (secondary)
+  \item But you will also have to type commands.
+  \end{itemize}
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{How does it look?}
+% \vspace*{4cm}
+% {\footnotesize(I'll show here a couple of desktops with RStudio and R Commander)}
+% \end{frame}
+
+
+
+%%% Say: I do not use for real, ever.
+
+
+% \begin{frame}
+% %%  \frametitle{(Don't tell anyone)}
+%   \frametitle{Our hidden agenda}
+%   \begin{itemize}
+%   \item That you finish the class with a burning desire (to learn) to use
+%     R directly typing R commands (i.e., no mouse clicks).
+%   \item That you finish the class with a burning desire to learn more
+%     statistics. 
+%   \end{itemize}
+% \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{And what if I know R already?}
+  \begin{itemize}
+  \item Great!
+  \item Focus on the statistics (we provide the commands that R Commander generates).
+  \item You can ignore R Commander almost completely if you want.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{What should  happen after we are done?}
+ (For example \ldots)
+  \begin{itemize}
+  \item That you never again use Excel for figures.
+  \item That you do your statistics with R, from simple t-tests to complex
+    GLMs. 
+  \item That you will continue  to practice (otherwise, you'll forget the material).
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{What do I need?}
+  \begin{itemize}
+    \item You can bring your own laptop to class.
+%%\item Computers in class will have software installed
+  \item You \textbf{\red{MUST}} install several things on your own computer
+    \begin{itemize}
+    \item if you bring your computer to class (highly recommended)
+    \item for out-of-class work
+    \item for the rest of your life
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+%   \textbf{STOP! Some packages available in July and August 2014 are now
+%     deprecated. On 19-September-2014 I will provide updated notes that
+%     will work as of that day}.
+
+% \textbf{Thus, the text below is mostly, but not fully, correct as of now.}
+
+%   See   \Burl{http://ligarto.org/rdiaz/BM1-software-applied-stats.txt}
+% \vspace*{10pt}
+
+% or
+
+
+\begin{frame}
+  \frametitle{Software in your laptops}
+
+  Instructions available from Moodle (file \textbf{``Software-you-need-to-install.txt''})
+  and also from
+  \Burl{https://github.com/rdiaz02/BM-1/blob/master/2017-2018/BM1-software-applied-stats.txt}.
+
+
+  
+  \vspace*{12pt}
+  {\small(Google: ``github rdiaz bm1'')}
+
+  
+  \vspace*{20pt}
+  
+  {\LARGE \textbf{Please, please, please: follow instructions carefully.}}
+\end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Two more packages: RcmdrPlugin.doBy and ISwR}
+% We need to add a couple of things.
+%   \begin{itemize}
+%   \item You also will want to install the package ``ISwR'': I use one data
+%     set for a couple of examples.
+%     %% FIXME!!!
+% \item Download it from \red{zz FIXME}:
+%   \begin{itemize}
+%   \item Linux and Mac:
+%   \item Windows:
+%   \end{itemize}
+
+% \item You can try installing it. We will also explain it in class.
+% \item But you MUST have downloaded it.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{One more package: RcmdrPlugin.doBy}
+
+%   \begin{itemize}
+%   \item You also need to install a modified version of the package ``RcmdrPlugin.doBy''.
+%     %% FIXME!!!
+% \item Download it from Moodle (file ``RcmdrPlugin.doBy'')
+  
+% \item You can try installing it. We will also explain it in class.
+%   \begin{itemize}
+%   \item In RStudio go to ``Tools'', ``Install Packages''.
+%   \item In the entry ``Install from'', select ``Package Archive File''
+%     \item In the second entry, ``Package archive'', select the file you
+%       got (RcmdrPlugin.doBy\_0.1-4.tar.gz)
+%     \item Install
+%     \end{itemize}
+% \item But you MUST have downloaded it.
+%   \end{itemize}
+% \end{frame}
+
+
+\begin{frame}
+  \frametitle{Software in your laptops}
+  \textbf{\red{Please make sure things works BEFORE coming to class}}
+\vspace*{15pt}
+
+
+And you will need the software to work so that you can work on the class
+notes \textbf{before} class.
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Software in your laptops: solving issues}
+  \begin{itemize}
+  \item 14-September we will go over   issues in software installation.
+  \item \textbf{Please, come after having tried on your own!!!}
+    \begin{itemize}
+    \item not enough bandwith
+    \item not enough time
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Can I use \ldots}
+  \begin{itemize}
+  \item SAS
+  \item SPSS
+  \item Minitab
+  \item Matlab
+  \item Stata
+  \item Statgraphics
+  \item Excel (not this one, unless you use Rexcel or similar!)
+  \item \ldots
+  \end{itemize}
+  
+  yes, of course!! \ldots
+
+
+\pause 
+\vspace*{10pt}
+
+\ldots but you are on your own: we will not provide any help for systems
+  other than  R {\scriptsize (the ``official'' R from CRAN)} with version $\ge$ 3.4.1.
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Schedule}
+  \begin{itemize}
+  \item From Moodle.
+  % \item Pay attention to days 23, 24, 25, 28 September and groups A and B (B
+  %   has class on 24 and 25 for Lesson 1, A has class on 23 and 28 for
+  %   Lesson 1).
+  \item Review and Exam: same day for both groups. First group A (10--12)
+    then group B (12--14).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Class mechanics}
+  \begin{itemize}
+  \item A mixture of theory and practice
+  \item Introduce a problem, work through it
+  \item You need to work through the notes before class
+  \item Yes, there will be partial repetition between
+    classes/sections/teachers
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Class mechanics}
+  \begin{itemize}
+  \item Do NOT expect too much hand holding in terms of  ``where is the
+    pull down menu for importing a file'', etc
+  \item We (teachers) will:
+    \begin{itemize}
+    \item Explain concepts that you do not understand
+    \item Help you get going
+    \item Try to save you from despair
+    \end{itemize}
+  \item You do the learning work: learn by
+    doing/exploring. \textbf{Active learning}
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Working through the notes before class}
+  Why?
+
+
+\vspace*{15pt}
+Because you will learn the material a lot better (\textbf{Active
+  learning})
+
+
+
+\begin{itemize}
+\item try it on your own
+\item find out what you don't know/understand (or makes no sense in the notes)
+\item get it answered (you get a need fulfilled)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Working through the notes before class}
+  Why?
+
+
+\vspace*{15pt}
+Because there is a lot of material to cover (really: A LOT ---look at the
+number of pages and topics in the notes)
+
+\begin{itemize}
+\item No time to cover every single thing in the notes
+\item If we get the trivial stuff out of the way, we can deal with more interesting stuff
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Working through the notes before class}
+  Can you really do it? \textbf{YES!}
+
+\vspace*{15pt}
+
+Because all of you should have taken at least one statistics class.
+
+\vspace*{15pt}
+
+
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Working through the notes before class}
+
+% Thus \ldots
+
+% \begin{itemize}
+% \item The Applied Statistics part of BM-1 should be a quick review \ldots
+% \item focused on things you might have forgotten or tricky things you
+%   might not know \ldots
+% \item and with a strong practical component of ``teach me how to do it
+%   with available software, interpret it, and produce reports and graphics
+%   I can use in my TFM (and life at large)''.
+% \end{itemize}
+
+% \end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Working through the notes before class}
+  
+How? Up to you.
+
+\vspace*{15pt}
+
+Working in groups a good idea
+
+\begin{itemize}
+\item Your peers are likely to be the ones who best understand what it is you do not
+  understand
+\end{itemize}
+
+\end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Working through the notes before class}
+%   Please, please: do it
+% \vspace*{15pt}
+%   \begin{itemize}
+%   \item 
+%   \end{itemize}
+% \end{frame}
+
+
+\begin{frame}
+  \frametitle{Working through the notes before class}
+%  Please, please: do it
+  \begin{itemize}
+  \item If you don't work on this on your own \ldots
+    \begin{itemize}
+    \item classes will go painfully slow
+    \item we will all end up frustrated
+    \end{itemize}
+  \item (If some of you work through it and some won't \ldots most
+    likely those who don't will be left way behind ---and ``tutorías'' are
+    not the way to fix not working through the notes before class)
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{In case it was not clear}
+  Please,  work on the notes on your own before coming to class.
+
+\vspace*{15pt}
+
+
+What you get out of this class depends a lot on what you put into
+    this class
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Class notes}
+  \begin{itemize}
+  \item Available before class
+  \item If you can, avoid printing them:
+    \begin{itemize}
+    \item all major operating systems have
+    PDF viewers that allow you to incorporate annotations in the PDF
+    itself and save them for posterity;
+  \item notes might suffer minor changes up until right before class;
+  \item ($\Rightarrow$ if you are reading these notes before class, 
+    these notes themselves can suffer changes :-) )
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Applied Statistics Forum}
+  \begin{itemize}
+  \item Use the forum.
+  \item Do not expect us to always be the ones who answer.
+  \item \textbf{Label your questions appropriately}. The title/subject of
+    the question is \textbf{very} important.
+    \begin{itemize}
+    \item Searching for answers to recurrent questions.
+    \item Knowing who should answer the question.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Forum: examples of poor question titles/subjects}
+
+  \begin{wideitemize}
+  \item R does not run. \textit{What does not run, exactly?}
+  \item I cannot install R. \textit{Where and what fails?}
+  \item I don't understand statistics. \textit{Eh?! None of
+      statistics? }
+  \item I hate statistics. \textit{Fair enough. Now, what exactly is the
+      question? Or is this just to make us sad?}
+  \item I do not understand a t-test. \textit{What don't you understand?
+      The formula? The null hypothesis? The \ldots?}
+  \end{wideitemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Forum: examples of good question titles/subjects}
+  \begin{wideitemize}
+  \item Lesson 3, Section 10.2, Diagnostics regression: why outliers?
+  \item Installing R: cannot install rJava.
+  \end{wideitemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Forum: attachments and error messages}
+  \begin{itemize}
+  \item Whenever possible, copy and paste the error message(s) as
+    \textbf{text} in the body of the question.
+
+  \item Avoid capturing screens and pasting them in a word document, power
+    point document, or other such perverse thing. 
+
+  \item Text is easy to search. A png isn't. A doc and a pdf aren't as
+    bad, but not as good.
+  
+  \item Text is easy to copy/modify. 
+
+  \item (Yes, copying and pasting the text error in an email message is
+    much simpler and faster for you too.)
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Grading}
+  \begin{itemize}
+  \item Look at guia docente.
+  \item A final exam with practical cases (70\% of the grade).
+  % \item (We need to see how wifi/network access works for real to decide
+  %   if in-class or out-of-class)
+  \item Self-evaluation exercise, similar to the exam, that you can do on
+    your own during the course (30\% of the grade).
+  \item To pass: at least a 5 over 10 in the final exam.
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{And where will classes be held?}
+  \begin{itemize}
+  \item Seminarios 7 and 8 (former 4 and 5) except for 14-September.
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Using my own computer}
+  \begin{itemize}
+  \item You are very welcome to bring your own laptop.
+  \item Make sure you install the required software %% {\scriptsize  \Burl{http://ligarto.org/rdiaz/BM1-software-applied-stats.txt}}
+  \item \textbf{Wi-Fi (eduroam)}: (google for ``wifi UAM'') %\Burl{http://www.uam.es/servicios/ti/servicios/wifi/}
+  \item \textbf{\red{Please make sure it works BEFORE coming to class}}
+  \item Address Wi-Fi questions/issues to CAU (we cannot help).
+  \item Note: Wi-Fi/internet should not be really needed for classes, but it
+    will be needed for the exam.
+  \end{itemize}
+\end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{}
+%   \begin{itemize}
+%   \item Who is planning on bringing his/her own laptop?
+%   \end{itemize}
+% \end{frame}
+
+
+% 1.  Average mark on Self-evaluation quiz (the post-class quiz). A skipped quiz
+% will count as a zero value in order to calculate the average. Please note that
+% answers to Problem Quiz (the pre-class quiz) do NOT contribute to this average
+% value.
+
+% 2.  Grade on the Final exam. Taking this exam is not mandatory (but it is highly
+% recommended).
+
+% The final mark for bioinformatics will be calculated as:
+
+% (0.6xSelf-Eval. average)+(0.4xExam)
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
