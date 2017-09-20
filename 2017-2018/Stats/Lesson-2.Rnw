@@ -820,6 +820,18 @@ A few comments:
 %%% FIXME
 %%% On Rcmdr: say something about where to redirect output, in Rcmdr
 %%% options?
+%% Even if one redirects ouptu to consloe from Rcmdr, when using Rcmdr
+%% from both emacs+ess or shell, things like
+%%  log(3)) 
+%% do not produce any sensible error message because of new capture
+%% procedure, it seems.
+%% Using Rstudio, however, allows to send type things in the console
+%% directly, and get sensible error messages. Note than if from Emacs or
+%% shell, that does not work reliably regardless of whether or not we set
+%% Rcmdr to use the R console for outpyt.
+%% yes, in Rstudio it seems that hard-wired that Rcmdr send things to the
+%% (Rstudio) console.
+
 
 
 %% \subsection{Reshaping the data for a paired t-test, second approach}
