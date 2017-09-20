@@ -90,6 +90,7 @@ BiocStyle::latex()
 
 \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \maketitle
 
 \tableofcontents
@@ -712,6 +713,9 @@ remember the details here, you just need to be aware of the issues.
 \end{enumerate}
 
 
+%% Note: this does not work unless we do further work:
+%% merge(dmyc[, dmyc$cond == "NC], dmyc[, dmyc$cond == "Cancer"], all = TRUE, by = "row.names")
+
 \subsubsection{Reshaping with \Rfunction{unstack}}\label{reshapestack}
 
 %%  I will use just one here,
@@ -813,6 +817,9 @@ A few comments:
   complicated, it allows you to be completely explicit about what is what.
 \end{itemize}
 
+%%% FIXME
+%%% On Rcmdr: say something about where to redirect output, in Rcmdr
+%%% options?
 
 
 %% \subsection{Reshaping the data for a paired t-test, second approach}
@@ -1798,4 +1805,4 @@ sessionInfo()
 
 
 
-%%% en clase, decir xq p-value es type I error rate e inversión de CI
+%%% en clase, decir xq p-value es type I error rate e inversi?n de CI
