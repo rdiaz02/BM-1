@@ -1518,11 +1518,12 @@ analysis. Maybe it is interesting to get a preliminary idea of the
 intra-brain variation in mielinization, but not for the original question
 of the DHA effect).
 
-
 There are some recent papers about issues like this that go over the
-pseudoreplication idea (e.g., Lazic, 2010, \textit{BMC Neuroscience}) and
-this is probably a pervasive (but difficult to detect) problem. This kind
-of meaningless analysis can lead to lots of non-reproducible results.
+pseudoreplication idea (e.g., Lazic, 2010, \textit{BMC Neuroscience} and
+Lazic et al., 2018, \texttt{PLoS Biology}, ``What exactly is 'N' in cell
+culture and animal experiments?'') and this is probably a pervasive (but
+difficult to detect) problem. This kind of meaningless analysis can lead
+to lots of non-reproducible results.
 
 Which brings us to the fundamental idea of \textbf{thinking carefully
   about the experimental design}, something we will take a quick look at
