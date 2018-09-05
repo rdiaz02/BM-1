@@ -1,0 +1,1819 @@
+%\VignetteEngine{knitr::knitr}
+\documentclass[a4paper,11pt]{article}
+\synctex=1
+<<echo=FALSE,results='hide',error=FALSE>>=
+suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
+require(knitr, quietly = TRUE)
+library(patchSynctex)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+require(car, quietly = TRUE)
+options(width = 65)
+@ 
+
+%% Packages needed: knitr, BiocStyle needs to be 1.2.0 or above
+<<packages,echo=FALSE,results='hide',message=FALSE>>=
+## suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
+suppressMessages(require(BiocStyle, quietly = TRUE))
+suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
+## suppressMessages(require(doBy, quietly = TRUE))
+suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
+@ 
+
+%% not if using BiocStyle
+%% \usepackage[authoryear,round,sort]{natbib}
+%% \usepackage{hyperref} 
+%%\usepackage{geometry}
+%%\geometry{verbose,a4paper,tmargin=23mm,bmargin=26mm,lmargin=28mm,rmargin=28mm}
+
+\usepackage[margin=10pt,font=small,labelfont=bf,
+labelsep=endash]{caption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{threeparttable}
+\usepackage{array}
+\usepackage{url}
+\usepackage{xcolor}
+%\definecolor{light-gray}{gray}{0.72}
+%% \newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+%% \newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+%% \newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\Burl}[1]{{\textcolor{blue}{\url{#1}}}}
+\usepackage[copyright]{ccicons} %% for the CC license icons
+%\usepackage{tikz}
+%\usetikzlibrary{arrows,shapes,positioning}
+
+
+
+\usepackage[latin1]{inputenc}
+%\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+
+\usepackage{gitinfo}
+
+%\usepackage{datetime}
+%\newdateformat{mydate}{\THEDAY-\monthname[\THEMONTH]-\THEYEAR}
+
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+BiocStyle::latex()
+@
+
+%% %% Modify margins
+\geometry{verbose,a4paper,tmargin=23mm,bmargin=23mm,lmargin=32mm,rmargin=40mm}
+
+
+\bioctitle[Lesson 2: Comparing two groups (and one group)]{BM-1, Applied
+  Statistics, Lesson 2: Comparing two groups (and one group).}
+
+\author{Ramon Diaz-Uriarte\\
+  Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Madrid, Spain{\footnote{ramon.diaz@iib.uam.es, rdiaz02@gmail.com}} \\
+%% {\footnote{rdiaz02@gmail.com}} \\
+{\small \Burl{http://ligarto.org/rdiaz}} \\
+ }
+
+
+%\title{Lesson 2. Comparing two groups (and one group)}
+  
+%% \author{Ramon Diaz-Uriarte\\
+%% Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+%% Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+%% Madrid, Spain\\
+%% {\small \texttt{ramon.diaz@iib.uam.es}} \\
+%% {\small \texttt{rdiaz02@gmail.com}} \\
+%% {\small \Burl{http://ligarto.org/rdiaz}} \\
+%% }
+
+
+\date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\clearpage
+
+\section*{Warning: eternally provisional}
+This file can get changed often. When asking questions in class or in the
+forum, refer to the section numbers AND section names, which change less
+than the page numbers.
+
+
+
+\section*{License and copyright}\label{license}
+This work is Copyright, \copyright, 2014, 2015, 2016, 2017, Ramon Diaz-Uriarte, and is
+licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
+International License:
+\Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+
+\centerline \ccbysa
+
+
+
+All the original files for the document are available (again, under a
+Creative Commons license) from
+\Burl{https://github.com/rdiaz02/BM-1}. (Note that in the github repo you
+will not see the PDF, or R files, nor many of the data files, since those
+are derived from the Rnw file).
+
+
+\clearpage
+
+\section{Introduction}
+
+
+
+
+Someone in your lab has measured the expression of several genes from a
+set of patients with and without cancer. Since you are the only one who
+took BM-1, you are in charge of looking at the data and answering the
+question ``Does the expression of the genes differ between patients with
+and without cancer?''.
+
+
+\subsection{Files we will use}
+
+
+\begin{itemize}
+\item This one
+\item \Robject{P53.txt}
+\item \Robject{MYC.txt}
+\item \Robject{BRCA2.txt}
+%%  \item ACRB.txt
+\end{itemize}
+
+
+
+
+
+
+<<create_p53, echo=FALSE, results='hide'>>=
+set.seed(1)
+dp53 <- data.frame(p53 = round(rnorm(23, c(rep(2, 13), rep(2.8, 10))), 3), 
+                   pten = round(c(rlnorm(13, 1), rlnorm(10, 1.35)), 3),
+                   brca1 = round(rnorm(23, c(rep(2, 13), rep(5.8, 10))), 3), 
+                   brca2 = round(c(rep(c(1, 2, 3), length.out = 13),
+                       rep(c(2, 3, 4), length.out = 10))),
+                   cond = rep(c("Cancer", "NC"), c(13, 10)), 
+                   id = replicate(23, paste(sample(letters, 10), collapse = "")))
+write.table(dp53, file = "P53.txt", col.names = TRUE,
+            row.names = FALSE, sep = "\t", quote = FALSE)
+rm(list = ls())
+@ 
+
+
+%% <<tests_p53_myc, echo=FALSE, results="hide">>=
+%% t.test(p53 ~ cond, data = dp53)
+%% t.test(pten ~ cond, data = dp53) ## we catch it
+%% t.test(log(pten) ~ cond, data = dp53) ## we don't
+%% t.test(log(p53) ~ cond, data = dp53) ## no effect: we don't see it
+%% @ 
+
+
+\section{Types of data}
+We need to get this out of the way, as we will refer to it
+frequently. Data can be measured in different scales. From ``less
+information to more information'' we can organize scales this way:
+
+\begin{description}
+\item[Nominal or categorical scale] We use a scale that simply
+  differentiates different classes. For instance we can classify some
+  objects around here, ``computer'', ``blackboard'', ``pencil'', and we
+  can give numbers to them (1 to computer, 2 to blackboard, etc) but the
+  numbers have no meaning per se.
+  
+  \textbf{Binary} data are in a nominal scale with only two classes: dead
+  or alive (and we can give a 0 or a 1 to either), male or female, etc.
+  
+
+  Lots of biological data are in a nominal scale. For instance, suppose
+  you look at the types of repetitive elements in the genome, and give a 1
+  to SINEs, a 2 to LINEs, etc. Or you number the aminoacids from 1
+  (alanine) to 20 (valine). You can of course count how many are of type 1
+  (how many are alanines), etc, but it would make no sense to do averages
+  and say ``your average AA composition is 13.5''.
+  
+  
+  
+\item[Ordinal scale] The data can be ordered in the sense that you can say
+  that something is larger or smaller than something else. For instance,
+  you can rank your preference for food as: ``chocolate > jamon serrano >
+  toasted crickets > liver''. You might assign the value 1 to chocolate (your most
+  preferred food) and a 4 to liver (the least preferred) but differences
+  or ratios between those numbers have no meaning. 
+  
+  Some measurements in biology are of these kind. Name a few?
+  
+  
+\item[Interval or ratio scale] You can take differences and ratios, and
+  they do have meaning\footnote{Some authors make a distinction between
+    ratio and interval scales; I won't. The only difference is that ratio
+    scales have a natural zero.}. If a subject has a value of 6 for the
+  expression of gene PTEN, another a value of 3, and another a value of 1,
+  then the first has six times more RNA of PTEN than the last, and two
+  times more than the second.
+  
+\end{description}
+
+
+We will try to be careful. With nominal data we will always try to keep
+them as ``things without numbers'', so that we make no mistakes (i.e.,
+keep the aminoacids names, not just a bunch of 1 to 20). Ordinal scale are
+trickier, and we will need to think about the type of data and the
+analyses.
+
+
+
+
+
+\section{Looking at the data: plots}
+
+We first need to import the data (from ``Data'', ``Import data'', ``from
+text file, clipboard, or URL, \ldots''). Make sure you name it sensibly;
+for instance, dp53. When you do that, you will see something similar to
+(not identical! because I did it suppressing unneeded stuff):
+
+<<>>=
+dp53 <- read.table("P53.txt", header = TRUE)
+@ 
+
+
+The first step ever is to look at the data. In fact, here we can look at
+all the original data. So go take a look at the data (``View data set'',
+there is a button next to ``dp53''). Resist the temptation to modify it
+there. \red{Why?}
+
+
+\subsection{Plots to do}
+For all except the trivially tiniest datasets we want to use graphics.
+Make sure you do the following plots (in the menu, under ``Graphs''):
+\begin{itemize}
+\item Histogram for each gene, using condition (``cond'') as the conditioning or grouping
+  variable (``Plot by:'').
+\item Boxplot, using condition (``cond'') as the conditioning or grouping
+  variable (``Plot by:'').
+\item Plot of means (and make sure you get nicer axes labels).
+\item Stripchart, and make sure you use ``jitter'', not ``stack'': \red{can
+  you tell for which one of the variables this matters a lot?}
+\item Density plots (``Density estimates'')
+\end{itemize}
+
+
+To get you going, I show all those for p53.
+<<out.width='11cm',out.height='11cm'>>=
+with(dp53, Hist(p53, groups=cond, scale="frequency", breaks="Sturges",
+                col="darkgray"))
+@
+
+<<fig.height=10, fig.width=8,results='hide'>>=
+op <- par(mfrow = c(2, 2)) ## to show 2 by 2 on the same figure
+Boxplot(p53~cond, data=dp53, id.method="y")
+plotMeans(dp53$p53, dp53$cond, error.bars="se", 
+  xlab="Condition", ylab="P53 expression levels")
+stripchart(p53 ~ cond, vertical=TRUE, method="jitter", 
+  ylab="p53", data=dp53)
+densityPlot(p53~cond, data=dp53, adjust=1)
+par(op)
+@ 
+
+
+%% If loaded silently, as above, will not get in the menuse. So do not do
+%% that for interactive usage
+Now load the ``plotByGroup'' plugin \footnote{You don't have it installed?
+  Install it, then. You should know how to do it by now. The name is
+  ``RcmdrPlugin.plotByGroup''} and you'll find a new menu entry, under
+``Graphs'', that says ``Plot by group''. Use
+
+\begin{itemize}
+\item histogram by group
+\item boxplot by group
+\end{itemize}
+
+
+<<out.width='10cm',out.height='9cm'>>=
+histogram(~p53 | cond, data=dp53)
+@
+<<out.width='10cm',out.height='9cm'>>=
+bwplot(~p53 | cond, data=dp53)
+@ 
+
+
+\subsection{What are the plots telling you?}
+Now, think about what these plots tell you:
+\begin{enumerate}
+\item The boxplots, is the ``boxplot by group'' more or less useful than
+  the built-in one?
+\item When was the stripchart specially useful? Could you see anything
+  strange for brca2 without the stripchart?
+\item Eye balling the plots, what variables do you think show differences
+  between the two conditions? Wait! Think about at least:
+  \begin{enumerate}
+  \item Differences in mean/median
+  \item Differences in dispersion (variance, IQR, etc)
+  \end{enumerate}
+\item Similar question again: what genes look like they have differential
+  expression between the cancer and non-cancer patients?
+  
+\item Are density plots reasonable in these cases?
+  
+\end{enumerate}
+
+
+
+\subsection{Multiple plots per page again}
+If we access R directly we can do something like:
+
+<<fig.width=7, fig.height=5, results='hide', fig.show = 'hold'>>=
+op <- par(mfrow=c(1,2))
+Boxplot(p53~cond, data=dp53, id.method="y")
+plotMeans(dp53$p53, dp53$cond, error.bars="se", xlab="Condition", 
+          ylab="Mean of P53")
+par(op)
+@ 
+
+Note that all I really did was add the \verb@par(mfrow=c(1,2))@ and then
+copy the appropriate lines provided by the ``R Script'' window. And I clicked
+``Submit''. The \verb@op <- par(mfrow=c(1,2))@ and \verb@par(op)@ are a
+minor detail to restore options as they were.%% (It is simpler if you copy, then clear, then paste and modify).
+
+\clearpage
+\section{Saving the things we do}
+
+(This material is completely optional, so we will not spend any time on it
+unless all the rest is clear).
+
+
+\subsection{The R script}
+Notice we have a complete R script: the whole transcript of all we did.
+
+\begin{itemize}
+\item Can you save it?
+\item Can you open it and reuse it?
+\end{itemize}
+
+
+Do not underestimate the power of this feature: you have a record of ALL
+you did (unless you messed around with ``Edit data set''). This is a
+record of your workflow. We want research to be reproducible: this helps
+us achieve it (and it is a simple version of what scientific workflows
+provide). 
+
+
+\subsection{An HTML report}
+
+This is all very nice, but you might want to intersperse your figures with
+comments and notes and have something to hand to your colleagues. Let's
+give them something more useful. Go the the ``R Markdown'' tab and
+generate the HTML report. That is an HTML file you can put on a web page,
+send around, etc.
+
+Edit the Markdown file and:
+
+\begin{itemize}
+\item Get rid of useless plots.
+\item Add your name and a meaningful title.
+  \item Add some reasonable text near the BRCA2 figure. E.g., ``This looks
+    weird''.
+\end{itemize}
+
+
+And note that you have, in here, also a record of all of your
+commands. But the proper file to carefully save is the R script. \red{Why?}
+
+%% the R Markdown file gets updated whenever you submit something from R
+%% script.
+
+
+\subsection{Saving the figures ``for real''}
+The HTML report does not have high-quality figures for publication. You
+can obtain those from ``Save graph to file''.
+
+
+
+\clearpage
+\section{Comparing two groups with a t-test}
+
+Let's start with p53. Compare the mean between the two groups
+(``Independent samples t-test''). You will see something like (not
+identical, again, because I called it directly using default options)
+
+<<>>=
+t.test(p53 ~ cond, data = dp53)
+@ 
+
+
+\begin{itemize}
+\item What is this test for?
+\item Do you remember what the formula for the t-statistic look like? And
+  why should this matter?
+\item What are the options given?
+  \begin{itemize}
+  \item Equal variances? Does it make a difference? Any simple hint of
+    whether you are using Welch's test or the equal-variances one?
+  \item Alternative hypothesis? One-tailed vs. two-tailed.
+  \end{itemize}
+\item Do results agree with the figures? What figures?
+\item Oh, in fact: can we interpret the results?
+\end{itemize}
+
+(We will spend time in class making sure all this is understood if you
+have forgotten your stats classes).
+
+Repeat the above with brca1.
+
+
+
+\subsection{Assumptions of the t-test}
+
+One key assumption is \textbf{independence} of the data. This is the case
+for the t-test but is also the case for many statistical tests. We return
+to this below several times because it is a \textbf{crucial} assumption
+(e.g., section \ref{pseudorep} and also Lesson 3). Lack of independence is
+a serious and pervasive problem (and one form of non-independence is also
+referred to as ``pseudoreplication'' \footnote{A major paper, a long while
+  ago, in the journal \textit{Ecological Monographs} by Hurlbert dealt
+  with this and made ``pseudoreplication'' a well known term.}).
+
+
+When comparing two means, \textbf{equality of variances} is also
+important. But detecting differences in variances is complicated. Two
+practical solutions are: Welch's test (the default in R) and using
+transformations %% (see also section \ref{transform})
+. However, think about
+the meaning of a comparison of means when variances are hugely different:
+do you really want to do that?
+
+
+What about normality? It matters, but not as much, especially as sample
+size gets larger. Deviations from normality because of skewness
+(asymmetry) can have a large effect. Deviations because of kurtosis (tails
+heavier than the normal) have very minor effects. That is why we often say
+``data are sufficiently close to normality''. And in the ``sufficiently
+close'' we worry mainly about asymmetries. And things tend to get
+``sufficiently close'' as sample size grows larger (a consequence of the
+central limit theorem); how large is large enough? Oh, it depends on how
+far the distribution of the data is from the normal distribution, but
+often 10 is large enough, and 50 is generally well large enough (but in
+certain cases 100 might not be even close to large enough).
+
+Of course, although this should be obvious: when we talk about symmetry,
+normality, etc, we are talking about the data distribution of \textbf{each
+  group separately}.
+
+Finally, \textbf{outliers} can be a serious concern (by the way, outliers,
+or potential outliers ---under some definition of outlier--- get flagged
+by function \Rfunction{Boxplots} in R). In general, points very far from
+the rest of the points will have severe effects on the value computed for
+the mean (not the median ---this is also related to why nonparametric
+procedures can be more robust). What to do, however, is not obvious. An
+outlier might be the consequence of an error in data recording. But it
+might also be a perfectly valid point and it might actually be the
+``interesting stuff''. Sometimes people carry out (and, of course,
+\textbf{should explicitly report}) analysis with and without the outlier;
+sometimes the same qualitative conclusions are reached, sometimes
+not. Please, think carefully about what an outlier is before proceeding
+with your analysis but do not get into the habit of automatically getting
+rid of potential outliers. And whatever you do, you should report it.
+
+
+The book by Rupert Miller ``Beyond Anova'' (Chapman and Hall, 1997)
+contains a great discussion of assumptions, consequences of deviations
+from them, what to do, etc.
+
+
+
+
+
+
+
+\subsection{Ideas that should be clear from the t-test part}
+A few ideas that should be clear after this section:
+
+\begin{enumerate}
+\item The difference between a sample and a population
+\item What a statistic is
+\item What a t-statistic is
+\item That statistics have distributions
+\item The difference between standard deviation and standard error
+\item That sampling introduces variability
+\item That some procedures ``ask more from the data'' (e.g., interval data)
+\item p-values
+\item Null hypothesis
+\item Distribution of the statistic under the null hypothesis
+\item The logic behind a statistical test
+\item The difference between estimation and hypothesis testing
+\end{enumerate}
+
+
+If any one of the above is not clear, please ask it in class.
+
+
+%% \section{Data transformations}\label{transform}
+
+%% (Look at this section briefly if we do not have a lot of time. Many things
+%% will be clearer after we play with transformations in Lesson 3.)
+
+%% Let us look at the boxplot for ``pten''. What does it look like? Take the
+%% log transformation: create a new variable. Yes, find this out; it is
+%% under ``Data'', ``Manage variables'', ``Compute new variable'' and you
+%% enter ``log(pten)'' as the ``Expression to compute''; take a look at
+%% Figure \ref{ucla} for an example; or you can be much faster and do it by
+%% typing code directly in the R Script or the RStudio console:
+
+%% <<>>=
+%% dp53$logpten <- log(dp53$pten)
+%% @
+
+
+%% Now, plot the log of pten. And do t-tests of the original and
+%% log-transformed variable.
+
+%% <<results='hide', fig.show='hold', fig.width=5, fig.height=5>>=
+%% op <- par(mfrow = c(1, 2))
+%% Boxplot(pten~cond, data=dp53, id.method="y")
+%% Boxplot(logpten~cond, data=dp53, id.method="y")
+%% par(op)
+%% @ 
+
+
+%% Do we expect multiplicative or additive effects? (With a two-group
+%% comparisons it isn't always easy to think this, but can be crucial in
+%% regression; we will see it in Lesson 3). 
+
+
+
+
+%% <<>>=
+%% t.test(pten ~ cond, data = dp53)
+%% t.test(logpten ~ cond, data = dp53)
+%% @ 
+
+
+\clearpage
+
+\section{Paired tests}\label{pairedt}
+
+Load now the data set called \Robject{MYC.txt}. As before, give it a
+reasonable name.
+
+
+<<create_myc, echo=FALSE, results = 'hide'>>=
+set.seed(15)
+s <- rnorm(12, 4, 25)
+s <- c(s, s)
+cond <- rep(c(0, .5), c(12, 12))
+y <- rnorm(24) + s + cond
+y <- y - min(y) + 0.3
+id <- replicate(12, paste(sample(letters, 10), collapse = ""))
+id <- c(id, id)
+dmyc <- data.frame(myc = round(y, 3), 
+                   cond = rep(c("Cancer", "NC"), c(12, 12)), 
+                   id = id)
+
+## t.test(myc ~ cond, data = dmyc)
+## ## should this work?? It does but from the help it ain't obvious to me
+## t.test(myc ~ cond, paired = TRUE, data = dmyc) 
+## t.test(myc ~ cond, data = dmyc)
+## t.test(myc ~ cond, paired = TRUE, data = dmyc) 
+## t.test(dmyc$myc[1:12] - dmyc$myc[13:24])
+## summary(lm(myc ~ id + cond, data = dmyc))
+
+
+write.table(dmyc, file = "MYC.txt", col.names = TRUE,
+            row.names = FALSE, sep = "\t", quote = FALSE)
+@ 
+
+<<>>=
+dmyc <- read.table("MYC.txt", header = TRUE)
+@ 
+
+
+
+What is the active data set now?
+
+
+Look at the data. Anything interesting?
+
+
+There are actually two observations per subject, one from tumor tissue and
+one from non-tumor tissue. This is a classical setting that demands a
+paired t-test. \red{Why?} When answering this question think about the
+idea of using each subject as its own control.
+
+
+How can we check the above? (Why is this doing what I want?)
+
+<<>>=
+all(with(dmyc, table(id, cond)) == 1)
+@ 
+
+
+
+
+\subsection{Reshaping the data for a paired t-test}
+
+\subsubsection{The shape of the data}\label{datashape}
+Often, when you know you are only going to do a paired test you can
+organize your data in a table structure like the one in Table 
+\ref{unstacked}:
+
+\begin{table}[h!]
+\begin{tabular}{ccc}
+  SubjectID&Tumor&Non-Tumor\\
+  \hline
+  pepe&23&45\\
+  maria&29&56\\
+  \ldots&\ldots&\ldots\\
+\end{tabular}
+\caption{Paired data in a ``unstacked'' shape/format.}\label{unstacked}
+\end{table}
+
+
+That looks ok, but is really a very limiting format for the data. Think
+about what you would do if you had additional ``tumor'' and ``non-tumor''
+data per subject, or you had additional covariates for each measure,
+etc. That is why we often want to have the data in a ``stacked'' format as
+in Table \ref{stacked}:
+
+
+\begin{table}[h!]
+\begin{tabular}{ccc}
+  SubjectID&Myc&Condition\\
+  \hline
+  pepe&23&tumor\\
+  pepe&45&nontumor\\
+  maria&29&tumor\\
+  maria&56&nontumor\\
+  \ldots&\ldots&\ldots\\
+\end{tabular}
+\caption{Paired data in a ``stacked'' shape/format.}\label{stacked}
+\end{table}
+
+This is arguably a much more useful way of storing the data for most
+general analyses and we can keep adding additional information if we need
+to. Whole papers have been written about these issues\footnote{For
+  example, Wickham's ``Tidy data'', in the \textit{Journal of Statistical
+    Software}: \Burl{http://www.jstatsoft.org/v59/i10}}, but we will stop
+here.
+
+\subsubsection{Reshaping our data}\label{reshaping}
+
+In our case, we cannot do a paired t-test directly with our data because
+of the way the data have been given to us. We first need to reshape the
+data as R Commander ---in contrast to using directly R--- will not allow
+us to carry out a paired t-test on these data as they are. Of course, you
+could also do this outside R if you want and then import the data so that
+the two values of myc expression for a subject are on the same row but
+that is ugly.
+
+So that is what we want: the values of myc of the same subject to be on
+the same row. We will do this reshaping in four different ways.
+
+There are many alternative approaches for reshaping the data directly from
+the command line. Many, many, many\footnote{For instance:
+  \Burl{http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/}
+  or \Burl{https://rpubs.com/bradleyboehmke/data_wrangling}; these are
+  heavily biased towards the ``Hadley's way''.}. And yes, it is unavoidable
+that this will get a little bit complicated. But manipulating and
+reshaping data must be done with a lot of care. You do not need to
+remember the details here, you just need to be aware of the issues.
+
+
+\subsubsection{Reshaping using the menus}\label{reshapemenu}
+
+
+
+\begin{enumerate}
+\item Create a data set that contains only the values for observations
+  with status ``Cancer''. (``Subset'', under ``Active data set''). Use the
+  ``Subset expression'' you want; in this case 
+  \verb@cond == ``Cancer''@. Call this data set cc.
+  
+\item Make sure ``id'' is used as row name. Do this using ``Set case
+  names'' under ``Active data set''. Can you understand why we are doing
+  this?
+  
+\item Rename the value of variable ``myc'' to ``myc.c'' (for MYC in the
+  cancer patients).
+  
+\item Create a data set that contains only the values for observations
+  with status ``NC''.  Call this data set, say, nc.
+  \item Again, set ``id'' as case names for this data set.
+\item Rename this ``myc'' to ``myc.nc''.
+  
+\item Merge nc and cc. Call it ``merged''. Use the option to merge columns!
+
+\item (Why can we trust that it did get it right? Look at the code that
+  shows \\
+  \verb@merge(cc, nc, all=TRUE, by="row.names")@).
+\end{enumerate}
+
+
+%% Note: this does not work unless we do further work:
+%% merge(dmyc[, dmyc$cond == "NC], dmyc[, dmyc$cond == "Cancer"], all = TRUE, by = "row.names")
+
+\subsubsection{Reshaping with \Rfunction{unstack}}\label{reshapestack}
+
+%%  I will use just one here,
+%% which might be the easiest to begin with, with data with a structure as
+%% simple as ours (I'd probably very rarely use this approach for real, with
+%% my own data, but doing it differently would require us to take a longer
+%% diversion).
+We will first use the R function \Rfunction{unstack}. This is the natural
+reverse operation of ``stacking''.
+
+
+<<>>=
+unstack(x = dmyc, form = myc ~  cond)
+@ 
+
+That seems to do it but \ldots how can you be sure each row corresponds to
+the same subject? We are counting on it to work, but it might not if the
+data had not been ordered by subject id. (See also section \ref{ptr}). So
+we will be explicit here, ordering by condition and then id:
+
+<<>>=
+dmyc0 <- dmyc[order(dmyc$cond, dmyc$id), ]
+dmyc0
+@ 
+
+Now, we unstack:
+
+<<>>=
+merged2 <- unstack(dmyc0, form = myc ~ cond)
+merged2
+@ 
+
+We could directly use the data, but we are missing the IDs. We will add them:
+
+<<>>=
+(merged2$id <- dmyc0$id[1:12])
+@ 
+
+Verify we are now ok comparing merged2 with dmyc.
+
+
+
+\subsubsection{Reshaping with \Rfunction{reshape}}
+\label{reshapereshape}
+
+This is another built-in function in R, \Rfunction{reshape}. This can be a
+complicated function to use, but it is extremely powerful. I'll use it
+here fully specifying all the  arguments\footnote{In this case, you
+  do not need to specify the \texttt{v.names} argument, for example, but
+  I'd rather be explicit.}:
+
+<<>>=
+(merged3 <- reshape(dmyc, direction = "wide", idvar = "id", 
+                    timevar = "cond", v.names = "myc"))
+@ 
+
+
+%% FIXME: or dcast from reshape2?
+\subsubsection{Reshaping with  \Rfunction{spread}}\label{spread}
+
+OK, so we will do it in a fourth way. You need to install the
+\CRANpkg{tidyr} package. If you don't have it, install it if you
+want. This is not a big deal: it is just to show you a fourth way.
+
+<<>>=
+library(tidyr)
+(merged4 <- spread(dmyc, cond, myc))
+@ 
+
+You can compare with \texttt{merged3} and \texttt{merged2} and \texttt{merged},
+and verify they have the same data.
+
+
+\subsubsection{\Rfunction{dcast} from \CRANpkg{reshape2}?}
+\label{sec:rfunct-from-cranpkgr}
+
+As it says, you could try doing the reshaping using \Rfunction{dcast} from
+\CRANpkg{reshape2}. Try it if you want to.
+
+%% Probably the preferred way now is tidyr
+
+%% dcast(dmyc, id ~ cond, value.var = "myc")
+
+%% see here for nice summary: http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/
+
+
+\subsubsection{Reshaping et al: final comments}
+
+A few comments:
+\begin{itemize}
+\item This data reshaping is not strictly necessary from doing a paired
+  t-test in R but it is for R Commander (see below ---section \ref{ptr}).
+\item We will see below a way to carry out these same analyses with a
+  linear model (section \ref{lm-paired}). And no reshaping needed.
+
+\item Data manipulation can be tricky: you \textbf{must} be sure to get it
+  right. What would I do? Do it in two different ways, and compare. Among
+  those two I'd probably have \Rfunction{reshape} because, even if
+  complicated, it allows you to be completely explicit about what is what.
+\end{itemize}
+
+%%% FIXME
+%%% On Rcmdr: say something about where to redirect output, in Rcmdr
+%%% options?
+%% Even if one redirects ouptu to consloe from Rcmdr, when using Rcmdr
+%% from both emacs+ess or shell, things like
+%%  log(3)) 
+%% do not produce any sensible error message because of new capture
+%% procedure, it seems.
+%% Using Rstudio, however, allows to send type things in the console
+%% directly, and get sensible error messages. Note than if from Emacs or
+%% shell, that does not work reliably regardless of whether or not we set
+%% Rcmdr to use the R console for outpyt.
+%% yes, in Rstudio it seems that hard-wired that Rcmdr send things to the
+%% (Rstudio) console.
+
+
+
+%% \subsection{Reshaping the data for a paired t-test, second approach}
+
+
+%% You can do this in a simpler way using the \CRANpkg{RcmdrPlugin.doBy}
+%% (BEWARE: you must install and use the version of \CRANpkg{RcmdrPlugin.DoBy}
+%% I provided you\footnote{There is a bug in one of the functions in the original
+%%   package, and I have fixed it. The version you can get from CRAN will not
+%%   work; the version I provide you has the bug fixed ---I've emailed the
+%%   author about this, but so far haven't reached him.}).
+
+
+%% \begin{enumerate}
+%% \item Split the dmyc data set according to ``cond'', using the ``Split by''
+%%   under the new ``doBy'' menu.
+%% \item For each of the new data sets, turn the id column into the rownames
+%%   as we did before: under ``Data'', ``Active data set'', ``Set case
+%%   names''.
+%% \item Merge the two new data sets, again using ``Merge'' and doing it by
+%%   columns. Call this m3, for instance.
+%% \end{enumerate}
+
+%% Once you have done all of the above, you will have this on the R Script
+%% (and the Output)
+%% <<>>=
+%% SplitData <- splitBy(~ cond, data = dmyc)
+%% SplitData.Cancer <- SplitData["Cancer"]
+%% SplitData.NC <- SplitData["NC"]
+%% SplitData.Cancer <- as.data.frame(SplitData.Cancer)
+%% SplitData.NC <- as.data.frame(SplitData.NC)
+%% row.names(SplitData.Cancer) <- as.character(SplitData.Cancer$Cancer.id)
+%% SplitData.Cancer$Cancer.id <- NULL
+%% row.names(SplitData.NC) <- as.character(SplitData.NC$NC.id)
+%% SplitData.NC$NC.id <- NULL
+%% m3 <- merge(SplitData.NC, SplitData.Cancer, all=TRUE, by="row.names")
+%% rownames(m3) <- m3$Row.names
+%% m3$Row.names <- NULL
+%% @ 
+
+
+%% Please, before continuing, make sure you look at the data: ``View data set''.
+
+
+
+%% %% There is a third approach, with aggregate and using id as aggregate by,
+%% %% and function function(x) {return(x)}
+
+
+\subsection{The paired t-test}
+Just do a paired t-test. What is the result? Compare it with doing a
+t-test as if they were two independent samples. The differences are rather
+dramatic! 
+
+
+I'll use \texttt{merged3}; you can use \texttt{merged} or \texttt{merged2}
+or \texttt{merged4}
+if you want. I'll type the expressions directly. You can of course get
+this from R Commander (under ``Statistics'', ``Means'').
+
+<<>>=
+## Paired; you can get this from R Commander too
+t.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided', 
+       conf.level=.95,  paired=TRUE)
+@ 
+
+
+<<>>=
+## Two-sample
+t.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided', 
+       conf.level=.95,  paired=FALSE)
+@ 
+
+The last is of course the same as
+<<>>=
+t.test(myc~cond, alternative='two.sided', conf.level=.95, 
+       var.equal=FALSE,  data=dmyc)
+
+@ 
+
+(Is there a sign difference? Why? What happens if you change the order of
+NC and Cancer in the paired test?)
+
+
+\subsection{The paired t-test again: a single-sample t-test}\label{paired-single}
+What is the above test doing?
+
+Create a new variable (e.g., call it ``diff.nc.c'') that is the difference
+of myc in the NC and Cancer subjects (``Data'', ``Manage variables'',
+``Compute new variable''). You have to fill up (modify to your needs) the
+boxes ``New variable name'' and ``Expression to compute''
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.80\paperwidth,keepaspectratio]{compute-diff-var.png}
+    \caption{\label{ucla} Creating a new variable that is the difference
+      between the two values for a subject.}
+  \end{center}
+\end{figure}
+
+
+You will see this in the R Script:
+<<>>=
+merged3$diff.nc.c <- with(merged3, myc.NC - myc.Cancer)
+@ 
+
+
+Now, do a single-sample t-test:
+<<>>=
+with(merged3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0, 
+                      conf.level=.95)))
+@ 
+
+Compare the t-statistic, the degrees of freedom and the p-value with the
+paired t-test we did above. Again: what is it we are doing with the paired
+t-test? (Remember this, as this will be crucial when we use Wilcoxon's
+test).
+
+
+
+\clearpage
+\subsection{Plots for paired data}
+
+What do you think of this plot?
+
+<<fig.width=5.5, fig.height=5.5>>=
+plotMeans(dmyc$myc, dmyc$cond, error.bars="se", ylab = "MYC",
+          xlab = "Condition")
+@ 
+
+(By the way, this is a plot that you must be sure you know how
+to generate from R commander.)
+
+So what is a reasonable plot for paired data? A boxplot (or stripchart if
+few points) of the within-individual (or Intra-subject) differences is a
+very good idea. % In fact, I will now create them from scratch directly from R
+% (this \textbf{assumes} that the data are ordered the same way by patient:
+% the first myc.cancer is the same patient as the same myc.nc, etc. This is
+% the case in our data, but need not be; see details in section \ref{ptr})
+
+
+
+<<fig.width=5.5, fig.height=5.5, echo=TRUE, fig.show = 'hold'>>=
+Boxplot( ~ diff.nc.c, data = merged3, xlab = "",
+         ylab = "Intra-subject difference (NC - Cancer)", main = "MYC")
+@ 
+
+
+% <<fig.width=5, fig.height=5, echo=TRUE>>=
+% diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
+% Boxplot( ~ diffs, xlab = "", ylab = "Intra-subject difference", main = "MYC")
+% @ 
+
+
+
+\clearpage
+
+A more elaborate plot directly shows both the NC and Cancer data, with a
+segment connecting the two observations of a subject. For that, though, we
+need to use R code directly. For example this will do (beware: this code
+does the job but it is not very efficient or elegant):
+
+<<fig.show='hold'>>=
+stripchart(myc ~ cond, vertical=TRUE, data=dmyc)
+for(i in unique(dmyc$id)) 
+  segments(x0 = 1, x1 = 2, 
+           y0 = dmyc$myc[dmyc$cond == "Cancer" & dmyc$id == i], 
+           y1 = dmyc$myc[dmyc$cond == "NC" & dmyc$id == i], 
+           col = "red")
+@ 
+
+You can copy the above code in the R Script window and click on
+``Submit'', or you can copy it in the RStudio console. 
+
+Now, look at these plots carefully, and understand that there are
+different sources of variation. In this particular example, there was a
+huge inter-subject variation in the expression of MYC; if we can control
+for it (e.g., with intra-subject measures) then we can detect what is, in
+relative terms, a small effect due to the condition. 
+
+
+(This is a short section, but it is very important. That is the reason I
+have added a few plots to beef it up. Seriously.)
+
+
+
+
+
+\subsection{Choosing between paired and two-sample t-tests}
+\textbf{How the data were collected dictates the type of analysis}. This
+is a crucial idea. You cannot conduct a two-sample t-test when your data
+are paired because your data are NOT independent (see also section
+\ref{pseudorep}).
+
+This section is not about the analysis, but about the design. It is about
+``should I collect data so that data are paired or not?'' A paired design
+controls for subject effects (correlation between the two measures of the
+same subject) but if there are none, then we are decreasing the degrees of
+freedom (by half): compare the degrees of freedom from the paired and the
+non-paired tests on the myc data. In most cases with biological data there
+really are subject effects that lead to large correlations of
+within-subject measurements. But not always.
+
+This is a major topic (that cannot be done justice to in a
+paragraph). Sometimes the type of data are something you have no control
+over. But sometimes you do have control. How do you want to spend your
+money? Suppose you can sequence 100 exomes. Do you want to do 100
+samples, 50 controls and 50 tumors, or do you want to do those same 100
+exomes, but from 50 patients, getting tumor and non-tumor tissue? The
+answer is not always obvious. Go talk to a statistician.
+
+
+
+
+\section{One-sample t-test}\label{sec:one-sample-t}
+We have already used the one-sample t-test (section
+\ref{paired-single}). You can of course compare the mean against a null
+value of 0, but you can also compare against any other value that might
+make sense (``Null hypothesis mu'' in R commander). Issues about
+assumptions are as for the two-sample (except, of course, there are no
+considerations of differences in variances among groups, since there is
+only one group). One-sample tests are probably not as common in many
+cases, as we are often interested in comparing two groups. But when you
+want to compare one group against a predefined value, the one-sample
+t-test is what you want.
+
+
+
+
+
+\section{Non-parametric procedures}
+
+
+\subsection{Why and what}\label{non-par-rationale}
+
+Non-parametric procedures refer to methods that do not assume any
+particular probability distribution for the data. These methods often
+proceed by replacing the original data by their ranks. They offer some
+protection against deviations from some assumptions (e.g., deviations from
+normality).  But some times they might be testing a slightly different
+null hypothesis. Whether or not to use them is a contentious issue. Some
+considerations that come into play are:
+
+\begin{itemize}
+\item Do the data look bad enough that a parametric procedure will lead to
+  trouble?
+\item What about the relative efficiency of the non parametric procedure?
+  (relative efficiency refers to the sample size required for two
+  different procedures that have similar type I error rate to achieve the
+  same power ---more on power later). When assumptions are met, parametric
+  methods do have more power (though not always a lot more). When
+  assumptions are not met, nonparametric methods might have more power, or
+  the correct Type I error, etc. Note that very, very, very small p-values
+  are often not achievable with non-parametric methods (because of the way
+  they work), and this is a concern with multiple testing adjustments in
+  omics experiments (this will be covered in the next lesson).
+\item Is this test flexible enough? In particular, can I accommodate
+  additional experimental factors?
+\end{itemize}
+
+
+
+We focus here on the Wilcoxon test. This is often the way to go when we
+have \textbf{ordinal} scale measurements and we want to compare two
+independent groups. Note, however, that the Wilcoxon test \textbf{requires
+  interval scale data} for the single-sample Wilcoxon and the paired
+Wilcoxon (this is something that many websites and some textbooks get
+wrong); a simple illustration is shown in section \ref{wpi}.
+
+
+However, \textbf{\red{the independence assumption}} is as important with
+Wilcoxon as with the t-test. Nonparametric tests are not
+``assumption-free'' tests!!! (there is no such thing, in statistics or in life).
+
+
+An excellent non-parametrics book is Conover's ``Practical nonparametric
+statistics'', in its 3rd edition (it is so awesome, I have two copies, one
+at home and one at the office ---you can get one from Amazon for about 20
+\texteuro{}). (For more general categorical data analysis, Agresti's
+``Categorical data analysis'' is a must. It is now also in its third
+edition. There is, by the same author, a smaller ``Introduction to
+categorical data analysis'').
+
+
+
+\subsection{Two-sample Wilcoxon or Mann-Whitney test}
+
+This test applies to data of ordinal and interval scales. The basic logic
+is: put all the observations together, rank them, and examine if the sum
+of the ranks of one of the groups is larger (or smaller) than the
+sum of the ranks from the other. If this makes sense to you, you should
+understand why you can use both ordinal and interval scales.
+
+
+Just go do it with R Commander. It is under ``Statistics'',
+``Nonparametric tests''. Do it for p53, pten, and brca1. Compare the
+results with those from the t test.
+
+For example:
+<<>>=
+wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
+@ 
+
+
+
+
+% Contrary to Conover, not really testing F(x)= G(x)
+
+% <<>>=
+% ## Will not reject
+% x <- rnorm(10000, mean = 0, sd = 1)
+% y <- rnorm(10000, mean = 0, sd = 20)
+% wilcox.test(x, y)
+% @ 
+
+
+% Not about medians or means either
+
+% <<>>=
+% ## Will reject, medians the same
+% x <- c(rep(10, 1000), 11, rep(12, 1000))
+% y <- c(rep(10, 1000), 11, rep(13, 1000))
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+
+% ## Will reject, means the same
+% x <- seq(from = 10, to = 20, length.out = 1000)
+% y <- c(rep(0, 999), 15000)
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+
+% @ 
+
+
+
+% <<>>=
+
+% ## Will accept, medians differ
+% x <- c(rep(10, 1000), 11, rep(12, 1000))
+% y <- c(rep(10, 1000), 10.1, rep(12, 1000))
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+
+
+% ## Will accept, means differ
+% x <- c(rep(10, 1000), 1e9, rep(1000, 1000))
+% y <- c(rep(10, 1000), -1e9, rep(1000, 1000))
+% summary(x)
+% summary(y)
+% wilcox.test(x, y)
+% @ 
+
+
+
+\subsection{Wilcoxon matched-pairs test}
+
+The idea here is to assess whether the within-pair differences are
+symmetrically distributed around zero. As we are talking about symmetry,
+this means that this test can be used \textbf{only with interval scale}
+data (see also section \ref{wpi}).
+
+In a nutshell, this is what the test does: for each pair, it computes the
+difference of the two measures (thus, taking differences must make sense,
+and it does not for ordinal data but it does for interval data). These
+differences (discarding the sign) are then ranked, and then the sum of the
+ranks of all the positive differences is computed and compared to the null
+distribution.
+
+
+Go do it with the dmyc data we used for the paired t-test (section
+\ref{pairedt}). Remember we had to reshape the data (section
+\ref{reshaping}) so I will reuse our \texttt{merged3} data set:
+
+
+<<>>=
+wilcox.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided', 
+            paired=TRUE)
+@ 
+
+You can verify that the results are the same as doing a single sample
+Wilcoxon, or a Wilcoxon signed-rank test, on the within-subject
+differences. %% The single sample Wilcoxon test is not directly available
+%% from R Commander of versions before 2.1-0 and you can run it from
+%% the console as: %% it is in 2.1-7
+
+
+Remember we computed intra-subject differences before
+(section \label{paired-single}), so we will reuse them: 
+
+<<>>=
+wilcox.test(merged3$diff.nc.c)
+@ 
+
+For versions of R Commander 2.1-0 or later you can run the Wilcoxon signed
+rank test directly from the menu.
+
+
+
+\subsection{A bad way to choose between nonparametric and parametric
+  procedures}
+
+Don't do the following:
+\begin{enumerate}
+\item Carry out a test for normality
+\item If failed, use a nonparametric test. Otherwise a t-test.
+\end{enumerate}
+
+
+
+There are several problems with the above procedure, among them:
+
+\begin{itemize}
+\item Tests for normality do not have a power of 1, and in fact can have
+  very low power with small sample sizes.
+\item They can have power to detect a minor and irrelevant deviation from
+  normality (e.g., slightly heavy tails) that have no effects on, say, a
+  t-test. So we should really prefer a t-test, but we might be mislead
+  into doing a Wilcoxon.
+\item They might fail to detect a large deviation from normality in a very
+  non-normal small sample where we really, given our ignorance, might want
+  to conduct a Wilcoxon test.
+\item They lead to ``sequential testing'' problems, where the second
+  p-value (the one from the t or Wilcoxon) cannot be simply interpreted at
+  face value (as it is conditional on the normality test).
+\end{itemize}
+
+
+
+\section{Power of a test}
+How likely we are to detect a difference that really exists (power)
+depends on:
+
+\begin{itemize}
+\item The threshold ($\alpha$ level, or Type I error).
+\item The sample size.
+\item The size of the effect (difference in means).
+\item The standard deviation.
+\end{itemize}
+
+
+Do you understand each one of these?
+
+
+Go play with the ``Teaching demos: Power of a test'' (from the
+\CRANpkg{RcmdrPlugin.TeachingDemos}).
+
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.80\paperwidth,keepaspectratio]{power.png}
+ \caption{\label{power} Playing with power, from the
+   \CRANpkg{RcmdrPlugin.TeachingDemos}, Power of the test.}
+ \end{center}
+ \end{figure}
+
+
+
+ There are simple, standard ways of figuring out the power. But they
+ require you to specify the above values. Not always known (or easy to
+ guess). The \CRANpkg{RcmdrPlugin.IPSUR} package provides some extra tools.
+
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.40\paperwidth,keepaspectratio]{ipsur-power.png}
+ \caption{\label{ipsurpower} Entry window for \CRANpkg{RmcdrPlugin.IPSUR}:
+   Power for t-test, under ``Statistics'', ``Power (IPSUR)''.}
+ \end{center}
+ \end{figure}
+
+
+
+
+Power can be computed before hand to:
+
+\begin{itemize}
+\item Know if we are likely to find a difference if there is one (given
+  our sample size and estimated effect sizes and standard deviations).
+\item Figure out if our sample size is OK given the desired power (and
+  estimated effect sizes and standard deviations).
+\end{itemize}
+
+
+Please note: \textbf{it makes little sense} to compute the power of a test
+after the fact. It tells you nothing valuable\footnote{The paper by Hoenig
+and Heisey, ``The abuse of power: the pervasive fallacy of power
+calculations for data analysis'', \textit{The American Statistician},
+2001, 55: 19--24, explains this in more detail.}
+
+
+\clearpage
+\section{Non-independent data}\label{pseudorep}
+
+\subsection{Multiple measures per  subject}
+Paired data are non-independent: they are associated via the subject, or
+id. There are other forms of dependency. Many. We will now look at the
+most common one: multiple measures per subject. (This, by the way, you saw
+in Lesson 1).
+
+<<create_brca, echo=FALSE, results='hide'>>=
+set.seed(27)
+n1 <- 8
+n2 <- 5
+nn <- 3
+s <- rnorm(n1 + n2, 0, 2)
+s <- rep(s, rep(nn, n1 + n2))
+effect <- 1
+cond.effect <- rep(c(0, effect), c(n1 * nn, n2 * nn))
+cond <- rep(c("Cancer", "NC"), c(n1 * nn, n2 * nn))
+y <- rnorm(length(cond.effect)) + s + cond.effect
+y <- y - min(y) + 0.1
+id <- replicate(n1 + n2, paste(sample(letters, 10), collapse = ""))
+id <- rep(id, rep(nn, n1 + n2))
+dbrca <- data.frame(brca2 = round(y, 3), 
+                    cond = cond,
+                    id = id)
+## t.test(brca2 ~ cond, data = dbrca)
+## aggbrca2 <- aggregate(dbrca[,c("brca2"), drop=FALSE], by=list(cond=dbrca$cond, 
+##   id=dbrca$id), FUN=mean)
+## t.test(brca2~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE, 
+##   data=aggbrca2)
+## summary(aov(brca2 ~ cond + Error(id), data = dbrca))
+## t.s <- summary(lmer(brca2 ~ cond + (1|id), data = dbrca))$coefficients[2, 3] ## t-statistic
+## t.s
+## t.s*t.s ## compare with aov
+
+write.table(dbrca, file = "BRCA2.txt", col.names = TRUE,
+            row.names = FALSE, sep = "\t", quote = FALSE)
+rm(dbrca)
+@
+
+
+<<echo=FALSE, results = 'hide'>>=
+dbrca <- read.table("BRCA2.txt", header = TRUE)
+@ 
+
+
+We will use the \Robject{BRCA2.txt} data set. Import it, etc. Look at the
+data carefully. It looks like there are \Sexpr{nn} observations per
+subject in a total of \Sexpr{n1+n2} subjects. Basically, each subject has
+been measured \Sexpr{nn} times. Thus, there are not \Sexpr{nn * (n1+n2)}
+independent measures. Again, ask yourself: what is the true ``experimental
+unit'' (or observational unit)?  It is arguably the subject, which is the
+one that has, or has not, cancer in this case. The \Sexpr{nn} measures per
+subject are just that: multiple measures of the same experimental
+unit. This is an idea that should be crystal clear; make sure you
+understand it.
+
+We can do a t-test ignoring this fact, but it would be wrong. Look at the
+degrees of freedom:
+
+
+<<>>=
+t.test(brca2 ~ cond, data = dbrca)
+@ 
+
+
+What can we do? The most elegant approaches are not something we can cover
+here\footnote{A general approach is a mixed-effects linear model with
+  random effects for subjects; alternatively, and in this simple case, we
+  can use an ANOVA with the correct error term, for instance from a
+  multistratum linear model similar to the ones used to analyze split-plot
+  experiments.}. However, fortunately for us in \textbf{this particular
+  case}, all subjects have been measured the same number of times. Thus,
+we can simply take the mean per subject, and then do a t-test on those
+mean values per subject.
+
+In R Commander, go to ``Data'', ``Active data set'', ``Aggregate variables
+in active data set''. We want to aggregate (using the mean) the values of
+brca2, and we want to aggregate by ``id''. However, we want to keep
+``cond'' also. So we will aggregate by ``cond'' and ``id''. In fact, this
+is a double check that each subject is in one, and only one, of the
+groups. Call this data ``aggbrca''.
+
+<<>>=
+aggbrca <- aggregate(brca2 ~ cond + id, data = dbrca, FUN = mean)
+@ 
+
+%% In this case, you can also call \Rfunction{aggregate} in a simpler way if
+%% you directly type it:
+
+%% <<>>=
+%% aggbrca <- aggregate(brca2 ~ cond + id, data = dbrca, FUN = mean)
+%% @ 
+
+
+
+We want to double check that we have the exact same number of measures per
+subject. How? A simple procedure is to aggregate again (give the output
+another name) but using ``length'' instead of ``mean''. Now we will be
+aggregating over only ``id'' (so we aggregate brca2 and cond) and also
+over both ``id'' and ``cond'', to double check. Do you understand why we
+are doing this?
+
+
+<<>>=
+aggregate(brca2 ~ cond + id, data = dbrca, FUN = length)
+aggregate(brca2 ~ id, data = dbrca, FUN = length)
+aggregate(. ~ id, data = dbrca, FUN = length)
+@ 
+
+
+Now, let's do a t-test on the aggregated data. Pay attention to the
+degrees of freedom (and the statistic and p-values):
+
+<<>>=
+t.test(brca2~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE, 
+  data=aggbrca)
+@ 
+
+You can see that doing things correctly makes, in this case, a large
+difference. When we do things incorrectly, we can end up believing that
+there is a strong effect when, really, there is no evidence of effect.
+
+
+What if the subjects had been measured a different number of times? What
+would be the problems of simply taking the averages over subjects?
+
+
+
+\subsection{Nested or hierarchical sources of variation}
+A general way of thinking about these issues is that we can have nested,
+or hierarchical, levels of variation (e.g., multiple measures per cell,
+multiple cells per subject, multiple subjects for two different
+treatments) and it is crucial to understand what each level of variation
+is measuring (e.g., the difference between technical and biological
+variation) and to conduct the statistical analysis in a way that do
+incorporate this nestedness. A very recent introductory 2-page paper with
+biomedical applications is Blainey et al., 2014, ``Points of significance:
+Replication'', in \textit{Nature Methods}, 2014, 11, 879--880, where they
+discuss issues of sample size choice at different levels.
+
+By the way, not surprisingly, split-plot ANOVA and nested ANOVA are
+typical, traditional, ways of analyzing these kinds of designs. Many of
+these issues are, thus, naturally addressed in the context of linear
+models (Lesson 3).
+
+
+
+\subsection{Non independent data: extreme cases}
+In the extreme, this problem can lead to data that should not be analyzed
+at all because there is, plainly, no statistical analysis that can be
+carried out. For instance, suppose we want to examine the hypothesis that
+consuming DHA during pregnancy leads to increased mielinization in the
+hippocampus of the progeny. An experiment is set to test this idea,
+comparing the effects on mielinization of mice that have been born to
+female mice with and without a DHA supplement\footnote{This is based on an
+  actual data set I was once asked to analyze. I've changed enough details
+  ---no DHA or anything similar. But the outcome was the same: no analyses
+  were possible at all.}.
+
+
+Now, a colleague comes to you with the data. She claims there are 40 data
+points, 20 from brains of newborn mice under the DHA supplement and 20
+from brains of newborn mice without the supplement. OK, it looks good: it
+seems we can carry out an independent samples t-test with about 38 degrees
+of freedom. However, on asking questions, this is what you find out:
+
+\begin{itemize}
+\item A total of two female mice were used. One female was given food with
+  DHA and one female without. They were fed the specified diet, and then
+  they mated and got pregnant.
+\item From the litter for each female, five newborn mice were sacrificed
+  immediately after birth, and four tissue slides were prepared from each
+  brain (thus, 20 data points per female).
+\end{itemize}
+
+
+No statistical analysis can be conducted here to examine the effects of
+DHA: there is only one data point per experimental unit. We cannot do a
+t-test in the right way: there are no degrees of freedom because there is
+no way to estimate the variance.  To put it simply, there is no way to
+tell whether any differences that could be seen are due to DHA or to the
+female herself or to any other factor that might have been confounded with
+the single female per treatment (color of the gloves of the technician or
+side in the animal room or how nice the male was while mating or \ldots).
+
+It is this simple: \textbf{nothing} can be said from this data about the
+effects of DHA. (It is not even worth importing the data for this
+analysis. Maybe it is interesting to get a preliminary idea of the
+intra-brain variation in mielinization, but not for the original question
+of the DHA effect).
+
+There are some recent papers about issues like this that go over the
+pseudoreplication idea (e.g., Lazic, 2010, \textit{BMC Neuroscience} and
+Lazic et al., 2018, \texttt{PLoS Biology}, ``What exactly is 'N' in cell
+culture and animal experiments?'') and this is probably a pervasive (but
+difficult to detect) problem. This kind of meaningless analysis can lead
+to lots of non-reproducible results.
+
+Which brings us to the fundamental idea of \textbf{thinking carefully
+  about the experimental design}, something we will take a quick look at
+in Lesson 3.
+
+%% The opposite can also happen, as you can see from the ACRB.txt file (do it
+%% at home).
+
+%% <<create_acrb, echo = FALSE, results='hide'>>=
+
+%% set.seed(3987)
+%% n1 <- 4
+%% n2 <- 5
+%% nn <- 3
+%% s <- rnorm(n1 + n2, 0, .031)
+%% s <- rep(s, rep(nn, n1 + n2))
+%% effect <- .48
+%% cond.effect <- rep(c(0, effect), c(n1 * nn, n2 * nn))
+%% cond <- rep(c("Cancer", "NC"), c(n1 * nn, n2 * nn))
+%% y <- rnorm(length(cond.effect)) + s + cond.effect
+%% y <- y - min(y) + 0.1
+%% id <- replicate(n1 + n2, paste(sample(letters, 10), collapse = ""))
+%% id <- rep(id, rep(nn, n1 + n2))
+%% dacrb <- data.frame(acrb = round(y, 3), 
+%%                     cond = cond,
+%%                     id = id)
+%% t.test(acrb~ cond, data = dacrb)
+%% aggacrb <- aggregate(dacrb[,c("acrb"), drop=FALSE], by=list(cond=dacrb$cond, 
+%%   id=dacrb$id), FUN=mean)
+%% t.test(acrb~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE, 
+%%   data=aggacrb)
+%% summary(aov(acrb ~ cond + Error(id), data = dacrb))
+%% ## t.s <- summary(lmer(acrb ~ cond + (1|id), data = dacrb))$coefficients[2, 3] ## t-statistic
+%% ## t.s
+%% ## t.s*t.s ## compare with aov
+
+%% write.table(dacrb, file = "ACRB.txt", col.names = TRUE,
+%%             row.names = FALSE, sep = "\t", quote = FALSE)
+
+%% @ 
+
+
+
+
+
+
+\subsection{More non-independences and other types of data}
+What if some subjects had cousins and brothers in the data set? And if
+some of them came from the same hospital and other from other hospitals?
+And ... ? This all lead to multilevel and possible crossed terms of
+variance. Mixed effects models can be used here. Go talk to a
+statistician (after looking at the notes for Lesson 3).
+
+
+
+However, for simple cases and to get going while we talk to the
+statistician, the approach we used above (collapsing the data over lower
+levels, leaving data that are independent at the experimental unit level)
+can some times be used in other scenarios. The independence assumption is
+actually crucial in many statistical analysis, be they t-tests, ANOVAs,
+chi-squares, regressions, etc, etc. (As has been mentioned repeatedly,
+there are ways to incorporate or deal with the non-independence, for
+categorical, ordinal, and interval data, but they are far from trivial).
+
+
+To make the point more clear, this is an example from the data for the TFM
+(``trabajo fin de master'') from a former student of BM-1\footnote{This is
+  true. I am not making it up.}. Briefly, she was interested in the rates
+of chromosomal aberrations in different types of couples that went to a
+fertility clinic. For instance, suppose you want to examine incidence of
+aneuploidy in embryos from two groups of fathers, ``younger fathers'' and
+``older fathers''%% (wait, not older, just ``fathers that so far have
+%% accumulated more hours of life on Earth'')
+. The simplest idea here is to
+use a chi-square ($\mathcal{X}^2$) test to compare the frequency of
+aneuploidies between older and younger fathers (you will see chi-square
+tests in Lesson 4). But the problem is that each couple (each father in
+this case) contributes multiple embryos and we cannot simply do a
+chi-square counting embryos, as we would again run into a non-independence
+problem. A simple approach, especially if each father contributes the same
+number of embryos, is to calculate, for each father, the proportion of
+embryos with aneuploidies. And then, to examine if that per-father
+proportion of aneuplodies differs between older and younger fathers with,
+say, an independent samples t-test (possibly of suitably transformed data)
+or a two-samples Wilcoxon test.
+
+
+
+
+\clearpage
+
+
+
+
+\section{Appendix}
+
+\subsection{A first taste of linear models}\label{lm-paired}
+
+In the paired test, we implicitly have a model like this:
+
+\[Expression.of.MYC = function(subject\ and\ condition) + \epsilon\]
+
+which we make simpler (assuming additive contributions of each factor) as
+
+
+\[Expression.of.MYC = \mathit{effect.of.subject} + \mathit{effect.of.condition} + \epsilon\]
+
+
+
+Lets go and fit that model! Do it under ``Fit models'', ``Linear models'',
+using the full dmyc data set. You will see
+
+\verb@myc ~ cond + id@ (or, equivalently here, \verb@myc ~ id + cond@)
+
+(if you just double click on the dependent variables, here id and cond,
+they will be placed on the right, with a ``+'' sign by default).
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.70\paperwidth,keepaspectratio]{lm-myc.png}
+ \caption{ Our first linear model.}
+ \end{center}
+ \end{figure}
+
+<<>>=
+LinearModel.1 <- lm(myc ~ id + cond, data=dmyc)
+summary(LinearModel.1)
+@ 
+
+Run it and look at the line that has ``cond'' (so, using your common
+sense, ignore all the ``id[blablablabla]'' lines). What is the t-value and
+the p-value for ``cond''?
+
+
+This is a linear model. And this particular one is also a two-way
+ANOVA. If you go to ``Models'', ``Hypothesis tests'', ``Anova table'' you
+will get
+
+<<>>=
+Anova(LinearModel.1, type="II")
+@ 
+
+Relate this to the figures above. This should all make sense. Regardless,
+linear models and ANOVAs will be covered in much more detail in a few days.
+
+
+
+
+
+\subsection{The paired t-test directly from R}\label{ptr}
+We can directly use our dmyc data set from R, without any need for
+reshaping. We will do things step by step (though we could just combine
+all in a single step)
+
+<<>>=
+myc.cancer <- dmyc$myc[dmyc$cond == "Cancer"]
+myc.nc <- dmyc$myc[dmyc$cond == "NC"]
+t.test(myc.cancer, myc.nc, paired = TRUE)
+@ 
+
+Of course, this \textbf{crucially assumes} that the data are ordered the
+same way by patient: the first myc.cancer is the same patient as the same
+myc.nc, etc. This is the case in our data, but need not be. We can check
+it:
+
+<<>>=
+dmyc
+@ 
+
+However, to ensure that order is OK we could have pre-ordered the data
+by patient ID and by condition within patient (this second step isn't
+really needed here), as we did before (see section \ref{reshapestack}):
+
+<<>>=
+dmycO <- dmyc[order(dmyc$id, dmyc$cond), ]
+dmycO
+myc.cancer <- dmycO$myc[dmycO$cond == "Cancer"]
+myc.nc <- dmycO$myc[dmycO$cond == "NC"]
+t.test(myc.nc, myc.cancer, paired = TRUE)
+@ 
+
+
+
+
+
+
+
+\subsection{Wilcoxon's paired test and interval data}\label{wpi}
+
+If you understand the logic of what the two Wilcoxon tests are doing, you
+should understand why the one for the two-sample case works with ordinal
+data but the one for the matched pairs requires interval data. This
+explores the issue further. 
+
+In particular, if we were to transform the data using a monotonic
+non-linear transformation (e.g., a log transformation), the Wilcoxon test
+for two groups should never be affected, but the one for the paired case
+could be affected. Why? Because in the first case we rank the values, and
+the ranks of the values are the same as the ranks of the values after any
+monotonic transformation. However, the rank of the within-subject
+differences might differ if we use a transformation on the original data
+and then rank the within-subject differences.
+
+
+We will use R directly here (as before, you can copy this code in the R
+Script window and click ``Submit'', or copy it in the RStudio console, etc)
+
+%% <<>>=
+%% ## taking log does not change things when using the two-sample Wilcoxon
+%% wilcox.test(p53 ~ cond, data = dp53)
+%% wilcox.test(log(p53) ~ cond, data = dp53)
+%% @ 
+
+
+<<>>=
+## Without logs
+wilcox.test(dmyc$myc[1:12], dmyc$myc[13:24], paired = TRUE)
+## After taking logs
+wilcox.test(log(dmyc$myc[1:12]), log(dmyc$myc[13:24]), paired = TRUE)
+@ 
+
+Notice how the statistic and the p-value change. That would not happen if
+the test could be applied to ordinal data.
+
+
+It is also easy to create examples that show that the one-sample Wilcoxon
+does require interval data. This is left as a simple exercise.
+
+
+
+
+%% The example for the usual one-sample
+%% <<>>=
+%% x <- c(-2, -1, 0.9, 1.9)
+%% y <- c(-2, -1, 0.9, 2.9)
+%% wilcox.test(x)
+%% wilcox.test(y)
+%% @ 
+
+
+\subsection{Relations between variables}
+This was about comparing two groups. But we had several variables
+(genes). An obvious thing to do is to look at how they are related AND
+display the different (two, in this case) groups. Playing
+around, you should be able to reproduce this figure (note: I've left the
+smoothed histograms, though they are of questionable application here,
+with so few data).
+
+<<fig.width=8, fig.height=8,echo=FALSE>>=
+scatterplotMatrix(~brca1+brca2+p53+pten | cond, data=dp53)
+@ 
+
+
+
+
+
+%% \bibliography{lesson2}
+
+
+\section{Session info and packages used}
+
+This is the information about the version of R and packages used when
+producing this document:
+<<echo=FALSE,results='hide',error=FALSE>>=
+options(width=60)
+@ 
+
+<<>>=
+sessionInfo()
+@ 
+\end{document}
+
+%% remember to use bibexport to keep just the minimal bib needed
+%% bibexport -o extracted.bib OncoSimulR.aux
+%% rm OncoSimulR.bib
+%% mv extracted.bib OncoSimulR.bib
+%% and then turn URL of packages into notes
+
+
+%%% Local Variables:
+%%% ispell-local-dictionary: "en_US"
+%%% coding: iso-8859-15
+%%% End:
+
+
+
+
+% thisusedtosayTeX-master: "Lesson-2"
+
+
+
+
+%%% en clase, decir xq p-value es type I error rate e inversi?n de CI
