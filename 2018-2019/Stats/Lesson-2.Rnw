@@ -1222,7 +1222,7 @@ differences. %% The single sample Wilcoxon test is not directly available
 
 
 Remember we computed intra-subject differences before
-(section \label{paired-single}), so we will reuse them: 
+(section \ref{paired-single}), so we will reuse them: 
 
 <<>>=
 wilcox.test(merged3$diff.nc.c)
@@ -1759,8 +1759,13 @@ does require interval data. This is left as a simple exercise.
 %% <<>>=
 %% x <- c(-2, -1, 0.9, 1.9)
 %% y <- c(-2, -1, 0.9, 2.9)
+%% z <- c(-2, -1, 0.9, 0.91)
+%% median(x)
+%% median(y)
+%% median(z)
 %% wilcox.test(x)
 %% wilcox.test(y)
+%% wilcox.test(z)
 %% @ 
 
 
