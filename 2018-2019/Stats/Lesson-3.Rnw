@@ -449,11 +449,13 @@ look better:
 plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
 @ 
 
-<<out.width='7cm', out.height='7cm'>>=
+<<out.width='12cm'>>= 
 .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
 tmp <- cld(.Pairs) ## silent assignment 
+old.oma <- par(oma=c(0,5,0,0))
 plot(confint(.Pairs), 
      main = "95% family-wise confidence interval using Tukey contrasts")
+par(old.oma) ## restore graphics windows settings
 @ 
 
 
