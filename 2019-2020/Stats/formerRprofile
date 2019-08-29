@@ -1,0 +1,65 @@
+options("digits.secs"=5)
+
+options(digits=4, show.signif.stars=FALSE)
+
+options("pdfviewer"="okular")
+
+## tcl-tk chooser menus
+## options(menu.graphics=FALSE)
+
+local({r <- getOption("repos");
+       r["CRAN"] <- "https://stat.ethz.ch/CRAN"; 
+       options(repos=r)})
+
+## the.lib.loc <- sub("/bin$", "/library", getwd())
+## .libPaths(the.lib.loc)
+
+
+## .libPaths(c("/home/ramon/R/x86_64-pc-linux-gnu-library/3.4/", .libPaths()))
+
+## From
+##   http://stackoverflow.com/questions/7430452/disable-suppress-tcltk-prompt-in-r
+## http://stackoverflow.com/questions/1189759/expert-r-users-whats-in-your-rprofile?lq=1
+
+## library(bnlearn) ## must be loaded before OncoSimulR; see
+## http://permalink.gmane.org/gmane.science.biology.informatics.conductor.devel/8751
+## An issue with Rgrpahviz, etc.
+## library(OncoSimulR)
+## library(testthat)
+## library(GLAD)
+
+###! Rcmdr Options Begin !###
+options(Rcmdr=
+structure(list(plugins = "RcmdrPlugin.plotByGroup", ask.to.exit = TRUE, 
+    ask.on.exit = TRUE, quit.R.on.close = FALSE, number.messages = TRUE, 
+    retain.messages = TRUE, use.markdown = TRUE, rmd.template = "/home/ramon/Sources/R-3.4.1-72893/library/Rcmdr/etc/Rcmdr-RMarkdown-Template.Rmd", 
+    use.knitr = FALSE, log.font.family = "DejaVu Sans Mono", 
+    default.font.family = "DejaVu Sans", log.font.size = 10, 
+    default.font.size = "10", log.width = 80, log.height = 10, 
+    log.commands = TRUE, output.height = 20, console.output = TRUE, 
+    default.contrasts = c("contr.Treatment", "contr.poly"), grab.focus = TRUE, 
+    double.click = FALSE, sort.names = TRUE, show.edit.button = TRUE, 
+    suppress.icon.images = FALSE, retain.selections = TRUE, use.rgl = TRUE, 
+    log.text.color = "black", command.text.color = "darkred", 
+    output.text.color = "blue4", error.text.color = "red", warning.text.color = "darkgreen", 
+    title.color = "black", theme = "clearlooks"), .Names = c("plugins", 
+"ask.to.exit", "ask.on.exit", "quit.R.on.close", "number.messages", 
+"retain.messages", "use.markdown", "rmd.template", "use.knitr", 
+"log.font.family", "default.font.family", "log.font.size", "default.font.size", 
+"log.width", "log.height", "log.commands", "output.height", "console.output", 
+"default.contrasts", "grab.focus", "double.click", "sort.names", 
+"show.edit.button", "suppress.icon.images", "retain.selections", 
+"use.rgl", "log.text.color", "command.text.color", "output.text.color", 
+"error.text.color", "warning.text.color", "title.color", "theme"
+))
+)
+
+# Uncomment the following 4 lines (remove the #s)
+#  to start the R Commander automatically when R starts:
+
+# local({
+#    old <- getOption('defaultPackages')
+#    options(defaultPackages = c(old, 'Rcmdr'))
+# })
+
+###! Rcmdr Options End !###

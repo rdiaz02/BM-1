@@ -52,7 +52,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
      	  into
 	  
 	       C:\R\
-	       (so you can have, for instance, C:\R\R-3.5.1)
+	       (so you can have, for instance, C:\R\R-3.6.1)
 
 	  Choosing the installation directory is something you do
      	  immediately after you click accept on the license. It is a
@@ -81,7 +81,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
      (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
 
 
-     1.4. However you do it, please make sure you have version 3.5.1 of R
+     1.4. However you do it, please make sure you have version 3.6.1 of R
      (if you know what you are doing, it is also OK to use development
      versions). Any version of R >= 3.3.0 should work, but it is best if
      you use a current one.
@@ -189,8 +189,8 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
 
 
  
-    4.1. Install RStudio. RStudio has new releases almost daily, but
-    anything with version 1.1.450 should be more than enough.
+    4.1. Install RStudio. RStudio has new releases frequently, but
+    anything with version 1.2.1335 should be more than enough.
 
     Of course, you want the RStudio for your operating system (Windows,
     Mac, whatever).
