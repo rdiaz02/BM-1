@@ -62,16 +62,21 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      	  the above path: "C:\R" (without the quotes).
 
 	  Please, REALLY INSTALL TO "C:\R" UNDER WINDOWS. Many people
-     	  experience problems when they don't. These problems are related
-     	  to permissions and local language settings. Those are solvable,
-     	  but we cannot help. So do as we say: install to "C:\R" or deal
-     	  with the issues on you own.
+     	  experience problems when they don't. These problems are
+     	  related to permissions and local language settings. Those
+     	  are solvable, but we cannot help. So do as we say: install
+     	  to "C:\R\R-3.6.2" or deal with the issues on you own.
 
 	  1.2.3. Click on "Install package translations" to make sure you
 	  get messages in English and in other languages (Spanish, or
 	  whatever).
 
-	  1.2.4. You probably want to check on the "Use the SDI interface"
+	  1.2.4. You probably want to check "Create a desktop
+	  shortcut" and "Create a Quick Launch shortcut". (And leave
+	  as checked the "Save version number in registry" and
+	  "Associate R with .RData file").
+	  
+	  1.2.5. You probably want to check on the "Use the SDI interface"
 	  in the preferences of R, right after you start it. Or go to
 	  "Edit" -> "GUI Preferences", check "SDI", the "Save...", and
 	  close and quit (say "No" to "Save the workspace image" question).
@@ -119,7 +124,11 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
     It will then download and install a bunch of things. It can take
     several minutes (about 5) with a fast internet connection on a
-    computer from the last five years. 
+    computer from the last five years.
+
+    If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT under 
+	Windows!!
 
 
     2.3. When it is finished, in the R console do:
@@ -132,6 +141,10 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      (the defaults in the window of "Install Missing Packages" should be
      fine; no need to touch anything; just press OK). This should take a
      couple minutes.
+
+	 If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT this is very
+	important under Windows!!
 
 
     2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11
@@ -177,6 +190,10 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
     and press Enter. That will download and install a few things (it
     should be done in a couple of minutes).
+
+	If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT under
+	Windows!!
 
 
     3.2. Exit R Commander and R. Under "File", in "R Commander", click on
