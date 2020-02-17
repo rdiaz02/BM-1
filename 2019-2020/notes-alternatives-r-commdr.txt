@@ -1,0 +1,7 @@
+
+See: 
+
+http://r4stats.com/articles/software-reviews/r-gui-comparison/
+
+Stick to RCmdr: three OSs, plugins, does not hide R, easier to transition
+to "just R".

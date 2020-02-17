@@ -14,14 +14,15 @@
  can become a mess. This is actually the most common cause of problems. 
 
 
- If you have questions or problems AND you have followed the instructions
- carefully, come the class where we will see the installation
- (18-Sept-2019). If you still have problems after that (you shouldn't)
- post your questions, with detailed information (maybe including screen
- captures) of the errors, in the Applied Statistics forum.
+ If you have problems, repeat the above three steps. Remove everything you
+ have installed, and start all over. 
+
+ If you still have problems after that (you shouldn't) post your
+ questions, with detailed information (maybe including screen captures) of
+ the errors, in the Applied Statistics forum.
 
 
-Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
+Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
 
  1. Install R (http://cran.r-project.org). The binaries for each operating
@@ -44,15 +45,16 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
 
      	  1.2.1 After you download R, and right before installing it,
 	  you might want to disable the antivirus (some antiviruses lead
-	  to all sorts of difficult to diagnose problems). 
+	  to all sorts of difficult to diagnose problems and we cannot
+	  help with that). 
 	  
           1.2.2 When you install R under Windows, and to avoid problems
      	  later (with paths, with permissions, with local language
-     	  settings, etc) it is best to change the default path. Install R
+     	  settings, etc) change the default path. Install R
      	  into
 	  
 	       C:\R\
-	       (so you can have, for instance, C:\R\R-3.6.1)
+	       (so you can have, for instance, C:\R\R-3.6.2)
 
 	  Choosing the installation directory is something you do
      	  immediately after you click accept on the license. It is a
@@ -60,10 +62,10 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
      	  the above path: "C:\R" (without the quotes).
 
 	  Please, REALLY INSTALL TO "C:\R" UNDER WINDOWS. Many people
-     	  experience problems when they don't related to permissions and
-     	  local language settings. Those are solvable, but we cannot
-     	  help. So do as we say: install to "C:\R" or deal with the issues
-     	  on you own.
+     	  experience problems when they don't. These problems are related
+     	  to permissions and local language settings. Those are solvable,
+     	  but we cannot help. So do as we say: install to "C:\R" or deal
+     	  with the issues on you own.
 
 	  1.2.3. Click on "Install package translations" to make sure you
 	  get messages in English and in other languages (Spanish, or
@@ -81,10 +83,10 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
      (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
 
 
-     1.4. However you do it, please make sure you have version 3.6.1 of R
-     (if you know what you are doing, it is also OK to use development
-     versions). Any version of R >= 3.3.0 should work, but it is best if
-     you use a current one.
+     1.4. Regardless of your operating system, please make sure you have
+     version 3.6.2 of R (if you know what you are doing, it is also OK to
+     use development versions). Any version of R >= 3.3.0 should work, but
+     it is best if you use a current one.
 
 
  2. Install R commander.
@@ -190,7 +192,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY.
 
  
     4.1. Install RStudio. RStudio has new releases frequently, but
-    anything with version 1.2.1335 should be more than enough.
+    anything with version 1.2.5000 should be more than enough.
 
     Of course, you want the RStudio for your operating system (Windows,
     Mac, whatever).
