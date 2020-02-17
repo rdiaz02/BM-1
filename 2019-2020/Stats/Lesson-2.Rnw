@@ -105,9 +105,8 @@ than the page numbers.
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014, 2015, 2016, 2017, Ramon Diaz-Uriarte, and is
-licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
-International License:
+This work is Copyright, \copyright, 2014-2020 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
+} Attribution-ShareAlike 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
 
 \centerline \ccbysa
@@ -624,6 +623,12 @@ all(with(dmyc, table(id, cond)) == 1)
 
 \subsection{Reshaping the data for a paired t-test}
 
+This is section is provided so that you can refer to several different
+ways of reshaping data, but we will skip the details in class, unless you
+run intro problems. In class we will definitely cover section
+\ref{datashape} and read section \ref{reshapefinal}.
+
+
 \subsubsection{The shape of the data}\label{datashape}
 Often, when you know you are only going to do a paired test you can
 organize your data in a table structure like the one in Table 
@@ -661,12 +666,12 @@ in Table \ref{stacked}:
 \caption{Paired data in a ``stacked'' shape/format.}\label{stacked}
 \end{table}
 
-This is arguably a much more useful way of storing the data for most
-general analyses and we can keep adding additional information if we need
-to. Whole papers have been written about these issues\footnote{For
-  example, Wickham's ``Tidy data'', in the \textit{Journal of Statistical
-    Software}: \Burl{http://www.jstatsoft.org/v59/i10}}, but we will stop
-here.
+The structure in Table \ref{stacked} is arguably a much more useful way of
+storing the data for most general analyses and we can keep adding
+additional information if we need to. Whole papers have been written about
+these issues\footnote{For example, Wickham's ``Tidy data'', in the
+  \textit{Journal of Statistical Software}:
+  \Burl{http://www.jstatsoft.org/v59/i10}}.
 
 \subsubsection{Reshaping our data}\label{reshaping}
 
@@ -699,7 +704,7 @@ remember the details here, you just need to be aware of the issues.
 \item Create a data set that contains only the values for observations
   with status ``Cancer''. (``Subset'', under ``Active data set''). Use the
   ``Subset expression'' you want; in this case 
-  \verb@cond == ``Cancer''@. Call this data set cc.
+  \verb@cond == "Cancer"@. Call this data set cc.
   
 \item Make sure ``id'' is used as row name. Do this using ``Set case
   names'' under ``Active data set''. Can you understand why we are doing
@@ -709,7 +714,9 @@ remember the details here, you just need to be aware of the issues.
   cancer patients).
   
 \item Create a data set that contains only the values for observations
-  with status ``NC''.  Call this data set, say, nc.
+  with status ``NC''.  Call this data set, say, nc. (Yes, you need to
+  select the original data, ``dmyc'', then ``Subset'', and use as
+  expression \texttt{cond == "NC"}).
   \item Again, set ``id'' as case names for this data set.
 \item Rename this ``myc'' to ``myc.nc''.
   
@@ -810,7 +817,7 @@ As it says, you could try doing the reshaping using \Rfunction{dcast} from
 %% see here for nice summary: http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/
 
 
-\subsubsection{Reshaping et al: final comments}
+\subsubsection{Reshaping et al: final comments}\label{reshapefinal}
 
 A few comments:
 \begin{itemize}
