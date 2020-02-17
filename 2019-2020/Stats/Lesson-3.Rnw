@@ -1179,8 +1179,7 @@ those for the term that enters last in the Type I (those produced via
 \Rfunction{anova}, without a capital ``A'').
 
 
-This sounds crazy, irrelevant, and a huge wast of time. But it ain't. This
-is an \textbf{extremely common phenomenon} when the design is not
+This is an \textbf{extremely common phenomenon} when the design is not
 perfectly balanced (with categorical independent variables) or there are
 correlations (with continuous covariates, as in regression). What is
 happening?
@@ -1579,15 +1578,15 @@ anage_a <- anage_a_r[anage_a_r$Class == "Aves",]
 
 We want to model metabolic rate as a function of body mass (note that this
 data set is rather nice, because column names are nicely labeled and
-include information about units). \textbf{Beware:} biologically, what we
-are going to do is not really correct, as the data are not independent
-(species share common ancestors, and they are related in varying degrees,
-as any phylogenetic tree would show you, and as you should be able to tell
-from looking at the names of some species). What we are doing here is just
-for the sake of the example, and because this is a nice set of
-data\footnote{This can be done correctly, incorporating phylogenetic
-  information in the regression model, but this is way out of the scope of
-  this class. It is a really fascinating topic, though!}.
+include information about units). \textbf{Beware:} what we are going to do
+is not correct, as the data are not independent (species share common
+ancestors, and they are related in varying degrees, as any phylogenetic
+tree would show you, and as you should be able to tell from looking at the
+names of some species). What we are doing here is just for the sake of the
+example, and because this is a nice set of data\footnote{This can be done
+  correctly, incorporating phylogenetic information in the regression
+  model, but this is way out of the scope of this class. It is a really
+  fascinating topic, though!}.
 
 
 Now go to ``Statistics'', ``Fit models'', ``Linear regression'' and fit
@@ -2381,6 +2380,17 @@ fast here (this is just a kind of review), and will examine two things:
   different between reptiles and birds.
 \end{itemize}
 
+
+\textbf{Beware:} as we said before, what we are going to do is not
+correct, as the data are not independent (species share common ancestors,
+and they are related in varying degrees, as any phylogenetic tree would
+show you, and as you should be able to tell from looking at the names of
+some species). What we are doing here is just for the sake of the example,
+and because this is a nice set of data\footnote{This can be done
+  correctly, incorporating phylogenetic information in the regression
+  model, but this is way out of the scope of this class. It is a really
+  fascinating topic, though!}.
+
 We will see interactions, parallel and non-parallel slopes, and more
 comparison of models. Again, these analyses are not fully correct as we
 ignore phylogenetic relatedness. But they are nice to illustrate a couple
@@ -2733,13 +2743,13 @@ summary(myAdditive)
 summary(myInteract)
 @ 
 
-<<fig.show='hold', fig.cap='Model diagnostics for designed experiment, additive model '>>=
+<<fig.width=8,fig.height=8,fig.show='hold', fig.cap='Model diagnostics for designed experiment, additive model '>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(myAdditive)
 par(oldpar)
 @ 
 
-<<fig.show='hold', fig.cap='Model diagnostics for designed experiment, interaction model '>>=
+<<fig.width=8,fig.height=8,fig.show='hold', fig.cap='Model diagnostics for designed experiment, interaction model '>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(myInteract)
 par(oldpar)
@@ -2780,7 +2790,7 @@ We will now use the two simple regression models we fitted in section
 \ref{regr}. Make the first one (\Robject{metab}) active and go to
 ``Models'', ``Graphs'', ``Basic diagnostic plots''. 
 
-<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation '>>=
+<<fig.width=8,fig.height=8,fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation '>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(metab)
 par(oldpar)
@@ -2830,7 +2840,7 @@ Cook's distance (function \Rfunction{cooks.distance}).
 
 
 Now, repeat the above with the model that has taken logs:
-<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model after log transformation '>>=
+<<fig.width=8,fig.height=8,fig.show='hold', fig.cap='Model diagnostics for metabolic rate model after log transformation '>>=
 oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
 plot(metablog)
 par(oldpar)
