@@ -1,4 +1,5 @@
 - a donde se quiere llegar
+  - que quede claro los conceptos básicos que se piden
 - diapos?
 - glosario de términos (e indice temático con refs a la página)
 
@@ -36,4 +37,9 @@
   - cómo se hace lo del papel de R:
   - pero NO quitar R commander
 
-- que quede claro los conceptos básicos que se piden
+
+
+
+
+
+
