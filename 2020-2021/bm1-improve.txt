@@ -1,0 +1,39 @@
+- a donde se quiere llegar
+- diapos?
+- glosario de términos (e indice temático con refs a la página)
+
+- esquema de qué tests para qué datos
+
+- esquema de qué figuras para qué gráficos
+
+- resumen de los apuntes antes. COmo un abstract antes de cada seccion o
+  capitulo
+
+- un esquema de cómo identificar las variables de las descripciones del
+  experimento (incluyendo papers reales?)
+
+- en las notas, especifica el tipo de variables
+
+- rebajar expectativas por lo que respecta a la base estadística (??)
+  - really, slower
+
+- las notas a veces dificil de seguir y van adelante y detrás.
+
+- en tablas anova mostrar de dónde salen los números (ej., df = K -1, SS=
+  SS_w, Residual SS = SS within, etc, de dónde salen las cosas, possibly
+  con colores).
+
+- en las notas hay muchas preguntas sin contestación: que haya respuestas
+
+- poner las preguntas al final, o las preguntas justo antes de la clase y
+  luego mostrar las respuestas
+
+- ejercicios prácticos con un conjunto de datos o con varios conjuntos.
+
+- un página resumen de R:
+  - cómo crear, asignar, rnorm
+
+  - cómo se hace lo del papel de R:
+  - pero NO quitar R commander
+
+- que quede claro los conceptos básicos que se piden

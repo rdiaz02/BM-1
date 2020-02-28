@@ -231,7 +231,7 @@ Boxplot(activ~ftraining, data=dmit, id.method="y")
 has been flagged as a potential outlier and we will silent that output
 from now on in these notes).
 
-
+%% FIXME: using aov is misleading. Don't do it. Use anova(lm)
 \subsection{An ANOVA}\label{oneway}
 
 We want to see if time of exercise makes any difference. Conducting three
@@ -956,6 +956,11 @@ summary(m4)
 %% <<>>=
 %% options(opt)
 %% @ 
+
+
+%% FIXME: should use an example with, say, four diets and 2 or 3 drugs
+%% so that when I do not use a model with  interaction, some terms
+%% more than 1 df
 
 
 
