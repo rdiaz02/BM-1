@@ -1,0 +1,66 @@
+Nombre del Máster/Asignatura:
+
+       Masteres en Biomedicina Molecular, Biotecnología, Biomoléculas y
+       Dinámica Celular
+
+       Asignatura: 32811 Análisis Crítico de la Literatura
+       Científica. Estadística Aplicada para Biociencias Moleculares
+       
+
+Numero de PCs Virtuales necesarios:
+       Número de alumnos matriculados: aprox 130. Improbable que la
+       mayoría requieran PC Virtual.
+
+Sistema Operativo: Windows / Linux
+
+	Idealmente ambos. Si solo uno, Linux.
+
+Persona de Contacto:
+
+	r.diaz@uam.es
+
+
+
+Software:
+
+	- R  (http://cran.r-project.org),
+	- R Commander (paquete de R "Rcmdr")
+	- RStudio (www.rstudio.com)
+
+
+
+Detalles:
+	- Binarios de R para Linux, Windows, etc en:
+	
+	https://cran.r-project.org
+
+	- Rcmdr (https://www.rcommander.com/):
+	Se suele instalar haciendo
+	
+	   install.packages("Rcmdr")
+
+	desde la consola de R.
+
+
+
+	- RStudio: RStudio Desktop, Open Source License
+
+	https://rstudio.com/products/rstudio/download/#download
+
+
+
+	- Paquetes adicionales de R. Se instalan ejecutando desde la
+          consola de R:
+
+	  install.packages(c("RcmdrPlugin.TeachingDemos",
+   	  "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
+   	  "RcmdrPlugin.plotByGroup", 
+   	  "tkrplot", "doBy", "vcd", "ISwR"))
+
+
+
+
+
+
+
+
