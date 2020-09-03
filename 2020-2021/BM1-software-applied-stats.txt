@@ -89,7 +89,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
 
      1.4. Regardless of your operating system, please make sure you have
-     version 3.6.2 of R (if you know what you are doing, it is also OK to
+     a current version of R (if you know what you are doing, it is also OK to
      use development versions). Any version of R >= 4.0.0 should work, but
      it is best if you use a current one.
 
@@ -170,7 +170,8 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 	
 
     2.7. Does the version of Rcmdr matter? Not a lot (assuming it is
-    anything > 2.3), but newer versions have more functionality. 
+    anything > 2.3), but newer versions have more functionality. Make sure
+    you use a recent version, the one corresponding to the version of R.
     
 
    
@@ -208,8 +209,8 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
 
  
-    4.1. Install RStudio. RStudio has new releases frequently, but
-    anything with version 1.2.5000 should be more than enough.
+    4.1. Install RStudio. RStudio has new releases frequently, so install
+    a recent version.
 
     Of course, you want the RStudio for your operating system (Windows,
     Mac, whatever).
