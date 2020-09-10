@@ -65,7 +65,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      	  experience problems when they don't. These problems are
      	  related to permissions and local language settings. Those
      	  are solvable, but we cannot help. So do as we say: install
-     	  to "C:\R\R-3.6.2" or deal with the issues on you own.
+     	  to "C:\R\R-4.0.2" or deal with the issues on you own.
 
 	  1.2.3. Click on "Install package translations" to make sure you
 	  get messages in English and in other languages (Spanish, or
