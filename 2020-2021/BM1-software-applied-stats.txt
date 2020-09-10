@@ -119,7 +119,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
     library. Say yes.
     
     It will ask your for a mirror. I find that the mirrors in Austria and
-    Switzerland are often very reliable (more than the one in Madrid). So
+    Switzerland are often very reliable (more than the ones in Spain). So
     use a mirror from Switzerland or Austria.
 
     It will then download and install a bunch of things. It can take
@@ -239,6 +239,12 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
        messages about missing dependencies. (Yes, it will say that it
        is loading blablabla, etc. But no errors or missing depedencies).
 
+       Yes, some messages might be shown in a red font. But those need not
+       be errors (unless it says "Error" or "ERROR" and, not as serious
+       but worrisome, "Warning" or "WARNING"). And yes, you might see this message:
+       "The following object is masked from 'package:base':
+       errorCondition"; this is not an error. 
+
      4.3.3.If there are still missing dependencies, you should be given the
        option to install them by just clicking a button. Do so now.
 
@@ -250,7 +256,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
    5.1. In R Commander, go to "File", "Exit", "From commander"
 
-   5.2. In RStudio go to "File", "Quit RStudio".
+   5.2. In RStudio go to "File", "Quit RStudio" (or "Quit session")
 
    5.3. (There are other ways of exiting, like simply going to RStudio and
     in the "File" menu clicking on "Quit R Studio". This looks abrupt and
@@ -269,8 +275,8 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
    6.2 On the left or bottom-left panel type
        library(Rcmdr)
 
-   6.3 When you get R Commander running, go to the menu and under "Tools",
-   "Load Rcmdr plugin(s)" select all of them.
+   6.3 When you get R Commander running, go to the R Commander menu and
+   under "Tools", "Load Rcmdr plugin(s)" select all of them.
 
    6.4. You will get a message that says that the plugin will not be
    available until the Commander is restarted. Click Yes to restart the
