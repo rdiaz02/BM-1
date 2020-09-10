@@ -4,7 +4,7 @@
 # -----------------------------------------------------
 # Post-{commit,checkout,merge} hook for the gitinfo package
 #
-prefixes="2019-2020/IntroPresentation 2019-2020/Stats  2015-2016/IntroPresentation 2015-2016/Stats 2016-2017/IntroPresentation 2016-2017/Stats 2017-2018/IntroPresentation 2017-2018/Stats 2018-2019/Stats 2018-2019/IntroPresentation"    # Example for multiple gitHeadInfo.tex files
+prefixes="2020-2021/IntroPresentation 2020-2021/Stats 2019-2020/IntroPresentation 2019-2020/Stats  2015-2016/IntroPresentation 2015-2016/Stats 2016-2017/IntroPresentation 2016-2017/Stats 2017-2018/IntroPresentation 2017-2018/Stats 2018-2019/Stats 2018-2019/IntroPresentation"    # Example for multiple gitHeadInfo.tex files
 # prefixes="."              # Default --- in the working copy root
 for pref in $prefixes
 	do
