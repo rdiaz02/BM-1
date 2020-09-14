@@ -341,6 +341,17 @@ for (p in setdiff(packages, installed.packages()[,"Package"]))
 install.packages(p)
 
 
+## If you also have BioConductor packages, modify the above last two lines as
+r <- getOption("repos")
+r["CRAN"] <- "http://stat.ethz.ch/CRAN"
+options(repos=r)
+install.packages("BiocManager")
+library(BiocManager)
+my.repos <- BiocManager::repositories()
+for (p in setdiff(packages, installed.packages()[,"Package"]))
+install.packages(p, repos = my.repos)
+
+
 
 
 Some of the other solutions you can find if you google around assume that
