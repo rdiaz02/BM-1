@@ -292,4 +292,58 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
 
 
+Some common questions in Windows:
 
+A. Where is the SDI thing? AND How do I change the language to English?
+
+These two are fixed from
+
+"Edit" -> "GUI preferences" (in Spanish: "Editar" -> "Preferencias de la
+interfaz grafica")
+
+
+Then click in "SDI"
+
+and under "Language for menus and messages" type "en" (without the quotes)
+
+
+And save it. It should be saved to a file named "Rconsole" that is often
+located in the Users directory under your username. So something like
+Users -> yourname.  Generally, the default file name offered by R is the
+correct one. So just click on "Save" and tell it to replace the file.
+
+
+
+B. I have an former version of R I want to preserve, and I would like to
+install all the packages I had for that version under the new. What can I
+do:
+
+This is a great procedure:
+
+https://stackoverflow.com/q/1401904
+
+
+Basically, first create a directory called "Temp", right under "C" (it is
+called Temp here, but it could be anything else). And then follow the
+instructions:
+
+
+##--run in the old version of R
+setwd("C:/Temp/")
+packages <- installed.packages()[,"Package"]
+save(packages, file="Rpackages")
+
+
+##--run in the new version
+setwd("C:/Temp/")
+load("Rpackages")
+for (p in setdiff(packages, installed.packages()[,"Package"]))
+install.packages(p)
+
+
+
+
+Some of the other solutions you can find if you google around assume that
+you just want to use the new version of R. With this solution you keep
+your old version of R around, but use also the new one, with all the
+funcionality of the old. 
