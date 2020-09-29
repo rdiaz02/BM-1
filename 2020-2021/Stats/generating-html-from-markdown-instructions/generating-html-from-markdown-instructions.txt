@@ -1,0 +1,26 @@
+(From a question in the forum, 2020-09)
+
+First, I launch R directly from the console of my operating system (Linux, but that does not matter ---launch R the way you usually do).
+
+Then, I load R Commander (library (Rcmdr) ) and do whatever; say, read some data and plot it.
+
+This is screen capture f1-read-plot.png
+
+Now click on "Markdown" tab (screen capture f2-markdown-tab.png)
+
+For the sake of the example, I change things in that markdown file (f3-markdown-tab-modified.png).
+
+Then click on "Generate report" (bottom right of the Rcmdr window). It asks , in a pop-up window, the report you want. I choose html (screen capture f4-markdown-tab-modified.png).
+
+I generates the html, and opens it by default (at least in my operating system); in the screencapture you f5-after-generating-report-with-console-output.png can see the web browser, the Rcmdr window, as well as some messages in the R console.
+
+Of course, the HMTL file is left in the directory where you were working, so you can do whatever you please with that file (send it, save it, upload it). The name should be RcmdrMarkdown.html or similar.
+
+
+You can do the same from Rstudio. I just paste here three screen captures of the same process (just the key steps): g1-blabla.png, g2-blabla.png, g3-blabla.png.
+
+You can generate other things in addition to HTML (say, PDF). And, of course, Markdown in itself is a complete markup language, with different options to generate HTML, PDF, and a several other output, and its syntax and use are beyond the scope of this class (you can find very good tutorials on the web). Not everything you type in the Markdown window is necessarily syntatically correct Markdown, and you can get errors and this, also, would be beyond the scope of this class.
+
+I hope this helps.
+
+
