@@ -241,6 +241,9 @@ dp53 <- read.table("P53.txt", header = TRUE, stringsAsFactors = TRUE)
 @ 
 
 
+Notice the \texttt{stringsAsFactors = TRUE}: we want the strings to be
+turned into factors, so we ask for it.
+
 The first step ever is to look at the data. In fact, here we can look at
 all the original data. So go take a look at the data (``View data set'',
 there is a button next to ``dp53''). Resist the temptation to modify it
