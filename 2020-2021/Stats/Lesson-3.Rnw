@@ -2246,8 +2246,13 @@ Anova(mcyst2)
 @ 
 
 Note we added a ``*'', so an interaction between a continuous and a
-discrete variable. Here there is no evidence of interaction. But, what
-would an interaction have looked like? Different slopes for each group.
+discrete variable. Here there is no evidence of interaction.
+
+
+
+
+Back to the interactions.  What would an interaction have looked like?
+Different slopes for each group.
 
 Look at the plots:
 
@@ -2288,6 +2293,20 @@ Note that function \Rfunction{ancova} is not available from the menus. You
 have to type the above expression directly.
 
 
+One final thing to notice here: we have used ``Anova'' and ``summary(lm)''
+and the p-values for age and sex are not identical\footnote{Neither is it
+  the case that the sqrt of the F for those terms is identical to t
+  statistics, which is a property of the relationship between t statistics
+  and F statistics with one degree of freedom in the numerator}. Why?
+Because Type II sums of squares (the default of \texttt{Anova}) respect
+the marginality principle: age and sex are tested after each other, but
+\textbf{not} after the interaction is in the model (this is in contrast to
+what happens in the \texttt{summary(lm)} output). The marginality
+principle and what Type II Sums of Squares do applies
+not only to Ancova, but to linear models in general\footnote{Type III Sums
+of Squares, which you can ask for when using \texttt{Anova} would give,
+for p-values, output identical to the one of lm even if there is an
+interaction term in the model.}.
 
 \subsection{A parallel slopes model}
 \label{parallel-slopes}
