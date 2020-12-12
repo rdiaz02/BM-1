@@ -1,0 +1,9 @@
+From the R-basic-stats, sections
+
+Type I, Type II, Type III (15.5.1)
+
+and additional stuff in
+
+
+17.2
+Interactions between continuous variables
