@@ -2306,7 +2306,11 @@ output). The marginality principle and what Type II Sums of Squares do
 applies not only to Ancova, but to linear models in general\footnote{Type
   III Sums of Squares, which you can ask for when using \texttt{Anova}
   would give, for p-values, output identical to the one of lm even if
-  there is an interaction term in the model.}.
+  there is an interaction term in the model ---barring possible
+  differences due to the contrasts used, if we have factors; we will not get
+  into any of this..}.
+%% if just regression, not factors, that equivalence of Type III and lm
+%% often the case.
 
 Finally, can you tell if \texttt{ancova} is using sequential or Type II
 sums of squares? If you use \texttt{ancova} and change the order of age
