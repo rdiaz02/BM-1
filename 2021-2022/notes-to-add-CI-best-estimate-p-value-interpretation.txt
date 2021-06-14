@@ -1,0 +1,24 @@
+
+
+- Dramatic example of incorrect interpretation of CI, p-value, and best estimate.
+
+  - Sure, can have wide CI, but the fact that it includes 0 does not mean "the
+    drug does not work". No statistical significance just means "not enough
+    information"
+
+  - Some great examples from Miguel Hernáns examples of trials of Tocilizumab.
+    ~/CharlasCursos/IAP-Epidemiolog-Res-Met-covid-19/Hernan-2a.png  
+    ~/CharlasCursos/IAP-Epidemiolog-Res-Met-covid-19/Hernan-2.png
+    ~/CharlasCursos/IAP-Epidemiolog-Res-Met-covid-19/Hernan-3.png    
+    ~/CharlasCursos/IAP-Epidemiolog-Res-Met-covid-19/Hernan-4.png
+
+    - he uses and OR, so 1 would be the equivalent of 0.
+
+   - Slide Hernan-7.png: example of a huge CI (and huge p-value) and turning
+     that, incorrectly, as evidence that something does not work. But the correct
+     interpretation is that the trial is not informative at all. See the example
+     with the huge CI. (Hernan-6.png)
+
+     - See also Hernan-8.png for changes in estimates of the meta-analysis as new
+       original studies accumulate.
+
