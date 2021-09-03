@@ -1,5 +1,5 @@
- BM-1: Software for the "Applied Stastics" part
- ===============================================
+ BM-2: Software for "Applied Stastics"
+ ======================================
 
 
  You need to install software on your own laptop/computer at home. The
@@ -38,9 +38,9 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      default Ubuntu packages can be  outdated.
 
      
-     1.2. If you use Windows, you want to install "base". It says so
-     clearly: "Binaries for base distribution (managed by Duncan
-     Murdoch). This is what you want to install R for the first time."
+     1.2. If you use Windows, you want to install "base". It says so clearly:
+     "Binaries for base distribution. This is what you want to install R for the
+     first time."
 
 
      	  1.2.1 After you download R, and right before installing it,
@@ -54,7 +54,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      	  into
 	  
 	       C:\R\
-	       (so you can have, for instance, C:\R\R-4.0.2)
+	       (so you can have, for instance, C:\R\R-4.1.1)
 
 	  Choosing the installation directory is something you do
      	  immediately after you click accept on the license. It is a
@@ -65,7 +65,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      	  experience problems when they don't. These problems are
      	  related to permissions and local language settings. Those
      	  are solvable, but we cannot help. So do as we say: install
-     	  to "C:\R\R-4.0.2" or deal with the issues on you own.
+     	  to "C:\R\R-4.1.1" or deal with the issues on you own.
 
 	  1.2.3. Click on "Install package translations" to make sure you
 	  get messages in English and in other languages (Spanish, or
@@ -124,7 +124,7 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 
     It will then download and install a bunch of things. It can take
     several minutes (about 5) with a fast internet connection on a
-    computer from the last five years.
+    reasonably fast computer.
 
     If it ever asks "Do you want to install from sources the packages
     which need compilation?" say "No". THIS IS VERY IMPORTANT under 
@@ -142,9 +142,9 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
      fine; no need to touch anything; just press OK). This should take a
      couple minutes.
 
-	 If it ever asks "Do you want to install from sources the packages
-    which need compilation?" say "No". THIS IS VERY IMPORTANT this is very
-	important under Windows!!
+     If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT under
+    Windows!!
 
 
     2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11
