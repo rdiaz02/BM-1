@@ -5,13 +5,22 @@
  You need to install software on your own laptop/computer at home. The
  following are the installation instructions and information. Please:
 
+
+ 0. Before doing anything, make sure you read these instructions at least
+ once (again, before doing anything). Why? So that you have a general
+ idea of what is involved. For example, if you are a Mac user, you might
+ want to anticipate a few things (like having your operating system
+ updated, having X11/XQuartz installed, etc).
+
+ 00. Again, read what follows at least once before doing anything.
+
  1. Follow these instructions carefully.
  
  2. Follow the instructions in this order.
 
  3. Do all of this from a place where you have a reliable and fast
  internet connection. If the connection fails during installation, things
- can become a mess. This is actually the most common cause of problems. 
+ can become a mess. This is actually the most common cause of problems.
 
 
  If you have problems, repeat the above three steps. Remove everything you
@@ -22,7 +31,9 @@
  the errors, in the Applied Statistics forum.
 
 
-Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
+Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS
+EXPLAINED. (And, again, please read the instructions at least once before
+doing anything).
 
 
  1. Install R (http://cran.r-project.org). The binaries for each operating
@@ -82,10 +93,12 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
 	  close and quit (say "No" to "Save the workspace image" question).
 
      
-     1.3. If you use Mac, if you play with installation options, note that
-     you need to install the tcl/Tk X11 libraries. If you run into trouble,
-     make sure to read the FAQ
-     (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html).
+     1.3. If you use Mac, if you play with installation options, note that you
+     need to install the tcl/Tk X11 libraries. If you run into trouble, make sure
+     to read the FAQ (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html). You
+     also probably want to read the instructions in the R commander page (we will
+     install the R commander package below) for macOS:
+     https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
 
 
      1.4. Regardless of your operating system, please make sure you have
@@ -147,9 +160,10 @@ Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS EXPLAINED.
     Windows!!
 
 
-    2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11
-    is missing. Read the installation instructions for R commander given
-    above.
+    2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11 and/or
+    XQuartz are missing. Read the installation instructions for R commander given
+    above:
+    https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
 
 
 
