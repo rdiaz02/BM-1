@@ -439,6 +439,39 @@ Repeat the above with brca1.
 
 
 
+\subsection{Ideas that should be clear from the t-test part}
+A few ideas that should be clear after this section:
+
+\begin{enumerate}
+\item The difference between a sample and a population
+\item What a statistic is; estimators (for example, the sample mean is an
+  estimator) are a type of statistic \footnote{Briefly: a statistic is
+    number that can be computed from a sample. An estimator is a function
+    used to calculate, or estimate, a quantity of a probability
+    distribution. The sample mean, with the function $\sum x/N$ is a
+    function of the data and is used to estimate the true mean of a
+    distribution.}
+\item What a t-statistic is (a t-statistic is a test statistic used in
+  hypothesis testing; a test statistic is a statistic used in hypothesis
+  testing).
+\item That statistics (and, thus, estimators) have distributions
+\item The difference between standard deviation and standard error
+\item That sampling introduces variability
+\item That some procedures ``ask more from the data'' (e.g., interval data)
+\item p-values
+\item Null hypothesis
+\item Distribution of the statistic under the null hypothesis
+\item The logic behind a statistical test
+\item The difference between estimation and hypothesis testing
+\end{enumerate}
+
+
+If any one of the above is not clear, please ask it in class. Most of this,
+though, is material you have surely been taught before :-)
+
+
+
+
 \subsection{Assumptions of the t-test}
 
 One key assumption is \textbf{independence} of the data. This is the case
@@ -507,39 +540,102 @@ from them, what to do, etc.
 
 
 
+\subsection{\red{Confidence intervals and p-values: a longer discussion}}
+
+\red{Make sure you remember to look at the notes you took for the file
+  \texttt{confidence-intervales-p-values-interpretation.pdf}}.
+
+
+\section{Power of a test}
+How likely we are to detect a difference that really exists (power)
+depends on:
+
+\begin{itemize}
+\item The threshold we use for saying ``the means differ'' ($\alpha$ level, or Type I error).
+\item The sample size.
+\item The size of the effect (difference in means).
+\item The standard deviation.
+\end{itemize}
+
+
+Do you understand each one of these?
+
+
+Go play with the ``Teaching demos: Power of a test'' (from the
+\CRANpkg{RcmdrPlugin.TeachingDemos}).
+
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.80\paperwidth,keepaspectratio]{power.png}
+ \caption{\label{power} Playing with power, from the
+   \CRANpkg{RcmdrPlugin.TeachingDemos}, Power of the test.}
+ \end{center}
+ \end{figure}
+
+
+
+ There are simple, standard ways of figuring out the power. But they
+ require you to specify the above values. Not always known (or easy to
+ guess). The \CRANpkg{RcmdrPlugin.IPSUR} package provides some extra tools.
+
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.40\paperwidth,keepaspectratio]{ipsur-power.png}
+ \caption{\label{ipsurpower} Entry window for \CRANpkg{RmcdrPlugin.IPSUR}:
+   Power for t-test, under ``Statistics'', ``Power (IPSUR)''.}
+ \end{center}
+ \end{figure}
 
 
 
 
-\subsection{Ideas that should be clear from the t-test part}
-A few ideas that should be clear after this section:
+Power can be computed before hand to:
 
-\begin{enumerate}
-\item The difference between a sample and a population
-\item What a statistic is; estimators (for example, the sample mean is an
-  estimator) are a type of statistic \footnote{Briefly: a statistic is
-    number that can be computed from a sample. An estimator is a function
-    used to calculate, or estimate, a quantity of a probability
-    distribution. The sample mean, with the function $\sum x/N$ is a
-    function of the data and is used to estimate the true mean of a
-    distribution.}
-\item What a t-statistic is (a t-statistic is a test statistic used in
-  hypothesis testing; a test statistic is a statistic used in hypothesis
-  testing).
-\item That statistics (and, thus, estimators) have distributions
-\item The difference between standard deviation and standard error
-\item That sampling introduces variability
-\item That some procedures ``ask more from the data'' (e.g., interval data)
-\item p-values
-\item Null hypothesis
-\item Distribution of the statistic under the null hypothesis
-\item The logic behind a statistical test
-\item The difference between estimation and hypothesis testing
-\end{enumerate}
+\begin{itemize}
+\item Know if we are likely to find a difference if there is one (given
+  our sample size and estimated effect sizes and standard deviations).
+\item Figure out if our sample size is OK given the desired power (and
+  estimated effect sizes and standard deviations).
+\end{itemize}
 
 
-If any one of the above is not clear, please ask it in class. Most of this,
-though, is material you have surely been taught before :-)
+Please note: \textbf{it makes little sense} to compute the power of a test
+after the fact. It tells you nothing valuable\footnote{The paper by Hoenig
+and Heisey, ``The abuse of power: the pervasive fallacy of power
+calculations for data analysis'', \textit{The American Statistician},
+2001, 55: 19--24, explains this in more detail.}
+
+
+
+(A slightly more technical note: as is common in many stats intro texts, we have
+been mixing ideas that derive from Fisher's null hypothesis testing with ideas
+from Neyman and Pearson's alternative hypothesis and acceptance-rejection
+framework; we will not get further into this).
+
+\subsection{\red{An analogy: should I take the umbrella?}}
+
+\red{If the trade-off between Type I and Type II errors is not clear, remember
+  the analogy we used in class with respect to the umbrella (well, the behavior
+  of taking or not the umbrella, as a function of meteorological predictions
+  ---withe the \textbf{major} caveat that a p-value is \textbf{not} the
+  probability of the null, whereas meteorological predictions are often the
+  probability of, say, rain).}
+
+\subsection{\red{The winner's curse}}
+
+\red{When studies have low power, estimates of effects from tests that yield
+  ``significant'' results are biased up (i.e., they are larger than they should
+  be). In other words, for a given particular phenomenon, with low power studies,
+  if you focus only on those papers with significant p-values, the effect
+  estimates are too large (in absolute sense). So publication bias together with
+  low power yields overestimates of effect sizes. If this is not clear, we will
+  explain it in class.}
+
+\red{Here is a interesting and recent example where the winner's curse can be
+  playing a role: the possible use of botox as an antidepressant treatment   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}}.
+
 
 
 %% \section{Data transformations}\label{transform}
@@ -591,7 +687,7 @@ Load now the data set called \Robject{MYC.txt}. As before, give it a
 reasonable name.
 
 
-<<create_myc, echo=FALSE, results = 'hide'>>=
+<<create_myc, echo=FALSE, results='hide'>>=
 set.seed(15)
 s <- rnorm(12, 4, 25)
 s <- c(s, s)
@@ -1301,75 +1397,6 @@ There are several problems with the above procedure, among them:
 Even if this procedure is (or was) common in some circles, you now know why it is
 a bad idea. 
 
-\section{Power of a test}
-How likely we are to detect a difference that really exists (power)
-depends on:
-
-\begin{itemize}
-\item The threshold we use for saying ``the means differ'' ($\alpha$ level, or Type I error).
-\item The sample size.
-\item The size of the effect (difference in means).
-\item The standard deviation.
-\end{itemize}
-
-
-Do you understand each one of these?
-
-
-Go play with the ``Teaching demos: Power of a test'' (from the
-\CRANpkg{RcmdrPlugin.TeachingDemos}).
-
-
-\begin{figure}[h!]
- \begin{center}
- \includegraphics[width=0.80\paperwidth,keepaspectratio]{power.png}
- \caption{\label{power} Playing with power, from the
-   \CRANpkg{RcmdrPlugin.TeachingDemos}, Power of the test.}
- \end{center}
- \end{figure}
-
-
-
- There are simple, standard ways of figuring out the power. But they
- require you to specify the above values. Not always known (or easy to
- guess). The \CRANpkg{RcmdrPlugin.IPSUR} package provides some extra tools.
-
-
-\begin{figure}[h!]
- \begin{center}
- \includegraphics[width=0.40\paperwidth,keepaspectratio]{ipsur-power.png}
- \caption{\label{ipsurpower} Entry window for \CRANpkg{RmcdrPlugin.IPSUR}:
-   Power for t-test, under ``Statistics'', ``Power (IPSUR)''.}
- \end{center}
- \end{figure}
-
-
-
-
-Power can be computed before hand to:
-
-\begin{itemize}
-\item Know if we are likely to find a difference if there is one (given
-  our sample size and estimated effect sizes and standard deviations).
-\item Figure out if our sample size is OK given the desired power (and
-  estimated effect sizes and standard deviations).
-\end{itemize}
-
-
-Please note: \textbf{it makes little sense} to compute the power of a test
-after the fact. It tells you nothing valuable\footnote{The paper by Hoenig
-and Heisey, ``The abuse of power: the pervasive fallacy of power
-calculations for data analysis'', \textit{The American Statistician},
-2001, 55: 19--24, explains this in more detail.}
-
-
-
-(A slightly more technical note: as is common in many stats intro texts, we have
-been mixing ideas that derive from Fisher's null hypothesis testing with ideas
-from Neyman and Pearson's alternative hypothesis and acceptance-rejection
-framework; we will not get further into this).
-
-
 
 \clearpage
 \section{Non-independent data}\label{pseudorep}
@@ -1383,7 +1410,7 @@ in Lesson 1).
 <<create_brca, echo=FALSE, results='hide'>>=
 set.seed(27)
 n1 <- 8
-n2 <- 5
+n2 <-5
 nn <- 3
 s <- rnorm(n1 + n2, 0, 2)
 s <- rep(s, rep(nn, n1 + n2))
@@ -1867,3 +1894,12 @@ sessionInfo()
 
 
 %%% en clase, decir xq p-value es type I error rate e inversi?n de CI
+
+
+%% el viernes
+%% formulas para paired
+%% plots para paired
+%% conf int derivation
+%% power demo
+%% CLT demo
+%% Bayesian

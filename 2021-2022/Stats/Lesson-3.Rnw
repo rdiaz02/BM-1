@@ -1,4 +1,9 @@
-%\VignetteEngine{knitr::knitr}
+%% Conf ints for two-way ANOVAs
+%% from the menus!
+
+%% Conf ints for regressions
+
+% \VignetteEngine{knitr::knitr}
 \documentclass[a4paper,11pt]{article}
 \synctex=1
 <<echo=FALSE,results='hide',error=FALSE>>=
