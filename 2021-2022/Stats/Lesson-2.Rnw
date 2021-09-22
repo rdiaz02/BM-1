@@ -543,7 +543,7 @@ from them, what to do, etc.
 \subsection{\red{Confidence intervals and p-values: a longer discussion}}
 
 \red{Make sure you remember to look at the notes you took for the file
-  \texttt{confidence-intervales-p-values-interpretation.pdf}}.
+  \texttt{confidence-intervals-p-values-interpretation.pdf}}.
 
 
 \section{Power of a test}
@@ -634,7 +634,7 @@ framework; we will not get further into this).
   explain it in class.}
 
 \red{Here is a interesting and recent example where the winner's curse can be
-  playing a role: the possible use of botox as an antidepressant treatment   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}}.
+  playing a role: the possible use of botox to relieve depression   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}}.
 
 
 
