@@ -1759,6 +1759,13 @@ results will often be very similar if we use \texttt{interaction\_average =
 is, as we anticipated, a complicated issue.
 
 
+Another package that might be worth checking is \CRANpkg{emmeans}
+(\Burl{https://cran.r-project.org/web/packages/emmeans/index.html}). In many
+cases, or in other types of models, not covered in this course (e.g.,
+mixed-effects, generalized linear models, etc) it might be easier or more
+flexible than the packages used above (see, for instance,
+\Burl{https://cran.r-project.org/web/packages/emmeans/vignettes/comparisons.html}). 
+
 
 
 \subsection{Nonparametric alternatives}
