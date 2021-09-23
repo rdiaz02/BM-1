@@ -399,6 +399,12 @@ par(old.oma) ## restore graphics windows settings
 remove(.Pairs) ## remove the object that stored the multiple comp. output
 @ 
 
+%% Note, can get the same doing
+%% TukeyHSD(aov(activ ~ ftraining, data = dmit))
+%% zz: FIXME: Include link to this great explanation
+%% https://stats.stackexchange.com/a/488655
+%% But figure out why the'' `single-step method' 
+
 
 \subsubsection{The plot of pairwise differences}
 Look carefully at the plot in Figure \ref{fig:tukey1}: for each difference
