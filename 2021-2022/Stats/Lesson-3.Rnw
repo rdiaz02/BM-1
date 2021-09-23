@@ -281,6 +281,27 @@ By the way, notice how we created a ``Model'' which, by default, is called
 \Robject{AnovaModel.1}. But we could have named it differently.
 
 
+
+\subsection{Confidence intervals for the parameters of the model}
+
+We can easily do
+
+<<>>=
+confint(AnovaModel.1)
+@ 
+
+For one thing, we are all well aware that simply looking at p-values is not the
+only thing we want to do.
+
+Sometimes \Rfunction{confint} will give us a lot of insight. But often it will
+not be easy to relate it back to our original scientific question. One of the
+reasons is that the actual parameters of the fitted model depend, well, on the
+parameterization (see details in section \ref{anovaaslm}, or just take it on
+faith). So, often, we will want to explicitly ask ``Which means are different'',
+and that is what we do next.
+
+
+
 \subsection{So which means are different? Multiple comparisons}
 \label{multcomp1}
 That small p-value leads us to reject the null hypothesis $\mu_{Morning} =
@@ -1500,6 +1521,9 @@ program. Or maybe \ldots.
 % % @ 
    
 
+(This section is probably too long for this course. We will cover it quickly, and
+leave the rest for future reference).
+
 
 In two-way and, more generally, multi-way ANOVA, this is more complicated. Among
 other questions you should ask yourself, at what levels of one variable will you
@@ -1691,7 +1715,42 @@ chol_mmc
 @ 
 
 
+Note that many of those can be obtained, too, using the \Rfunction{TukeyHSD}
+function. For example, as simple as this:
+<<>>=
+## Fit as aov
+clmaov <- aov(y ~ Diet * Drug, data = dc2)
 
+## Compare to, for example, chol_mmc
+TukeyHSD(clmaov, which = "Diet")
+
+## We want all possible contrasts for all combinations
+TukeyHSD(clmaov, which = "Diet:Drug")
+
+## Though if we only care about the contrasts
+## between all factor combinations maybe we really just want this?
+TukeyHSD(aov(y ~ Diet:Drug, data = dc2))
+
+
+
+## Diet and Drug. Compare to summary(glht(clm, linfct = rbind(K1A, K2A)))
+TukeyHSD(clmaov, which = c("Diet", "Drug"))
+
+@ 
+
+A virtue of \Rfunction{TukeyHSD} is its simplicity. In models without
+interactions, results of these procedures are often similar, though not
+necessarily identical (with unbalanced designs, specially heavily unbalanced,
+\Rfunction{glht} is often preferable --- see the discussion in Everitt and
+Hothorn, chapter 5 and 14).
+
+But in models with interactions, \Rfunction{glht}, allows us to control what to
+do with averaging over interactions and will not necessarily give the same
+results as \Rfunction{TukeyHSD} (if there is no unbalance in sample sizes,
+results will often be very similar if we use \texttt{interaction\_average =
+  TRUE}). See further discussion, for example, here:
+\Burl{https://stat.ethz.ch/pipermail/r-help/2012-January/299623.html}. But this
+is, as we anticipated, a complicated issue.
 
 
 
