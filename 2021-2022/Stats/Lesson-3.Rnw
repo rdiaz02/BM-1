@@ -1472,6 +1472,11 @@ these issues is chapter 14 (and section 5.3.2) of Everitt and Hothorn's
 
 
 
+
+
+
+
+
 \subsection{Nonparametric alternatives}
 Are there nonparametric versions of the above procedures? For the one-way
 ANOVA the Kruskal-Wallis test is popular. For two-way designs with one
