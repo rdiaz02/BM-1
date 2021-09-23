@@ -7,3 +7,14 @@ and additional stuff in
 
 17.2
 Interactions between continuous variables
+
+
+------
+
+But add in those:
+
+- the major reorganization
+- the part about multiple comps of means with two-way anova.  
+
+
+- gvlma

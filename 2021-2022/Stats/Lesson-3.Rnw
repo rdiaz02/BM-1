@@ -3254,6 +3254,16 @@ For you to read and play around further:
   and other diagnostics, and several functions. Take also a look, for a
   summary, at the very nice sections 8.3 to 8.5 in Kabakoff's ``R in
   action.''
+
+\item There is in CRAN a very interesting package, \CRANpkg{gvlma}
+  (\Burl{https://cran.r-project.org/web/packages/gvlma/}), by Pe\~{n}a and Slate,
+  that implements the methods in their paper `` Global Validation of Linear Model
+  Assumptions'', \textit{J. American Statistical Association},
+  101(473):341-354. This offers a global testing procedure that allows further
+  examination of each of the key assumptions. Here, I have preferred to start by
+  looking carefully at each one of the traditional diagnostic plots. But you will
+  most likely want to take a look at this package.
+
 \end{itemize}
 
 
