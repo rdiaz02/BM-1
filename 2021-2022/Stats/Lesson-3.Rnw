@@ -1312,7 +1312,7 @@ Some summaries of data:
 @ 
 
 
-We can fit the additive model (but only 1 df left)
+We can fit the additive model
 <<>>=
 m1 <- lm(y ~ A + B, data = df1)
 anova(m1)
@@ -1388,8 +1388,13 @@ program. Or maybe \ldots.
 % % @ 
    
 
-(This section is probably too long for this course. We will cover it quickly, and
-leave the rest for future reference).
+This section is way too long for this course. We will cover it quickly, focusing
+on the key conceptual issues. But we leave the code, examples, and more advanced
+comments for your future reference. Why is this that long, then? Because we want
+to emphasize that \textbf{``p values are just not enough''}: in many/most cases,
+you will want to look at confidence intervals and other measures of uncertainty
+around the parameters you have estimated. And, of course, you will need to
+correct for multiple testing when you, well, conduct multiple tests.
 
 
 In two-way and, more generally, multi-way ANOVA, this is more complicated. Among
@@ -1594,10 +1599,13 @@ TukeyHSD(clmaov, which = "Diet")
 ## We want all possible contrasts for all combinations
 TukeyHSD(clmaov, which = "Diet:Drug")
 
+## Plot them
+plot(TukeyHSD(clmaov, which = "Diet:Drug"))
+
+
 ## Though if we only care about the contrasts
 ## between all factor combinations maybe we really just want this?
 TukeyHSD(aov(y ~ Diet:Drug, data = dc2))
-
 
 
 ## Diet and Drug. Compare to summary(glht(clm, linfct = rbind(K1A, K2A)))
@@ -1605,27 +1613,33 @@ TukeyHSD(clmaov, which = c("Diet", "Drug"))
 
 @ 
 
-A virtue of \Rfunction{TukeyHSD} is its simplicity. In models without
-interactions, results of these procedures are often similar, though not
-necessarily identical (with unbalanced designs, specially heavily unbalanced,
-\Rfunction{glht} is often preferable --- see the discussion in Everitt and
-Hothorn, chapter 5 and 14).
 
-But in models with interactions, \Rfunction{glht}, allows us to control what to
+
+A virtue of \Rfunction{TukeyHSD} is its simplicity. In models without
+interactions, results of these procedures are often very, very similar, though
+not necessarily identical (with unbalanced designs, specially heavily unbalanced,
+\Rfunction{glht} is often preferable --- see for example the discussion in
+Everitt and Hothorn, chapters 5 and 14).
+
+But in models with interactions, \Rfunction{glht} allows us to control what to
 do with averaging over interactions and will not necessarily give the same
 results as \Rfunction{TukeyHSD} (if there is no unbalance in sample sizes,
 results will often be very similar if we use \texttt{interaction\_average =
   TRUE}). See further discussion, for example, here:
 \Burl{https://stat.ethz.ch/pipermail/r-help/2012-January/299623.html}. But this
-is, as we anticipated, a complicated issue.
+is, as we anticipated, a complicated issue. What comparisons are you interested
+in when there are interactions? 
 
 
-Another package that might be worth checking is \CRANpkg{emmeans}
+Finally, another package that might be worth checking is \CRANpkg{emmeans}
 (\Burl{https://cran.r-project.org/web/packages/emmeans/index.html}). In many
 cases, or in other types of models, not covered in this course (e.g.,
 mixed-effects, generalized linear models, etc) it might be easier or more
 flexible than the packages used above (see, for instance,
-\Burl{https://cran.r-project.org/web/packages/emmeans/vignettes/comparisons.html}). 
+\Burl{https://cran.r-project.org/web/packages/emmeans/vignettes/comparisons.html}). The
+latest edition of Fox and Weisberg's ``An R companion to applied regression''
+makes extensive use of \CRANpkg{emmeans} (to obtain confidence intervals and many
+other things).
 
 
 
@@ -1636,6 +1650,8 @@ observation per cell the Friedman test and the Quade test. But testing
 interactions is not easy; one needs to use more sophisticated approaches
 as in permutation tests conditioning on permuting only within rows or
 columns, etc. We will not pursue this any further.
+
+
 
 \clearpage
 
@@ -1710,7 +1726,7 @@ some birds and reptiles.
 Read the full data and call it \Robject{anage\_a\_r} (the a and r stand
 for aves and reptilia, the proper Class names).
 
-<<create_anage, echo=FALSE, results='hide'>>=
+<<create_anage, echo=FALSE, results='hide''>>=
 anage_a_r <-  read.table("AnAge_birds_reptiles.txt", 
                          header=TRUE, sep="", na.strings="NA", dec=".", 
                          strip.white=TRUE,
@@ -1872,6 +1888,7 @@ help (e.g., component+residual plots, section \ref{diagnostics}).
 
 \section{Multiple regression}\label{multreg}
 
+\subsection{Introduction to multiple regression and the cystfibr data}
 In the previous section we had
 
 \[Y = \alpha + \beta X + \epsilon\]
@@ -1918,6 +1935,8 @@ For the multiple regression we model
 
 \[pemax = \alpha + \beta_1 age + \beta_2 height + \beta_3 weight + \epsilon\]
 
+
+\subsection{Multiple regression example}\label{multregr-example}
 You should know how to work around the menus and get something like:
 
 <<>>=
@@ -2010,6 +2029,8 @@ among themselves. Is this a common phenomenon: yes, it is rather common.
 %% is discussed, also in the context of variable selection, by P.\ Dalgaard
 %% in chapter 11 of ``Introductory statistics with R''.
 
+
+
 \subsection{Interactions between continuous variables}\label{regr-int}
 Can we add interactions? Yes, of course. Interactions between continuous
 variables, however, are harder to visualize (they represent curved
@@ -2024,348 +2045,17 @@ hyperplane)\footnote{If you want to play around with a regression plane or
   allows only for up to one dependent variable and two independent ones:
   our brains do not seem ready for 4D and higher.}.
 
+%%zz FIXME
+\subsection{Confidence intervals with multiple regression}\label{regr-ci}
+
+\subsubsection{Confidence intervals for the parameter
+  estimates}\label{regr-ci-param}
+
+
+\subsubsection{Confidence intervals for predictions}\label{regr-ci-pred}
+
+
 \clearpage
-
-
-
-\section{Anova tables from \Rfunction{lm} et al.: understanding the
-  coefficients and parameters}\label{anovaaslm}
-
-We've said this: ANOVAs are a type of linear models. Thus, in R (and in
-most statistical packages) you can get the output for an ANOVA by
-different routes. Let us make sure we understand this, and can interpret
-the output from using the different routes available to us. In fact, we
-have jumped from using \Rfunction{aov} to \Rfunction{lm} several times by now.
-
-This is also a good time to recap and make sure we understand ideas we
-have used like ``more complex models'' and ``number of
-parameters''. Before we see the examples with code below, make sure we can
-understand how many parameters (and how many degrees of freedom are taken
-by the model) and what they represent in models like:
-\begin{itemize}
-\item A simple linear regression like \verb@ y ~ x@.
-\item A multiple linear regression like \verb@ y ~ x + z@.
-\item A one-way ANOVA like the one for the training regimes, with three
-  possible training regimes: \verb@y ~ ftraining@.
-\item A two-way ANOVA with interactions, like the one about Drug (two
-  levels) and Diet (three levels): \verb@y ~ Drug*Diet@.
-\item A two-way ANOVA without interactions, like one we might fit to the
-  Drug and Diet data: \verb@y ~ Drug + Diet@.
-\end{itemize}
-
-
-
-Note: the details about the exact numerical value of the coefficients can
-be skipped in a first reading. What you definitely need to understand is
-how many parameters we are estimating.
-
-
-Let us now see a
-simple example:
-
-<<>>=
-asAnova <- aov(activ ~ ftraining, data = dmit)
-summary(asAnova)
-@ 
-
-
-Not let us fit the same model using \Rfunction{lm}. 
-
-<<>>=
-asLm <- lm(activ ~ ftraining, data = dmit)
-anova(asLm)
-@ 
-
-The ANOVA table is the same. I've used \Rfunction{anova} but I could have
-used \Rfunction{Anova}.
-
-But what is this output?
-
-<<>>=
-asLm
-summary(asLm)
-@ 
-
-We are being shown the fitted coefficients. They are expressed as
-deviations with respect to a baseline level, in this case the first level:
-
-<<>>=
-means <- with(dmit, tapply(activ, ftraining, mean)) ## instead of "tapply", 
-                                                    ## "by" or "aggregate" 
-                                                    ## would 
-                                                    ## also work here
-means[1]
-means[2] - means[1]
-means[3] - means[1]
-rm(means) ## let's remove it, so as not the leave
-          ## garbage around
-@ 
-
-This is the default parameterization in R. But is is not the only one available.
-
-
-Of course, the above applies to more than one factor, and to factors with
-an arbitrary number of levels.
-
-\subsection{Changing the reference in the one-way}
-
-We can change the reference, and that will change what we are comparing against:
-
-<<>>=
-dmitb <- dmit
-dmitb$ftraining2 <- factor(dmitb$ftraining, 
-                           levels = c("Afternoon", "Lunch", "Morning"))
-## check
-with(dmitb, table(ftraining, ftraining2))
-@ 
-
-Now, rerun the analysis
-
-<<>>=
-asLm2 <- lm(activ ~ ftraining2, data = dmitb)
-anova(asLm2) ## no difference, of course
-summary(asLm2)
-meansb <- with(dmitb, tapply(activ, ftraining2, mean))
-meansb[1]
-meansb[2] - meansb[1]
-meansb[3] - meansb[1]
-rm(meansb)
-@ 
-
-
-
-If we go back to \ref{simpletwo} we can also do the same and change the
-reference, and that changes what we are comparing. For instance, let us
-recode A and run the model again in those data:
-
-<<>>=
-df1b <- df1
-df1b$A <- factor(df1b$A, levels = c("a2", "a1"))
-table(df1b$A, df1$A) ## double check
-@ 
-
-<<>>=
-summary(lm(y ~ A + B, data = df1b))
-@ 
-
-
-
-
-
-
-
-\subsection{Coefficients with two-ways}
-
-What about two-way models?  Lets us first play with another fake data set:
-
-<<>>=
-y <- c(1:9, 20, 21, 22)
-X <- rep(rep(c("x1", "x2"), c(3, 3)), 2)
-U <- rep(c("u1", "u2"), c(6, 6))
-anova(lm(y ~ U * X)) ## so strong evidence of interaction
-@ 
-
-<<>>=
-## The cell means
-tapply(y, list(X, U), mean)
-## The estimates
-summary(lm(y ~ X * U))
-## The intercept is the first cell mean.
-## The right and bottom cell:
-## the X2:U2 = 
-21 - (2 + 3 + 6)
-## The coefficient for x2 is the difference between the intercept and
-## the first column of the second row:
-5 - 2
-## The coefficient for u2 is the difference between the intercept
-## and the first row of the second column:
-8 -2
-@ 
-
-So things here are easy: a saturated model with interactions has a
-many parameters as cell means and once we figure out what is the
-reference, we can see what each coefficient means.
-
-
-What about additive models? This is slightly more complicated:
-
-
-<<>>=
-summary(mxu <- lm(y ~ X  + U))
-model.matrix(mxu)
-mean(y) ## 9
-## What is the first cell? the overall mean with the effect of X:1 and
-## U:1, which is the overall mean minus half the effects of X:2 and U:2
-
-9 - 11/2 - 8/2 ## Where 11 and 8 are coming from the fitted model
-
-fitted(mxu) ## Yes: fitted for first group are the intercept term
-
-
-## But why the 11 and the 8 above?
-## Again, look here:
-(mxu <- tapply(y, list(X, U), mean))
-## or here
-aggregate(y ~ X * U, FUN = mean)
-
-## And our model says: an overall mean, and row and column deviations. 
-## Let's write it.
-## Row effects, or effect of X:2 (effect of X:1 = - effect of X:2)
-## is the average of the row differences at each column
-## or average of (5 - 2) and (21 - 8) which is the effect of X:2
-0.5 * ((5 - 2) + (21 - 8)) # = 8
-## or, similarly
-mean(mxu[2, ] - mxu[1, ])
-
-
-## Similar for column effects, or the effect of U:2
-## effect of U:2: 
-0.5 * ((8 - 2) + (21 - 5)) # = 11
-## or, similarly
-mean(mxu[ , 2] - mxu[, 1])
-
-## So the first cell is the first cell UNDER that additive model. You can't 
-## just put the first cell mean in there.
-@ 
-
-
-What if we go to the data in section \ref{simpletwo}? Again, in the
-interaction case things are easiest:
-
-<<>>=
-(means <- with(df1, tapply(y, list(A, B), mean)))
-@ 
-
-<<>>=
-summary(m2 <- lm(y ~ A * B, data = df1))
-## each main effect
-means[1, 2] - means[1, 1]
-means[2, 1] - means[1, 1]
-## interaction
-means[2, 2] - ( means[1, 1] + (m2$coefficients[2] + m2$coefficients[3]))
-@ 
-
-
-What about additive model?
-
-<<>>=
-## Overall mean:
-mean(df1$y)
-
-## Note what are the estimates of the effects of A and B: the mean deviation
-## of the second level from the first:
-## A2 
-mean(means[2, ] - means[1, ])
-## B2
-mean(means[, 2] - means[, 1])
-## Intercept
-mean(df1$y) - 
-    0.5 * (mean(means[2, ] - means[1, ])) - 
-    0.5 * mean(means[, 2] - means[, 1])
-@ 
-
-
-\subsection{Other contrasts}
-We are using \texttt{contr.treatment}, the default in R. There are other
-types. In particular, and when we want to estimate effects in the presence
-of interactions, we probably want to use \texttt{contr.sum}. We will not
-pursue this any further here.
-
-To give you a quick taste, this might do:
-
-(We will use \Rfunction{contr.Sum} from \CRANpkg{car}, since clearer labeling)
-
-<<>>=
-opt <- options(contrasts = c("contr.Sum", "contr.poly"))
-m11 <- lm(y ~ A + B, data = df1)
-anova(m11)
-summary(m11)
-@ 
-
-
-<<>>=
-(overallMean <- mean(df1$y))
-mA <- with(df1, tapply(y, A, mean))
-mA - overallMean
-
-mB <- with(df1, tapply(y, B, mean))
-mB - overallMean
-@ 
-
-Interaction now (note the estimates!)
-<<>>=
-m12 <- lm(y ~ A * B, data = df1)
-anova(m12)
-summary(m12)
-@ 
-
-
-What if we changed the reference?
-<<>>=
-summary(lm(y ~ A + B, data = df1b))
-@ 
-
-Return contrasts to usual state
-<<>>=
-options(opt)
-@ 
-
-
-\subsection{Changing the reference in two-ways}
-If we change the levels or references, of course the interpretation of the
-coefficients must also change. This is nothing new relative to what we saw
-for the one-way.
-
-
-
-\subsection{Unbalanced case}
-These examples have used balanced data. Things get trickier with
-unbalanced data. The idea of this section is to get an intuitive
-understanding of what the numbers mean, but then for real you'll do this
-with a computer.
-
-\subsection{Three way anovas, factors with more than two classes, etc}
-\label{sec:three-way-anovas}
-There is nothing conceptually new, but the accounting gets more complicated.
-
-
-%% Explaining parameters for a two-way. The interaction is simple, since we
-%% just have each cell mean in contr.treatment. The additive is messier. A
-%% numerical example
-%% <<>>=
-%% y <- c(1:9, 20, 21, 22)
-%% X <- rep(rep(c("1", "2"), c(3, 3)), 2)
-%% U <- rep(c("1", "2"), c(6, 6))
-%% anova(lm(y ~ U * X))
-%% tapply(y, list(X, U), mean)
-%% summary(lm(y ~ X * U))
-%% ## the X2:U2 = 21 - (2 + 3 + 6)
-%% summary(lm(y ~ X  + U))
-%% m1 <- lm(y ~ X + U)
-%% model.matrix(m1)
-%% fitted(m1)
-%% ## fitted for first group are the intercept term
-%% mean(y) ## 9
-
-%% ## effect of X:2: 0.5 * ((5 -2) + (21 - 8)) = 8
-%% ## effect of U:2: 0.5 * ((8 -2) + (21 - 5)) = 11
-
-%% ## what is the first cell? the overall mean with the effect of X:1 and
-%% ## U:1, which is the overall mean minus half the effects
-
-%% 9 - 11/2 - 8/2
-
-%% ## Yes, the first cell is the first cell UNDER that additive model. You can't 
-%% ## just put the first cell mean in there.
-%% @ 
-
-
-
-
-
-
-
-
 
 
 
@@ -3526,6 +3216,349 @@ residual standard errors, and thus the p-values.
 %% anova(lm(z ~ sex + drug, data = z.data))
 %% anova(lm(z ~ drug + sex, data = z.data))
 %% @ 
+
+
+\section{Anova tables from \Rfunction{lm} et al.: understanding the
+  coefficients and parameters}\label{anovaaslm}
+
+We've said this: ANOVAs are a type of linear models. Thus, in R (and in
+most statistical packages) you can get the output for an ANOVA by
+different routes. Let us make sure we understand this, and can interpret
+the output from using the different routes available to us. In fact, we
+have jumped from using \Rfunction{aov} to \Rfunction{lm} several times by now.
+
+This is also a good time to recap and make sure we understand ideas we
+have used like ``more complex models'' and ``number of
+parameters''. Before we see the examples with code below, make sure we can
+understand how many parameters (and how many degrees of freedom are taken
+by the model) and what they represent in models like:
+\begin{itemize}
+\item A simple linear regression like \verb@ y ~ x@.
+\item A multiple linear regression like \verb@ y ~ x + z@.
+\item A one-way ANOVA like the one for the training regimes, with three
+  possible training regimes: \verb@y ~ ftraining@.
+\item A two-way ANOVA with interactions, like the one about Drug (two
+  levels) and Diet (three levels): \verb@y ~ Drug*Diet@.
+\item A two-way ANOVA without interactions, like one we might fit to the
+  Drug and Diet data: \verb@y ~ Drug + Diet@.
+\end{itemize}
+
+
+
+Note: the details about the exact numerical value of the coefficients can
+be skipped in a first reading. What you definitely need to understand is
+how many parameters we are estimating.
+
+
+Let us now see a
+simple example:
+
+<<>>=
+asAnova <- aov(activ ~ ftraining, data = dmit)
+summary(asAnova)
+@ 
+
+
+Not let us fit the same model using \Rfunction{lm}. 
+
+<<>>=
+asLm <- lm(activ ~ ftraining, data = dmit)
+anova(asLm)
+@ 
+
+The ANOVA table is the same. I've used \Rfunction{anova} but I could have
+used \Rfunction{Anova}.
+
+But what is this output?
+
+<<>>=
+asLm
+summary(asLm)
+@ 
+
+We are being shown the fitted coefficients. They are expressed as
+deviations with respect to a baseline level, in this case the first level:
+
+<<>>=
+means <- with(dmit, tapply(activ, ftraining, mean)) ## instead of "tapply", 
+                                                    ## "by" or "aggregate" 
+                                                    ## would 
+                                                    ## also work here
+means[1]
+means[2] - means[1]
+means[3] - means[1]
+rm(means) ## let's remove it, so as not the leave
+          ## garbage around
+@ 
+
+This is the default parameterization in R. But is is not the only one available.
+
+
+Of course, the above applies to more than one factor, and to factors with
+an arbitrary number of levels.
+
+\subsection{Changing the reference in the one-way}
+
+We can change the reference, and that will change what we are comparing against:
+
+<<>>=
+dmitb <- dmit
+dmitb$ftraining2 <- factor(dmitb$ftraining, 
+                           levels = c("Afternoon", "Lunch", "Morning"))
+## check
+with(dmitb, table(ftraining, ftraining2))
+@ 
+
+Now, rerun the analysis
+
+<<>>=
+asLm2 <- lm(activ ~ ftraining2, data = dmitb)
+anova(asLm2) ## no difference, of course
+summary(asLm2)
+meansb <- with(dmitb, tapply(activ, ftraining2, mean))
+meansb[1]
+meansb[2] - meansb[1]
+meansb[3] - meansb[1]
+rm(meansb)
+@ 
+
+
+
+If we go back to \ref{simpletwo} we can also do the same and change the
+reference, and that changes what we are comparing. For instance, let us
+recode A and run the model again in those data:
+
+<<>>=
+df1b <- df1
+df1b$A <- factor(df1b$A, levels = c("a2", "a1"))
+table(df1b$A, df1$A) ## double check
+@ 
+
+<<>>=
+summary(lm(y ~ A + B, data = df1b))
+@ 
+
+
+
+
+
+
+
+\subsection{Coefficients with two-ways}
+
+What about two-way models?  Lets us first play with another fake data set:
+
+<<>>=
+y <- c(1:9, 20, 21, 22)
+X <- rep(rep(c("x1", "x2"), c(3, 3)), 2)
+U <- rep(c("u1", "u2"), c(6, 6))
+anova(lm(y ~ U * X)) ## so strong evidence of interaction
+@ 
+
+<<>>=
+## The cell means
+tapply(y, list(X, U), mean)
+## The estimates
+summary(lm(y ~ X * U))
+## The intercept is the first cell mean.
+## The right and bottom cell:
+## the X2:U2 = 
+21 - (2 + 3 + 6)
+## The coefficient for x2 is the difference between the intercept and
+## the first column of the second row:
+5 - 2
+## The coefficient for u2 is the difference between the intercept
+## and the first row of the second column:
+8 -2
+@ 
+
+So things here are easy: a saturated model with interactions has a
+many parameters as cell means and once we figure out what is the
+reference, we can see what each coefficient means.
+
+
+What about additive models? This is slightly more complicated:
+
+
+<<>>=
+summary(mxu <- lm(y ~ X  + U))
+model.matrix(mxu)
+mean(y) ## 9
+## What is the first cell? the overall mean with the effect of X:1 and
+## U:1, which is the overall mean minus half the effects of X:2 and U:2
+
+9 - 11/2 - 8/2 ## Where 11 and 8 are coming from the fitted model
+
+fitted(mxu) ## Yes: fitted for first group are the intercept term
+
+
+## But why the 11 and the 8 above?
+## Again, look here:
+(mxu <- tapply(y, list(X, U), mean))
+## or here
+aggregate(y ~ X * U, FUN = mean)
+
+## And our model says: an overall mean, and row and column deviations. 
+## Let's write it.
+## Row effects, or effect of X:2 (effect of X:1 = - effect of X:2)
+## is the average of the row differences at each column
+## or average of (5 - 2) and (21 - 8) which is the effect of X:2
+0.5 * ((5 - 2) + (21 - 8)) # = 8
+## or, similarly
+mean(mxu[2, ] - mxu[1, ])
+
+
+## Similar for column effects, or the effect of U:2
+## effect of U:2: 
+0.5 * ((8 - 2) + (21 - 5)) # = 11
+## or, similarly
+mean(mxu[ , 2] - mxu[, 1])
+
+## So the first cell is the first cell UNDER that additive model. You can't 
+## just put the first cell mean in there.
+@ 
+
+
+What if we go to the data in section \ref{simpletwo}? Again, in the
+interaction case things are easiest:
+
+<<>>=
+(means <- with(df1, tapply(y, list(A, B), mean)))
+@ 
+
+<<>>=
+summary(m2 <- lm(y ~ A * B, data = df1))
+## each main effect
+means[1, 2] - means[1, 1]
+means[2, 1] - means[1, 1]
+## interaction
+means[2, 2] - ( means[1, 1] + (m2$coefficients[2] + m2$coefficients[3]))
+@ 
+
+
+What about additive model?
+
+<<>>=
+## Overall mean:
+mean(df1$y)
+
+## Note what are the estimates of the effects of A and B: the mean deviation
+## of the second level from the first:
+## A2 
+mean(means[2, ] - means[1, ])
+## B2
+mean(means[, 2] - means[, 1])
+## Intercept
+mean(df1$y) - 
+    0.5 * (mean(means[2, ] - means[1, ])) - 
+    0.5 * mean(means[, 2] - means[, 1])
+@ 
+
+
+\subsection{Other contrasts}
+We are using \texttt{contr.treatment}, the default in R. There are other
+types. In particular, and when we want to estimate effects in the presence
+of interactions, we probably want to use \texttt{contr.sum}. We will not
+pursue this any further here.
+
+To give you a quick taste, this might do:
+
+(We will use \Rfunction{contr.Sum} from \CRANpkg{car}, since clearer labeling)
+
+<<>>=
+opt <- options(contrasts = c("contr.Sum", "contr.poly"))
+m11 <- lm(y ~ A + B, data = df1)
+anova(m11)
+summary(m11)
+@ 
+
+
+<<>>=
+(overallMean <- mean(df1$y))
+mA <- with(df1, tapply(y, A, mean))
+mA - overallMean
+
+mB <- with(df1, tapply(y, B, mean))
+mB - overallMean
+@ 
+
+Interaction now (note the estimates!)
+<<>>=
+m12 <- lm(y ~ A * B, data = df1)
+anova(m12)
+summary(m12)
+@ 
+
+
+What if we changed the reference?
+<<>>=
+summary(lm(y ~ A + B, data = df1b))
+@ 
+
+Return contrasts to usual state
+<<>>=
+options(opt)
+@ 
+
+
+\subsection{Changing the reference in two-ways}
+If we change the levels or references, of course the interpretation of the
+coefficients must also change. This is nothing new relative to what we saw
+for the one-way.
+
+
+
+\subsection{Unbalanced case}
+These examples have used balanced data. Things get trickier with
+unbalanced data. The idea of this section is to get an intuitive
+understanding of what the numbers mean, but then for real you'll do this
+with a computer.
+
+\subsection{Three way anovas, factors with more than two classes, etc}
+\label{sec:three-way-anovas}
+There is nothing conceptually new, but the accounting gets more complicated.
+
+
+%% Explaining parameters for a two-way. The interaction is simple, since we
+%% just have each cell mean in contr.treatment. The additive is messier. A
+%% numerical example
+%% <<>>=
+%% y <- c(1:9, 20, 21, 22)
+%% X <- rep(rep(c("1", "2"), c(3, 3)), 2)
+%% U <- rep(c("1", "2"), c(6, 6))
+%% anova(lm(y ~ U * X))
+%% tapply(y, list(X, U), mean)
+%% summary(lm(y ~ X * U))
+%% ## the X2:U2 = 21 - (2 + 3 + 6)
+%% summary(lm(y ~ X  + U))
+%% m1 <- lm(y ~ X + U)
+%% model.matrix(m1)
+%% fitted(m1)
+%% ## fitted for first group are the intercept term
+%% mean(y) ## 9
+
+%% ## effect of X:2: 0.5 * ((5 -2) + (21 - 8)) = 8
+%% ## effect of U:2: 0.5 * ((8 -2) + (21 - 5)) = 11
+
+%% ## what is the first cell? the overall mean with the effect of X:1 and
+%% ## U:1, which is the overall mean minus half the effects
+
+%% 9 - 11/2 - 8/2
+
+%% ## Yes, the first cell is the first cell UNDER that additive model. You can't 
+%% ## just put the first cell mean in there.
+%% @ 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
