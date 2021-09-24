@@ -2137,25 +2137,25 @@ hyperplane)\footnote{If you want to play around with a regression plane or
 
 
 
-How do we interpret coefficients? Just a few hints here. Suppose we have\\
-$y = \alpha + \beta_1 x_1 + \beta_2 x_22 + \beta_{1,2}\ x_1\ x_2 + \epsilon$ (where the
-term $\beta_{12}\ x_1\ x_2$ is literally the product of $\beta_{1,2}$ times the product of
-$x_1$ and $x_2$). Now, in a table of coefficients, what is the meaning of
-$\beta_1$? That is a table that ``shows every variable when everything else is
-also in the model'' (and that includes the interaction).  You can think of
-$\beta_1$ as just the best term that solves the above equation ($y =
-\alpha + \beta_1 x_1 + \beta_2 x_22 + \beta_{1,2} x_1 x_2 +
-\epsilon$). But think about the interpretation of ``a coefficient tells me
-how fast the response changes when the predictor changes by one
-unit''. Let's do that: $\frac{\partial y}{\partial x_1} = \beta_1 +
-\beta_{1,2}\ x_2$; see how $x_2$ is there. How fast $y$ changes with $x_1$
-is also a function of $x_2$. 
+How do we interpret coefficients? Just a few hints here (you can skip this if you
+want). Suppose we have\\
+$y = \alpha + \beta_1 x_1 + \beta_2 x_22 + \beta_{1,2}\ x_1\ x_2 + \epsilon$
+(where the term $\beta_{12}\ x_1\ x_2$ is literally the product of $\beta_{1,2}$
+times the product of $x_1$ and $x_2$). Now, in a table of coefficients, what is
+the meaning of $\beta_1$? That is a table that ``shows every variable when
+everything else is also in the model'' (and that includes the interaction).  You
+can think of $\beta_1$ as just the best term that solves the above equation
+($y = \alpha + \beta_1 x_1 + \beta_2 x_22 + \beta_{1,2} x_1 x_2 + \epsilon$). But
+think about the interpretation of ``a coefficient tells me how fast the response
+changes when the predictor changes by one unit''. Let's do that:
+$\frac{\partial y}{\partial x_1} = \beta_1 + \beta_{1,2}\ x_2$; see how $x_2$ is
+there. How fast $y$ changes with $x_1$ is also a function of $x_2$.
 
 
 This differs from the model without interaction where we have:
 $\frac{\partial y}{\partial x_1} = \beta_1$. 
 
-And a simple numerical example:
+And a simple numerical example (again, skip if you want):
 <<>>=
 mah <- lm(pemax ~ age + height, data = cystfibr2)
 mahi <- lm(pemax ~ age * height, data = cystfibr2)
@@ -3825,12 +3825,12 @@ There is nothing conceptually new, but the accounting gets more complicated.
 
 
 
-
+\clearpage
 
 
 \section{Type I, Type II, Type III: a few technical notes}\label{ssI-to-III}
 (Skip this if you want. I leave it here in case you want to get back to
-it. And yes, we have not mentioned Type III much (but see \ref{2way-int}
+it. And yes, we have not mentioned Type III much (but see \ref{2way-int}).
 
 % %% This is too complex, as the SS(A, B, AB) is the sum of the SS of the
 % %% model.
@@ -3923,10 +3923,12 @@ interpretable. (And beware of the contrasts you use ---section
 \ref{othercontrasts}--- if you want to take a look at coefficients. Note
 also possible issues related to changes in results if you center the
 predictors in models with continuous predictors). We will not use Type III
-in this notes. (Why? Read the paper by Bill Venables ``Exegeses on linear
+in this notes. Why? Read the paper by Bill Venables ``Exegeses on linear
 models'', or Oyvind Langsrud, 2003, ``ANOVA for unbalanced data: Use Type
 II instead of Type III sums of squares'', Statistics and Computing, Volume
-13, Number 2, pp. 163-167, or the many debates about Type III SS. There
+13, Number 2, pp. 163-167, or the many debates about Type III SS, or chapter 5 of
+Fox and Weisberg's ``An R companion to applied regression'', as well as Fox's
+book on linear models (mentioned in Fox and Weisberg). There
 are a few ways to obtain Type III in R, the easiest by using
 \texttt{Anova(x, type = ``III'')}, and also by using \texttt{drop1} with
 the right contrasts).
