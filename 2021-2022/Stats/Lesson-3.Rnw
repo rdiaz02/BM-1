@@ -108,7 +108,7 @@ than the page numbers).
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014-2020, Ramon Diaz-Uriarte, and is
+This work is Copyright, \copyright, 2014-2021, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -217,7 +217,7 @@ dmit$ftraining <- factor(dmit$training,
 As usual, make sure to look at the data set.
 
 If we were to not recode the factor (or use the original ``training'') it
-would be a disaster (look at the output in section \ref{nofactor}).
+would be a disaster (look at the output in section \nameref{nofactor}).
 
 
 
@@ -302,7 +302,7 @@ only thing we want to do.
 Sometimes \Rfunction{confint} will give us a lot of insight. But often it will
 not be easy to relate it back to our original scientific question. One of the
 reasons is that the actual parameters of the fitted model depend, well, on the
-parameterization (see details in section \ref{anovaaslm}, or just take it on
+parameterization (see details in section \nameref{anovaaslm}, or just take it on
 faith). So, often, we will want to explicitly ask ``Which means are different'',
 and that is what we do next.
 
@@ -359,7 +359,7 @@ if we run the three comparisons, the chances of incorrectly rejecting at
 least one of the null hypotheses is larger than, say, 0.05 if we simply
 look at each one of the three p-values and keep any with a p-value $\leq
 0.05$.  You will see more about multiple testing below
-(\ref{sec:mult-comp-fdr}). 
+(\nameref{sec:mult-comp-fdr}). 
 \textbf{now!}.
 
 
@@ -405,11 +405,6 @@ par(old.oma) ## restore graphics windows settings
 remove(.Pairs) ## remove the object that stored the multiple comp. output
 @ 
 
-%% Note, can get the same doing
-%% TukeyHSD(aov(activ ~ ftraining, data = dmit))
-%% zz: FIXME: Include link to this great explanation
-%% https://stats.stackexchange.com/a/488655
-%% But figure out why the'' `single-step method' 
 
 
 Note that we can get some or most of that also from a call to
@@ -418,7 +413,7 @@ Note that we can get some or most of that also from a call to
 TukeyHSD(aov(activ ~ ftraining, data = dmit))
 @ 
 
-More details are provided in section \ref{multcomp-two-way}. A quick explanation
+More details are provided in section \nameref{multcomp-two-way}. A quick explanation
 of what is happening with the p-values in
 \Burl{https://stats.stackexchange.com/a/488655}.
 
@@ -453,7 +448,7 @@ differences between Lunch and
 Morning. %% Incidentally, note that the whole process is done using ``Tests
 %% for the general linear hypothesis'' and how the contrasts are explicitly
 %% shown: this is a very general and powerful procedure (see section
-%% \ref{othercontrasts}).
+%% \nameref{othercontrasts}).
 
 
 
@@ -634,7 +629,7 @@ summary(aov(lm(y2 ~ gr2)))
 \item Enter the data.
 \item Recode the factor (the independent variable), if needed.
 \item Run the model.
-\item Assess model diagnostics (see section \ref{diagnostics}).
+\item Assess model diagnostics (see section \nameref{diagnostics}).
 \item Carry out comparisons between pairs of means with appropriate
   adjustment for multiple comparisons.
 \end{enumerate}
@@ -651,9 +646,9 @@ summary(aov(lm(y2 ~ gr2)))
 \label{sec:family-wise-error}
 
 
-In section \ref{multcomp1} we covered multiple comparisons. Here we go
+In section \nameref{multcomp1} we covered multiple comparisons. Here we go
 into a little bit more detail before continuing with ANOVA. As in section
-\ref{multcomp1}, suppose we are testing a number of null hypothesis. Table
+\nameref{multcomp1}, suppose we are testing a number of null hypothesis. Table
 \ref{table-multcomp} shows a depiction of what we are concerned about,
 where the letters in each cell refer to the number of means tested that fall in
 each case.
@@ -693,7 +688,7 @@ each case.
 
 
 
-In the example in section \ref{multcomp1} $U + V + T + S = 3$ (beware, 3
+In the example in section \nameref{multcomp1} $U + V + T + S = 3$ (beware, 3
 is the number of \textbf{hipothesis tests}, it is not the number of means;
 in our case, both are three, but Table \ref{table-multcomp} reflects
 number of hypothesis, not tests). Procedures such as the one we used
@@ -892,14 +887,14 @@ But for now notice also this output, that gives the estimated coefficients:
 summary(m1)
 @ 
 
-We will explain it in more detail later (\ref{anovaaslm}), but for now
+We will explain it in more detail later (\nameref{anovaaslm}), but for now
 remember we are using an additive model, so here we are estimating only
 three things from a four-means design.  What three
 things? %% And how do we interpret the
 %% coefficients? We are using \texttt{contr.treatment}, the default in R,
 %% that compares each mean against the reference, the first level (``a1b1''
 %% here, but that is not just the first cell; see below if you want). As I
-%% said, we will get back to this later (\ref{anovaaslm}).
+%% said, we will get back to this later (\nameref{anovaaslm}).
 
 
 
@@ -1026,7 +1021,7 @@ so the larger the value, the larger the reduction of cholesterol). As
 usual, read the data and look at them. Since the author used names for the
 levels within each of the two factors, Diet and Drug, we do not need to
 transform them into factors, in contrast to what we did in section
-\ref{recode}. Call the data \Robject{dcholest}.
+\nameref{recode}. Call the data \Robject{dcholest}.
 
 (Note: since a few versions ago, R no longer converts characters to factors when
 reading with \Rfunction{read.table}. In some places that is inconsequential, in
@@ -1156,7 +1151,7 @@ not) of the Diet or Drug term. In general, \textbf{in the presence of
   using other types of contrasts ---such as contr.sum, in R parlance---
   marginal tests in the presence of interactions, what are called Type
   III, can make sense, but are not always of interest. See also footnote
-  \ref{fn:2} in section \ref{orderfactors} for some entries and
+  \ref{fn:2} in section \nameref{orderfactors} for some entries and
   references.}.
 
 
@@ -1165,7 +1160,7 @@ not) of the Diet or Drug term. In general, \textbf{in the presence of
 Could we fit a model without interactions? Yes, of course, but not from the
 the above menu. The idea is to change the ``*'' by a ``+'' (and we will
 see that again when we deal with multiple regression et al. in section
-\ref{regr-int}).
+\nameref{regr-int}).
 
 <<>>=
 amodelnoint <- (lm(y ~ Diet + Drug, data=dcholest))
@@ -1885,7 +1880,7 @@ scatterplot(Metabolic.rate..W.~Body.mass..g., log="xy",
 
 
 These are both much, much better. We will address this issue more formally
-below (section \ref{diagnostics}). Notice that the call to
+below (section \nameref{diagnostics}). Notice that the call to
 \Rfunction{scatterplot} uses the original variables but the axis are in
 log-scale, which is nicer than directly plotting (in linear scale) the
 log-transformed variables: you can see the original values.
@@ -1898,7 +1893,7 @@ transformation to use? Often, theory (should allometric patterns scale
 with the log?  shouldn't we use the square root for phenomena that take
 place on surfaces?  etc) can guide us. Otherwise, there are procedures to
 try to identify transformations, including some diagnostic plots that can
-help (e.g., component+residual plots, section \ref{diagnostics}).
+help (e.g., component+residual plots, section \nameref{diagnostics}).
 
 
 
@@ -2131,11 +2126,11 @@ hyperplane)\footnote{If you want to play around with a regression plane or
 
 
 
-\subsubsection{Confidence intervals, confidence bands}\label{mult-regr-ci-pred}
+\subsection{Confidence intervals, confidence bands}\label{mult-regr-ci-pred}
 
 With multiple regression, visualizing confidence intervals and prediction
 intervals becomes much harder (we are no longer in 2D). There are ways of
-visualizing 3D plots (see \ref{regr-int}), but you will probably need to decide
+visualizing 3D plots (see \nameref{regr-int}), but you will probably need to decide
 what exactly you want to plot and for what. For example, predictions with respect
 to each variable in different panels. You can easily obtain, for each
 observation, its predicted (fitted) value and its confidence or prediction
@@ -2199,6 +2194,7 @@ factor.
 <<>>=
 mcyst2 <- lm(pemax ~ age * sex, data=cystfibr2)
 summary(mcyst2)
+confint(mcyst2)
 Anova(mcyst2)
 @ 
 
@@ -2232,7 +2228,7 @@ The different intercepts are captured by the term ``sex[T.Female]'' (that
 is not significant in this example either). Anyway, we can often have
 models where we have no evidence of different slopes (no interaction), but
 evidence of different intercepts: these means parallel lines (we will see
-one below: \ref{ancova_rept}).
+one below: \nameref{ancova_rept}).
 
 
 
@@ -2295,7 +2291,7 @@ model?
 In this case, the sequential anova table (as produced by
 \Rfunction{ancova} or \Rfunction{anova}) suggests that we could simplify
 our model a lot, and use one with a single intercept and slope (i.e., just
-like a simple linear regression as in section \ref{regr}) as neither
+like a simple linear regression as in section \nameref{regr}) as neither
 ``sex'' by itself nor the interaction is relevant. We will do that, and we
 will then do a global model comparison to verify the simplified model is a
 reasonable one (go to ``Models'', ``Hypothesis tests'', ``Compare two
@@ -2361,7 +2357,7 @@ but, again, this is just the same as the term for \texttt{sex} in
 
 \subsection{ANCOVA with the birds and the reptiles}\label{ancova_rept}
 We will use the longevity and metabolic rate data we used in section
-\ref{regr}, but now the full one: \Robject{anage\_a\_r}. We will go pretty
+\nameref{regr}, but now the full one: \Robject{anage\_a\_r}. We will go pretty
 fast here (this is just a kind of review), and will examine two things:
 \begin{itemize}
 \item If the relationship between metabolic rate and body mass is
@@ -2507,7 +2503,7 @@ etc. Interactions can involve more than two variables, can involve
 continuous and discrete variables, etc.
 
 \subsection{Parameters, coefficients}
-There is nothing conceptually new here. Go back to section \ref{anovaaslm}
+There is nothing conceptually new here. If you want the details, go to section \nameref{anovaaslm}
 and make sure things make sense with these new models: how we interpret
 coefficients and how many parameters we have.
 
@@ -2565,7 +2561,7 @@ years. Some recommended readings, in approximate order of increasing difficulty
 \item Morgan and Winship, ``Counterfactuals and causal inference: methods and
   principles for social research'' [Yes, basically all examples are from
   sociology and political science, but that should not be a problem.]
-\item Hernán and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
+\item Hern\'an and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
 \end{itemize}
 
 
@@ -2706,7 +2702,7 @@ group. And, again, the analysis of ratios is misleading.
 If you look closely, the data show warning signals, such as possible
 differences in variances of ratios. And if you have no idea about the
 model, you might be able to compare several and use diagnostics, as
-explained in section \ref{diagnostics} to choose among models. But, in
+explained in section \nameref{diagnostics} to choose among models. But, in
 general, ratios are not the way to. And using diagnostics might require a
 decently large sample size. Summary: only use ratios if you really know
 what you are doing and have good reasons to do it. Otherwise, use linear
@@ -2728,12 +2724,12 @@ The three main types are:
 
 \begin{description}
 \item[Between factors] There is one level for each combination of the
-  factors, as in the example in section \ref{2way-int}.
+  factors, as in the example in section \nameref{2way-int}.
 \item[Betwen a factor and a continuous variable] What we saw in ANCOVA, in
-  section \ref{ancova}: a different slope for each group. (Parallel slopes
+  section \nameref{ancova}: a different slope for each group. (Parallel slopes
   is not an interaction).
 \item[Between two continuous variables] We mentioned this in section
-  \ref{regr-int}: slope changes as we move the other variable which gives
+  \nameref{regr-int}: slope changes as we move the other variable which gives
   curved surfaces.
 \end{description}
 \clearpage
@@ -2785,7 +2781,7 @@ Before looking at the plots, two concepts should be clear:
 
 
 We will first use the fake data from a perfectly balanced experimental
-design, the data used in section \ref{ordermatter}. The diagnostic plots
+design, the data used in section \nameref{ordermatter}. The diagnostic plots
 from these kinds of designed experiments can look slightly different from
 those for regression, which makes sense if you think about it. I will
 recreate the data here. However, to make things more interesting, I will
@@ -2852,7 +2848,7 @@ lines. Do you understand why?
 \subsection{Diagnostics: examples with some of the regression models}\label{diag-regr}
 
 We will now use the two simple regression models we fitted in section
-\ref{regr}. Make the first one (\Robject{metab}) active and go to
+\nameref{regr}. Make the first one (\Robject{metab}) active and go to
 ``Models'', ``Graphs'', ``Basic diagnostic plots''. 
 
 <<fig.width=8,fig.height=8,fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation '>>=
@@ -2917,23 +2913,23 @@ and you will see that all diagnostics look much better.
 You should also take a look at the diagnostics for some of the other
 models we have fitted, specifically \Robject{longev\_b\_r} and
 \Robject{metab\_b\_r} (or \Robject{metab\_b\_r\_2}) (section
-\ref{ancova_rept}). The metabolism one are OK, but the longevity model is
+\nameref{ancova_rept}). The metabolism one are OK, but the longevity model is
 not fully satisfactory (small problems in all diagnostic plots, and one
-potentially influential value). \Robject{mcyst2} (section \ref{ancova})
-and \Robject{mcyst} (section \ref{multreg}), the two models we fitted to
+potentially influential value). \Robject{mcyst2} (section \nameref{ancova})
+and \Robject{mcyst} (section \nameref{multreg}), the two models we fitted to
 the cystic fibrosis data, both look relatively decent, although there
 could be some concerns about increases in variance with fitted values.
 However, it is not easy to tell, because of the relatively few
 points. This, of course, makes sense: if there are few points, we will
 only be able to detect if a model is a bad one if it really is very bad.
 
-\Robject{cholestanova}, from section \ref{twoway}, looks relatively OK
+\Robject{cholestanova}, from section \nameref{twoway}, looks relatively OK
 (remember, this is an ANOVA, and there were six combinations of levels,
 and thus the discrete values you observe in two of the plots). However,
 the qqplot of residuals is a little bit ugly, but it is hard to tell from
 relatively so little data\footnote{Again, this is an interesting case, since
   these data are simulated from a normal distribution}. Finally,
-\Robject{AnovaModel.1}, from section \ref{oneway}, looks just fine. Please
+\Robject{AnovaModel.1}, from section \nameref{oneway}, looks just fine. Please
 look at all of these yourself to see them.
 
 
@@ -3055,7 +3051,7 @@ For you to read and play around further:
 
 \item There is in CRAN a very interesting package, \CRANpkg{gvlma}
   (\Burl{https://cran.r-project.org/web/packages/gvlma/}), by Pe\~{n}a and Slate,
-  that implements the methods in their paper `` Global Validation of Linear Model
+  that implements the methods in their paper ``Global Validation of Linear Model
   Assumptions'', \textit{J. American Statistical Association},
   101(473):341-354. This offers a global testing procedure that allows further
   examination of each of the key assumptions. Here, I have preferred to start by
@@ -3098,7 +3094,7 @@ For you to read and play around further:
 
 %% Doing t-tests via ANOVA (which adds diagnostics)
 
-
+\clearpage
 
 \section{Variable and model selection}
 
@@ -3114,7 +3110,7 @@ follows: please, please, please, distrust automated variable selection
 procedures that rely on p-values or F-statistics of individual variables
 (in all their variants, such as stepwise, etc). Careful model comparison,
 for instance using something like \verb@ anova(model1, model2) @, as we
-have seen (e.g., section \ref{model-comp} or \ref{ancova_rept}), might be
+have seen (e.g., section \nameref{model-comp} or \nameref{ancova_rept}), might be
 a good idea. Notice, again, that \verb@ anova(model1, model2) @ is all
 about comparing models.
 
@@ -3217,7 +3213,8 @@ later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
 Many books have been devoted to linear models, ANOVA, et al. And in R (not
 necessarily through R Commander) there is a wide variety of procedures
 implemented. To begin with, look at the great book by Fox and Weisberg
-``An R companion to applied regression''. Take also a look at chapters 6
+``An R companion to applied regression'' (now in its third edition) and Faraway's
+``Linear models with R'' (in its second edition). Take also a look at chapters 6
 and 7 of Dalgaard's ``Introductory statistics with R'' and chapters 8 and
 9 of Kabakoff's ``R in action''. This should get you going. From here, you
 will probably want to look at generalized linear models, survival
@@ -3226,7 +3223,7 @@ models to name some extensions of linear models.
 
 
 
-\part{Appendix}
+\part*{Appendix}
 \section{What if we did not recode training?}\label{nofactor}
 Suppose we had not recoded training but we had fitted a linear model. This
 would have happened:
@@ -3499,7 +3496,7 @@ rm(meansb)
 
 
 
-If we go back to \ref{simpletwo} we can also do the same and change the
+If we go back to \nameref{simpletwo} we can also do the same and change the
 reference, and that changes what we are comparing. For instance, let us
 recode A and run the model again in those data:
 
@@ -3594,7 +3591,7 @@ mean(mxu[ , 2] - mxu[, 1])
 @ 
 
 
-What if we go to the data in section \ref{simpletwo}? Again, in the
+What if we go to the data in section \nameref{simpletwo}? Again, in the
 interaction case things are easiest:
 
 <<>>=
