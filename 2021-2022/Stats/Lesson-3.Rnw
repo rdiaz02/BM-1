@@ -1956,6 +1956,10 @@ abline(v = confint(metablog)[1, ], lty = 2)
 abline(h = confint(metablog)[2, ], lty = 2)
 @ 
 
+An alternative to \Rfunction{ellipse} is \CRANpkg{car}'s
+\Rfunction{confidenceEllipse}. 
+
+
 (And no, there is nothing wrong with this correlation. It actually makes a lot of
 sense.)
 
@@ -2021,6 +2025,7 @@ You should know how to work around the menus and get something like:
 <<>>=
 mcyst <- lm(pemax ~ age + height + weight, data=cystfibr2)
 summary(mcyst)
+confint(mcyst)
 @ 
 
 You should be able to interpret all output without problems. 
@@ -2160,10 +2165,19 @@ round(cov2cor(vcov(mcyst)), 3)
 (Note: we already knew that the mcyst is probably not a great model!!)
 
 
+
+A final comment: for real, one might want to use confidence intervals using the
+bootstrap instead of \Rfunction{confint}. See section 5.1.3 in Fox and Weisberg's
+``An R companion to applied regression, 3rd ed.'' or section 3.6 in Faraway's
+``Linear models with R, 2nd ed.''
+
+
+
 \clearpage
 \section{Continuous and discrete independent variables 
   and ANCOVA}\label{ancova}
 
+\subsection{A first example of ANCOVA with the cystfibr data}
 Right now, nothing should stop us from thinking about models where the
 right hand side contains both continuous and discrete variables. Let's do
 it with the cystic fibrosis data set.  ANCOVA refers to this mixture of
@@ -2181,7 +2195,7 @@ obviously) and age. However, sex is coded with 0/1 and we want it to be a
 factor, explictly. Let's recode it:
 
 <<>>=
-cystfibr2$sex <- factor(cystfibr2$sex, labels=c('Male','Female'))
+cystfibr2$sex <- factor(cystfibr2$sex, labels=c('Male','Female'''))
 @ 
 
 
@@ -2244,6 +2258,11 @@ ancova(pemax ~ age * sex, data = cystfibr2, pch = 1)
 
 Note that function \Rfunction{ancova} is not available from the menus. You
 have to type the above expression directly.
+
+And, of course, do not forget to look at the output from \Rfunction{confint}. As
+you see, all the information (summary of the model, confidence intervals,
+figures) points in the same direction. 
+
 
 
 One final thing to notice here: at the beginning of this section we have
@@ -3212,14 +3231,15 @@ later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
 
 Many books have been devoted to linear models, ANOVA, et al. And in R (not
 necessarily through R Commander) there is a wide variety of procedures
-implemented. To begin with, look at the great book by Fox and Weisberg
-``An R companion to applied regression'' (now in its third edition) and Faraway's
+implemented. To begin with, look at the great book by Fox and Weisberg ``An R
+companion to applied regression'' (now in its third edition) and Faraway's
 ``Linear models with R'' (in its second edition). Take also a look at chapters 6
-and 7 of Dalgaard's ``Introductory statistics with R'' and chapters 8 and
-9 of Kabakoff's ``R in action''. This should get you going. From here, you
-will probably want to look at generalized linear models, survival
-analysis, mixed effects models, nonlinear models, and generalized additive
-models to name some extensions of linear models.
+and 7 of Dalgaard's ``Introductory statistics with R'' and chapters 8 and 9 of
+Kabakoff's ``R in action''. This should get you going. From here, you will
+probably want to look at generalized linear models, mixed effects models,
+nonlinear models, generalized additive models, and survival analysis, which are
+some key extensions of linear models that you might want to use with your own
+data.
 
 
 
