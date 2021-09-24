@@ -548,13 +548,13 @@ the mean of group 4. Etc, etc. We will not get into this.
 
 
 
-\subsubsection{t-test as ANOVA}
+\subsection{t-test as ANOVA}
 Of course, in general, you can just carry out any two-group comparison as
 an ANOVA. There is nothing wrong with that (and there is a simple
 correspondence between a t statistic and an F statistic).
 
 
-\subsubsection{Other ways of obtaining summaries}
+\subsection{Other ways of obtaining summaries}
 
 (This is a detail for those of you who want to see how to directly get
 things done in R).
@@ -583,7 +583,7 @@ with(dmit, by(activ, ftraining,
 
 
 
-\subsubsection{Can you do an ANOVA with only one sample per group?}\label{anova-only-one}
+\subsection{Can you do an ANOVA with only one sample per group?}\label{anova-only-one}
 Why or why not?
 
 
@@ -995,7 +995,7 @@ summary(m4)
 
 
 
-\subsection{Fitting a two-way ANOVA: cholesterol}\label{twoway}
+\subsection{Loading the cholesterol data set}\label{twoway}
 
 The following data come from an experiment about the effects of three
 diets and two cholesterol-controlling drugs in the reduction of
@@ -1005,6 +1005,11 @@ usual, read the data and look at them. Since the author used names for the
 levels within each of the two factors, Diet and Drug, we do not need to
 transform them into factors, in contrast to what we did in section
 \ref{recode}. Call the data \Robject{dcholest}.
+
+(Note: since a few versions ago, R no longer converts characters to factors when
+reading with \Rfunction{read.table}. In some places that is inconsequential, in
+other places we will have to use factors. We will deal with it.)
+
 
 <<create_tooth, echo=FALSE, results='hide'>>=
 
@@ -1267,161 +1272,17 @@ discuss this in class.
 
 
 \subsection{Does order always matter?}\label{ordermatter}
-Nope. When the design is balanced, order does not
-matter\footnote{Technically, orthogonality of the design matrix does not
-  require identical cell counts; if row/column counts are proportional,
-  for instance, we should be OK. But for simplicity, we will use a nicely
-  balanced example here.}. 
+Nope. When the design is balanced, order does not matter\footnote{Technically,
+  orthogonality of the design matrix does not require identical cell counts; if
+  row/column counts are proportional, for instance, we should be OK.  For
+  simplicity, many of our examples when order does not matter use 
+  balanced examples.}.
 
+If you want a very simple message: \textbf{unless you know what your are doing
+  and/or you know your data fulfills certain properties, always expect order to
+  matter}.
 
-This is slightly more advanced material. Skip it on first reading. If you
-want a very simple message: \textbf{unless you know what your are doing
-  and/or you know your data fulfills certain properties, always expect
-  order to matter}. 
-
-
-If you want to continue reading, let's proceed with some details then. The
-following is an example. For the sake of the exposition, I will here
-simulate the data, so everything is clear and in the open.
-
-
-<<>>=
-set.seed(1)
-sex <- factor(rep(c("Male", "Female"), c(20, 20)))
-drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
-y <- rep(c(10, 13, 12, 16), rep(10, 4))
-y <- y + rnorm(length(y), sd = 1.5)
-y.data <- data.frame(y, sex, drug)
-@ 
-
-First, some basic stats about those data. Notice the perfect balance:
-
-<<>>=
-with(y.data, tapply(y, list(sex, drug), function(x) sum(!is.na(x))))
-with(y.data, tapply(y, list(sex, drug), mean))
-@ 
-
-Just by eye, it seems the difference between sexes is around 2, and the
-difference between drugs of about 4. And no, there is no interaction:
-
-<<>>=
-summary(lm(y ~ sex * drug, data = y.data))
-@ 
-
-
-Fit two models, simply changing the order (we assume no interaction, as
-shown above).
-
-
-<<>>=
-m1 <- lm(y ~ sex + drug, data = y.data)
-m2 <- lm(y ~ drug + sex, data = y.data)
-@ 
-
-And we also fit two small models, one only with sex, the other only with
-drug:
-
-<<>>=
-msex <- lm(y ~ sex, data = y.data)
-mdrug <- lm(y ~ drug, data = y.data)
-@
-
-Now, the output for the coefficients for m1 and m2 is the same (these are
-always the coefficients as if entered last in the model):
-
-<<>>=
-summary(m1)
-summary(m2)
-@
-
-
-So nothing new up to here. Now look at what happens if we get the
-coefficients for the small models, those with only sex or only drug:
-<<>>=
-summary(msex)
-summary(mdrug)
-@
-
-In both cases, the estimate is the same from the model with the two
-factors, or with only a single factor. For example, the differences
-between sexes are of about 2.2 (the coefficient that says "sexMale") and
-the differences between drugs of about 3.8 (the coefficient that says
-"drugB").  However, the standard error and, thus, the t value and the
-p-value change.
-
-Again, the key is to understand that even if the coefficient does not
-change whether or not the other factor is included in the model (and it
-does not change because there is complete balance here), the t statistic
-and the p-value do change. Why? Because the other factor explains a large
-part of variance, and thus makes the residual standard error much smaller
-if we include it in the model.
-
-
-And what about the ANOVA tables?
-<<>>=
-anova(m1)
-anova(m2)
-@
-
-Order (when we include both factors, of course) does not change
-anything. Why? Because the contributions of each factor do not depend at
-all on the other (i.e., the Mean Squares of each factor does not depend on
-the other). And since the F is the ratio of the Mean Squares of the factor
-over the Mean Squares of the residuals (and this is whatever is left after
-we have fitted everything), the order does not affect the F statistic or
-the p-value.
-
-
-Of course, an "Anova" (Type II tests) would show the same:
-
-<<>>=
-Anova(m1)
-@ 
-
-To understand this better, look at the anova tables for the models with
-only one factor:
-
-<<>>=
-anova(msex)
-anova(mdrug)
-@ 
-
-
-Notice how the Mean Sq for each factor is the same as in the previous
-tables. So the Mean Squares for Sex do not depend on whether or not drug
-is in the model. But the F statistic (and the p-value) do change a
-lot. Why? Because what changes a lot are the Mean Sq.\ of the
-residuals. And why is that? Because the other factor, the one we have not
-included, does indeed explain a lot of variability, but in these two last
-tables, since the other factor is not in the model, that variability is
-included now in the error term.
-
-
-
-So, to summarize: when there is balance, order does not change a thing if
-we include both factors in the model. However, having or not the other
-factor in the model can make a difference for the standard errors, the
-residual standard errors, and thus the p-values.
-
-
-
-
-
-%% I do not show this, to avoid further messing around, but could also have
-%% done this, where there is no same number of cases in all cells, but this
-%% also orthogonal:
-
-%% <<>>=
-%% set.seed(51)
-%% sex <- factor(rep(c("Male", "Female"), c(17, 17)))
-%% drug <- factor(rep(c("A", "B", "A", "B"), c(10, 7, 10, 7)))
-%% z <- rep(c(10, 13, 12, 16), c(10, 10, 7, 7))
-%% z <- z + rnorm(length(y), sd = 1.5)
-%% z.data <- data.frame(z, sex, drug)
-
-%% anova(lm(z ~ sex + drug, data = z.data))
-%% anova(lm(z ~ drug + sex, data = z.data))
-%% @ 
+In section \refname{ordermatter-appendix} we provide more details and examples. 
 
 
 
@@ -3514,8 +3375,157 @@ Anova(lmMITnofactor, type="II")
 See how the degrees of freedom make no sense.
 
 
+\subsection{Does order always matter? Further examples and details}
+\label{ordermatter-appendix}
 
 
+
+% This is slightly more advanced material. Skip it on first reading. 
+
+
+% If you want to continue reading, let's proceed with some details then. 
+
+The following is an example. For the sake of the exposition, I will here simulate
+the data, so everything is clear and in the open.
+
+
+<<>>=
+set.seed(1)
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+y <- rep(c(10, 13, 12, 16), rep(10, 4))
+y <- y + rnorm(length(y), sd = 1.5)
+y.data <- data.frame(y, sex, drug)
+@ 
+
+First, some basic stats about those data. Notice the perfect balance:
+
+<<>>=
+with(y.data, tapply(y, list(sex, drug), function(x) sum(!is.na(x))))
+with(y.data, tapply(y, list(sex, drug), mean))
+@ 
+
+Just by eye, it seems the difference between sexes is around 2, and the
+difference between drugs of about 4. And no, there is no interaction:
+
+<<>>=
+summary(lm(y ~ sex * drug, data = y.data))
+@ 
+
+
+Fit two models, simply changing the order (we assume no interaction, as
+shown above).
+
+
+<<>>=
+m1 <- lm(y ~ sex + drug, data = y.data)
+m2 <- lm(y ~ drug + sex, data = y.data)
+@ 
+
+And we also fit two small models, one only with sex, the other only with
+drug:
+
+<<>>=
+msex <- lm(y ~ sex, data = y.data)
+mdrug <- lm(y ~ drug, data = y.data)
+@
+
+Now, the output for the coefficients for m1 and m2 is the same (these are
+always the coefficients as if entered last in the model):
+
+<<>>=
+summary(m1)
+summary(m2)
+@
+
+
+So nothing new up to here. Now look at what happens if we get the
+coefficients for the small models, those with only sex or only drug:
+<<>>=
+summary(msex)
+summary(mdrug)
+@
+
+In both cases, the estimate is the same from the model with the two
+factors, or with only a single factor. For example, the differences
+between sexes are of about 2.2 (the coefficient that says "sexMale") and
+the differences between drugs of about 3.8 (the coefficient that says
+"drugB").  However, the standard error and, thus, the t value and the
+p-value change.
+
+Again, the key is to understand that even if the coefficient does not
+change whether or not the other factor is included in the model (and it
+does not change because there is complete balance here), the t statistic
+and the p-value do change. Why? Because the other factor explains a large
+part of variance, and thus makes the residual standard error much smaller
+if we include it in the model.
+
+
+And what about the ANOVA tables?
+<<>>=
+anova(m1)
+anova(m2)
+@
+
+Order (when we include both factors, of course) does not change
+anything. Why? Because the contributions of each factor do not depend at
+all on the other (i.e., the Mean Squares of each factor does not depend on
+the other). And since the F is the ratio of the Mean Squares of the factor
+over the Mean Squares of the residuals (and this is whatever is left after
+we have fitted everything), the order does not affect the F statistic or
+the p-value.
+
+
+Of course, an "Anova" (Type II tests) would show the same:
+
+<<>>=
+Anova(m1)
+@ 
+
+To understand this better, look at the anova tables for the models with
+only one factor:
+
+<<>>=
+anova(msex)
+anova(mdrug)
+@ 
+
+
+Notice how the Mean Sq for each factor is the same as in the previous
+tables. So the Mean Squares for Sex do not depend on whether or not drug
+is in the model. But the F statistic (and the p-value) do change a
+lot. Why? Because what changes a lot are the Mean Sq.\ of the
+residuals. And why is that? Because the other factor, the one we have not
+included, does indeed explain a lot of variability, but in these two last
+tables, since the other factor is not in the model, that variability is
+included now in the error term.
+
+
+
+So, to summarize: when there is balance, order does not change a thing if
+we include both factors in the model. However, having or not the other
+factor in the model can make a difference for the standard errors, the
+residual standard errors, and thus the p-values.
+
+
+
+
+
+%% I do not show this, to avoid further messing around, but could also have
+%% done this, where there is no same number of cases in all cells, but this
+%% also orthogonal:
+
+%% <<>>=
+%% set.seed(51)
+%% sex <- factor(rep(c("Male", "Female"), c(17, 17)))
+%% drug <- factor(rep(c("A", "B", "A", "B"), c(10, 7, 10, 7)))
+%% z <- rep(c(10, 13, 12, 16), c(10, 10, 7, 7))
+%% z <- z + rnorm(length(y), sd = 1.5)
+%% z.data <- data.frame(z, sex, drug)
+
+%% anova(lm(z ~ sex + drug, data = z.data))
+%% anova(lm(z ~ drug + sex, data = z.data))
+%% @ 
 
 
 
