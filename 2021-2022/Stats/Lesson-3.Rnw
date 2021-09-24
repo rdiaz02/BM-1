@@ -1282,6 +1282,11 @@ discuss this in class.
 
 
 
+More details about Type I and Type II Sums of Squares are provided in the
+Appendix in \ref{ssI-to-III} (but you can skip it). This issue is also discussed,
+by focusing on the key issues from an applied perspective, in in chapter 5 of Fox
+and Weisberg's ``An R companion to applied regression, 3rd edition''.
+
 
 %% \red{FIXME}
 %% \red{Explain why order of factors matter with unbalanced designs and how
@@ -2129,6 +2134,77 @@ hyperplane)\footnote{If you want to play around with a regression plane or
   the figure. Try doing that during your TFM defense! Of course, that
   allows only for up to one dependent variable and two independent ones:
   our brains do not seem ready for 4D and higher.}.
+
+
+
+How do we interpret coefficients? Just a few hints here. Suppose we have\\
+$y = \alpha + \beta_1 x_1 + \beta_2 x_22 + \beta_{1,2}\ x_1\ x_2 + \epsilon$ (where the
+term $\beta_{12}\ x_1\ x_2$ is literally the product of $\beta_{1,2}$ times the product of
+$x_1$ and $x_2$). Now, in a table of coefficients, what is the meaning of
+$\beta_1$? That is a table that ``shows every variable when everything else is
+also in the model'' (and that includes the interaction).  You can think of
+$\beta_1$ as just the best term that solves the above equation ($y =
+\alpha + \beta_1 x_1 + \beta_2 x_22 + \beta_{1,2} x_1 x_2 +
+\epsilon$). But think about the interpretation of ``a coefficient tells me
+how fast the response changes when the predictor changes by one
+unit''. Let's do that: $\frac{\partial y}{\partial x_1} = \beta_1 +
+\beta_{1,2}\ x_2$; see how $x_2$ is there. How fast $y$ changes with $x_1$
+is also a function of $x_2$. 
+
+
+This differs from the model without interaction where we have:
+$\frac{\partial y}{\partial x_1} = \beta_1$. 
+
+And a simple numerical example:
+<<>>=
+mah <- lm(pemax ~ age + height, data = cystfibr2)
+mahi <- lm(pemax ~ age * height, data = cystfibr2)
+
+## Note how the coefficients are VERY different
+summary(mah)
+summary(mahi)
+
+## Note that the SS of age and height are the same in both
+## though the RSS in mahi is smaller.
+Anova(mah)
+Anova(mahi, type = "II")
+
+## SS of height same as for type II of mah and mahi
+anova(lm(lm(pemax ~ age + height, data = cystfibr2)))
+## SS of age same as for type II of mah and mahi
+anova(lm(lm(pemax ~ height + age, data = cystfibr2)))
+
+## But the coefficients in mahi are from a model that includes the
+## interaction.
+## Thus, the tests of coefficients of age and height in mahi are
+## not the same as the tests of age and height in the ANOVA tables (Type
+## II) for models mah and mahi.
+
+@ 
+
+% ## For the sake of curiosity, notice this and compare to the table of
+% ## coefficients
+% Anova(mahi, type = "III")
+% opt <- options(contrasts = c("contr.sum", "contr.poly"))
+% mahi2 <- lm(pemax ~ age * height, data = cystfibr2)
+% Anova(mahi2, type = "III")
+% options(opt)
+
+% (For Type III SS: see section \ref{ssI-to-III}).
+
+
+% <<>>=
+% mahs <- lm(pemax ~ scale(age, scale = FALSE) + scale(height, scale = FALSE), data = cystfibr2)
+% mahis <- lm(pemax ~ scale(age, scale = FALSE) * scale(height, scale = FALSE), data = cystfibr2)
+
+% summary(mahs)
+% summary(mahis)
+
+% ## mahis coeff for age
+% coefficients(mahi)["age"] + coefficients(mahi)["age:height"] * mean(cystfibr2$height)
+% ## mahis coeff for height
+% coefficients(mahi)["height"] + coefficients(mahi)["age:height"] * mean(cystfibr2$age)
+% @ 
 
 
 
@@ -3746,6 +3822,157 @@ There is nothing conceptually new, but the accounting gets more complicated.
 
 
 
+
+
+
+
+
+
+\section{Type I, Type II, Type III: a few technical notes}\label{ssI-to-III}
+(Skip this if you want. I leave it here in case you want to get back to
+it. And yes, we have not mentioned Type III much (but see \ref{2way-int}
+
+% %% This is too complex, as the SS(A, B, AB) is the sum of the SS of the
+% %% model.
+% %% Of course, under a decomposition where sums add up, so Type I.
+% I take this material from
+% \Burl{http://md.psych.bio.uni-goettingen.de/mv/unit/lm_cat/lm_cat_unbal_ss_explained.html}: 
+
+% \begin{verbatim}
+% SS(AB | A, B) = SS(A, B, AB) - SS(A, B)
+% SS(A | B, AB) = SS(A, B, AB) - SS(B, AB)
+% SS(B | A, AB) = SS(A, B, AB) - SS(A, AB)
+% SS(A | B) = SS(A, B) - SS(B)
+% SS(B | A) = SS(A, B) - SS(A)
+% \end{verbatim}
+
+% (Where \texttt{SS(A, B)} is the model SS of a model with A and B).
+% \paragraph Type I:
+
+% \begin{verbatim}
+% SS(A) for factor A. 
+% SS(B | A) for factor B. 
+% SS(AB | B, A) for interaction AB. 
+% \end{verbatim}
+
+
+% \paragraph Type II:
+
+% \begin{verbatim}
+% SS(A | B) for factor A. 
+% SS(B | A) for factor B. 
+% \end{verbatim}
+% (We assume no significant interaction)
+
+% \paragraph Type III:
+
+% \begin{verbatim}
+% SS(A | B, AB) for factor A. 
+% SS(B | A, AB) for factor B. 
+% \end{verbatim}
+
+% Interaction need not be absent. But this does not mean these SS are
+% interpretable. (And beware of the contrasts you use ---section
+% \ref{othercontrasts}--- if you want to take a look at coefficients. Note
+% also possible issues related to changes in results if you center the
+% predictors in models with continuous predictors).
+
+
+I take this from Nancy Reid's \Burl{http://www.utstat.utoronto.ca/reid/sta442f/2009/typeSS.pdf}:
+
+``Let R(.) represent the residual sum of squares for a model, so for
+example R(A,B,AB) is the residual sum of squares fitting the whole model,
+R(A) is the residual sum of squares fitting just the main effect of A, and
+R(1) is the residual sum of squares fitting just the mean.''
+
+\textbf{Type I}
+
+\begin{verbatim}
+A:  SS(A) = R(1) - R(A) 
+B:  SS(B|A) = R(A) - R(A, B)
+AB: SS(AB|A, B) = R(A, B) - R(A, B, AB) 
+\end{verbatim}
+
+\vspace*{15pt}
+
+
+\textbf{Type II}
+
+\begin{verbatim}
+A:  SS(A|B) = R(B) - R(A, B) 
+B:  SS(B|A) = R(A) - R(A, B)
+AB: SS(AB|A, B) = R(A, B) - R(A, B, AB) 
+\end{verbatim}
+
+We assume no significant interaction
+
+
+\vspace*{15pt}
+
+
+\textbf{Type III}
+
+\begin{verbatim}
+A:  SS(A|B, AB) = R(B, AB) - R(A, B, AB) 
+B:  SS(B|A, AB) = R(A, AB) - R(A, B, AB)
+AB: SS(AB|A, B) = R(A,B) - R(A, B, AB) 
+\end{verbatim}
+
+Interaction need not be absent. But this does not mean these SS are
+interpretable. (And beware of the contrasts you use ---section
+\ref{othercontrasts}--- if you want to take a look at coefficients. Note
+also possible issues related to changes in results if you center the
+predictors in models with continuous predictors). We will not use Type III
+in this notes. (Why? Read the paper by Bill Venables ``Exegeses on linear
+models'', or Oyvind Langsrud, 2003, ``ANOVA for unbalanced data: Use Type
+II instead of Type III sums of squares'', Statistics and Computing, Volume
+13, Number 2, pp. 163-167, or the many debates about Type III SS. There
+are a few ways to obtain Type III in R, the easiest by using
+\texttt{Anova(x, type = ``III'')}, and also by using \texttt{drop1} with
+the right contrasts).
+
+\vspace*{15pt}
+
+
+And some numbers here:
+<<>>=
+m_diet <- lm(y ~ Diet, data = dcholest)
+m_drug <- lm(y ~ Drug, data = dcholest)
+m_diet_drug <- lm(y ~ Diet + Drug, data = dcholest)
+m_int <- lm(y ~ Diet * Drug, data = dcholest)
+
+summary(m_diet)
+anova(m_diet)
+anova(m_drug)
+anova(m_diet_drug)
+anova(m_diet, m_diet_drug)
+## 124.1: RSS from model m_diet
+## 91.8 : RSS from model m_diet_drub
+## 32.3 = 124.1 - 91.8:
+## SS(drug|diet) = R(m_diet) - R(m_diet_drug)
+anova(m_drug, m_diet_drug)
+## SS(diet|drug) = R(m_drug) - R(m_diet_drug)
+## 75.5 = 167.3 - 91.8
+Anova(m_diet_drug)
+
+## But also the sum SS here for drug and diet
+Anova(m_int)
+
+@
+
+
+% ## Finally, for Type III (SKIP this; left here to show it for completeness!!!)
+% opt <- options(contrasts = c("contr.sum", "contr.poly"))
+% mf <- lm(y ~ Diet * Drug, data = dcholest)
+% drop1(mf, .~., test = "F")
+% Anova(mf, type = "III")
+% options(opt)
+% Anova(m_int, type = "III") ## yes, it differs, as different contrasts
+
+(You can also take a look at
+\Burl{http://md.psych.bio.uni-goettingen.de/mv/unit/lm_cat/lm_cat_unbal_ss_explained.html}: 
+that uses a slightly different notation.
+)
 
 
 
