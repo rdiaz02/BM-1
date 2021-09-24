@@ -1726,7 +1726,7 @@ some birds and reptiles.
 Read the full data and call it \Robject{anage\_a\_r} (the a and r stand
 for aves and reptilia, the proper Class names).
 
-<<create_anage, echo=FALSE, results='hide''>>=
+<<create_anage, echo=FALSE, results='hide'>>=
 anage_a_r <-  read.table("AnAge_birds_reptiles.txt", 
                          header=TRUE, sep="", na.strings="NA", dec=".", 
                          strip.white=TRUE,
@@ -1813,15 +1813,15 @@ scatterplot(Metabolic.rate..W.~Body.mass..g.,
 
 @ 
 
-The second plot we can get from ``Models'', ``Confidence interval plot''
-(you need to have the \CRANpkg{RcmdrPlugin.HH} loaded) which will show
-something like
+% The second plot we can get from ``Models'', ``Confidence interval plot''
+% (you need to have the \CRANpkg{RcmdrPlugin.HH} loaded) which will show
+% something like
 
-<<out.width = '12cm', out.height = '12cm'>>=
-ci.plot(metab)
-@
+% <<out.width = '12cm', out.height = '12cm'>>=
+% ci.plot(metab)
+% @
  
-(and this shows confidence and prediction intervals for the linear model).
+% (and this shows confidence and prediction intervals for the linear model).
 
 
 \subsubsection{Transforming the data}
@@ -1861,9 +1861,6 @@ scatterplot(Metabolic.rate..W.~Body.mass..g., log="xy",
 %% for the rest of scatterplots)
 
 
-<<fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
-ci.plot(metablog)
-@ 
 
 These are both much, much better. We will address this issue more formally
 below (section \ref{diagnostics}). Notice that the call to
@@ -1880,6 +1877,71 @@ with the log?  shouldn't we use the square root for phenomena that take
 place on surfaces?  etc) can guide us. Otherwise, there are procedures to
 try to identify transformations, including some diagnostic plots that can
 help (e.g., component+residual plots, section \ref{diagnostics}).
+
+
+
+\subsection{Confidence intervals and predictions intervals or prediction and
+  confidence bands}\label{ci-regression}
+
+
+From ``Models'', ``Confidence interval plot'' (you need to have the
+\CRANpkg{RcmdrPlugin.HH} loaded) which will show something like
+
+
+<<fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
+ci.plot(metablog)
+@ 
+
+What are the bands?
+
+
+Maybe an example with more noise will help:
+
+<<ci_bands_reg_2,fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
+N <- 20
+x <- runif(N, min = 10, max = 30)
+y <- 3 + 5 * x + rnorm(N, sd = 10)
+dummy_data <- data.frame(y = y, x = x)
+rm(y, x)
+lm_cib_2 <- lm(y ~ x, data = dummy_data)
+ci.plot(lm_cib_2)
+@ 
+
+You can run the previous code changing the value of \texttt{N}, to get an
+intuition of the difference between the two bands.
+
+
+
+\subsection{Confidence intervals for the parameters}\label{ci-regr-params}
+
+For this course, what follows is of much less interest, but just so that you have
+it here. A somewhat different thing is this:
+
+<<>>=
+confint(metablog)
+@ 
+
+Those are confidence intervals for the parameters themselves. The estimates of
+the parameters, however, are correlated. This means that testing each parameter
+on its own can lead to different answers from testing both at once. Let us show a
+joint confidence ellipse. I follow here Faraway's ``Linear models with
+R'' and Fox and Weisberg's ``An R companion to applied regression''. (There is no need for you to try to replicate this)
+
+<<ci_ellipse,fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
+## Correlation of estimated coefficients
+round(cov2cor(vcov(metablog)), 3)
+
+## Plot of joint and each-at-time CIs
+library(ellipse)
+plot(ellipse(metablog), type = "l")
+points(coef(metablog)[1], coef(metablog)[2], pch = 1, cex = 2)
+abline(v = confint(metablog)[1, ], lty = 2)
+abline(h = confint(metablog)[2, ], lty = 2)
+@ 
+
+(And no, there is nothing wrong with this correlation. It actually makes a lot of
+sense.)
+
 
 
 \clearpage
@@ -2046,13 +2108,46 @@ hyperplane)\footnote{If you want to play around with a regression plane or
   our brains do not seem ready for 4D and higher.}.
 
 %%zz FIXME
-\subsection{Confidence intervals with multiple regression}\label{regr-ci}
+
+\subsubsection{Confidence intervals, confidence bands}\label{mult-regr-ci-pred}
+
+With multiple regression, visualizing confidence intervals and prediction
+intervals becomes much harder (we are no longer in 2D). There are ways of
+visualizing 3D plots (see \ref{regr-int}), but you will probably need to decide
+what exactly you want to plot and for what. For example, predictions with respect
+to each variable in different panels. You can easily obtain, for each
+observation, its predicted (fitted) value and its confidence or prediction
+values. For example (showing just the first five values)
+
+<<>>=
+predict(mcyst, interval = "confidence", level = 0.95)[1:5, ]
+predict(mcyst, interval = "prediction", level = 0.95)[1:5, ]
+@ 
+
+(Note the warning: the predictions should not be used to assess how well the
+model predicts the data used for the fitting itself.)
+
+With those values, you could then construct the plots you might want.
+
+
+
+Similar comments apply to plots of confidence intervals for the parameters:
+visualizing the multidimensional ellipses will not be easy. Obtaining the
+confidence intervals and the matrix of correlations is simple, though:
+
+<<>>=
+confint(mcyst)
+round(cov2cor(vcov(mcyst)), 3)
+@ 
+
+(Note: we already knew that the mcyst is probably not a great model!!)
 
 \subsubsection{Confidence intervals for the parameter
-  estimates}\label{regr-ci-param}
+  estimates}\label{mult-regr-ci-param}
 
 
-\subsubsection{Confidence intervals for predictions}\label{regr-ci-pred}
+
+
 
 
 \clearpage
@@ -3051,8 +3146,8 @@ models to name some extensions of linear models.
 
 
 
-\section{Appendix}
-\subsection{What if we did not recode training?}\label{nofactor}
+\part{Appendix}
+\section{What if we did not recode training?}\label{nofactor}
 Suppose we had not recoded training but we had fitted a linear model. This
 would have happened:
 
@@ -3065,7 +3160,7 @@ Anova(lmMITnofactor, type="II")
 See how the degrees of freedom make no sense.
 
 
-\subsection{Does order always matter? Further examples and details}
+\section{Does order always matter? Further examples and details}
 \label{ordermatter-appendix}
 
 
