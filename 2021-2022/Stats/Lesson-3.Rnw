@@ -2195,7 +2195,7 @@ obviously) and age. However, sex is coded with 0/1 and we want it to be a
 factor, explictly. Let's recode it:
 
 <<>>=
-cystfibr2$sex <- factor(cystfibr2$sex, labels=c('Male','Female'''))
+cystfibr2$sex <- factor(cystfibr2$sex, labels=c('Male','Female'))
 @ 
 
 
