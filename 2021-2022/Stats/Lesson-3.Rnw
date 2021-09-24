@@ -253,6 +253,12 @@ numSummary(dmit$activ , groups=dmit$ftraining, statistics=c("mean", "sd"))
 @ 
 
 
+
+(Note: we are using \Rfunction{aov}. We could also use \Rfunction{lm} and then
+show the summary with function \Rfunction{anova}. These are just syntactic
+features ---annoyances?--- of R. I'll explain them in class. But the key concepts
+do not change.)
+
 Can you interpret the output? Look first at the output right after
 
 <<>>=
@@ -404,6 +410,18 @@ remove(.Pairs) ## remove the object that stored the multiple comp. output
 %% zz: FIXME: Include link to this great explanation
 %% https://stats.stackexchange.com/a/488655
 %% But figure out why the'' `single-step method' 
+
+
+Note that we can get some or most of that also from a call to
+\Rfunction{TukeyHSD}:
+<<>>=
+TukeyHSD(aov(activ ~ ftraining, data = dmit))
+@ 
+
+More details are provided in section \ref{multcomp-two-way}. A quick explanation
+of what is happening with the p-values in
+\Burl{https://stats.stackexchange.com/a/488655}.
+
 
 
 \subsubsection{The plot of pairwise differences}
@@ -830,7 +848,11 @@ take a look at a three-page one by W.\ Noble, in \textit{Nature
 %% we can't if we use Rstudio
 \section{Two-way ANOVA}
 
-
+A key issue in models with two or more predictor variables (such as two-way
+ANOVA) are interactions. What is an interaction? If this is not clear, we will
+explain it in class (but you might want to recall what ``epistasis'' is, for
+example, or what is the deal with the ``Interactions'' section in the leaflet
+(prospecto) of any drug you take).
 
 
 \subsection{A very simple two-way ANOVA}\label{simpletwo}
@@ -1339,7 +1361,7 @@ program. Or maybe \ldots.
 
 
 
-\subsection{Multiple comparisons of means in two-way ANOVA}
+\subsection{Multiple comparisons of means in two-way ANOVA}\label{multcomp-two-way}
 % Can they be done? Yes. You can use the \Rfunction{glht} or the TukeyHDS
 % functions directly. Or you fit the model using \Rfunction{aov} (not
 % \Rfunction{lm}), and use the package \CRANpkg{RcmdrPlugin.HH}, and ask for
@@ -2107,7 +2129,7 @@ hyperplane)\footnote{If you want to play around with a regression plane or
   allows only for up to one dependent variable and two independent ones:
   our brains do not seem ready for 4D and higher.}.
 
-%%zz FIXME
+
 
 \subsubsection{Confidence intervals, confidence bands}\label{mult-regr-ci-pred}
 
@@ -2141,18 +2163,6 @@ round(cov2cor(vcov(mcyst)), 3)
 @ 
 
 (Note: we already knew that the mcyst is probably not a great model!!)
-
-\subsubsection{Confidence intervals for the parameter
-  estimates}\label{mult-regr-ci-param}
-
-
-
-
-
-
-\clearpage
-
-
 
 
 \clearpage
@@ -2271,6 +2281,7 @@ We could have started by fitting a model with parallel slopes:
 <<>>=
 mcyst0 <- lm(pemax ~ age + sex, data = cystfibr2)
 summary(mcyst0)
+confint(mcyst0)
 Anova(mcyst0)
 @ 
 
@@ -2383,6 +2394,7 @@ First, metabolic rate vs.\ body mass allowing for interaction with
 <<>>=
 metab_b_r <- lm(logMetabolicRate ~ logBodyMass * Class, data = anage_a_r)
 summary(metab_b_r)
+confint(metab_b_r)
 @ 
 
 The output is clear: parallel lines (i.e., different intercepts, but same
@@ -2399,6 +2411,7 @@ slope, two intercepts):
 <<>>=
 metab_b_r_2 <- lm(logMetabolicRate ~ logBodyMass + Class, data = anage_a_r)
 summary(metab_b_r_2)
+confint(metab_b_r_2)
 anova(metab_b_r_2, metab_b_r)
 @ 
 
@@ -2428,6 +2441,7 @@ What about longevity?
 <<>>=
 longev_b_r <- lm(logLongevity ~ logBodyMass * Class, data = anage_a_r)
 summary(longev_b_r)
+confint(longev_b_r)
 @ 
 
 In this case, lines are not parallel: the rate of change of longevity with
@@ -2496,6 +2510,72 @@ continuous and discrete variables, etc.
 There is nothing conceptually new here. Go back to section \ref{anovaaslm}
 and make sure things make sense with these new models: how we interpret
 coefficients and how many parameters we have.
+
+
+\section{Covariate adjustment and a few comments about causal
+  inference}\label{causal_covar}
+
+Should we use all covariates available to us in our models? It depends on what we
+want to do. If all we care is prediction, then maybe yes. If we care about
+interpretation, probably not. In particular, variables that are effects of the
+outcome variable (i.e., variables that are, causally, downstream from our ``y'')
+are variables we do not want to adjust for. Likewise for variables that are
+downstream from both the ``y'' and other predictor variables.
+
+
+We have been using language a bit to casually (I wrote ``casually'', not
+``causally''). But sometimes we will read our models as saying ``a unit increase
+in variable X1 is associate with these many units change in Y''. At other times,
+we will want (and even be able to say) ``a unit increase in variable X1 causes
+these many units change in Y''. This differences in wording also emphasize the
+possible difficulties in understanding the meaning of phrases like ``holding
+variable X2 constant, a unit change in variable X1 causes whatever''.
+
+
+That said, it is possible sometimes to use data, both experimental and
+observational, to make causal claims. Yes, we wrote observational, too. And it is
+actually good news that we can (sometimes, and under certain assumptions)
+estimate the effects of causes, since many important questions that concern us
+are inherently causal. For example ``will doing X minimize the risks of being
+infected by the coronavirus?''. An many of these questions (or aspects of these
+questions) are ones for which gathering experimental data is just not possible
+(ethically, logistically, etc).
+
+
+If we have time, we will briefly touch upon
+these issues in class. Some specific issues we will mention are:
+\begin{itemize}
+\item Counterfactuals
+\item DAGs (directed acyclic graphs) for representing our assumptions. (We have
+  already done so in some examples).
+\item The do operator and the interventionist account of causality and how it
+  relates to DAGs.
+\end{itemize}
+
+The literature on causal inference has grown quite a bit in the last 10
+years. Some recommended readings, in approximate order of increasing difficulty
+(of the reading itself, or of working through all of the material) are:
+
+\begin{itemize}
+\item Pearl and Mackenzie, 2018, ``The book of why''.
+\item Rosenbaum, 2017, ``Observation and experiment. An introduction to causal inference'' (Rosenbaum does not use
+  DAGs)
+\item Pearl, Glymour, Jewell, 2016, ``Causal inference in statistics: a primer''
+  [Beware with errata: avoid early printings of the book!]
+\item Morgan and Winship, ``Counterfactuals and causal inference: methods and
+  principles for social research'' [Yes, basically all examples are from
+  sociology and political science, but that should not be a problem.]
+\item Hernán and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
+\end{itemize}
+
+
+
+
+
+
+
+
+
 
 \section{Dealing with ratios}\label{ratios}
 
