@@ -1,0 +1,30 @@
+Dear All,
+
+I have added to the material for Lesson 3 a 3-page PDF. This comes from the book by Peter Dalgaard "Introductory Statistics with R" (2008, Springer)[1]. In case you do not remember (or have never seen before) ANOVA, this will give you some intuition about what the test is doing:
+
+- what are sums of squares and mean squares (two things that figure prominently in the notes, and to which we will refer often);
+
+- why it is called Analysis of _variance_ and yet is a procedure to compare means;
+
+- what is this new statistic (the F);
+
+- how it works.
+
+
+Please, make sure you go over this before class on Wednesday (on the third page, I have drawn a thick horizontal line at the point whee you can stop reading; and you can skip the paragraph before 7.1., in the first page).
+
+In class, I will not repeat what Peter Dalgaard says (much better than I would), though I will explain whatever might not be clear about that material.
+
+To help you work through Dalgaard's 2 and half pages, I have prepared "anova-theory-even-simpler.pdf". It really cannot be made simpler than that. Before class, read Dalgaard, read that simplification, then reread Dalgaard.
+
+
+See you on Wednesday,
+
+R.
+
+
+
+
+[1] This book is available from the UAM library, both physically and
+electronically (if you access the UAM library while not on campus, remember to
+use the VPN to have access to the book).
