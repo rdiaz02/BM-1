@@ -1,0 +1,329 @@
+%% ;;; -*- mode: Rnw; -*-
+\synctex=1
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphics}
+\usepackage{amssymb,amsfonts,amsmath,amsbsy}
+\usepackage{geometry}
+\geometry{verbose,a4paper,tmargin=28mm,bmargin=28mm,lmargin=30mm,rmargin=30mm}
+\usepackage{setspace}
+\singlespacing
+\usepackage{url}
+\usepackage{nameref}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\usepackage[small]{caption}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks = true,
+  citecolor=  black,
+  linkcolor = {blue},
+  filecolor = cyan %% controls color of external ref, if used
+}
+
+\usepackage{color}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{#1}} %From B. Bolker
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+
+\newcommand{\activities}{{\textcolor {red} {Activities}}}
+
+\newcommand{\R}{R}
+
+\newcommand{\flspecific}[1]{{\textit{#1}}}
+
+
+
+
+\newcounter{exercise}
+\numberwithin{exercise}{section}
+\newcommand{\exnumber}{\addtocounter{exercise}{1} \theexercise \thinspace}
+
+\usepackage[copyright]{ccicons}
+
+%% color of links, so it is pink or whatever, and not the kind
+%% of boxed with lilght blue, is given by hypersetup
+\usepackage[authoryear, round, sort]{natbib}
+%% \usepackage[square,numbers,sort&compress]{natbib}
+
+\usepackage{gitinfo}
+
+
+%% For using listings, so as to later produce HTML
+%% uncommented by the make-knitr-hmtl.sh script
+%% listings-knitr-html%%\usepackage{listings}
+%% listings-knitr-html%%\lstset{language=R}
+
+<<setup,include=FALSE,cache=FALSE>>=
+require(knitr)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+## next are for listings, to produce HTML
+##listings-knitr-html%%options(formatR.arrow = TRUE)
+##listings-knitr-html%%render_listings()
+@
+
+% %% BiocStyle needs to be 1.2.0 or above
+% <<packages,echo=FALSE,results='hide',message=FALSE>>=
+% require(BiocStyle, quietly = TRUE)
+% @ 
+% <<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+% BiocStyle::latex()
+% ## or latex(use.unsrturl = FALSE)
+% ## to use arbitrary biblio styles
+% @
+
+
+
+\begin{document}
+
+% \bioctytle
+\title{Choosing covariates, interpreting coefficients, and causal inference}
+
+\author{Ramon Diaz-Uriarte\\
+  Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Madrid, Spain{\footnote{r.diaz@uam.es, rdiaz02@gmail.com}} \\
+  %% {\footnote{rdiaz02@gmail.com}} \\
+  {\small \Burl{http://ligarto.org/rdiaz}} \\
+}
+
+
+\date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+
+
+
+\maketitle
+
+\tableofcontents
+
+\clearpage
+
+
+\section*{License and copyright}\label{license}
+This work is Copyright, \copyright, 2021, Ramon Diaz-Uriarte, and is
+licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
+International License:
+\Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+
+\centerline \ccbysa
+
+
+
+All the original files for the document are available (again, under a Creative
+Commons license) from \Burl{https://github.com/rdiaz02/BM-1}. (Note that in the
+github repo you will not see the PDF, or R files, nor many of the data files,
+since those are derived from the Rnw file). This file is called \texttt{covars-interpr-causal.Rnw}.
+
+
+
+\clearpage
+
+\section{Introduction}
+
+The purpose of these notes is to try to clarify the questions about ``what
+variables should we add to our models when our aim is interpretation''.
+
+As discussed in class, if our purpose when fitting statistical models is only
+prediction, reversal of regression coefficients when a covariate is in the model
+with or without other covariates, and other similar counter-intuitive phenomena,
+are not a problem. The problem can arise if we want to interpret what the
+coefficients mean.
+
+The interpretation we often want to give is often a causal one. For example, in a
+model where the dependent or outcome variable is cardiovascular health and one of
+the predictor variables is red wine we are, arguably, trying to understand if
+consuming red wine affects (i.e., has an effect on) cardiovascular health. We
+might want to do this so that we can make public health recommendations or take
+personal action.  Intuitively, if a variable, X, has an effect (a causal) on a
+variable, Y, manipulating X will change the value of Y.
+
+
+\subsection{There is no such thing as  ``spurious associations''. But when people
+  use this term, it shows they are trying to obtain causal estimates}
+
+In the above study, there is a possible obvious problem. Suppose you observe an
+association between moderate red wine consumption and better cardiovascular
+health. Maybe what is happening is that, in the sample you are using, people who
+consume moderate amounts of red wine are also people who consume olive oil and
+lots of fresh vegetables (the Mediterranean diet). Now, the observed association
+between red wine consumption and better cardiovascular health is not a causal
+association: the association is the result of both red wine consumption and
+better cardiovascular health both being effects of the type of diet. But red wine
+has no direct effect on cardiovascular health (we will see examples of this
+pattern below: \ref{basic-structures})
+
+Some authors would say there is a ``spurious association'' or ``spurious
+correlation''\footnote{Instead of ``spurious'' you might read ``illusory'' or
+  ``fictitious'' or ``apparent'' or ``misleading''.} between red wine consumption
+and health. Well, not really: the association is not spurious. It is quite
+real. And there is nothing wrong with computing it, nor with it showing up as
+positive. But the association is not causal.
+
+And the reason we can tell ``there is something wrong going on here if we infer
+an effect of red wine on health'' is, precisely, because we are trying to use a
+model that has causal interpretations. We are trying to answer questions such as
+``Is red wine really good for your health?''  or ``Is switching from not
+consuming red wine to consuming moderates amount of it a good idea?''). See
+\cite[][p.\ 84, for similar comments]{hernan2020}
+
+
+
+
+\activities: Think of at least two examples, ideally at least one related to your
+own research, where you might have thought of ``spurious associations''.
+
+
+\section{Notation and terminology}
+
+We will use $U$ for unmeasured variables
+
+Total, direct and indirect effect
+
+
+\subsection{Variance and bias, or random and systematic error}
+Westreich, pp. 24 and 25. (relationship to notions of validity and precision,
+though I prefer to use bias and variance)
+
+
+\section{Basic structures}
+%% Rethinking, p. 180
+%% Probably in many other places too: refer to those
+M and Winship: p. 82
+
+%% Use enumerate here
+
+Fork,
+Pipe, (?): chain in Pearl et al. pp. 38 to 41
+Collider
+
+Do not use ``pipe''. Reserve pipe for the path, that is then opened or closed to
+the flow of association.
+
+Mention Berkson's, in footnote. (and why handsome men are jerks)
+
+
+\subsection{Descendants and ancestors in the derived structures}
+%% Modified
+
+Descendant of collider
+Ancestor of fork
+Ancestor of pipe
+Descendant of fork
+Descendant of pipe
+%% Use enumerate here
+
+
+\section{The examples}
+
+\subsection{}
+
+
+Z -> X -> Y
+
+cite Vanderweele and Shpitser, 2011. Also Ewel?
+
+
+\subsection{A more complex, but very real, example: the birth-weight paradox}
+
+
+
+In designed experiments with random assignment of experimental units (patients,
+petri dishes, whatever) to treatments, there is no
+confounding\footnote{Randomization leads to exchangeability: there is no
+  association between the potential outcomes and the actual treatment received.
+  The relationship between randomization and exchangeability is discussed in
+  ``Technical Point 2.1'', p.\ 15 in \citet{hernan2020}.  An intuitive
+  explanation (for a treatment with two possible values, ``treatment'' and
+  ``control'') is the following one in section 2.3.2, p.\ 9 of \cite{neal_causality_2020}:
+  ``Exchangeability means that the treatment groups are exchangeable in the sense
+  that if they were swapped, the new treatment group would observe the same
+  outcomes as the old treatment group, and the new control group would observe
+  the same outcomes as the old control group. ''
+
+  We are ignoring other issues, such as partial compliance
+  and whether to use ``intention to treat'' or ``per-protocol'' analyses; see
+  chapter 9 in \citet{hernan2020}. Note that differential loss to follow up is a
+  case of selection bias, not confounding; see chapter 8 in
+  \citet{hernan2020}. On both issues, see also chapter 5 in
+  \citet{westreich2019}.
+
+  
+  More on ``exchangeability''. What follows is just for completeness, and because
+  I tend to trip over terminological issues.  As explained in pp.\ 459 and 460 of
+  \cite{vanderweele2015}, the same condition is often referred to by the
+  following different names: ``exchangeability'', ``ignorability'',
+  ``exogeneity'' or ``no-unmeasured-confounding''. For example,
+  \citet{morgan_counterfactuals_2015} in p.\ 53 (section 2.6) use
+  ``ignorability'' for the same expression used to denote exchangeability in
+  \citet{hernan2020}, and \citet{pearl_causality_2009} in pp.79 and 341-342
+  also uses ``ignorability'' for the same expression (more precisely, Pearl's
+  expression is for conditional exchangeability given covariates Z).
+  \citet{rosenbaum2017} defines ignorability in note 33, p.\ 300, and p.\ 349,
+  with the emphasis the other way around: probability of treatment assignment
+  independent of potential outcomes given covariates. % But then,
+  % \citet{Gelman2014} in exercise 8.10, p.\ 230, have an exercise where we are
+  % asked to explain the differences --I think their usage of e
+  % The reasons for receiving one treatment or another cannot be due to the outcome
+  % itself nor to the treatment actually received.
+}.
+
+%% It would be great to clarify this terminological inconsistency.
+%% Rosenbaum's definition is awesome, but is really about ignorability, which
+%% I think is not exactly the same as exchangeability in Hernan and Robins.
+% More formally, we would say there is exchangeability; see
+% chapters 2 and 3 in \citet{hernan2020} and note 33, p.\ 300, in
+% \citet{rosenbaum2017}.
+%% Gelman et al also discuss this, but I think their use of exchangeability is different.
+
+
+\section{How is all of this relevant if I only do experimental/observational
+  work?}
+
+\section{Extra: Lord's paradox}
+
+This is not required material, but \citet{pearl2016} presents a very interesting
+analysis of what has been called Lord's paradox\footnote{This same paradox has
+  been presented in many different places by other authors, and also by Pearl in
+  other work; but the presentation one in \citealp{pearl2016} I find much, much,
+  clearer and insightful than the one in p.\ 85 of \citealp{pearl_causal_2016} or
+  pp.\ 212-215 of \citealp{pearl2018}}.
+
+As Pearl explains, this paper ``address(es) the general methodological issue of
+whether adjustments for preexisting conditions is justified in group comparison
+applications''. A nice feature of this paper is that he presents both the
+original paradox as written by Lord as well as some later modifications. Some of
+the versions differ because in the original one we have a mediation problem,
+whereas in the second we have confounding problem. Even if the structure of the
+different presentations can seem misleadingly similar, they are fundamentally
+different. In mediation case, whether or not to adjust for covariates depends on
+whether we want the direct effect (this is what we would get if we adjust for the
+covariate) or the total effect (what we get when we don't). In the confounding
+case, of course, we must adjust for the covariate. 
+
+
+{\small
+  %% \bibliography{extracted-bib}
+  \bibliography{refs}
+  \bibliographystyle{myplainnat}
+  %% \bibliographystyle{mybibwithurl} %% not compatible with author-year
+}
+
+
+
+\end{document}
+
+
+
+
