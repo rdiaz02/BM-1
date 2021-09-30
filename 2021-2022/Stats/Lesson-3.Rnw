@@ -287,7 +287,7 @@ ANOVA. Things to notice:
 By the way, notice how we created a ``Model'' which, by default, is called
 \Robject{AnovaModel.1}. But we could have named it differently.
 
-
+%% TODO: zz: explain what df are
 
 \subsection{Confidence intervals for the parameters of the model}
 
