@@ -196,6 +196,8 @@ Total, direct and indirect effect
 Westreich, pp. 24 and 25. (relationship to notions of validity and precision,
 though I prefer to use bias and variance)
 
+Bias: ``sesgo'', en español
+
 
 \section{Basic structures}
 %% Rethinking, p. 180
