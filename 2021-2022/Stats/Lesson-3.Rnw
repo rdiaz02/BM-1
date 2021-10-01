@@ -33,6 +33,23 @@ require(ISwR, quietly = TRUE)
 
 
 
+%% Get subsubsubsection-like behavior
+%% https://tex.stackexchange.com/a/60212
+% \usepackage{titlesec}
+% \setcounter{secnumdepth}{4}
+% \titleformat{\paragraph}
+% {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+% \titlespacing*{\paragraph}
+% {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+%% But the above does not work, with a clash for package titlesec that I can't debug.
+%% so use this: https://tex.stackexchange.com/a/364574
+%% which is not optimal
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
 %% not if using BiocStyle
 %% \usepackage[authoryear,round,sort]{natbib}
 %% \usepackage{hyperref} 
@@ -61,6 +78,9 @@ labelsep=endash]{caption}
 
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
+
+
+
 
 
 \usepackage{gitinfo}
@@ -1498,12 +1518,98 @@ statistical analysis using R, 2nd ed'', and then the documentation of \CRANpkg{m
     when the data are unbalanced.
   \end{itemize}
 \item When there are interactions, this is more complicated. For example, at what
-  level of each variable do you want to estimate the differences in the other?
+  level of each variable do you want to estimate the differences in the other? A
+  very simple numerical example illustrating the problem is shown in \qref{ci-two-way-int-example}.
 \item Finally, in both cases, you might want to think if carrying out comparisons
   between \textbf{all} pairs of means is what you really want to do. (Of course,
   you \textbf{must} report what you really did: carrying out comparisons between
   all pairs and reporting only a few is incorrect).
 \end{itemize}
+
+
+\paragraph{Comparisons between means when there are interactions: a simple
+  example of why we need to specify at what level of the other variable/of the
+  interaction}\label{ci-two-way-int-example}
+
+
+This is an intuitive explanation of the problem (which is what we want for this
+class). Suppose we have the model
+
+\texttt{Y ~ A * B + error}
+
+where both A and B have two levels (A: a1, a2; B: b1, b2)
+
+
+Now, suppose these are the means of each of the cells (e.g., 3 is the average of
+observations that have a1 and b1):
+
+
+\begin{tabular}[h]{c|c|c}
+  \hline
+  Level of A & Level of B & Mean \\
+  \hline
+  a1 & b1 & 3 \\
+a1 & b2 &  5 \\
+a2 & b1 &  8 \\
+a2 & b2 &  2\\
+  
+  \hline
+\end{tabular}
+
+Please, draw a figure with those means, like any of the interaction plots we have
+seen in class.  Please, \textbf{really draw that figure}. Actually, \textbf{draw
+  2 figures}: the first will have A in the X (abscisas) axis, the second will
+have B in the X axis. You will see the lines clearly cross.
+
+
+Now, suppose we want this: "95\% confidence interval for the difference between the
+means of a1 and a2". Sounds simple enough but ...
+
+... at what level of B do you want that? Because, even without thinking about the
+confidence interval, the difference between the means of a1 and a2 (a1 - a2) is:
+
+\begin{verbatim}
+3 - 8 = -5   at b1
+5 - 2 =  3   at b2
+\end{verbatim}
+
+
+Now, please repeat the above for B. \textbf{Really, do it now}: compute the
+difference between b1 - b2 at each level of A.
+
+
+
+So "what is the difference between a1 and a2" depends on the level of B (and this
+is not news: this is because there is interaction). Thus, returning a confidence
+interval (CI) for that difference requires us to specify at what level of B we
+want the CI. And the same thing happens if we want a CI for the difference
+between the two levels of B (at what level of A do we want it?).
+
+
+But then, how do we even see plots for CI under interactions
+(\qref{mult-comp-2-way-int})?  Because it is possible to return that CI at
+different levels of the other factors. We just need to say "at this level of the
+other factor". For example at "the average" (because we can define the "average
+effect of A" and "the average effect of B", and "the average effect of the
+interaction", in a model with interactions). But computing the CI at this
+"average" might not be what you want to do. With data that look like the one
+above, with such extreme crossing of lines, that might not make much sense.
+Alternatively, you might compute the difference and confidence interval at some
+other level of the other factor that is more relevant for your question.  Whether
+or not it makes sense to compute the CI at the average level of the interaction,
+or at what level it makes sense to do it is \textbf{highly context dependent}:
+this depends on how the interactions are, and what your scientific question is.
+Regardless, how that average of B/average of A/average of the interaction is
+defined and computed, how the average difference at the average of the other
+variable is computed, how that is done in R, how to specify other levels, etc, do
+not matter to us here.
+
+
+What matters is understanding that, with interactions, asking a question about
+"the difference between levels of A" (or "a confidence interval around the
+difference between levels of A") cannot be answered without saying something
+about the level of B at which we want to compute that difference.
+
 
 
 
