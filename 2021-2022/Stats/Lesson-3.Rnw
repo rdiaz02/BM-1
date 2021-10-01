@@ -1535,7 +1535,7 @@ statistical analysis using R, 2nd ed'', and then the documentation of \CRANpkg{m
 This is an intuitive explanation of the problem (which is what we want for this
 class). Suppose we have the model
 
-\texttt{Y ~ A * B + error}
+\verb@Y ~ A * B@
 
 where both A and B have two levels (A: a1, a2; B: b1, b2)
 
