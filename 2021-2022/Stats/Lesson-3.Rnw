@@ -55,6 +55,9 @@ labelsep=endash]{caption}
 \newcommand{\Burl}[1]{{\textcolor{blue}{\url{#1}}}}
 \usepackage[copyright]{ccicons} %% for the CC license icons
 
+%% see http://tex.stackexchange.com/a/121871
+% \newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}} % One single link
+\newcommand*{\qref}[1]{\hyperref[{#1}]{\textit{``\nameref*{#1}'' (section \ref*{#1})}}}
 
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
@@ -1173,6 +1176,47 @@ There are, however, good reasons to start fitting a model \textbf{with}
 interactions first, and \textbf{only} if there are no interactions, fit a
 simpler, additive model.
 
+
+\subsection{Getting ready for how things change with the order of
+  factor}\label{before-orderfactors}
+
+The next section introduces a common phenomenon that is sometimes surprising. We
+will try to provide some intuition about why this phenomenon happens.
+
+These are the key steps of the argument (take a piece of paper, and draw a
+bunch of two-by-two boxes with the sample sizes in each cell):
+
+\begin{enumerate}
+\item Suppose you do a two-way ANOVA where the dependent variable (Y) is ``awake
+  in class'' and your predictor variables are sex (female or male) and coffee in
+  the morning (yes or no).
+\item Suppose you have, in the sample, 10 women, all of whom drank coffee, and 10
+  men, none of whom drank coffee. Can you say anything about the effect of sex
+  that is not saying something (or even everything) about the effect of coffee
+\item Now, suppose instead that the design is perfectly balanced: 5 women who
+  drank coffee, 5 women who did not drink coffee, 5 men who drank coffee, 5 men
+  who did not drink coffee. If I told you ``I measured a woman'', do you know if
+  she is also a coffee drinker or not?
+\item Now, think about intermediate scenarios.
+\item Was the above a silly example? OK, replace the Y by ``cardiovascular
+  disease'' and the predictor variables by ``smoking'' (yes and no) and
+  ``exercise'' (yes and no). Can you say anything about the effects of exercise
+  if all the people in your sample who exercise are also non-smokers? (Repeat
+  this with other pairs of variables, such as diet and exercise, gene expression
+  and age, gene expression and sex, etc, etc).
+\end{enumerate}
+
+
+Some of this might still seem mysterious after the above exercise. Think about
+doing a regression of body height on the length of both the left and right arms
+(we will actually do something very similar later: \qref{multregr-example}). And
+think about how unbalanced data, with categorical independent variables, is
+somewhat similar to inducing a correlation between variables. We will discuss
+this in class.
+
+Anyway, let's go and see this happening!
+
+
 \subsection{The order of factors}\label{orderfactors}
 
 Let's pretend there are no interactions. We can do that by creating a data
@@ -1238,6 +1282,15 @@ those for the term that enters last in the Type I (those produced via
 \Rfunction{anova}, without a capital ``A'').
 
 
+By the way, R might tell you something might be going on in here if you look
+carefully:
+
+<<>>=
+aov1 <- aov(y ~ Diet + Drug, data=dcholest2)
+aov1 ## Notice the "Estimated effects may be unbalanced"
+@ 
+
+
 This is an \textbf{extremely common phenomenon} when the design is not
 perfectly balanced (with categorical independent variables) or there are
 correlations (with continuous covariates, as in regression). What is
@@ -1257,22 +1310,28 @@ happening?
 \item Type I (or sequential) sums of squares do not. They are sequential,
   in the order shown in the output. R, by default, gives you this via
   \Rfunction{anova}.
+
+\item {\footnotesize (More details about Type I and Type II Sums of Squares are
+    provided in the Appendix in \qref{ssI-to-III}, but you can skip it. This
+    issue is also discussed, by focusing on the key issues from an applied
+    perspective, in chapter 5 of Fox and Weisberg's ``An R companion to applied
+    regression, 3rd edition''.)}
+
 \end{itemize}
 
 
-Biologically, that order can make a difference makes a lot of sense. Think
-about it. And this, of course, affects models with two, three, \ldots
-factors. Always pay attention to what it is you are being reported (and
+And this, of course, affects models with two, three, \ldots
+factors. Always pay attention to what the program is giving you, and
 beware that the defaults used by R need not the same as those used by
-SPSS, SAS, etc.)\footnote{The type of sums of squares used (and,
-  actually, the type of hypothesis tested) is a debated topic. The book by
-  John Fox ``Applied regression analysis and generalized linear models''
-  contains a great discussion (his book with S.\ Weisberg ``An R companion
-  to applied regression'', one of the recommended books, does too). An
+SPSS, SAS, etc.\footnote{More details about Type I and Type II Sums of Squares are
+    provided in the Appendix in \qref{ssI-to-III}, but you can skip it. This
+    issue is also discussed, by focusing on the key issues from an applied
+    perspective, in chapter 5 of Fox and Weisberg's ``An R companion to applied
+    regression, 3rd edition'' and Fox's ``Applied regression analysis and
+    generalized linear models''. An
   email-length discussion of these topics can be found here
   \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111854.html} and
-  \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}. 
-\label{fn:2}}.
+  \Burl{https://stat.ethz.ch/pipermail/r-help/2006-August/111927.html}.\label{fn:2}}
 
 Some of this might still seem mysterious. Think about doing a regression
 of body height on the length of both the left and right arms. And think
@@ -1282,10 +1341,6 @@ discuss this in class.
 
 
 
-More details about Type I and Type II Sums of Squares are provided in the
-Appendix in \ref{ssI-to-III} (but you can skip it). This issue is also discussed,
-by focusing on the key issues from an applied perspective, in in chapter 5 of Fox
-and Weisberg's ``An R companion to applied regression, 3rd edition''.
 
 
 %% \red{FIXME}
@@ -1305,11 +1360,14 @@ If you want a very simple message: \textbf{unless you know what your are doing
   and/or you know your data fulfills certain properties, always expect order to
   matter}.
 
-In section \refname{ordermatter-appendix} we provide more details and examples. 
+In section \qref{ordermatter-appendix} we provide more details and examples. 
 
 
 
 \subsection{One observation per cell}\label{one-obs-cell}
+
+
+Briefly: try not to do this. You will not be able to test interactions.
 
 So far, we have had more than one observation for each combination of
 levels (i.e., more than one observation per cell, where cell means each of
@@ -1416,8 +1474,9 @@ on the key conceptual issues. But we leave the code, examples, and more advanced
 comments for your future reference. Why is this that long, then? Because we want
 to emphasize that \textbf{``p values are just not enough''}: in many/most cases,
 you will want to look at confidence intervals and other measures of uncertainty
-around the parameters you have estimated. And, of course, you will need to
-correct for multiple testing when you, well, conduct multiple tests.
+around the parameters you have estimated and the contrasts (differences in means)
+of interest. And, of course, you will need to correct for multiple testing when
+you, well, conduct multiple tests.
 
 
 In two-way and, more generally, multi-way ANOVA, this is more complicated. Among
@@ -1426,6 +1485,30 @@ be comparing the other? How does lack of balance affect the contrasts? Do you
 really want all possible contrasts? A good place to start reading on these issues
 is chapter 14 (and section 5.3.2) of Everitt and Hothorn's ``A handbook of
 statistical analysis using R, 2nd ed'', and then the documentation of \CRANpkg{multcomp}.
+
+\subsubsection{Multiple comparisons in multi-way ANOVA: main messages}
+\label{sec:mult-comp-multi}
+
+\begin{itemize}
+\item In two-way (or three-way or \ldots, generally, multi-way) ANOVA
+  \textbf{without interactions} carrying out multiple comparisons between pairs
+  of means is straightforward.
+  \begin{itemize}
+  \item You might need to pay attention to which procedure (function) you use
+    when the data are unbalanced.
+  \end{itemize}
+\item When there are interactions, this is more complicated. For example, at what
+  level of each variable do you want to estimate the differences in the other?
+\item Finally, in both cases, you might want to think if carrying out comparisons
+  between \textbf{all} pairs of means is what you really want to do. (Of course,
+  you \textbf{must} report what you really did: carrying out comparisons between
+  all pairs and reporting only a few is incorrect).
+\end{itemize}
+
+
+
+\subsubsection{Multiple comparisons in two-way ANOVA: example with no
+  interactions}\label{mult-comp-2-way-no-int}
 
 I will show a few examples below. % Let us show confidence intervals for the
 % comparisons of all pairs of means.
@@ -1436,8 +1519,8 @@ the syntax here.
 [We could try doing some of the stuff below with menus, but they quickly become
 limiting, so I'll directly write R commands (that you can evaluate from R
 commander, or from RStudio or from the R console itself). (If you wanted to use
-the R commander menus for some of the stuff below, you would want to fit the
-model using \Rfunction{aov}, not \Rfunction{lm}, and use the package
+the R commander menus for some of the stuff below, you might want to fit the
+model using \Rfunction{aov}, not \Rfunction{lm}, and you will use the package
 \CRANpkg{RcmdrPlugin.HH}, and ask for the ``MMC plot''.)]
 
 
@@ -1472,8 +1555,26 @@ summary(clmA_glh)
 confint(clmA_glh)
 
 plot(clmA_glh)
-@ 
+@
 
+You can also obtain the above using \Rfunction{TukeyHSD} (there are further
+comments about the differences below ---bottom line here: when sample sizes are
+not very unbalanced, the results will be very, very similar)\footnote{Though the
+  plots might not look as nice or you might need to do more work to put all plots
+  on the same page}. % We need to use an
+% ``aov'' model.
+
+% <<>>=
+% clmAaov <- aov(y ~ Diet + Drug, data = dc2)
+% plot(TukeyHSD(clmAaov, which = c("Diet", "Drug")))
+% @ 
+
+
+You can stop reading here, but remember that there is extra material below if you
+needed it. 
+
+
+\subsubsection{Multiple comparisons in two-way ANOVA: example with interactions}\label{mult-comp-2-way-int}
 
 But we know there are interactions. Let us use that model to compare levels of Diet.
 
@@ -1529,11 +1630,6 @@ confint(glht(clm, linfct = rbind(K1B, K2B)))
 ## chol_mmc
 @ 
 
-
-In fact, in models with interactions, we might be interested in doing other
-things. For example, comparing the levels of Drug within levels of Diet. There
-are examples in the documentation of \CRANpkg{multcomp} (see
-\Burl{https://cran.r-project.org/web/packages/multcomp/vignettes/multcomp-examples.pdf}).
 
 
 
@@ -1612,7 +1708,7 @@ chol_mmc
 
 Note that many of those can be obtained, too, using the \Rfunction{TukeyHSD}
 function. For example, as simple as this:
-<<>>=
+<<tukey_multcomp,fig.width=7, fig.height=5,out.width = '12cm', out.height = '10cm'>>=
 ## Fit as aov
 clmaov <- aov(y ~ Diet * Drug, data = dc2)
 
@@ -1623,8 +1719,11 @@ TukeyHSD(clmaov, which = "Diet")
 TukeyHSD(clmaov, which = "Diet:Drug")
 
 ## Plot them
+## But make sure y-axis labels are horizontal
+## and y-axis labels fit
+op <- par(las = 1, mar = c(5, 8, 4, 4))
 plot(TukeyHSD(clmaov, which = "Diet:Drug"))
-
+par(op) ## return graphical parameters to previous stage
 
 ## Though if we only care about the contrasts
 ## between all factor combinations maybe we really just want this?
@@ -1644,14 +1743,14 @@ not necessarily identical (with unbalanced designs, specially heavily unbalanced
 \Rfunction{glht} is often preferable --- see for example the discussion in
 Everitt and Hothorn, chapters 5 and 14).
 
-But in models with interactions, \Rfunction{glht} allows us to control what to
-do with averaging over interactions and will not necessarily give the same
+In models with interactions, \Rfunction{glht} allows us to control what to do
+with averaging over interactions and it will not necessarily give the same
 results as \Rfunction{TukeyHSD} (if there is no unbalance in sample sizes,
 results will often be very similar if we use \texttt{interaction\_average =
   TRUE}). See further discussion, for example, here:
 \Burl{https://stat.ethz.ch/pipermail/r-help/2012-January/299623.html}. But this
 is, as we anticipated, a complicated issue. What comparisons are you interested
-in when there are interactions? 
+in when there are interactions?
 
 
 Finally, another package that might be worth checking is \CRANpkg{emmeans}
@@ -1675,7 +1774,6 @@ as in permutation tests conditioning on permuting only within rows or
 columns, etc. We will not pursue this any further.
 
 
-
 \clearpage
 
 
@@ -1683,7 +1781,7 @@ columns, etc. We will not pursue this any further.
 
 \section{Simple linear regression}\label{regr}
 
-This is another form of a linear model. But now, the independent variable
+This is another form of a linear model. But, now, the independent variable
 is continuous. So we will fit a line:
 
 \[Y = \alpha + \beta X + \epsilon\] where $Y$ is, as usual, the dependent
@@ -1782,17 +1880,18 @@ anage_a <- anage_a_r[anage_a_r$Class == "Aves",]
 @ 
 
 
-We want to model metabolic rate as a function of body mass (note that this
-data set is rather nice, because column names are nicely labeled and
-include information about units). \textbf{Beware:} what we are going to do
-is not correct, as the data are not independent (species share common
-ancestors, and they are related in varying degrees, as any phylogenetic
-tree would show you, and as you should be able to tell from looking at the
-names of some species). What we are doing here is just for the sake of the
-example, and because this is a nice set of data\footnote{This can be done
-  correctly, incorporating phylogenetic information in the regression
+We want to model metabolic rate as a function of body mass (note that this data
+set is rather nice, because column names are nicely labeled and include
+information about units). \textbf{Beware:} what we are going to do is not
+correct, as the data are not independent (species share common ancestors, and
+they are related in varying degrees, as any phylogenetic tree would show you, and
+as you should be able to tell from looking at the names of some species). So we
+are violating the assumption of independence. What we are doing here is just for
+the sake of the example, and because this is a nice set of data\footnote{This can
+  be done correctly, incorporating phylogenetic information in the regression
   model, but this is way out of the scope of this class. It is a really
-  fascinating topic, though!}.
+  fascinating topic, though! This is often referred to as using the comparative
+  method in evolutionary biology.}.
 
 
 Now go to ``Statistics'', ``Fit models'', ``Linear regression'' and fit
@@ -1821,12 +1920,10 @@ By the way, did you see the note about missingness? Do you know what that
 means? 
 
 \subsection{And how does it look like}
-Eh!!! We should probably have plotted the data as the first thing. A
-couple of plots will be good here. First, let's do a scatterplot (you
-might want to unclick the ``Show spread''\footnote{I find the spread
-  information to be confusing. But I like to leave the
-  smoothed line, as it can help me see errors in the model
-  specification.}):
+Eh!!! We should probably have plotted the data as the first thing.  First, let's
+do a scatterplot (you might want to unclick the ``Show spread''\footnote{I find
+  the spread information to be confusing. But I like to leave the smoothed line,
+  as it can help me see errors in the model specification.}):
 
 <<out.width = '10cm', out.height = '10cm', results='hide'>>=
 
@@ -1848,7 +1945,7 @@ scatterplot(Metabolic.rate..W.~Body.mass..g.,
 
 
 \subsubsection{Transforming the data}
-Hummm\ldots. Those plots do not look good. OK, let's refit a model, but
+Hummm\ldots. That plot does not look good. OK, let's refit a model, but
 this time let's transform both the dependent and independent variables
 with a log (why a log? theory and previous empirical evidence from the
 field of allometry and life history suggest that it is a reasonable way to
@@ -1871,7 +1968,7 @@ summary(metablog)
 
 
 
-Now the two plots:
+Now plot it:
 
 <<fig.width=7, fig.height=7,results='hide'>>=
 
@@ -1885,7 +1982,7 @@ scatterplot(Metabolic.rate..W.~Body.mass..g., log="xy",
 
 
 
-These are both much, much better. We will address this issue more formally
+This looks much, much better. We will address this issue more formally
 below (section \nameref{diagnostics}). Notice that the call to
 \Rfunction{scatterplot} uses the original variables but the axis are in
 log-scale, which is nicer than directly plotting (in linear scale) the
@@ -1938,7 +2035,9 @@ intuition of the difference between the two bands.
 \subsection{Confidence intervals for the parameters}\label{ci-regr-params}
 
 For this course, what follows is of much less interest, but just so that you have
-it here. A somewhat different thing is this:
+it here. You can skip it if you want.
+
+You can of course obtain confidence intervals for the parameters of the model:
 
 <<>>=
 confint(metablog)
@@ -1950,7 +2049,7 @@ on its own can lead to different answers from testing both at once. Let us show 
 joint confidence ellipse. I follow here Faraway's ``Linear models with
 R'' and Fox and Weisberg's ``An R companion to applied regression''. (There is no need for you to try to replicate this)
 
-<<ci_ellipse,fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
+<<ci_ellipse,fig.width=7, fig.height=7,out.width = '6cm', out.height = '6cm'>>=
 ## Correlation of estimated coefficients
 round(cov2cor(vcov(metablog)), 3)
 
@@ -1967,7 +2066,9 @@ An alternative to \Rfunction{ellipse} is \CRANpkg{car}'s
 
 
 (And no, there is nothing wrong with this correlation. It actually makes a lot of
-sense.)
+sense.  Think about tilting the regression line, keeping the center of mass
+fixed, so play with increasing or decreasing the slope: what happens with the
+intercept?)
 
 
 
@@ -2210,6 +2311,9 @@ anova(lm(lm(pemax ~ height + age, data = cystfibr2)))
 
 \subsection{Confidence intervals, confidence bands}\label{mult-regr-ci-pred}
 
+(This is also provided so that you have it in here if you need it, but you can
+skip it.)
+
 With multiple regression, visualizing confidence intervals and prediction
 intervals becomes much harder (we are no longer in 2D). There are ways of
 visualizing 3D plots (see \nameref{regr-int}), but you will probably need to decide
@@ -2242,6 +2346,7 @@ round(cov2cor(vcov(mcyst)), 3)
 (Note: we already knew that the mcyst is probably not a great model!!)
 
 
+\subsubsection{Confidence intervals, confidence bands: the bootstrap}\label{mult-regr-ci-pred-boot}
 
 A final comment: for real, one might want to use confidence intervals using the
 bootstrap instead of \Rfunction{confint}. See section 5.1.3 in Fox and Weisberg's
@@ -2471,7 +2576,8 @@ some species). What we are doing here is just for the sake of the example,
 and because this is a nice set of data\footnote{This can be done
   correctly, incorporating phylogenetic information in the regression
   model, but this is way out of the scope of this class. It is a really
-  fascinating topic, though!}.
+  fascinating topic, though! This is often referred to as using the comparative
+  method in evolutionary biology.}.
 
 We will see interactions, parallel and non-parallel slopes, and more
 comparison of models. Again, these analyses are not fully correct as we
@@ -2611,15 +2717,15 @@ Should we use all covariates available to us in our models? It depends on what w
 want to do. If all we care is prediction, then maybe yes. If we care about
 interpretation, probably not. In particular, variables that are effects of the
 outcome variable (i.e., variables that are, causally, downstream from our ``y'')
-are variables we do not want to adjust for. Likewise for variables that are
-downstream from both the ``y'' and other predictor variables.
+are often (but not always!) variables we do not want to adjust for. Likewise for
+variables that are downstream from both the ``y'' and other predictor variables.
 
 
 We have been using language a bit to casually (I wrote ``casually'', not
-``causally''). But sometimes we will read our models as saying ``a unit increase
+``causally'' :-). But sometimes we will read our models as saying ``a unit increase
 in variable X1 is associate with these many units change in Y''. At other times,
 we will want (and even be able to say) ``a unit increase in variable X1 causes
-these many units change in Y''. This differences in wording also emphasize the
+these many units change in Y''. These differences in wording also emphasize the
 possible difficulties in understanding the meaning of phrases like ``holding
 variable X2 constant, a unit change in variable X1 causes whatever''.
 
@@ -2653,7 +2759,8 @@ years. Some recommended readings, in approximate order of increasing difficulty
 \item Rosenbaum, 2017, ``Observation and experiment. An introduction to causal inference'' (Rosenbaum does not use
   DAGs)
 \item Pearl, Glymour, Jewell, 2016, ``Causal inference in statistics: a primer''
-  [Beware with errata: avoid early printings of the book!]
+  [Beware with errata: avoid early printings of the book and make sure to look at
+  the errata page anyway!]
 \item Morgan and Winship, ``Counterfactuals and causal inference: methods and
   principles for social research'' [Yes, basically all examples are from
   sociology and political science, but that should not be a problem.]
