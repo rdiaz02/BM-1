@@ -2580,7 +2580,7 @@ and sex in the specification of the model, does the numeric output differ?
 \subsection{A parallel slopes model}
 \label{parallel-slopes}
 
-We could have started by fitting a model with parallel slopes:
+We can fit a model with parallel slopes:
 
 <<>>=
 mcyst0 <- lm(pemax ~ age + sex, data = cystfibr2)
@@ -3247,6 +3247,10 @@ look at all of these yourself to see them.
 \subsection{Diagnostics: a couple more examples with designed experiments}
 
 Follow the text and the graphics. We will discuss this in class.
+
+%% zz: fixme: label plots clearly, using mar as above,
+%% and add legends to plots
+%% and why isn't myAdditive2b not showing?
 
 <<>>=
 ## Diagnostics suggest missing interaction
