@@ -1558,8 +1558,9 @@ a2 & b2 &  2\\
 
 Please, draw a figure (by hand) with those means, like any of the interaction
 plots we have seen in class.  Please, \textbf{really draw that figure}. Actually,
-\textbf{draw 2 figures}: the first will have A in the X (abscisas) axis, the
-second will have B in the X axis. You will see the lines clearly cross.
+\textbf{draw 2 figures}: the first will have A in the X (abscissas) axis, the
+second will have B in the X axis. You will see that in both plots the lines
+clearly cross.
 
 
 Now, suppose we want this: "95\% confidence interval for the difference between the
