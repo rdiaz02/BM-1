@@ -377,7 +377,8 @@ estimates. What about Fungus: no, we do not want to adjust for it, as adjusting
 for Fungus would actually prevent us from estimating the effect of Treatment:
 Treatment affects plant size through Fungus. Once we know about Fungus, Treatment
 says nothing about Size \footnote{Size is conditionally independent of Treatment
-  given Fungus, $Size \upmodels Treatment | Fungus$.}.
+  given Fungus, $Size \upmodels Treatment | Fungus$. The  $\upmodels$ symbol
+  means independence. You can ignore this notation if it does not help you.}.
 
 
 
@@ -553,8 +554,9 @@ More systematically:
 \begin{enumerate}[label=\alph*]
 
 \item Chain: X and Y are associated. But conditioning on Z will render X and Y
-  independent (there will be no association). $X \upmodels Y | Z$, \quad
-  $\cancel{X \upmodels Y}$.
+  independent (there will be no association). The conditional and unconditional
+  dependencies are (you can ignore this if it does not help you):
+  $X \upmodels Y | Z$, \quad $\cancel{X \upmodels Y}$.
 
 \item Fork: X and Y are associated. But conditioning on Z will render X and Y
   independent (there will be no association). $X \upmodels Y | Z$, \quad
@@ -569,17 +571,25 @@ More systematically:
 \end{enumerate}
 
 
-The last structure, the collider or inverted fork, sometimes seems
-counterintuitive. This structure is behind ``Berkson's paradox'', for example
-\footnote{Or could explain ``Why are handsome men such jerks?'':
-  \Burl{https://en.wikipedia.org/wiki/Berkson\%27s_paradox},
-  \Burl{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html}}. A
-simple example: suppose there is no association between bone fracture and
-pneumonia in the general population. But  if you only look at people who go at
-the emergency room, you are likely to find a negative association between
-pneumonia and bone fracture. If this example is not clear, look at the Wikipedia
-entry linked in the footnotes (or the ``Why are handsome men such jerks'', linked
-in the footnote too).
+The consequences of the last structure, the collider or inverted fork, sometimes
+seem counterintuitive. This structure is behind ``Berkson's paradox'' \footnote{
+  \Burl{https://en.wikipedia.org/wiki/Berkson\%27s_paradox}, and it might explain
+  ``Why are handsome men such jerks?'':
+  \Burl{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html}
+  ---and, I guess, a similar phenomenon with women}. A simple example: suppose
+there is no association between bone fracture and pneumonia in the general
+population. But if you only look at people who go to the emergency room in a
+hospital, you are likely to find a negative association between pneumonia and
+bone fracture (think about why people go to hospitals ---there must be some
+reason to be in the hospital to begin with, and either severe pneumonia or a
+broken bone are enough to take you there). If this example is not clear, look at
+the Wikipedia entry linked in the footnotes (or the ``Why are handsome men such
+jerks'', linked in the footnote too). Conditioning (and restricting) on colliders
+leads to \textbf{selection bias} (see chapters 7 and 8 in \citealp{hernan2020})
+
+\activities: Think of at least one example for each of the structures
+above. \textbf{Really, do it}. Ideally, think of two examples, one from
+``everyday life'' and one from you scientific work/TFM/etc.
 
 
 \subsection{Variance and bias, or random and systematic error}
