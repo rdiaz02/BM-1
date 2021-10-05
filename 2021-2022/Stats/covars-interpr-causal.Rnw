@@ -199,18 +199,24 @@ if(!suppressWarnings(require("rethinking", quietly = TRUE))) {
 library(car)
 @ 
 
-\section{Notation and terminology}
+\section{Graphs, DAGs, notation}
 
-We will use $U$ for unmeasured variables
+Graphs, such as the one in \ref{fig:plot_dag_1}, are very useful to represent
+causal concepts. In that figure, Age is a \textbf{common cause} of Exercise and
+Cholesterol, and Exercise has a direct effect on Cholesterol too.  These are
+\textbf{DAG}s, for Directed (i.e., there is direction, and thus we see arrows,
+not just edges) Acyclic (there are no cycles: you do not go twice through a
+variable if you follow arrows) Graphs.
 
-Total, direct and indirect effect
+Sometimes we will use variables denoted as  $U$ (or $U$ with subindices): these
+are unobserved variables. 
+
+% Total, direct and indirect effect
 
 
-DAG: directed acyclic graph
 
-
-
-\section{An introductory example}
+\section{An introductory example of adjusting for covariates: Cholesterol,
+  Exercise, Age}
 
 
 Suppose we sample subjects from a population where, as people get older, they
@@ -221,11 +227,6 @@ levels, how should we analyze the data? (This example is taken from chapter 1,
 pp.\ 3 to 5, of \citealp{pearl_causal_2016}). The relationships between the
 variables are shown in Figure \ref{fig:plot_dags_1_2}, panel ``a)''.
 
-Look now at the relationship depicted in Figure \ref{fig:plot_dags_1_2}, panel
-``b)'', and suppose that, even if Exercise directly leads to a decrease in
-Cholesterol, Exercise also leads to an increase in Food consumption and
-increasing Food consumption (because of the low quality of food available) leads
-to an increase in Cholesterol. How would we analyze this data?
 
 
 % (Yes, we do know that we should recommend people exercise if they want to lower
@@ -242,53 +243,63 @@ Exercise -> Cholesterol
 
 
 
-<<dag_2, results='hide', echo = FALSE>>=
-mediator <- dagitty("dag {
-Exercise -> Food
-Food -> Cholesterol
-Exercise -> Cholesterol
-}")
-@ 
-
-
 %% <<plot_dags_1_2, out.width = '14cm', out.height='7cm'>>=
-<<plot_dags_1_2, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Introductory figures'>>=
-op <- par(mfrow = c(1, 2), mar = c(1, 1, 3, 1))
-
+<<plot_dag_1, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Cholesterol, Exercise, Age example',out.width='6cm'>>=
 coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
                                   y = c(Exercise = 0, Age = -1, Cholesterol = 0))
 
-coordinates(mediator) <- list(x = c(Exercise = 1, Food = 2, Cholesterol = 3),
-                              y = c(Exercise = 0, Food = -1, Cholesterol = 0))
-
 drawdag(common_cause, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
-text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
-## mtext("a)", outer = TRUE, line = -2)
-
-drawdag(mediator, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
-text(x = 2, y = 1.2, labels ="b)", cex = 1.2)
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
 
 @ 
 
-Here I simulate some data that follow the above relationships.
+Here I simulate some data that follow the above relationships.  
 
 <<simul_1, results='hide', echo = TRUE>>=
 N <- 1e4 
 ################## Common_cause
-common_cause <- data.frame(Age = runif(N, 10, 50))
+common_cause <- data.frame(Age = rnorm(N, 30, 5))
 common_cause$Exercise <- 2 * common_cause$Age + rnorm(N)
-common_cause$Cholesterol <- 3 * common_cause$Age - common_cause$Exercise + rnorm(N)
+common_cause$Cholesterol <- 3 * common_cause$Age -
+  common_cause$Exercise +
+  rnorm(N)
 
-################## Mediator
-mediator <- data.frame(Exercise = runif(N, 1, 100))
-mediator$Food <- mediator$Exercise * 3 + rnorm(N)
-## Cholesterol decreases with Exercise (-1) but increases with Food
-mediator$Cholesterol <- mediator$Food * 2 - mediator$Exercise + rnorm(N)
 @ 
 
+
+Before turning the page, think what kind of relationship you expect between
+Cholesterol and Exercise in the whole population and between Cholesterol and
+Exercise for people of age 10, and for people of age 20, \ldots.
+
+
+The process above generate data that look like this:
+
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{chol-ex1-crop}% first figure itself
+%       \caption{first figure}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{chol-ex2-crop} %second figure itself
+%       \caption{second figure}
+    \end{minipage}
+  % \includegraphics[width=0.50\paperwidth,keepaspectratio]{chol-ex1.pdf}
+  % \includegraphics[width=0.50\paperwidth,keepaspectratio]{chol-ex2.pdf}
+   \caption{\label{fig:chol-exercise-pearl-et-al}. Relationships between
+     Cholesterol and Exercise, by age and over the complete population. From
+     \citet{pearl_causal_2016}, Figures 1.1. and 1.2 (which are the same as
+     Figure 6.6 in \citealp{pearl2018}; a preview of chapter 1 of
+     \citealp{pearl_causal_2016} is available from Pearl's page: \Burl{http://bayes.cs.ucla.edu/PRIMER/}). }
+\end{figure}
+  
+
 \clearpage
-Let's analyze the data with and without adjusting for Age or Food
-consumption. First for case a)
+Let's analyze the data with and without adjusting for Age
+consumption. 
 
 
 <<code_1, results='show', echo = TRUE>>=
@@ -302,27 +313,20 @@ S(m_common_cause_no_adjust)
 
 \clearpage
 
-And here for case b).
-<<code_2, results='show', echo = TRUE>>=
-m_mediator_adjust <- lm(Cholesterol ~ Exercise + Food, data = mediator)
-m_mediator_no_adjust <- lm(Cholesterol ~ Exercise, data = mediator)
 
-S(m_mediator_adjust)
-S(m_mediator_no_adjust)
+We must adjust (or control) for Age, the common cause of Exercise and Age: if we
+don't adjust for Age, the estimate of the effect of Exercise on Cholesterol is
+confounded by Age (or by Age having effects on both Exercise and
+Cholesterol)\footnote{When dealing with categorical variables, this pattern,
+  where the association of two variables changes, or even reverts its sign, when
+  we account for another, is also called Simpson's paradox.}.
 
-@ 
-
-
+%% FIXME: maybe this lesson after the one on chi-squares?
 
 
 
-
-In case a) we must adjust for Age. In case b), if we want to measure the total
-effect of Exercise in this experiment, we should not adjust for Food
-consumption. 
-
-
-
+\section{Should we always adjust for covariates? The fungus example}
+\label{fungus-ex}
 
 \subsection{Variance and bias, or random and systematic error}
 Westreich, pp. 24 and 25. (relationship to notions of validity and precision,
@@ -422,29 +426,83 @@ confounding\footnote{Randomization leads to exchangeability: there is no
 %% Gelman et al also discuss this, but I think their use of exchangeability is different.
 
 
+\section{Direct and indirect effects}\label{direct-indirect}
+
+
+\subsection{Cholesterol, exercise, food}
+Look now at the relationship depicted in Figure \ref{fig:plot_dags_1_2}, panel
+``b)'', and suppose that, even if Exercise directly leads to a decrease in
+Cholesterol, Exercise also leads to an increase in Food consumption and
+increasing Food consumption (because of the low quality of food available) leads
+to an increase in Cholesterol. How would we analyze this data if we want to
+estimate the total effect of Exercise on Cholesterol?
+
+
+
+<<dag_2, results='hide', echo = FALSE>>=
+mediator <- dagitty("dag {
+Exercise -> Food
+Food -> Cholesterol
+Exercise -> Cholesterol
+}")
+@ 
+%% <<plot_dags_1_2, out.width = '14cm', out.height='7cm'>>=
+<<plot_direct_chol_food, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Introductory figures'>>=
+coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
+                                  y = c(Exercise = 0, Age = -1, Cholesterol = 0))
+
+drawdag(mediator, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+text(x = 2, y = 1.2, labels ="b)", cex = 1.2)
+@ 
+
+
+<<simul_2, results='hide', echo = TRUE>>=
+N <- 1e4 
+
+################## Mediator
+mediator <- data.frame(Exercise = runif(N, 1, 100))
+mediator$Food <- mediator$Exercise * 3 + rnorm(N)
+## Cholesterol decreases with Exercise (-1) but increases with Food
+mediator$Cholesterol <- mediator$Food * 2 - mediator$Exercise + rnorm(N)
+@ 
+
+And here for case b).
+<<code_2, results='show', echo = TRUE>>=
+m_mediator_adjust <- lm(Cholesterol ~ Exercise + Food, data = mediator)
+m_mediator_no_adjust <- lm(Cholesterol ~ Exercise, data = mediator)
+
+S(m_mediator_adjust)
+S(m_mediator_no_adjust)
+
+@ 
+
+In case b), if we want to measure the total
+effect of Exercise in this experiment, we should not adjust for Food
+consumption.
+
 \section{How is all of this relevant if I only do experimental/observational
   work?}
 
 \section{Extra: Lord's paradox}
 
 This is not required material, but \citet{pearl2016} presents a very interesting
-analysis of what has been called Lord's paradox\footnote{This same paradox has
+analysis of what is  called Lord's paradox\footnote{This same paradox has
   been presented in many different places by other authors, and also by Pearl in
-  other work; but the presentation one in \citealp{pearl2016} I find much, much,
+  other work; but the presentation in \citealp{pearl2016} I find much, much,
   clearer and insightful than the one in p.\ 85 of \citealp{pearl_causal_2016} or
   pp.\ 212-215 ---chapter 6--- of \citealp{pearl2018}}.
 
-As Pearl explains, this paper ``address(es) the general methodological issue of
+As Pearl explains, his paper ``address(es) the general methodological issue of
 whether adjustments for preexisting conditions is justified in group comparison
-applications''. A nice feature of this paper is that he presents both the
+applications''. A nice feature of this paper is that Pearl presents both the
 original paradox as written by Lord as well as some later modifications. Some of
 the versions differ because in the original one we have a mediation problem,
-whereas in the second we have confounding problem. Even if the structure of the
+whereas in the second we have a confounding problem. Even if the structure of the
 different presentations can seem misleadingly similar, they are fundamentally
-different. In mediation case, whether or not to adjust for covariates depends on
-whether we want the direct effect (this is what we would get if we adjust for the
-covariate) or the total effect (what we get when we don't). In the confounding
-case, of course, we must adjust for the covariate. 
+different. In the mediation case, whether or not to adjust for covariates depends
+on whether we want the direct effect (this is what we would get if we adjust for
+the covariate) or the total effect (what we get when we don't). In the
+confounding case, of course, we must adjust for the covariate.
 
 
 {\small
