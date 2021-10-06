@@ -1036,8 +1036,59 @@ phenomenon is also mentioned in \citet{vanderweele2011}. (And in case you care: 
 could be used as an instrument or instrumental variable, but when adjusting for
 it, it is not being used as an instrument.)
 
-\subsection{A more complex, but very real, example: the birth-weight paradox}
+\subsection{A more complex, but very real, example: the birth-weight paradox}\label{bwparadox}
 
+The ``birth weight paradox'' is explained in detail in
+\citet{hernandez-diaz2006}. The Wikipedia has it under the name ``Low
+birth-weight paradox''
+(\Burl{https://en.wikipedia.org/wiki/Low_birth-weight_paradox}). This is an issue
+of major practical relevance that, if poorly analized and understood, could like
+to harmful recommendations.
+
+I copy from \citet{hernandez-diaz2006}:
+
+\begin{quoting}
+  Low birth weight (LBW) infants in groups with a high prevalence of LBW have a
+  lower mortality rate than LBW infants in groups with a low prevalence of LBW,
+  whereas the opposite is true for normal-weight infants. (...)
+
+  For example, when studies compared mortality rates between LBW infants born to
+  smokers and nonsmokers, infants of smokers had lower mortality rates.
+
+  Although it is widely accepted that infants born to mothers who smoke have
+  lower birth weights and are at higher risk of neonatal mortality, it has been
+  suggested that the effect of maternal smoking is modified by birth weight in
+  such a way that smoking is beneficial for LBW babies.
+\end{quoting}
+
+This is another case of collider bias, in this case stratifying on a common
+effect. The following are three possible causal DAGs that would lead to this
+paradox.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\textwidth]{bw-paradox-1-crop}
+  \includegraphics[width=0.9\textwidth]{bw-paradox-2-crop}
+  \caption{\label{fig:bw-paradox}. Two DAGs that would result in the
+    birth-weight paradox. From Figure 3 in \citet{hernandez-diaz2006}. The
+    presence or not of an arrow from LBW to Mortality is not the relevant feature.} 
+\end{figure}
+
+
+And what is U and what is an intuitive explanation of this phenomenon? Low birth
+weight can be caused by conditions other than smoking. Once we know a baby has
+low birth weight, if we know it is the child of a smoking mom, then it is less
+likely that the baby has those other conditions (this is the usual ``explaining
+away'' of colliders). In fact, we do not need LBW to have any effect on
+mortality. Look at the last DAG in Figure \ref{fig:bw-paradox}: Smoking is
+harmful, but (as explained in the Wikipedia) other causes of low birth weight can
+be more harmful than smoking. Thus, among LBW babies, those from smoking moms
+show lower death rates. But recommending smoking to pregnant women would be a
+very bad idea.
+
+
+Again, the moral of the story is: do not adjust for covariates just because they
+have been measured \citep{hernandez-diaz2006a}.
 
 
 \section{How is all of this relevant if I only do experimental/observational
