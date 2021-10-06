@@ -29,7 +29,7 @@
   linkcolor = {blue},
   filecolor = cyan %% controls color of external ref, if used
 }
-
+%% I do not understand why I keep using Burl. Oh well.
 \usepackage{color}
 \newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
 \newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
@@ -319,7 +319,6 @@ S(m_common_cause_adjust)
 S(m_common_cause_no_adjust)
 @
 
-\clearpage
 
 
 We must adjust (or control) for Age, the common cause of Exercise and Age: if we
@@ -345,7 +344,7 @@ quality, in ways that could affect final plant Size, a variable (or variables)
 Plot measure the plot quality (pretreament, though this is irrelevant since this
 variable, or variables, are not affected by treatment).
 
-The DAG is shown in \ref{fig:dag_fungus_1}
+The DAG is shown in \ref{fig:plot_fungus_1}
 
 <<dag_fungus_1, results='hide', echo=FALSE>>=
 fungus1 <- dagitty("dag {
@@ -356,7 +355,7 @@ Plot -> Size
 
 @ 
 
-<<plot_fungus_1, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, first example',out.width='9cm'>>=
+<<plot_fungus_1, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, first example',out.width='9cm', fig.pos="!h">>=
 coordinates(fungus1) <- list(x = c(Treatment = 1, Fungus = 2,
                                         Plot = 2.5,
                                         Size = 3),
@@ -382,7 +381,7 @@ says nothing about Size \footnote{Size is conditionally independent of Treatment
 
 
 
-Even if the true relationship was as shown in \ref{fig:dag_fungus_2} we would not
+Even if the true relationship was as shown in \ref{fig:plot_fungus_2} we would not
 want to use Fungus as a covariate. Here Treatment is not independent of Size
 given Fungus, but Fungus mediates in the relationship. If we added Fungus in the
 statistical model, we would not be estimating the total effect of Treatment on
@@ -400,7 +399,7 @@ Plot -> Size
 
 @ 
 
-<<plot_fungus_2, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, second example',out.width='9cm'>>=
+<<plot_fungus_2, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, second example',out.width='9cm',fig.pos="!h">>=
 coordinates(fungus2) <- list(x = c(Treatment = 1, Fungus = 2,
                                         Plot = 2.5,
                                         Size = 3),
@@ -434,7 +433,7 @@ Plot -> Size
 
 @ 
 
-<<plot_fungus_3, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, collider example',out.width='9cm'>>=
+<<plot_fungus_3, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, collider example',out.width='9cm',fig.pos="!h">>=
 coordinates(fungus3) <- list(x = c(Treatment = 1,
                                    Fungus = 2,
                                    Plot = 1,
@@ -468,6 +467,7 @@ variability of the estimates. If we could we could have adjusted for U it would
 have been good, but we can't; anyway, U will increase the variability, but will
 not lead to bias. The bad idea was adjusting for Fungus.)
 
+\clearpage
 \section{Basic DAG structures}\label{dag-structs}
 
 The basic DAG structures with their names are presented in Figure
@@ -497,7 +497,7 @@ Y -> Z
 
 @ 
 
-<<plot_dag_struct, fig.width = 5, fig.height=1.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Basic DAG structures',out.width='11cm'>>=
+<<plot_dag_struct, fig.width = 5, fig.height=2.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Basic DAG structures',out.width='13cm',fig.pos="!h">>=
 op <- par(mfrow = c(1, 3))
 
 coordinates(chain) <- list(x = c(X = 1,
@@ -524,15 +524,15 @@ coordinates(collider) <- list(x = c(X = 1,
 
 
 drawdag(chain, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
-text(x = 2, y = -.8, labels ="a) Chain.\n Z mediates", cex = 1.1)
+text(x = 2, y = -.4, labels ="a) Chain.\n Z mediates", cex = 1.1)
 
 
 drawdag(fork, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
-text(x = 2, y = -.8, labels ="b) Fork.\n Z common cause", cex = 1.1)
+text(x = 2, y = -.4, labels ="b) Fork.\n Z common cause", cex = 1.1)
 
 
 drawdag(collider, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
-text(x = 2.1, y = -.8, labels ="c) Inverted fork with collider.\n Z common effect (collider)", cex = 1.1)
+text(x = 2.1, y = -.4, labels ="c) Inverted fork with collider.\n Z common effect (collider)", cex = 1.1)
 
 @ 
 
@@ -558,7 +558,7 @@ given Z.
 
 
 More systematically: 
-\begin{enumerate}[label=\alph*]
+\begin{enumerate}[label=\alph*)]
 
 \item Chain: X and Y are associated. But conditioning on Z will render X and Y
   independent (there will be no association). The conditional and unconditional
@@ -580,11 +580,10 @@ More systematically:
 
 %% ZZ FIXME : give the example of Y must compensate whatever X has
 The consequences of the last structure, the collider or inverted fork, sometimes
-seem counterintuitive. This structure is behind ``Berkson's paradox'' \footnote{
-  \Burl{https://en.wikipedia.org/wiki/Berkson\%27s_paradox}, and it might explain
-  ``Why are handsome men such jerks?'':
-  \Burl{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html}
-  ---and, I guess, a similar phenomenon with women.}. A simple example: suppose
+seem counterintuitive. This structure is behind ``Berkson's paradox''\footnote{
+\url{https://en.wikipedia.org/wiki/Berkson\%27s_paradox}, and it might explain
+``Why are handsome men such jerks?'' ---and, I guess, a similar phenomenon with women: \url{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html} .}
+. A simple example: suppose
 there is no association between bone fracture and pneumonia in the general
 population. But if you only look at people who go to the emergency room in a
 hospital, you are likely to find a negative association between pneumonia and
@@ -600,39 +599,260 @@ above. \textbf{Really, do it}. Ideally, think of two examples, one from
 ``everyday life'' and one from you scientific work/TFM/etc.
 
 
+\subsection{Terminology: ``condition on'', ``given'', ``adjusting for''}\label{condition-given}
+The following three expressions are equivalent, and you will find them in the literature:
+\begin{itemize}
+\item X and Y are independent \textit{given} Z.
+\item X and Y are independent \textit{if we condition on} Z (or
+  \textit{conditioning on}).
+\item X and Y are independent \textit{if we adjust for} Z (or \textit{adjusting
+    for}).\footnote{X and Y are independent \textit{if we hold Z constant} can be
+    equivalent, though this is not as common as the above expressions with
+    ``condition on'', ``given'', ``adjusting'', and we would need to be more
+    precise about the meaning of \textit{holding constant}: are we really,
+    physically holding Z constant, or adjusting statistically for it, as in
+    conditioning?).}
+\end{itemize}
+
+
+\subsection{Descendants and ancestors in the basic DAG structures}\label{modified-basic}
+
+To make sure we understand how the flow of association is blocked or unblocked in
+the above structures, let us add some descendants and ancestors to them and see
+what happens.
+
+<<dag_struct2, results='hide', echo=FALSE>>=
+c1 <- dagitty("dag {
+X -> Z
+Z -> Y
+Z -> W
+}")
+
+c2 <- dagitty("dag {
+X -> Z
+Z -> Y
+W -> Z
+}")
+
+
+f1 <- dagitty("dag {
+Z -> X
+Z -> Y
+Z -> W
+}")
+
+
+f2 <- dagitty("dag {
+Z -> X
+Z -> Y
+W -> Z
+}")
+
+
+co1 <- dagitty("dag {
+X -> Z
+Y -> Z
+Z -> W
+}")
+
+co2 <- dagitty("dag {
+X -> Z
+Y -> Z
+W -> Z
+}")
+
+@ 
+
+<<plot_dag_struct2, fig.width = 5, fig.height=4.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Descendants and ancestors in the basic DAG structures',out.width='12cm'>>=
+op <- par(mfrow = c(2, 3))
+
+coordinates(c1) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = 0,
+                              Y = 0,
+                              Z = 0,
+                              W = -0.5))
+
+coordinates(c2) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = 0,
+                              Y = 0,
+                              Z = 0,
+                              W = -.5))
+
+
+coordinates(f1) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                           y = c(X = 0,
+                                 Y = 0,
+                                 Z = -.50,
+                                 W = -1))
+
+
+coordinates(f2) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                           y = c(X = 0,
+                                 Y = 0,
+                                 Z = -.50,
+                                 W = -1))
+
+
+
+coordinates(co1) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = -1,
+                              Y = -1,
+                              Z = -.5,
+                              W = 0))
+
+
+
+coordinates(co2) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = -1,
+                              Y = -1,
+                              Z = -0.5,
+                              W = 0))
+
+
+drawdag(c1, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="d)", cex = 1.4)
+
+drawdag(f1, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="e)", cex = 1.4)
+
+drawdag(co1, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="f)", cex = 1.4)
+
+
+drawdag(c2, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="g)", cex = 1.4)
+
+drawdag(f2, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="h)", cex = 1.4)
+
+drawdag(co2, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="i)", cex = 1.4)
+
+@ 
+
+We have modified the basic structures as follows:
+\begin{itemize}
+\item In the top row, we have added a descendant of Z
+\item In the bottom row, we have added an ancestor of Z
+\end{itemize}
+
+The \textbf{most important to pay attention to is f)}. The rest is here for
+completeness, but following it actually only requires to use the rules we have
+explained above.
+
+
+These are the consequences:
+\begin{enumerate}[label=\alph*)]
+  \setcounter{enumi}{3}
+\item Conditioning on W does not make X and Y independent, so X and Y are still
+  associated if you condition on W\footnote{If you cannot
+    measure Z, but you can measure W, and W and Z are very strongly associated,
+    conditioning on W can help you remove some bias if you need to make X and  Y
+    conditionally independent.}.  Why? Because the flow through Z has not been
+  interrupted.
+
+  In addition (but this is not new):
+  \begin{enumerate}[label=\arabic*.]
+  \item X and W are associated.
+  \item Y and W are associated.
+  \item X and W are independent if we condition on  Z.
+  \item Y and W are independent if we condition on Z.
+  \end{enumerate}
+  % $X \cancel{\upmodels} Y | W$.
+  
+\item As above: conditioning on W does not make X and Y independent.
+
+  In addition (but this is not new):
+  \begin{enumerate}[label=\arabic*.]
+  \item X and W are associated.
+  \item Y and W are associated.
+  \item X and W are independent if we condition on Z.
+  \item Y and W are independent if we condition on Z.
+  \end{enumerate}
+  % $X
+  % \cancel{\upmodels} Y | W$.
+  
+\item \textbf{Pay attention here}: conditioning on W will make X and Y
+  associated. This is the general rule: \textbf{conditioning on a collider} (as
+  in c)) or \textbf{a descendant of a collider will make the ancestors
+    associated}. Why? Think about the hospital, broken bones and pneoumonia;
+  instead of looking at people at the door of the hospital you look at people
+  downstream (e.g., people who have been admitted to the hospital).
+
+  In addition (but this is not new):
+  \begin{enumerate}[label=\arabic*.]
+  \item X and W are associated.
+  \item Y and W are associated.
+  \item X and W are independent if we condition on Z.
+  \item Y and W are independent if we condition on Z.
+  \end{enumerate}
+  % $X
+  % \cancel{\upmodels} Y | W$ (and $X
+  % \cancel{\upmodels} Y | Z$,  \quad $X \upmodels
+  % Y$).
+  
+\item Conditioning on W will not render X and Y independent. Notice that \textbf{now Z is
+  a collider with respect to X and W}. So conditioning on Z will induce an
+association between Z and W.
+
+In addition:
+  \begin{enumerate}[label=\arabic*.]
+  \item X and W are independent.
+  \item Y and W are associated.
+  \item X and W are associated if we condition on Z (we just said this).
+  \item Y and W are independent if we condition on Z.
+  \end{enumerate}
+
+\item Conditioning on W will not render X and Y independent. 
+  In addition:
+  \begin{enumerate}[label=\arabic*.]
+  \item X and W are associated.
+  \item Y and W are associated.
+  \item X and W are independent if we condition on Z.
+  \item Y and W are independent if we condition on Z.
+  \end{enumerate}
+
+
+\item Now Z is a collider with respect to all three pairs of variables X, Y, W. 
+  \begin{enumerate}[label=\arabic*.]
+  \item X and W are independent.
+  \item Y and W are independent.
+  \item X and W are associated if we condition on Z (Z is a collider).
+  \item Y and W are associated if we condition on Z (Z is a collider).
+  \item X and Y are associated if we condition on Z (Z is a collider), as it was before.
+  \end{enumerate}
+
+  
+\end{enumerate}
+
+
+
+
+
 \subsection{Variance and bias, or random and systematic error}
 Westreich, pp. 24 and 25. (relationship to notions of validity and precision,
 though I prefer to use bias and variance)
 
 Bias: ``sesgo'', in Spanish
 
-
-\section{Basic structures}
-%% Rethinking, p. 180
-%% Probably in many other places too: refer to those
-M and Winship: p. 82
-
-%% Use enumerate here
-
-Fork,
-Pipe, (?): chain in Pearl et al. pp. 38 to 41
-Collider
-
-Do not use ``pipe''. Reserve pipe for the path, that is then opened or closed to
-the flow of association.
-
-Mention Berkson's, in footnote. (and why handsome men are jerks)
-
-
-\subsection{Descendants and ancestors in the derived structures}
-%% Modified
-
-Descendant of collider
-Ancestor of fork
-Ancestor of pipe
-Descendant of fork
-Descendant of pipe
-%% Use enumerate here
 
 
 \section{The examples}
