@@ -134,13 +134,24 @@ Commons license) from \Burl{https://github.com/rdiaz02/BM-1}. (Note that in the
 github repo you will not see the PDF, or R files, nor many of the data files,
 since those are derived from the Rnw file). This file is called \texttt{covars-interpr-causal.Rnw}.
 
+\vspace*{10pt}
 
+Please, \textbf{respect the copyright and license}. This material is
+  provided freely. If you use it, I only ask that you use it according to the
+  (very permissive) terms of the license: acknowledging the author and
+  redistributing copies and derivatives under the same license. If you have any
+  doubts, ask me.
 
 \clearpage
 
+%% \part{The main stuff}
+
 \section{Introduction}
 
-The purpose of these notes is to try to clarify the questions about ``what
+\subsection{What is this about}
+\label{sec:what-this-about}
+
+The purpose of these notes is to try to clarify  questions about ``what
 variables should we add to our models when our aim is interpretation''.
 
 As discussed in class, if our purpose when fitting statistical models is only
@@ -154,12 +165,18 @@ model where the dependent or outcome variable is cardiovascular health and one o
 the predictor variables is red wine we are, arguably, trying to understand if
 consuming red wine affects (i.e., has an effect on) cardiovascular health. We
 might want to do this so that we can make public health recommendations or take
-personal action.  Intuitively, if a variable, X, has an effect (a causal) on a
-variable, Y, manipulating X will change the value of Y.
+personal action (should I start drinking a little bit of wine?).  Intuitively, if
+a variable, X, has a causal effect on a variable, Y, manipulating X will change
+the value of Y.
+
+And what do we mean by causal effects? ``(...) estimation of causal effects in
+populations, that is, numerical quantities that measure changes in the
+distribution of an outcome under different interventions.'' \citep[p.\
+v]{hernan2020}.
 
 
 \subsection{There is no such thing as  ``spurious associations''. But when people
-  use this term, it shows they are trying to obtain causal estimates}
+  use this term, it suggests they are trying to obtain causal estimates}
 
 In the above study, there is a possible obvious problem. Suppose you observe an
 association between moderate red wine consumption and better cardiovascular
@@ -170,13 +187,17 @@ between red wine consumption and better cardiovascular health is not a causal
 association: the association is the result of both red wine consumption and
 better cardiovascular health both being effects (or consequences) of the type of
 diet. But red wine has no direct effect on cardiovascular health (we will see
-examples of this pattern below: \ref{dag-structs})
+examples of this pattern below: \ref{dag-structs}). A similar well known
+phenomenon is the very real association between ice cream sales and homicide
+rates (increasing ice cream sales positively correlated to homicide rates, at
+least in some places of the world).
 
 Some authors would say there is a ``spurious association'' or ``spurious
 correlation''\footnote{Instead of ``spurious'' you might read ``illusory'' or
   ``fictitious'' or ``apparent'' or ``misleading''.} between red wine consumption
-and health. Well, not really: the association is not spurious. It is quite
-real. And there is nothing wrong with computing it, nor with it showing up as
+and health (or ice creams and homicides). Well, not really: the association is
+not spurious. It is quite real. And there is nothing wrong with computing it, nor
+is there anything false, invalid, or fake with it showing up as
 positive. But the association is not causal.
 
 And the reason we can tell ``there is something wrong going on here if we infer
@@ -187,11 +208,27 @@ consuming red wine to consuming moderates amount of it a good idea?''. See
 \cite[][p.\ 84, for similar comments]{hernan2020}
 
 
+So someone using expressions like ``spurious associations'' is actually revealing
+that they really want to say something about causes and effects.
 
 
 \activities Think of at least two examples, ideally at least one related to your
 own research, where you might have thought of ``spurious associations''.
 
+
+\subsection{What should you read of this long pdf?}\label{whattoread}
+I expect you to read all of it, except the Appendix. You can read section
+\qref{modified-basic} very, very quickly, except for structure f). The main
+objective of this document is to allow you to understand why we should or
+shouldn't adjust for covariates in the examples we give (\qref{chol-exercise},
+\qref{fungus-ex}, \qref{fungus-collider}, \qref{pretreatment-no},
+\qref{cause-of-cause}, \qref{amplification}, \qref{bwparadox}). Section
+\qref{dag-structs}, \qref{backdoor-basics} are there just to explain why.
+
+More complex examples are provided in \qref{direc-indirect}, but you can skip
+this if you want.
+
+The Appendix is optional (though not harmful).
 
 <<load_libs, echo=FALSE, results='hide',message=FALSE>>=
 ## Plots, with dagitty
@@ -279,7 +316,7 @@ Before turning the page, think what kind of relationship you expect between
 Cholesterol and Exercise in the whole population and between Cholesterol and
 Exercise for people of age 10, and for people of age 20, \ldots.
 
-
+\clearpage
 The process above generate data that look like this:
 
 
@@ -480,7 +517,7 @@ The basic DAG structures with their names are presented in Figure
 \ref{fig:plot_dag_struct}\footnote{This is fairly standard material; you can find it in,
 for example, Figure 3.3 in \citet{morgan_counterfactuals_2015}, section 6.3 in
 \citet{hernan2020}, sections 2.2. and 2.3 in \citet{pearl_causal_2016}, Figure
-8.1 in \citet{kline2015}}.
+8.1 in \citet{kline2015}.}.
 
 
 
@@ -558,7 +595,7 @@ contrast, a collider, if conditioned upon, opens the pipe.
 Put it differently, in the chain example in Figure \ref{fig:plot_dag_struct}, if
 we do not condition in Z, the pipe is open, so X and Y are
 associated\footnote{Strictly: ``are very likely associated'' as it could happen
-  that they are not, but this would be rare}. But if we condition on Z, we close
+  that they are not, but this would be rare.}. But if we condition on Z, we close
 the pipe, the flow of association, and now X and Y are conditionally independent
 given Z.
 
@@ -645,9 +682,13 @@ The following three expressions are equivalent, and you will find them in the li
 
 \subsection{Descendants and ancestors in the basic DAG structures}\label{modified-basic}
 
-To make sure we understand how the flow of association is blocked or unblocked in
-the above structures, let us add some descendants and ancestors to them and see
-what happens.
+To make sure we understand how the flow of association is blocked or unblocked,
+let us add some descendants and ancestors to the previous structures them and see
+what happens. If you want, you can read this section very quickly and skip over
+all the ``in addition''. The \textbf{most important to pay attention to is
+  f)}. The rest is here for completeness, but following it actually only requires
+to use the rules we have explained above.
+
 
 We have modified the basic structures as follows:
 \begin{itemize}
@@ -784,10 +825,6 @@ text(x = 2, y = -.4, labels ="i)", cex = 1.4)
 
 
 
-The \textbf{most important to pay attention to is f)}. The rest is here for
-completeness, but following it actually only requires to use the rules we have
-explained above.
-
 
 These are the consequences:
 \begin{enumerate}[label=\alph*)]
@@ -851,7 +888,8 @@ In addition:
   \item Y and W are independent if we condition on Z.
   \end{enumerate}
 
-\item Conditioning on W will not render X and Y independent. 
+\item Conditioning on W will not render X and Y independent.
+  
   In addition:
   \begin{enumerate}[label=\arabic*.]
   \item X and W are associated.
@@ -1071,7 +1109,7 @@ have been measured \citep{hernandez-diaz2006a}.
 
 \section{How is all of this relevant if I only do experimental/observational
   work?}
-
+\subsection{Relevance}\label{relevance2}
 If your work involves observational data, and you want to interpret the estimates
 from your analyses as measures of effect, this is obviously relevant (this is
 what all the examples here show :-) ).
@@ -1103,7 +1141,8 @@ the effects of causes. For more on those topics, go to \citealp{hernan2020},
 
 \noindent\rule{\textwidth}{1pt}
 \clearpage
-\part*{Appendix and additional material}
+\setcounter{part}{1}
+\part{Appendix and additional material}
 As it says: what follows gives additional details on some issues above. 
 
 
