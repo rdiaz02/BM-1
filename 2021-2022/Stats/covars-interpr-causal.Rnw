@@ -43,7 +43,7 @@
 \newcommand{\Rnl}{\ +\qquad\ }
 \newcommand{\Emph}[1]{\emph{\mg{#1}}}
 \usepackage[begintext=\textquotedblleft,endtext=\textquotedblright]{quoting}
-\newcommand{\activities}{{\vspace*{10pt}\LARGE \textcolor {red} {Activities:}}}
+\newcommand{\activities}{{\vspace*{10pt}\LARGE \textcolor {red} {Activities:\ }}}
 
 \newcommand{\R}{R}
 
@@ -189,7 +189,7 @@ consuming red wine to consuming moderates amount of it a good idea?''. See
 
 
 
-\activities: Think of at least two examples, ideally at least one related to your
+\activities Think of at least two examples, ideally at least one related to your
 own research, where you might have thought of ``spurious associations''.
 
 
@@ -209,7 +209,7 @@ library(car)
 
 \section{Graphs, DAGs, notation}
 
-Graphs, such as the one in \ref{fig:plot_dag_1}, are very useful to represent
+Graphs, such as the one in Figure \ref{fig:plot_dag_1}, are very useful to represent
 causal concepts. In that figure, Age is a \textbf{common cause} of Exercise and
 Cholesterol, and Exercise has a direct effect on Cholesterol too.  These are
 \textbf{DAG}s, for Directed (i.e., there is direction, and thus we see arrows,
@@ -221,7 +221,7 @@ are unobserved variables.
 
 % Total, direct and indirect effect
 
-\activities: Draw a DAG for the wine, diet, cardiovascular health discussed before.
+\activities Draw a DAG for the wine, diet, cardiovascular health discussed before.
 
 \section{An introductory example of adjusting for covariates that are common
   causes: Cholesterol, Exercise, Age}\label{chol-exercise}
@@ -252,7 +252,7 @@ Exercise -> Cholesterol
 
 
 %% <<plot_dags_1_2, out.width = '14cm', out.height='7cm'>>=
-<<plot_dag_1, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Cholesterol, Exercise, Age example',out.width='10cm'>>=
+<<plot_dag_1, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cholesterol, Exercise, Age example',out.width='10cm'>>=
 coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
                                   y = c(Exercise = 0, Age = -1, Cholesterol = 0))
 
@@ -360,7 +360,7 @@ Plot -> Size
 
 @ 
 
-<<plot_fungus_1, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, first example',out.width='9cm', fig.pos="!h">>=
+<<plot_fungus_1, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Fungus, first example',out.width='9cm', fig.pos="!h">>=
 coordinates(fungus1) <- list(x = c(Treatment = 1, Fungus = 2,
                                         Plot = 2.5,
                                         Size = 3),
@@ -404,7 +404,7 @@ Plot -> Size
 
 @ 
 
-<<plot_fungus_2, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, second example',out.width='9cm',fig.pos="!h">>=
+<<plot_fungus_2, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Fungus, second example',out.width='9cm',fig.pos="!h">>=
 coordinates(fungus2) <- list(x = c(Treatment = 1, Fungus = 2,
                                         Plot = 2.5,
                                         Size = 3),
@@ -438,7 +438,7 @@ Plot -> Size
 
 @ 
 
-<<fungus_collider, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, collider example',out.width='9cm',fig.pos="!h">>=
+<<fungus_collider, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Fungus, collider example',out.width='9cm',fig.pos="!h">>=
 coordinates(fungus3) <- list(x = c(Treatment = 1,
                                    Fungus = 2,
                                    Plot = 1,
@@ -503,7 +503,7 @@ Y -> Z
 
 @ 
 
-<<plot_dag_struct, fig.width = 5, fig.height=2.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Basic DAG structures',out.width='13cm',fig.pos="!h">>=
+<<plot_dag_struct, fig.width = 5, fig.height=2.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Basic DAG structures',out.width='14cm',fig.pos="!h">>=
 op <- par(mfrow = c(1, 3))
 
 coordinates(chain) <- list(x = c(X = 1,
@@ -697,7 +697,7 @@ W -> Z
 
 @ 
 
-<<plot_dag_struct2, fig.width = 5, fig.height=4.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Descendants and ancestors in the basic DAG structures',out.width='12cm'>>=
+<<plot_dag_struct2, fig.width = 5, fig.height=4.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Descendants and ancestors in the basic DAG structures',out.width='12cm'>>=
 op <- par(mfrow = c(2, 3))
 
 coordinates(c1) <- list(x = c(X = 1,
@@ -879,11 +879,11 @@ In addition:
 for the different variables (i.e., pay attention to whether they are common
 causes, mediators, or colliders).
 
-
-\section{A systematic procedure to find what variables to condition on}
-\label{sec:syst-proc-cond}
-
-\subsection{The backdoor criterion: basics}\label{backdoor-basics}
+\clearpage
+\section{A systematic procedure to find what variables to condition on. An
+  overview of the backdoor criterion}
+\label{backdoor-basics}
+% \subsection{The backdoor criterion: basics}
 Is there a systematic way to find what variables we should condition on when we
 want to estimate the causal effect of X on Y, and avoid being confounded? Yes,
 there is. The key ideas are:
@@ -897,42 +897,19 @@ there is. The key ideas are:
 \end{itemize}
 
 And this can be done using a systematic procedure. In the appendix, \qref{backdoor-crit}, I give the
-complete procedure in full detail, so that you have it there. And it is very well explained in:
-\begin{itemize}
-\item Section 4.2, pp.\ 109 and ff.\ of \citet{morgan_counterfactuals_2015} (I
-  particularly like how their explanation combines the original Pearl's criterion
-  with further generalizations).
-\item Section 7.2 and 7.3, pp.\ 85 and ff.\ of \citet{hernan2020}.
-\item Section 3.3, pp.\ 61 and ff.\ of \citet{pearl_causal_2016}.
-\item Section 3.5.1, pp.\ 59 and ff.\ of \citet{westreich2019}.
-\end{itemize}
-
-They are all saying the same thing: how to look for sets of variables that block
-what are called backdoor paths. 
-
-
-\subsection{Software for this task?}
-\label{sec:software-this-task}
-
-Yes, there is software to do this. For example, DAGitty
-(\Burl{http://www.dagitty.net/}) of which there is an R package, dagitty
-(\Burl{https://cran.r-project.org/web/packages/dagitty/index.html}\footnote{This
-  is the R package I am using to draw the figures here, in combination with the
-  \texttt{drawdag} function of the 
-  ``rethinking'' package
-  ---\Burl{https://github.com/rmcelreath/rethinking}}). But before using
-software, I'd make sure to really understand the patterns, as shown in the
-figures above.
-
-
-\subsection{Variance and bias, or random and systematic error}
-Westreich, pp. 24 and 25. (relationship to notions of validity and precision,
-though I prefer to use bias and variance)
-
-Bias: ``sesgo'', in Spanish
+ procedure in full detail. 
 
 
 
+
+% \subsection{Variance and bias, or random and systematic error}
+% Westreich, pp. 24 and 25. (relationship to notions of validity and precision,
+% though I prefer to use bias and variance)
+
+% Bias: ``sesgo'', in Spanish
+
+
+\clearpage
 \section{Additional examples}\label{add-examples}
 
 \subsection{A pretreatment collider variable we should not adjust on}\label{pretreat-no}
@@ -952,11 +929,11 @@ U_2 -> X
 }")
 @ 
 
-<<plot_dag_ptr, fig.width = 4, fig.height=4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='A pretreatment collider',out.width='9cm', fig.pos= "!h">>=
+<<plot_dag_ptr, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider',out.width='9cm', fig.pos= "!h">>=
 coordinates(ptr) <- list(x = c(L = 1, X = 2, Y = 3, U_1 = 0.8, U_2 = 0.8),
                          y = c(L = 0, X = 0, Y = 0, U_1 = -.5, U_2 = .5))
 
-drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.9, 1.3))
+drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
 ## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
 @ 
 
@@ -982,11 +959,11 @@ X -> Y
 }")
 @ 
 
-<<plot_dag_zxy, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Cause of a cause',out.width='8cm', fig.pos= "!h">>=
+<<plot_dag_zxy, fig.width = 4, fig.height=.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause',out.width='8cm', fig.pos= "!h">>=
 coordinates(ccc) <- list(x = c(Z = 1, X = 2, Y = 3),
                          y = c(Z = 0, X = 0, Y = 0))
 
-drawdag(ccc, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+drawdag(ccc, xlim = c(0.5, 3.5), ylim = c(-.051, .051))
 ## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
 @ 
 
@@ -1020,11 +997,11 @@ U -> Y
 }")
 @ 
 
-<<plot_dag_bias_amp, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Cause of a cause and bias amplification',out.width='8cm', fig.pos= "!h">>=
+<<plot_dag_bias_amp, fig.width = 4, fig.height=1.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause and bias amplification',out.width='8cm', fig.pos= "!h">>=
 coordinates(bamp) <- list(x = c(Z = 1, X = 2, Y = 3, U = 1),
                          y = c(Z = 0, X = 0, Y = 0, U = -.5))
 
-drawdag(bamp, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+drawdag(bamp, xlim = c(0.5, 3.5), ylim = c(0, .9))
 ## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
 @
 
@@ -1032,9 +1009,9 @@ Adjusting for Z is generally a very bad idea here, because it can lead to
 \textbf{bias amplification}: amplification of the bias induced by U. Of course,
 things would be OK if you could adjust for U (but U has not been measured). 
 More details in section 18.2, pp.\ 224 and ff.\ of \citet{hernan2020}; this
-phenomenon is also mentioned in \citet{vanderweele2011}. (And in case you care: Z
-could be used as an instrument or instrumental variable, but when adjusting for
-it, it is not being used as an instrument.)
+phenomenon is also mentioned in \citet{vanderweele2011}\footnote{Actually, Z
+could be used as an instrument, or instrumental variable, but when adjusting for
+it, Z is not being used as an instrument.}.
 
 \subsection{A more complex, but very real, example: the birth-weight paradox}\label{bwparadox}
 
@@ -1045,7 +1022,7 @@ birth-weight paradox''
 of major practical relevance that, if poorly analized and understood, could like
 to harmful recommendations.
 
-I copy from \citet{hernandez-diaz2006}:
+I copy from p.\ 1115 of \citet{hernandez-diaz2006}:
 
 \begin{quoting}
   Low birth weight (LBW) infants in groups with a high prevalence of LBW have a
@@ -1068,6 +1045,7 @@ paradox.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{bw-paradox-1-crop}
+  \centering
   \includegraphics[width=0.9\textwidth]{bw-paradox-2-crop}
   \caption{\label{fig:bw-paradox}. Two DAGs that would result in the
     birth-weight paradox. From Figure 3 in \citet{hernandez-diaz2006}. The
@@ -1094,6 +1072,15 @@ have been measured \citep{hernandez-diaz2006a}.
 \section{How is all of this relevant if I only do experimental/observational
   work?}
 
+If your work involves observational data, and you want to interpret the estimates
+from your analyses as measures of effect, this is obviously relevant (this is
+what all the examples here show :-) ).
+
+If you only do experimental work, often you will want to adjust for additional
+covariates and then, knowing what covariates to use becomes crucial if you want
+to correctly interpret the effects from your experimental manipulations. And
+causal inference from experimental data arguably makes use of counterfactuals
+(see \qref{counterf}).
 
 
 \subsection{But I need to know at least something about the phenomenon I am
@@ -1115,25 +1102,24 @@ the effects of causes. For more on those topics, go to \citealp{hernan2020},
 
 
 \noindent\rule{\textwidth}{1pt}
-
+\clearpage
 \part*{Appendix and additional material}
-As it says: what follows gives additional details on some issues above. I follow
-no particular order.
+As it says: what follows gives additional details on some issues above. 
 
 
 
 \section{Direct and indirect effects}\label{direct-indirect}
 
 \subsection{Estimating direct effects}\label{direct-eff}
-Look at the following DAG (this is from \citealp[section 3.7, pp.\ 75 and
-ff.\]{pearl_causal_2016}; a similar example is shown in \citealp[section 6.3.2,
-p.\ 180--182]{rethinking_2020}\footnote{Though in \citealp{rethinking_2020} the
+Look at the following DAG (this is from section 3.7, pp.\ 75 and ff.\
+\citealp{pearl_causal_2016}; a similar example is shown in section 6.3.2, p.\
+180--182
+\citealp{rethinking_2020}\footnote{Though in \citealp{rethinking_2020}, the
   explanation of the problem I find possibly misleading, since the difference
-  between the direct and indirect effects is not emphasized enough}) in Figure
-\ref{fig:dag_direct}:
+  between the direct and indirect effects is not emphasized enough.}) in Figure \ref{fig:dag_direct}:
 
 
-<<dag_direct, results='hide', echo=FALSE,fig.width = 4, fig.height=4, fig.lp='fig:', fig.cap='Direct effects',out.width='9cm', fig.pos= "!h">>=
+<<dag_direct, results='hide', echo=FALSE,fig.width = 4, fig.height=1.7, fig.lp='fig:', fig.align = 'center', fig.cap='Direct effects',out.width='9cm', fig.pos= "!h">>=
 op <- par(mfrow = c(1, 2))
 dire <- dagitty("dag {
 Gender -> Qualification
@@ -1141,9 +1127,9 @@ Gender -> Hiring
 Qualification -> Hiring
 }")
 coordinates(dire) <- list(x = c(Gender = 1, Qualification = 2, Hiring = 3),
-                          y = c(Gender = 0, Qualification = -1 Hiring = 0))
+                          y = c(Gender = 0, Qualification = -1, Hiring = 0))
 
-drawdag(dire, xlim = c(0.5, 3.5), ylim = c(-.9, 1.3))
+drawdag(dire, xlim = c(0.5, 3.5), ylim = c(-.1, 1.3))
 
 ## dire2 <- dagitty("dag {
 ## Exercise -> Food
@@ -1175,8 +1161,7 @@ But suppose the way things really are is the one shown in Figure
 \ref{fig:dag_direct_conf}, where ``SocioecStatus'' is the socioeconomic status of
 the family of the persons being hired.
 
-<<dag_direct_conf, results='hide', echo=FALSE,fig.width = 4, fig.height=4, fig.lp='fig:', fig.cap='Direct effects and confounding',out.width='9cm', fig.pos= "!h">>=
-op <- par(mfrow = c(1, 2))
+<<dag_direct_conf, results='hide', echo=FALSE,fig.width = 3.5, fig.height=2, fig.lp='fig:', fig.align = 'center', fig.cap='Direct effects and confounding',out.width='8.2cm', fig.pos= "!h">>=
 dire3 <- dagitty("dag {
 Gender -> Qualification
 Gender -> Hiring
@@ -1186,18 +1171,16 @@ SocioecStatus -> Hiring
 }")
 coordinates(dire3) <- list(x = c(Gender = 1, Qualification = 2, Hiring = 3,
                                 SocioecStatus = 4),
-                          y = c(Gender = 0, Qualification = -1 Hiring = 0,
-                                SocioecStatus = -1.5))
+                          y = c(Gender = 0, Qualification = -1, Hiring = 0,
+                                SocioecStatus = -1.45))
 
-drawdag(dire3, xlim = c(0.5, 3.5), ylim = c(-.9, 1.8))
+drawdag(dire3, xlim = c(0.5, 5), ylim = c(-.1, 1.6))
 @ 
 
 If you only adjust by Qualification, your estimates of direct effect will be
 biased because Qualification is a collider (a descendant of both Income and
-Gender).
-
-If you wanted an unbiased estimate of the direct effect, you would need to
-measure and condition on both Qualification and SocioecStatus.
+Gender). If you wanted an unbiased estimate of the direct effect, you would need
+to measure and condition on both Qualification and SocioecStatus.
 
 
 The estimate of the total effect, where you simply regress Hiring on Gender, in
@@ -1256,7 +1239,7 @@ model without confounders.
 % }")
 % @ 
 % %% <<plot_dags_1_2, out.width = '14cm', out.height='7cm'>>=
-% <<plot_direct_chol_food, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Introductory figures'>>=
+% <<plot_direct_chol_food, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Introductory figures'>>=
 % coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
 %                                   y = c(Exercise = 0, Age = -1, Cholesterol = 0))
 
@@ -1288,6 +1271,178 @@ model without confounders.
 % In case b), if we want to measure the total
 % effect of Exercise in this experiment, we should not adjust for Food
 % consumption.
+
+
+
+
+\section{Backdoor criterion}\label{backdoor-crit}
+
+Using the backdoor criterion is very well explained in, for example:
+\begin{itemize}
+\item Section 4.2, pp.\ 109 and ff.\ of \citet{morgan_counterfactuals_2015} (I
+  particularly like how their explanation combines the original Pearl's criterion
+  with further generalizations).
+\item Section 7.2 and 7.3, pp.\ 85 and ff.\ of \citet{hernan2020}.
+\item Section 3.3, pp.\ 61 and ff.\ of \citet{pearl_causal_2016}.
+\item Section 3.5.1, pp.\ 59 and ff.\ of \citet{westreich2019}.
+\end{itemize}
+
+They are all saying the same thing: how to look for sets of variables that block
+what are called backdoor paths.  For completeness, here are full details.
+
+
+\subsection{Backdoor path}\label{backdoor-path}
+The backdoor criterion uses the idea of ``\textbf{backdoor path}'' between two
+variables, X and Y. These are two equivalent explanations of what a backdoor path
+is:
+
+\begin{quoting}
+  (...) a back-door path is defined as any path between the causal variable
+  [treatment] and the outcome variable [our Y] that begins with an arrow that
+  points to the causal variable
+\end{quoting}
+From section 1.5, p.\ 30 of \citet{morgan_counterfactuals_2015}.
+
+
+\begin{quoting}
+In a causal DAG, a
+  backdoor path is a noncausal path between treatment [causal variable in
+  definition above] and outcome [our Y] that remains even if all arrows pointing
+  from treatment to other variables (the descendants of treatment) are
+  removed. That is, the path has an arrow pointing into treatment
+\end{quoting}  
+From section 7.1, p.\ 83, of \citet{hernan2020}.
+
+
+
+\subsection{Using the backdoor criterion}\label{backdoor-criterion-using}
+
+
+% But we might prefer a less terse explanation.
+
+In section 4.2, pp.\ 109 and ff.\
+of \citet{morgan_counterfactuals_2015} the following two-step process is given:
+
+\begin{quoting}
+  The overall goal of a conditioning strategy guided by the back-door criterion is to block
+all paths that generate noncausal associations between the causal variable and the
+outcome variable without inadvertently blocking any of the paths that generate the
+causal effect itself. In practice, a conditioning strategy that utilizes the back-door
+criterion is implemented in two steps:
+\begin{itemize}
+\item Step 1: Write down the back-door paths from the causal variable to the
+outcome variable, determine which ones are unblocked, and then search
+for a candidate conditioning set of observed variables that will block all
+unblocked back-door paths.
+\item Step 2: If a candidate conditioning set is found that blocks all back-door
+paths, inspect the patterns of descent in the graph in order to verify
+that the variables in the candidate conditioning set do not block or
+otherwise adjust away any portion of the causal effect of interest.\end{itemize}\end{quoting}
+
+
+Morgan and Winship \citep{morgan_counterfactuals_2015} then explain in detail
+(pp.\ 109 and 110) why that procedure is justified (a reasoning that is Pearl's
+backdoor criterion):
+
+
+\begin{quoting}
+  If one or more back-door paths connect the causal variable to the outcome
+  variable, the causal effect is identified by conditioning on a set of variables
+  $Z$ if
+
+  \begin{itemize}
+  \item Condition 1. All back-door paths between the causal variable and
+    the outcome variable are blocked after conditioning on $Z$, which
+    will always be the case if each back-door path
+    \begin{itemize}
+    \item (a) contains a chain of mediation $A \rightarrow C \rightarrow B$, where the
+      middle variable $C$ is in $Z$, or
+
+    \item (b) contains a fork of mutual dependence $A \leftarrow C \rightarrow B$,
+      where the middle variable $C$ is in $Z$, or
+      
+    \item (c) contains an inverted fork of mutual causation
+      $A \rightarrow C \leftarrow B$, where the middle variable $C$ and all of $C$'s
+      descendants are not in $Z$;
+    \end{itemize}
+    and
+
+  \item Condition 2. No variables in $Z$ are descendants of the causal
+    variable that lie on (or descend from other variables that lie on)
+    any of the directed paths that begin at the causal variable and
+    reach the outcome variable.
+  \end{itemize}\end{quoting}
+
+
+For completeness, here is the backdoor criterion, from section 3.3,
+pp.\ 61 and ff.\ of \citet{pearl_causal_2016}
+% definition is given:
+
+\begin{quoting}
+\textbf{Definition 3.3.1, The backdoor criterion}: Given an ordered pair of
+variables (X, Y) in a directed acyclic graph G, a set of variables Z satisfies
+the backdoor criterion relative to (X, Y) if no node in Z is a descendant of X,
+and Z blocks every path between X and Y that contains an arrow into X.
+\end{quoting}
+
+
+
+
+\subsection{Software for this task?}
+\label{sec:software-this-task}
+
+Yes, there is software to do this. For example, DAGitty
+(\Burl{http://www.dagitty.net/}) of which there is an R package, dagitty
+(\Burl{https://cran.r-project.org/web/packages/dagitty/index.html}\footnote{This
+  is the R package I am using to draw the figures in this document, in combination with the
+  \texttt{drawdag} function of the 
+  ``rethinking'' package
+  ---\Burl{https://github.com/rmcelreath/rethinking}}). But before using
+software, I'd make sure to really understand the patterns, as shown in the
+figures above.
+
+
+
+\subsection{And d-separation?}
+\label{sec:d-sep}
+
+Some explanations of the backdoor criterion and the use of DAGs to find
+dependencies and independencies make use of \textit{d-separation}.  But you can
+explain and use the backdoor criterion without introducing more jargon, as we
+have seen above (for example, \citealp{morgan_counterfactuals_2015} only use the
+term d-separation in one footnote, though their procedure, which we have copied
+above, actually implicitly uses the definition of d-separation). Anyway,
+d-separation is well explained in Definition 2.4.1, p.\ 46 of
+\citet{pearl_causal_2016} or in section ``Fine point 6.1'', p. 76 of
+\citet{pearl_causal_2016} and is very useful if you want to find all the
+independencies and conditional independencies implied by a DAG.
+
+
+% With what we have
+% seen already, this will not be news:
+
+% \begin{quoting}
+%   Definition 2.4.1 (d-separation)
+%   A path p is blocked by a set of nodes Z if and only if
+%   \begin{itemize}
+%   \item p contains a chain of nodes
+% or a fork 
+%   \end{itemize}
+% 1. p contains a chain of nodes
+% or a fork
+% the middle node B is in Z (i.e., B is conditioned on), or
+% such that
+% 2. p contains a collider
+% such that the collision node B is not
+% in Z, and no descendant of B is in Z.
+% If Z blocks every path between two nodes X and Y, then X and Y are d-
+% separated, conditional on Z, and thus are independent conditional on Z.
+% \end{quoting}
+%  Definition 2.4.1, p.\ 46 of \citet{pearl_causal_2016}
+
+
+% Finally, a third way of understanding this. In section 7.2, pp.\ 85-86 of \citet{hernan2020}
+%% Nope, just focuses on confounding.
 
 
 
@@ -1355,12 +1510,9 @@ from observational data, counterfactuals are key for your inferences from
 experimental data.
 
 
+\section{Lord's paradox}
 
-
-
-\section{Extra: Lord's paradox}
-
-This is not required material, but \citet{pearl2016} presents a very interesting
+\citet{pearl2016} presents a very interesting
 analysis of what is  called Lord's paradox\footnote{This same paradox has
   been presented in many different places by other authors, and also by Pearl in
   other work; but the presentation in \citealp{pearl2016} I find much, much,
@@ -1380,146 +1532,6 @@ the covariate) or the total effect (what we get when we don't). In the
 confounding case, of course, we must adjust for the covariate.
 
 
-
-\section{Backdoor criterion}\label{backdoor-crit}
-
-\subsection{Backdoor path}\label{backdoor-path}
-The backdoor criterion uses the idea of ``\textbf{backdoor path}'' between two
-variables, X and Y. These are two equivalent explanations of what a backdoor path
-is:
-
-\begin{quoting}
-  (...) a back-door path is defined as any path between the causal variable
-  [treatment] and the outcome variable [our Y] that begins with an arrow that
-  points to the causal variable
-\end{quoting}
-From section 1.5, p.\ 30 of \citet{morgan_counterfactuals_2015}.
-
-
-\begin{quoting}
-In a causal DAG, a
-  backdoor path is a noncausal path between treatment [causal variable in
-  definition above] and outcome [our Y] that remains even if all arrows pointing
-  from treatment to other variables (the descendants of treatment) are
-  removed. That is, the path has an arrow pointing into treatment
-\end{quoting}  
-From section 7.1, p.\ 83, of \citet{hernan2020}.
-
-
-
-\subsection{Using the backdoor criterion}\label{backdoor-criterion-using}
-
-
-% But we might prefer a less terse explanation.
-
-In section 4.2, pp.\ 109 and ff.\
-of \citet{morgan_counterfactuals_2015} the following two-step process is given:
-
-\begin{quoting}
-  The overall goal of a conditioning strategy guided by the back-door criterion is to block
-all paths that generate noncausal associations between the causal variable and the
-outcome variable without inadvertently blocking any of the paths that generate the
-causal effect itself. In practice, a conditioning strategy that utilizes the back-door
-criterion is implemented in two steps:
-\begin{itemize}
-\item Step 1: Write down the back-door paths from the causal variable to the
-outcome variable, determine which ones are unblocked, and then search
-for a candidate conditioning set of observed variables that will block all
-unblocked back-door paths.
-\item Step 2: If a candidate conditioning set is found that blocks all back-door
-paths, inspect the patterns of descent in the graph in order to verify
-that the variables in the candidate conditioning set do not block or
-otherwise adjust away any portion of the causal effect of interest.
-\end{itemize}
-\end{quoting}
-
-Morgan and Winship \citep{morgan_counterfactuals_2015} then explain in detail
-(pp.\ 109 and 110) why that procedure is justified (a reasoning that is Pearl's
-backdoor criterion):
-
-
-\begin{quoting}
-  If one or more back-door paths connect the causal variable to the outcome
-  variable, the causal effect is identified by conditioning on a set of variables
-  $Z$ if
-
-  \begin{itemize}
-  \item Condition 1. All back-door paths between the causal variable and
-    the outcome variable are blocked after conditioning on $Z$, which
-    will always be the case if each back-door path
-    \begin{itemize}
-    \item (a) contains a chain of mediation $A \rightarrow C \rightarrow B$, where the
-      middle variable $C$ is in $Z$, or
-
-    \item (b) contains a fork of mutual dependence $A \leftarrow C \rightarrow B$,
-      where the middle variable $C$ is in $Z$, or
-      
-    \item (c) contains an inverted fork of mutual causation
-      $A \rightarrow C \leftarrow B$, where the middle variable $C$ and all of $C$'s
-      descendants are not in $Z$;
-    \end{itemize}
-    and
-
-  \item Condition 2. No variables in $Z$ are descendants of the causal
-    variable that lie on (or descend from other variables that lie on)
-    any of the directed paths that begin at the causal variable and
-    reach the outcome variable.
-  \end{itemize}
-
-\end{quoting}
-
-
-For completeness, here is a wording of the backdoor criterion, from section 3.3,
-pp.\ 61 and ff.\ of \citet{pearl_causal_2016}
-% definition is given:
-
-\begin{quoting}
-\textbf{Definition 3.3.1, The backdoor criterion}: Given an ordered pair of
-variables (X, Y) in a directed acyclic graph G, a set of variables Z satisfies
-the backdoor criterion relative to (X, Y) if no node in Z is a descendant of X,
-and Z blocks every path between X and Y that contains an arrow into X.
-\end{quoting}
-
-\subsection{And d-separation?}
-\label{sec:d-sep}
-
-Some explanations of the backdoor criterion and the use of DAGs to find
-dependencies and independencies make use of \textit{d-separation}.  But you can
-explain and use the backdoor criterion without introducing more jargon, as we
-have seen above (for example, \citealp{morgan_counterfactuals_2015} only use the
-term d-separation in one footnote, though their procedure, which we have copied
-above, actually implicitly uses the definition of d-separation). Anyway,
-d-separation is well explained in Definition 2.4.1, p.\ 46 of
-\citet{pearl_causal_2016} or in section ``Fine point 6.1'', p. 76 of
-\citet{pearl_causal_2016} and is very useful if you want to find all the
-independencies and conditional independencies implied by a DAG.
-
-
-% With what we have
-% seen already, this will not be news:
-
-% \begin{quoting}
-%   Definition 2.4.1 (d-separation)
-%   A path p is blocked by a set of nodes Z if and only if
-%   \begin{itemize}
-%   \item p contains a chain of nodes
-% or a fork 
-%   \end{itemize}
-% 1. p contains a chain of nodes
-% or a fork
-% the middle node B is in Z (i.e., B is conditioned on), or
-% such that
-% 2. p contains a collider
-% such that the collision node B is not
-% in Z, and no descendant of B is in Z.
-% If Z blocks every path between two nodes X and Y, then X and Y are d-
-% separated, conditional on Z, and thus are independent conditional on Z.
-% \end{quoting}
-%  Definition 2.4.1, p.\ 46 of \citet{pearl_causal_2016}
-
-
-% Finally, a third way of understanding this. In section 7.2, pp.\ 85-86 of \citet{hernan2020}
-%% Nope, just focuses on confounding.
 
 
 {\small
