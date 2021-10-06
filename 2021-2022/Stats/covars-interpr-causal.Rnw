@@ -15,6 +15,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{cancel}
 \usepackage{MnSymbol} %% for upmodels, cond, indep.
+\usepackage{wasysym} %% smileys
 %% see
 %% https://tex.stackexchange.com/questions/3631/is-there-a-standard-symbol-for-conditional-independence
 %% https://tex.stackexchange.com/questions/3631/is-there-a-standard-symbol-for-conditional-independence
@@ -1122,7 +1123,7 @@ have been measured \citep{hernandez-diaz2006a}.
 \subsection{Relevance}\label{relevance2}
 If your work involves observational data, and you want to interpret the estimates
 from your analyses as measures of effect, this is obviously relevant (this is
-what all the examples here show :-) ).
+what all the examples here show \smiley{}).
 
 If you only do experimental work, often you will want to adjust for additional
 covariates and, then, knowing what covariates to use becomes crucial if you want
