@@ -1112,6 +1112,11 @@ Again, the moral of the story is: do not adjust for covariates just because they
 have been measured \citep{hernandez-diaz2006a}.
 
 
+% \subsection{More examples}\label{more-examples}
+% Chapter 18 in \citet{hernan2020} contains several examples where the usual
+% heuristic procedures for what to include, or not, in a model, fail. 
+
+
 \section{How is all of this relevant if I only do experimental/observational
   work?}
 \subsection{Relevance}\label{relevance2}
