@@ -42,8 +42,8 @@
 \newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
 \newcommand{\Rnl}{\ +\qquad\ }
 \newcommand{\Emph}[1]{\emph{\mg{#1}}}
-
-\newcommand{\activities}{{\textcolor {red} {Activities}}}
+\usepackage[begintext=\textquotedblleft,endtext=\textquotedblright]{quoting}
+\newcommand{\activities}{{\vspace*{10pt}\LARGE \textcolor {red} {Activities:}}}
 
 \newcommand{\R}{R}
 
@@ -170,7 +170,7 @@ between red wine consumption and better cardiovascular health is not a causal
 association: the association is the result of both red wine consumption and
 better cardiovascular health both being effects (or consequences) of the type of
 diet. But red wine has no direct effect on cardiovascular health (we will see
-examples of this pattern below: \ref{basic-structures})
+examples of this pattern below: \ref{dag-structs})
 
 Some authors would say there is a ``spurious association'' or ``spurious
 correlation''\footnote{Instead of ``spurious'' you might read ``illusory'' or
@@ -224,7 +224,7 @@ are unobserved variables.
 \activities: Draw a DAG for the wine, diet, cardiovascular health discussed before.
 
 \section{An introductory example of adjusting for covariates that are common
-  causes: Cholesterol, Exercise, Age}
+  causes: Cholesterol, Exercise, Age}\label{chol-exercise}
 
 
 Suppose we sample subjects from a population where, as people get older, they
@@ -326,7 +326,12 @@ don't adjust for Age, the estimate of the effect of Exercise on Cholesterol is
 confounded by Age (or by Age having effects on both Exercise and
 Cholesterol)\footnote{When dealing with categorical variables, this pattern,
   where the association of two variables changes, or even reverts its sign, when
-  we account for another, is also called Simpson's paradox.}.
+  we account for another, is also called Simpson's paradox.}. Age is a
+confounder. Or, unless we adjust for Age, there will be \textbf{confounding}: the
+true causal relationship (or its absence) between Exercise and Cholesterol will
+be confounded by Cholesterol and Exercise both having Age as a common cause.
+
+
 
 %% FIXME: maybe this lesson after the one on chi-squares?
 
@@ -433,7 +438,7 @@ Plot -> Size
 
 @ 
 
-<<plot_fungus_3, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, collider example',out.width='9cm',fig.pos="!h">>=
+<<fungus_collider, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Fungus, collider example',out.width='9cm',fig.pos="!h">>=
 coordinates(fungus3) <- list(x = c(Treatment = 1,
                                    Fungus = 2,
                                    Plot = 1,
@@ -532,7 +537,7 @@ text(x = 2, y = -.4, labels ="b) Fork.\n Z common cause", cex = 1.1)
 
 
 drawdag(collider, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
-text(x = 2.1, y = -.4, labels ="c) Inverted fork with collider.\n Z common effect (collider)", cex = 1.1)
+text(x = 2.1, y = -.4, labels ="c) Inverted fork with collider.\n Z common effect: collider", cex = 1.1)
 
 @ 
 
@@ -565,10 +570,13 @@ More systematically:
   dependencies are (you can ignore this if it does not help you):
   $X \upmodels Y | Z$, \quad $X \cancel{\upmodels} Y$.
 
+  
+
 \item Fork: X and Y are associated. But conditioning on Z will render X and Y
   independent (there will be no association). $X \upmodels Y | Z$, \quad
   $X \cancel{\upmodels} Y$.
 
+  This is the usual example of \textbf{confounding}.
 
 \item Inverted fork with collider: X and Y are independent. But conditioning on Z will make X and Y associated
   (if these were numerical variables and we assume a linear model, they would
@@ -578,21 +586,40 @@ More systematically:
 \end{enumerate}
 
 
+More about \textbf{confounding}: we must adjust for Z, or condition on Z, to
+avoid confounding the estimate of the relationship between X and Y. It is the
+presence of confounding that leads to the ``correlation is not necessarily
+causation'' \citep[p.\ 58][]{westreich2019}.  (For more details about confounding
+see chapter 7 in \citealp{hernan2020}; a brief discussion in section 3.5.1, pp.\
+58 and ff.\ in \citealp{westreich2019})
+
+
 %% ZZ FIXME : give the example of Y must compensate whatever X has
-The consequences of the last structure, the collider or inverted fork, sometimes
-seem counterintuitive. This structure is behind ``Berkson's paradox''\footnote{
-\url{https://en.wikipedia.org/wiki/Berkson\%27s_paradox}, and it might explain
-``Why are handsome men such jerks?'' ---and, I guess, a similar phenomenon with women: \url{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html} .}
-. A simple example: suppose
-there is no association between bone fracture and pneumonia in the general
-population. But if you only look at people who go to the emergency room in a
-hospital, you are likely to find a negative association between pneumonia and
-bone fracture (think about why people go to hospitals ---there must be some
-reason to be in the hospital to begin with, and either severe pneumonia or a
-broken bone are enough to take you there). If this example is not clear, look at
-the Wikipedia entry linked in the footnotes (or the ``Why are handsome men such
-jerks'', linked in the footnote too). Conditioning (and restricting) on colliders
-leads to \textbf{selection bias} (see chapters 7 and 8 in \citealp{hernan2020})
+And more about \textbf{colliders}. The consequences of the last structure, where
+we have a collider, sometimes seem counterintuitive. This structure is behind
+``Berkson's paradox''\footnote{
+  \url{https://en.wikipedia.org/wiki/Berkson\%27s_paradox}, and it might explain
+  ``Why are handsome men such jerks?'' ---and, I guess, a similar phenomenon with
+  women:
+  \url{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html}
+  .}  . A simple example: suppose there is no association between bone fracture
+and pneumonia in the general population. But if you only look at people who go to
+the emergency room in a hospital, you are likely to find a negative association
+between pneumonia and bone fracture (think about why people go to hospitals
+---there must be some reason to be in the hospital to begin with, and either
+severe pneumonia or a broken bone are enough to take you there).
+
+Another way to explain it: suppose you only look at a value, or small set of
+values, of Z (that is what conditioning is); now, if X has any value, the value
+of Y has to compensate the value of X, so that the value of Z is the one you
+conditioned on. 
+
+
+If these examples are not clear, look at the Wikipedia entry linked in the
+footnotes (or the ``Why are handsome men such jerks'', linked in the footnote
+too). Conditioning (and restricting) on colliders leads to \textbf{selection
+  bias} (see chapters 7 and 8 in \citealp{hernan2020} and a brief account in
+section 3.5.3, pp.\ 64--66 in \citealp{westreich2019})
 
 \activities: Think of at least one example for each of the structures
 above. \textbf{Really, do it}. Ideally, think of two examples, one from
@@ -620,6 +647,12 @@ The following three expressions are equivalent, and you will find them in the li
 To make sure we understand how the flow of association is blocked or unblocked in
 the above structures, let us add some descendants and ancestors to them and see
 what happens.
+
+We have modified the basic structures as follows:
+\begin{itemize}
+\item In the top row, we have added a descendant of Z
+\item In the bottom row, we have added an ancestor of Z
+\end{itemize}
 
 <<dag_struct2, results='hide', echo=FALSE>>=
 c1 <- dagitty("dag {
@@ -748,11 +781,7 @@ text(x = 2, y = -.4, labels ="i)", cex = 1.4)
 
 @ 
 
-We have modified the basic structures as follows:
-\begin{itemize}
-\item In the top row, we have added a descendant of Z
-\item In the bottom row, we have added an ancestor of Z
-\end{itemize}
+
 
 The \textbf{most important to pay attention to is f)}. The rest is here for
 completeness, but following it actually only requires to use the rules we have
@@ -844,7 +873,55 @@ In addition:
 \end{enumerate}
 
 
+\activities Go back to the examples (\qref{chol-exercise}, \qref{fungus-ex},
+\qref{fungus-collider}): it should now be clear why we should/should not adjust
+for the different variables (i.e., pay attention to whether they are common
+causes, mediators, or colliders).
 
+
+\section{A systematic procedure to find what variables to condition on}
+\label{sec:syst-proc-cond}
+
+Is there a systematic way to find what variables we should condition on when we
+want to estimate the causal effect of X on Y, and avoid being confounded? Yes,
+there is. The key ideas are:
+\begin{itemize}
+\item Block all paths that induce a non-causal association between X and Y (such
+  as those created by common ancestors).
+\item Do not block directed paths between X and Y (those that are legitimate
+  causal connections from X to Y).
+\item Do not create associations between X and Y by conditioning on colliders or
+  descendants of colliders.
+\end{itemize}
+
+And this can be done using a systematic procedure. I won't give the full details,
+but they are very well explained in:
+\begin{itemize}
+\item Section 4.2, pp.\ 109 and ff.\ of \citet{morgan_counterfactuals_2015} (I
+  particularly like how their explanation combines the original Pearl's criterion
+  with further generalizations).
+\item Section 7.2 and 7.3, pp.\ 85 and ff.\ of \citet{hernan2020}.
+\item Section 3.3, pp.\ 61 and ff.\ of \citet{pearl_causal_2016}.
+\item Section 3.5.1, pp.\ 59 and ff.\ of \citet{westreich2019}.
+\end{itemize}
+
+They are all saying the same thing: how to look for sets of variables that block
+what are called backdoor paths. In the appendix, \qref{backdoor-crit}, I give the
+complete procedure in full detail, so that you have it there.
+
+
+\subsection{Software for this task?}
+\label{sec:software-this-task}
+
+Yes, there is software to do this. For example, DAGitty
+(\Burl{http://www.dagitty.net/}) of which there is an R package, dagitty
+(\Burl{https://cran.r-project.org/web/packages/dagitty/index.html}\footnote{This
+  is the R package I am using to draw the figures here, in combination with the
+  \texttt{drawdag} function of the 
+  ``rethinking'' package
+  ---\Burl{https://github.com/rmcelreath/rethinking}}). But before using
+software, I'd make sure to really understand the patterns, as shown in the
+figures above.
 
 
 \subsection{Variance and bias, or random and systematic error}
@@ -922,7 +999,7 @@ confounding\footnote{Randomization leads to exchangeability: there is no
 
 
 \subsection{Cholesterol, exercise, food}
-Look now at the relationship depicted in Figure \ref{fig:plot_dags_1_2}, panel
+Look now at the relationship depicted in Figure \ref{fig:plot_direct_chol_food}, panel
 ``b)'', and suppose that, even if Exercise directly leads to a decrease in
 Cholesterol, Exercise also leads to an increase in Food consumption and
 increasing Food consumption (because of the low quality of food available) leads
@@ -975,6 +1052,10 @@ consumption.
 \section{How is all of this relevant if I only do experimental/observational
   work?}
 
+
+
+
+
 \section{Extra: Lord's paradox}
 
 This is not required material, but \citet{pearl2016} presents a very interesting
@@ -995,6 +1076,148 @@ different. In the mediation case, whether or not to adjust for covariates depend
 on whether we want the direct effect (this is what we would get if we adjust for
 the covariate) or the total effect (what we get when we don't). In the
 confounding case, of course, we must adjust for the covariate.
+
+
+
+\section{Backdoor criterion}\label{backdoor-crit}
+
+\subsection{Backdoor path}\label{backdoor-path}
+The backdoor criterion uses the idea of ``\textbf{backdoor path}'' between two
+variables, X and Y. These are two equivalent explanations of what a backdoor path
+is:
+
+\begin{quoting}
+  (...) a back-door path is defined as any path between the causal variable
+  [treatment] and the outcome variable [our Y] that begins with an arrow that
+  points to the causal variable
+\end{quoting}
+From section 1.5, p.\ 30 of \citet{morgan_counterfactuals_2015}.
+
+
+\begin{quoting}
+In a causal DAG, a
+  backdoor path is a noncausal path between treatment [causal variable in
+  definition above] and outcome [our Y] that remains even if all arrows pointing
+  from treatment to other variables (the descendants of treatment) are
+  removed. That is, the path has an arrow pointing into treatment
+\end{quoting}  
+From section 7.1, p.\ 83, of \citet{hernan2020}.
+
+
+
+\subsection{Using the backdoor criterion}\label{backdoor-criterion-using}
+
+
+% But we might prefer a less terse explanation.
+
+In section 4.2, pp.\ 109 and ff.\
+of \citet{morgan_counterfactuals_2015} the following two-step process is given:
+
+\begin{quoting}
+  The overall goal of a conditioning strategy guided by the back-door criterion is to block
+all paths that generate noncausal associations between the causal variable and the
+outcome variable without inadvertently blocking any of the paths that generate the
+causal effect itself. In practice, a conditioning strategy that utilizes the back-door
+criterion is implemented in two steps:
+\begin{itemize}
+\item Step 1: Write down the back-door paths from the causal variable to the
+outcome variable, determine which ones are unblocked, and then search
+for a candidate conditioning set of observed variables that will block all
+unblocked back-door paths.
+\item Step 2: If a candidate conditioning set is found that blocks all back-door
+paths, inspect the patterns of descent in the graph in order to verify
+that the variables in the candidate conditioning set do not block or
+otherwise adjust away any portion of the causal effect of interest.
+\end{itemize}
+\end{quoting}
+
+Morgan and Winship \citep{morgan_counterfactuals_2015} then explain in detail
+(pp.\ 109 and 110) why that procedure is justified (a reasoning that is Pearl's
+backdoor criterion):
+
+
+\begin{quoting}
+  If one or more back-door paths connect the causal variable to the outcome
+  variable, the causal effect is identified by conditioning on a set of variables
+  $Z$ if
+
+  \begin{itemize}
+  \item Condition 1. All back-door paths between the causal variable and
+    the outcome variable are blocked after conditioning on $Z$, which
+    will always be the case if each back-door path
+    \begin{itemize}
+    \item (a) contains a chain of mediation $A \rightarrow C \rightarrow B$, where the
+      middle variable $C$ is in $Z$, or
+
+    \item (b) contains a fork of mutual dependence $A \leftarrow C \rightarrow B$,
+      where the middle variable $C$ is in $Z$, or
+      
+    \item (c) contains an inverted fork of mutual causation
+      $A \rightarrow C \leftarrow B$, where the middle variable $C$ and all of $C$'s
+      descendants are not in $Z$;
+    \end{itemize}
+    and
+
+  \item Condition 2. No variables in $Z$ are descendants of the causal
+    variable that lie on (or descend from other variables that lie on)
+    any of the directed paths that begin at the causal variable and
+    reach the outcome variable.
+  \end{itemize}
+
+\end{quoting}
+
+
+For completeness, here is a wording of the backdoor criterion, from section 3.3,
+pp.\ 61 and ff.\ of \citet{pearl_causal_2016}
+% definition is given:
+
+\begin{quoting}
+\textbf{Definition 3.3.1, The backdoor criterion}: Given an ordered pair of
+variables (X, Y) in a directed acyclic graph G, a set of variables Z satisfies
+the backdoor criterion relative to (X, Y) if no node in Z is a descendant of X,
+and Z blocks every path between X and Y that contains an arrow into X.
+\end{quoting}
+
+\subsection{And d-separation?}
+\label{sec:d-sep}
+
+Some explanations of the backdoor criterion and the use of DAGs to find
+dependencies and independencies make use of \textit{d-separation}.  But you can
+explain and use the backdoor criterion without introducing more jargon, as we
+have seen above (for example, \citealp{morgan_counterfactuals_2015} only use the
+term d-separation in one footnote, though their procedure, which we have copied
+above, actually implicitly uses the definition of d-separation). Anyway,
+d-separation is well explained in Definition 2.4.1, p.\ 46 of
+\citet{pearl_causal_2016} or in section ``Fine point 6.1'', p. 76 of
+\citet{pearl_causal_2016} and is very useful if you want to find all the
+independencies and conditional independencies implied by a DAG.
+
+
+% With what we have
+% seen already, this will not be news:
+
+% \begin{quoting}
+%   Definition 2.4.1 (d-separation)
+%   A path p is blocked by a set of nodes Z if and only if
+%   \begin{itemize}
+%   \item p contains a chain of nodes
+% or a fork 
+%   \end{itemize}
+% 1. p contains a chain of nodes
+% or a fork
+% the middle node B is in Z (i.e., B is conditioned on), or
+% such that
+% 2. p contains a collider
+% such that the collision node B is not
+% in Z, and no descendant of B is in Z.
+% If Z blocks every path between two nodes X and Y, then X and Y are d-
+% separated, conditional on Z, and thus are independent conditional on Z.
+% \end{quoting}
+%  Definition 2.4.1, p.\ 46 of \citet{pearl_causal_2016}
+
+
+% Finally, a third way of understanding this. In section 7.2, pp.\ 85-86 of \citet{hernan2020}
+%% Nope, just focuses on confounding.
 
 
 {\small
