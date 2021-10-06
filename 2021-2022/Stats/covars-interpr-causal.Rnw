@@ -1073,6 +1073,105 @@ no particular order.
 
 \section{Direct and indirect effects}\label{direct-indirect}
 
+\subsection{Estimating direct effects}\label{direct-eff}
+Look at the following DAG (this is from \citealp[section 3.7, pp.\ 75 and
+ff.\]{pearl_causal_2016}; a similar example is shown in \citealp[section 6.3.2,
+p.\ 180--182]{rethinking_2020}\footnote{Though in \citealp{rethinking_2020} the
+  explanation of the problem I find possibly misleading, since the difference
+  between the direct and indirect effects is not emphasized enough}) in Figure
+\ref{fig:dag_direct}:
+
+
+<<dag_direct, results='hide', echo=FALSE,fig.width = 4, fig.height=4, fig.lp='fig:', fig.cap='Direct effects',out.width='9cm', fig.pos= "!h">>=
+op <- par(mfrow = c(1, 2))
+dire <- dagitty("dag {
+Gender -> Qualification
+Gender -> Hiring
+Qualification -> Hiring
+}")
+coordinates(dire) <- list(x = c(Gender = 1, Qualification = 2, Hiring = 3),
+                          y = c(Gender = 0, Qualification = -1 Hiring = 0))
+
+drawdag(dire, xlim = c(0.5, 3.5), ylim = c(-.9, 1.3))
+
+## dire2 <- dagitty("dag {
+## Exercise -> Food
+## Exercise -> Cholesterol
+## Food -> Cholesterol
+## }")
+## coordinates(dire2) <- list(x = c(Exercise = 1, Food = 2, Cholesterol = 3),
+##                           y = c(Exercise = 0, Food = -1 Cholesterol = 0))
+## drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.9, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+## par(op)
+@ 
+
+You might want to estimate the \textbf{direct effect} of Gender on Hiring (if
+there is any, it could be evidence for discrimination). The direct effect is the
+effect not mediated by other variables. In this case, the procedure is simple:
+regress Hiring on both Qualification and Gender, and the coefficient for Gender
+gives you the direct effect. Why? Because you have removed the effects that go
+through Qualification by adding Qualification as a covariate.
+
+The \textbf{total effect} of Gender on Hiring would be obtained by regression
+Hiring on Gender (without including Qualification in the model). Total effects
+are what we have been mostly concerned with here.
+
+
+\subsection{Direct effects when there is confounding}\label{direct-eff-conf}
+
+But suppose the way things really are is the one shown in Figure
+\ref{fig:dag_direct_conf}, where ``SocioecStatus'' is the socioeconomic status of
+the family of the persons being hired.
+
+<<dag_direct_conf, results='hide', echo=FALSE,fig.width = 4, fig.height=4, fig.lp='fig:', fig.cap='Direct effects and confounding',out.width='9cm', fig.pos= "!h">>=
+op <- par(mfrow = c(1, 2))
+dire3 <- dagitty("dag {
+Gender -> Qualification
+Gender -> Hiring
+Qualification -> Hiring
+SocioecStatus -> Qualification
+SocioecStatus -> Hiring
+}")
+coordinates(dire3) <- list(x = c(Gender = 1, Qualification = 2, Hiring = 3,
+                                SocioecStatus = 4),
+                          y = c(Gender = 0, Qualification = -1 Hiring = 0,
+                                SocioecStatus = -1.5))
+
+drawdag(dire3, xlim = c(0.5, 3.5), ylim = c(-.9, 1.8))
+@ 
+
+If you only adjust by Qualification, your estimates of direct effect will be
+biased because Qualification is a collider (a descendant of both Income and
+Gender).
+
+If you wanted an unbiased estimate of the direct effect, you would need to
+measure and condition on both Qualification and SocioecStatus.
+
+
+The estimate of the total effect, where you simply regress Hiring on Gender, in
+contrast, will not be biased (and there is no need to measure Qualification or
+SocioecStatus).
+
+
+A structurally similar example is also discussed in ``Technical Point 8.1'', p.\
+104, of \citet{hernan2020}, and similar examples in section 8.3.2 and 8.3.3,
+pp.\ 280 and ff.\ of \citet{morgan_counterfactuals_2015}. Caveats about the
+adjustment of the mediator in the presence of confounding are also given in
+\citet{cole2002}, using hypothetical examples from the Physicians' Health
+Study. Estimating direct and indirect effects is related to the study of
+mediation. A book-length treatment in \citet{vanderweele2015}.
+
+
+\subsection{Revisiting the fungus example}\label{revisit-fungus}
+If you go back to Figure \ref{fig:plot_fungus_2}, doing a regression with Size on
+both Fungus and Treatment would be estimating the direct effect of Treatment on
+Size. In other words, the coefficient for Treatment would be the direct effect of
+Treatment on Size that does not go through (or is not mediated by) the effect of
+Fungus on Treatment.
+
+But remember that if there are unmeasured confounders between Fungus and Size, as
+we have just seen in the examples above, you can introduce bias.
 
 
 \subsection{Direct and indirect effects: some R code}\label{direct-indirect-example-R}
@@ -1081,9 +1180,11 @@ example similar to the first one. We are interested in the relationship between
 Exercise, Cholesterol, and Food consumption.  Even if Exercise directly leads to
 a decrease in Cholesterol, Exercise also leads to an increase in Food consumption
 and increasing Food consumption (because of the low quality of food available)
-leads to an increase in Cholesterol. The code in that file shows how adjusting
-for the mediator gives the direct effect and how not adjusting for it gives the
-total effect. This is for a model without confounders. 
+leads to an increase in Cholesterol. (This is similar to the example above with
+Gender, Hiring, Qualification replaced by, respectively, Exercise, Cholesterol,
+Food).  The code in that file shows how adjusting for the mediator gives the
+direct effect and how not adjusting for it gives the total effect. This is for a
+model without confounders.
 
 
 % \subsection{Cholesterol, exercise, food}
@@ -1142,18 +1243,20 @@ total effect. This is for a model without confounders.
 \section{Designed experiments and lack of confounding}\label{randomiz}
 In designed experiments with random assignment of experimental units (patients,
 petri dishes, whatever) to treatments, there is no
-confounding.
+confounding. There is no arrow to treatment assignment from anything else
+precisely because treatment assignment is random. So go an redraw the very first
+DAG, but remove the arrow into the treatment variable (Exercise). 
 
-Randomization leads to exchangeability: there is no association between the
-potential outcomes and the actual treatment received.  The relationship between
-randomization and exchangeability is discussed in ``Technical Point 2.1'', p.\ 15
-in \citet{hernan2020}.  An intuitive explanation (for a treatment with two
-possible values, ``treatment'' and ``control'') is the following one in section
-2.3.2, p.\ 9 of \cite{neal_causality_2020}: ``Exchangeability means that the
-treatment groups are exchangeable in the sense that if they were swapped, the new
-treatment group would observe the same outcomes as the old treatment group, and
-the new control group would observe the same outcomes as the old control
-group. ''
+Put differently, randomization leads to exchangeability: there is no association
+between the potential outcomes and the actual treatment received.  The
+relationship between randomization and exchangeability is discussed in
+``Technical Point 2.1'', p.\ 15 in \citet{hernan2020}.  An intuitive explanation
+(for a treatment with two possible values, ``treatment'' and ``control'') is the
+following one in section 2.3.2, p.\ 9 of \cite{neal_causality_2020}:
+``Exchangeability means that the treatment groups are exchangeable in the sense
+that if they were swapped, the new treatment group would observe the same
+outcomes as the old treatment group, and the new control group would observe the
+same outcomes as the old control group. ''
 
 We are ignoring possibly complicating issues in experimental studies, specially
 with human subjects, such as partial compliance and whether to use ``intention to
