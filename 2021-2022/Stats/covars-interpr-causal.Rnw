@@ -104,7 +104,7 @@ opts_knit$set(stop_on_error = 2L)
   Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
   Madrid, Spain{\footnote{r.diaz@uam.es, rdiaz02@gmail.com}} \\
   %% {\footnote{rdiaz02@gmail.com}} \\
-  {\small \Burl{http://ligarto.org/rdiaz}} \\
+  {\small \Burl{https://ligarto.org/rdiaz}} \\
 }
 
 
@@ -475,6 +475,7 @@ not lead to bias. The bad idea was adjusting for Fungus.)
 \clearpage
 \section{Basic DAG structures}\label{dag-structs}
 
+\subsection{The three basic DAG structures}\label{three-basic-structs}
 The basic DAG structures with their names are presented in Figure
 \ref{fig:plot_dag_struct}\footnote{This is fairly standard material; you can find it in,
 for example, Figure 3.3 in \citet{morgan_counterfactuals_2015}, section 6.3 in
@@ -882,6 +883,7 @@ causes, mediators, or colliders).
 \section{A systematic procedure to find what variables to condition on}
 \label{sec:syst-proc-cond}
 
+\subsection{The backdoor criterion: basics}\label{backdoor-basics}
 Is there a systematic way to find what variables we should condition on when we
 want to estimate the causal effect of X on Y, and avoid being confounded? Yes,
 there is. The key ideas are:
@@ -894,8 +896,8 @@ there is. The key ideas are:
   descendants of colliders.
 \end{itemize}
 
-And this can be done using a systematic procedure. I won't give the full details,
-but they are very well explained in:
+And this can be done using a systematic procedure. In the appendix, \qref{backdoor-crit}, I give the
+complete procedure in full detail, so that you have it there. And it is very well explained in:
 \begin{itemize}
 \item Section 4.2, pp.\ 109 and ff.\ of \citet{morgan_counterfactuals_2015} (I
   particularly like how their explanation combines the original Pearl's criterion
@@ -906,8 +908,7 @@ but they are very well explained in:
 \end{itemize}
 
 They are all saying the same thing: how to look for sets of variables that block
-what are called backdoor paths. In the appendix, \qref{backdoor-crit}, I give the
-complete procedure in full detail, so that you have it there.
+what are called backdoor paths. 
 
 
 \subsection{Software for this task?}
@@ -932,125 +933,272 @@ Bias: ``sesgo'', in Spanish
 
 
 
-\section{The examples}
+\section{Additional examples}\label{add-examples}
 
-\subsection{}
+\subsection{A pretreatment collider variable we should not adjust on}\label{pretreat-no}
+Suppose the relationships in Figure \ref{fig:plot_dag_ptr} (from Figure 18.6,
+section 18.2, p.\ 227 in \citealp{hernan2020}), and you are interested in the
+effect of X on Y ($U_1$ and $U_2$ are two different unmeasured variables). Should
+you adjust for L, which is a pre-treatment variable?
 
 
-Z -> X -> Y
+<<dag_ptr, results='hide', echo=FALSE>>=
+ptr <- dagitty("dag {
+X -> Y
+U_1 -> L
+U_2 -> L
+U_1 -> Y
+U_2 -> X
+}")
+@ 
 
-cite Vanderweele and Shpitser, 2011. Also Ewel?
+<<plot_dag_ptr, fig.width = 4, fig.height=4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='A pretreatment collider',out.width='9cm', fig.pos= "!h">>=
+coordinates(ptr) <- list(x = c(L = 1, X = 2, Y = 3, U_1 = 0.8, U_2 = 0.8),
+                         y = c(L = 0, X = 0, Y = 0, U_1 = -.5, U_2 = .5))
 
+drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.9, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@ 
+
+You know the answer. No, do not adjust for L: it is a collider ($U_1$ and $U_2$
+are its parents) on the backdoor path between X and Y. If we adjust for L, it
+will induce a non-causal association between X and Y\footnote{The bias induced is
+  sometimes called \textit{M-bias}}.
+
+Main moral of this story: \textbf{adjusting for all possible pre-treatment
+  variables is not always a good idea}. More on that below.
+
+
+\subsection{Should we adjust for the cause of the cause?}\label{cause-of-cause}
+
+Suppose the relationships in Figure \ref{fig:plot_dag_zxy}, and you are
+interested in the effect of X on Y. Should you adjust for Z?
+
+
+<<dag_zxy, results='hide', echo=FALSE>>=
+ccc <- dagitty("dag {
+Z -> X
+X -> Y
+}")
+@ 
+
+<<plot_dag_zxy, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Cause of a cause',out.width='8cm', fig.pos= "!h">>=
+coordinates(ccc) <- list(x = c(Z = 1, X = 2, Y = 3),
+                         y = c(Z = 0, X = 0, Y = 0))
+
+drawdag(ccc, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@ 
+
+
+Short answer: no. If you do, it will increase the noise of the estimate of the
+effect of X on Y. (Code to see how adjusting for Z leads to increased standard
+errors is provided in file \texttt{Z\_X\_Y\_adjust\_Z.R}, in the repo.)
+
+Longer answer: no, but sometimes people adjust for Z because Z might be a common
+cause of X and Y. Here the argument is ``if I do not adjust for Z and it is a
+common cause of X and Y, it will introduce bias that will result in possibly very
+serious confounding. If I adjust for Z when Z is just the cause of X what will
+happen is that the standard error of the estimate of X on Y will increase, but
+there will be no bias''. That is a possibly sensible argument.
+
+
+Is there a way to decide? Yes, it might be possible to examine if you really need
+to adjust for Z and, then, avoid adjusting for Z. See \citet{vanderweele2011},
+section 4 (p.\ 1409, and p.\ 1411 with the results of their simulations). 
+
+\subsection{The cause of the cause and bias amplification}\label{amplification}
+
+Now consider this DAG (U is an unmeasured variable): Figure \ref{fig:plot_dag_bias_amp}
+
+<<dag_bias_amp, results='hide', echo=FALSE>>=
+bamp <- dagitty("dag {
+Z -> X
+X -> Y
+U -> X
+U -> Y
+}")
+@ 
+
+<<plot_dag_bias_amp, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Cause of a cause and bias amplification',out.width='8cm', fig.pos= "!h">>=
+coordinates(bamp) <- list(x = c(Z = 1, X = 2, Y = 3, U = 1),
+                         y = c(Z = 0, X = 0, Y = 0, U = -.5))
+
+drawdag(bamp, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@
+
+Adjusting for Z is generally a very bad idea here, because it can lead to
+\textbf{bias amplification}: amplification of the bias induced by U. Of course,
+things would be OK if you could adjust for U (but U has not been measured). 
+More details in section 18.2, pp.\ 224 and ff.\ of \citet{hernan2020}; this
+phenomenon is also mentioned in \citet{vanderweele2011}. (And in case you care: Z
+could be used as an instrument or instrumental variable, but when adjusting for
+it, it is not being used as an instrument.)
 
 \subsection{A more complex, but very real, example: the birth-weight paradox}
 
 
 
-In designed experiments with random assignment of experimental units (patients,
-petri dishes, whatever) to treatments, there is no
-confounding\footnote{Randomization leads to exchangeability: there is no
-  association between the potential outcomes and the actual treatment received.
-  The relationship between randomization and exchangeability is discussed in
-  ``Technical Point 2.1'', p.\ 15 in \citet{hernan2020}.  An intuitive
-  explanation (for a treatment with two possible values, ``treatment'' and
-  ``control'') is the following one in section 2.3.2, p.\ 9 of \cite{neal_causality_2020}:
-  ``Exchangeability means that the treatment groups are exchangeable in the sense
-  that if they were swapped, the new treatment group would observe the same
-  outcomes as the old treatment group, and the new control group would observe
-  the same outcomes as the old control group. ''
+\section{How is all of this relevant if I only do experimental/observational
+  work?}
 
-  We are ignoring other issues, such as partial compliance
-  and whether to use ``intention to treat'' or ``per-protocol'' analyses; see
-  chapter 9 in \citet{hernan2020}. Note that differential loss to follow up is a
-  case of selection bias, not confounding; see chapter 8 in
-  \citet{hernan2020}. On both issues, see also chapter 5 in
-  \citet{westreich2019}.
 
-  
-  More on ``exchangeability''. What follows is just for completeness, and because
-  I tend to trip over terminological issues.  As explained in pp.\ 459 and 460 of
-  \cite{vanderweele2015}, the same condition is often referred to by the
-  following different names: ``exchangeability'', ``ignorability'',
-  ``exogeneity'' or ``no-unmeasured-confounding''. For example,
-  \citet{morgan_counterfactuals_2015} in p.\ 53 (section 2.6) use
-  ``ignorability'' for the same expression used to denote exchangeability in
-  \citet{hernan2020}, and \citet{pearl_causality_2009} in pp.79 and 341-342
-  also uses ``ignorability'' for the same expression (more precisely, Pearl's
-  expression is for conditional exchangeability given covariates Z).
-  \citet{rosenbaum2017} defines ignorability in note 33, p.\ 300, and p.\ 349,
-  with the emphasis the other way around: probability of treatment assignment
-  independent of potential outcomes given covariates. % But then,
-  % \citet{Gelman2014} in exercise 8.10, p.\ 230, have an exercise where we are
-  % asked to explain the differences --I think their usage of e
-  % The reasons for receiving one treatment or another cannot be due to the outcome
-  % itself nor to the treatment actually received.
-}.
 
-%% It would be great to clarify this terminological inconsistency.
-%% Rosenbaum's definition is awesome, but is really about ignorability, which
-%% I think is not exactly the same as exchangeability in Hernan and Robins.
-% More formally, we would say there is exchangeability; see
-% chapters 2 and 3 in \citet{hernan2020} and note 33, p.\ 300, in
-% \citet{rosenbaum2017}.
-%% Gelman et al also discuss this, but I think their use of exchangeability is different.
+\subsection{But I need to know at least something about the phenomenon I am
+  dealing with to do any of this!!!!}\label{need-know}
+Well, yes, of course you do. As Miguel Hern\'an emphasized in his edX
+course ``Causal Diagrams: Draw Your Assumptions Before Your Conclusions''\\
+\Burl{https://www.edx.org/course/causal-diagrams-draw-your-assumptions-before-your},
+you have to draw your assumptions before your conclusions.
+
+Causal claims are much stronger than claims about association. They require
+making stronger assumptions.
+
+(By the way, we have not touched at all here on topics such as trying to measure
+the causes of an effect and finding \textbf{sufficient causes} nor on trying to
+find the causal DAGs from a set of data. We have focused ``just'' on measuring
+the effects of causes. For more on those topics, go to \citealp{hernan2020},
+\citealp{morgan_counterfactuals_2015}, \citealp{neal_causality_2020}).
+
+
+
+\noindent\rule{\textwidth}{1pt}
+
+\part*{Appendix and additional material}
+As it says: what follows gives additional details on some issues above. I follow
+no particular order.
+
 
 
 \section{Direct and indirect effects}\label{direct-indirect}
 
 
-\subsection{Cholesterol, exercise, food}
-Look now at the relationship depicted in Figure \ref{fig:plot_direct_chol_food}, panel
-``b)'', and suppose that, even if Exercise directly leads to a decrease in
-Cholesterol, Exercise also leads to an increase in Food consumption and
-increasing Food consumption (because of the low quality of food available) leads
-to an increase in Cholesterol. How would we analyze this data if we want to
-estimate the total effect of Exercise on Cholesterol?
+
+\subsection{Direct and indirect effects: some R code}\label{direct-indirect-example-R}
+In file \texttt{mediator\_cholest\_food\_exercise.R} I present code for an
+example similar to the first one. We are interested in the relationship between
+Exercise, Cholesterol, and Food consumption.  Even if Exercise directly leads to
+a decrease in Cholesterol, Exercise also leads to an increase in Food consumption
+and increasing Food consumption (because of the low quality of food available)
+leads to an increase in Cholesterol. The code in that file shows how adjusting
+for the mediator gives the direct effect and how not adjusting for it gives the
+total effect. This is for a model without confounders. 
+
+
+% \subsection{Cholesterol, exercise, food}
+% Look now at the relationship depicted in Figure \ref{fig:plot_direct_chol_food}, panel
+% ``b)'', and suppose that, even if Exercise directly leads to a decrease in
+% Cholesterol, Exercise also leads to an increase in Food consumption and
+% increasing Food consumption (because of the low quality of food available) leads
+% to an increase in Cholesterol. How would we analyze this data if we want to
+% estimate the total effect of Exercise on Cholesterol?
 
 
 
-<<dag_2, results='hide', echo = FALSE>>=
-mediator <- dagitty("dag {
-Exercise -> Food
-Food -> Cholesterol
-Exercise -> Cholesterol
-}")
-@ 
-%% <<plot_dags_1_2, out.width = '14cm', out.height='7cm'>>=
-<<plot_direct_chol_food, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Introductory figures'>>=
-coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
-                                  y = c(Exercise = 0, Age = -1, Cholesterol = 0))
+% <<dag_2, results='hide', echo = FALSE>>=
+% mediator <- dagitty("dag {
+% Exercise -> Food
+% Food -> Cholesterol
+% Exercise -> Cholesterol
+% }")
+% @ 
+% %% <<plot_dags_1_2, out.width = '14cm', out.height='7cm'>>=
+% <<plot_direct_chol_food, fig.width = 10, fig.height=5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.cap='Introductory figures'>>=
+% coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
+%                                   y = c(Exercise = 0, Age = -1, Cholesterol = 0))
 
-drawdag(mediator, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
-text(x = 2, y = 1.2, labels ="b)", cex = 1.2)
-@ 
+% drawdag(mediator, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+% text(x = 2, y = 1.2, labels ="b)", cex = 1.2)
+% @ 
 
 
-<<simul_2, results='hide', echo = TRUE>>=
-N <- 1e4 
+% <<simul_2, results='hide', echo = TRUE>>=
+% N <- 1e4 
 
-################## Mediator
-mediator <- data.frame(Exercise = runif(N, 1, 100))
-mediator$Food <- mediator$Exercise * 3 + rnorm(N)
-## Cholesterol decreases with Exercise (-1) but increases with Food
-mediator$Cholesterol <- mediator$Food * 2 - mediator$Exercise + rnorm(N)
-@ 
+% ################## Mediator
+% mediator <- data.frame(Exercise = runif(N, 1, 100))
+% mediator$Food <- mediator$Exercise * 3 + rnorm(N)
+% ## Cholesterol decreases with Exercise (-1) but increases with Food
+% mediator$Cholesterol <- mediator$Food * 2 - mediator$Exercise + rnorm(N)
+% @ 
 
-And here for case b).
-<<code_2, results='show', echo = TRUE>>=
-m_mediator_adjust <- lm(Cholesterol ~ Exercise + Food, data = mediator)
-m_mediator_no_adjust <- lm(Cholesterol ~ Exercise, data = mediator)
+% And here for case b).
+% <<code_2, results='show', echo = TRUE>>=
+% m_mediator_adjust <- lm(Cholesterol ~ Exercise + Food, data = mediator)
+% m_mediator_no_adjust <- lm(Cholesterol ~ Exercise, data = mediator)
 
-S(m_mediator_adjust)
-S(m_mediator_no_adjust)
+% S(m_mediator_adjust)
+% S(m_mediator_no_adjust)
 
-@ 
+% @ 
 
-In case b), if we want to measure the total
-effect of Exercise in this experiment, we should not adjust for Food
-consumption.
+% In case b), if we want to measure the total
+% effect of Exercise in this experiment, we should not adjust for Food
+% consumption.
 
-\section{How is all of this relevant if I only do experimental/observational
-  work?}
+
+
+\section{Designed experiments and lack of confounding}\label{randomiz}
+In designed experiments with random assignment of experimental units (patients,
+petri dishes, whatever) to treatments, there is no
+confounding.
+
+Randomization leads to exchangeability: there is no association between the
+potential outcomes and the actual treatment received.  The relationship between
+randomization and exchangeability is discussed in ``Technical Point 2.1'', p.\ 15
+in \citet{hernan2020}.  An intuitive explanation (for a treatment with two
+possible values, ``treatment'' and ``control'') is the following one in section
+2.3.2, p.\ 9 of \cite{neal_causality_2020}: ``Exchangeability means that the
+treatment groups are exchangeable in the sense that if they were swapped, the new
+treatment group would observe the same outcomes as the old treatment group, and
+the new control group would observe the same outcomes as the old control
+group. ''
+
+We are ignoring possibly complicating issues in experimental studies, specially
+with human subjects, such as partial compliance and whether to use ``intention to
+treat'' or ``per-protocol'' analyses; see chapter 9 in \citet{hernan2020}. Note
+that differential loss to follow up is a case of selection bias, not confounding;
+see chapter 8 in \citet{hernan2020}. On both issues, see also chapter 5 in
+\citet{westreich2019}.
+
+
+\subsection{Terminology: exchangeability, ignorability}\label{ignorab}
+
+More on ``exchangeability''. What follows is just for completeness, and because I
+tend to trip over terminological issues.
+
+As explained in pp.\ 459 and 460 of \cite{vanderweele2015}, the same condition is
+often referred to by the following different names: ``exchangeability'',
+``ignorability'', ``exogeneity'' or ``no-unmeasured-confounding''. For example,
+\citet{morgan_counterfactuals_2015} in p.\ 53 (section 2.6) use ``ignorability''
+for the same expression used to denote exchangeability in \citet{hernan2020}, and
+\citet{pearl_causality_2009} in pp.79 and 341-342 also uses ``ignorability'' for
+the same expression (more precisely, Pearl's expression is for conditional
+exchangeability given covariates Z).  \citet{rosenbaum2017} defines ignorability
+in note 33, p.\ 300, and p.\ 349, with the emphasis the other way around:
+probability of treatment assignment independent of potential outcomes given
+covariates. % But then,
+  % \citet{Gelman2014} in exercise 8.10, p.\ 230, have an exercise where we are
+  % asked to explain the differences --I think their usage of e
+  % The reasons for receiving one treatment or another cannot be due to the outcome
+  % itself nor to the treatment actually received.
+
+
+\subsection{Randomization, exchangeability, counterfactuals and potential
+  outcomes}\label{counterf}
+
+I have not used the words counterfactuals or potential outcomes. But
+counterfactuals are (arguably) essential to understand why we can make causal
+inferences from randomized experiments, and to understand what we are trying to
+do when we try to eliminate confounding to try to do causal inference from
+observational data. See further details in \citet{rosenbaum2017},
+\citet{hernan2020}, \citet{morgan_counterfactuals_2015},
+\citet{pearl2016}. (\citealp{rosenbaum2017} does not use DAGs at all; the others
+do, and draw ---pun intended--- connections between counterfactuals and
+DAGs). Key message: even if you don't care about DAGs or making causal inferences
+from observational data, counterfactuals are key for your inferences from
+experimental data.
 
 
 
@@ -1233,4 +1381,63 @@ independencies and conditional independencies implied by a DAG.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+% In designed experiments with random assignment of experimental units (patients,
+% petri dishes, whatever) to treatments, there is no
+% confounding\footnote{Randomization leads to exchangeability: there is no
+%   association between the potential outcomes and the actual treatment received.
+%   The relationship between randomization and exchangeability is discussed in
+%   ``Technical Point 2.1'', p.\ 15 in \citet{hernan2020}.  An intuitive
+%   explanation (for a treatment with two possible values, ``treatment'' and
+%   ``control'') is the following one in section 2.3.2, p.\ 9 of \cite{neal_causality_2020}:
+%   ``Exchangeability means that the treatment groups are exchangeable in the sense
+%   that if they were swapped, the new treatment group would observe the same
+%   outcomes as the old treatment group, and the new control group would observe
+%   the same outcomes as the old control group. ''
+
+%   We are ignoring other issues, such as partial compliance
+%   and whether to use ``intention to treat'' or ``per-protocol'' analyses; see
+%   chapter 9 in \citet{hernan2020}. Note that differential loss to follow up is a
+%   case of selection bias, not confounding; see chapter 8 in
+%   \citet{hernan2020}. On both issues, see also chapter 5 in
+%   \citet{westreich2019}.
+
+  
+%   More on ``exchangeability''. What follows is just for completeness, and because
+%   I tend to trip over terminological issues.  As explained in pp.\ 459 and 460 of
+%   \cite{vanderweele2015}, the same condition is often referred to by the
+%   following different names: ``exchangeability'', ``ignorability'',
+%   ``exogeneity'' or ``no-unmeasured-confounding''. For example,
+%   \citet{morgan_counterfactuals_2015} in p.\ 53 (section 2.6) use
+%   ``ignorability'' for the same expression used to denote exchangeability in
+%   \citet{hernan2020}, and \citet{pearl_causality_2009} in pp.79 and 341-342
+%   also uses ``ignorability'' for the same expression (more precisely, Pearl's
+%   expression is for conditional exchangeability given covariates Z).
+%   \citet{rosenbaum2017} defines ignorability in note 33, p.\ 300, and p.\ 349,
+%   with the emphasis the other way around: probability of treatment assignment
+%   independent of potential outcomes given covariates. % But then,
+%   % \citet{Gelman2014} in exercise 8.10, p.\ 230, have an exercise where we are
+%   % asked to explain the differences --I think their usage of e
+%   % The reasons for receiving one treatment or another cannot be due to the outcome
+%   % itself nor to the treatment actually received.
+% }.
+
+%% It would be great to clarify this terminological inconsistency.
+%% Rosenbaum's definition is awesome, but is really about ignorability, which
+%% I think is not exactly the same as exchangeability in Hernan and Robins.
+% More formally, we would say there is exchangeability; see
+% chapters 2 and 3 in \citet{hernan2020} and note 33, p.\ 300, in
+% \citet{rosenbaum2017}.
+%% Gelman et al also discuss this, but I think their use of exchangeability is different.
 
