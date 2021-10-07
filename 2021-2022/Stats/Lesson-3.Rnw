@@ -3242,13 +3242,13 @@ points. This, of course, makes sense: if there are few points, we will
 only be able to detect if a model is a bad one if it really is very bad.
 
 \Robject{cholestanova}, from section \nameref{twoway}, looks relatively OK
-(remember, this is an ANOVA, and there were six combinations of levels,
-and thus the discrete values you observe in two of the plots). However,
-the qqplot of residuals is a little bit ugly, but it is hard to tell from
-relatively so little data\footnote{Again, this is an interesting case, since
-  these data are simulated from a normal distribution}. Finally,
-\Robject{AnovaModel.1}, from section \nameref{oneway}, looks just fine. Please
-look at all of these yourself to see them.
+(remember, this is an ANOVA, and there were six combinations of levels, and thus
+the discrete values you observe in two of the plots). However, the
+qqplot\footnote{``qqplot'': ``quantile-quantile plot''} of residuals is a little
+bit ugly, but it is hard to tell from relatively so little data\footnote{Again,
+  this is an interesting case, since these data are simulated from a normal
+  distribution}. Finally, \Robject{AnovaModel.1}, from section \nameref{oneway},
+looks just fine. Please look at all of these yourself to see them.
 
 \subsection{Diagnostics: more examples with regression and ANCOVA models}\label{diag-more-reg}
 
@@ -3378,17 +3378,17 @@ suppressWarnings(try(rm(list = ls())))
 suppressWarnings(try(rm(X, U, Z)))
 
 set.seed(38)
-sex <- factor(rep(c("Male", "Female"), c(60, 60)))
-smoking <- factor(rep(rep(c("No", "Yes"), c(30, 30)), 2))
-hdl <- rep(c(3, 2, 6, 4), rep(30, 4))
-hdl <- hdl + rnorm(length(hdl), sd = 2)
-hdl[c(1, 21, 13)] <- hdl[c(1, 21, 13)] + 27
-hdl1B <- data.frame(hdl, sex, smoking)[1:110,]
-rm(hdl, sex, smoking)
+exercise <- factor(rep(c("Type_I", "Type_II"), c(60, 60)))
+drug <- factor(rep(rep(c("A", "B"), c(30, 30)), 2))
+dsdd <- rep(c(3, 2, 6, 4), rep(30, 4))
+dsdd <- dsdd + rnorm(length(dsdd), sd = 2)
+dsdd[c(1, 21, 13)] <- dsdd[c(1, 21, 13)] + 27
+dsdd1B <- data.frame(dsdd, exercise, drug)[1:110,]
+rm(dsdd, exercise, drug)
 
-m6B <- lm(hdl ~ smoking * sex, data = hdl1B)
+mdsB <- lm(dsdd ~ drug * exercise, data = dsdd1B)
 par(mfrow = c(2, 2), oma = c(0, 0, 3, 0))
-plot(m6B)
+plot(mdsB)
 
 @
 
@@ -3709,15 +3709,15 @@ about comparing models.
 
 
 If you really need automated or semiautomated procedures, then reasonable
-strategies use model-comparison criteria such as AIC (e.g., with the
-\Rfunction{step} function) and even better is then bootstrapping the whole process
-to get estimates of error, predictive ability, etc. Even better, of
-course, is subject-matter guidance on how to proceed and what are and are
-not candidates for deletion and in what order. The book by Frank Harrell,
-``Regression modeling strategies'' contains great discussions of these
-topics. The actual data set used here is discussed, also in the context of
-variable selection, by P.\ Dalgaard in chapter 11 of ``Introductory
-statistics with R''.
+strategies use model-comparison criteria such as AIC\footnote{AIC: Akaike
+  Information Criterion} (e.g., with the \Rfunction{step} function) and even
+better is then bootstrapping the whole process to get estimates of error,
+predictive ability, etc. Even better, of course, is subject-matter guidance on
+how to proceed and what are and are not candidates for deletion and in what
+order. The book by Frank Harrell, ``Regression modeling strategies'' contains
+great discussions of these topics. The actual data set used here is discussed,
+also in the context of variable selection, by P.\ Dalgaard in chapter 11 of
+``Introductory statistics with R''.
 
 
 To give some examples (look at them carefully, and compare with what we
@@ -3739,6 +3739,56 @@ step(metab_b_r, direction = "both")
 ## But nothing can be dropped here
 step(longev_b_r, direction = "both")
 @ 
+
+\subsection{Differences between model selection using AIC and model comparison
+  using \Rfunction{anova} (and hypothesis testing using \Rfunction{Anova})}\label{aic-f-tests}
+
+
+The major difference is that when we compare models using \Rfunction{anova}, or
+examine each of the terms in a fitted model with, say, \Rfunction{Anova}, we are
+conducting statistical hypothesis testing. In contrast, the AIC criterion is not
+used to conduct hypothesis testing, but is a criterion related to predictive
+performance; so when we carry out model selection using AIC we are trying to find
+the best model where ``best'' is ``best from the point of view of prediction''.
+
+A second difference is that when we use \Rfunction{anova} and \Rfunction{Anova}
+to compare models or assess the significance of different variables, we generally
+do not (should not) do this with tens or hundreds of models and variables. We are
+testing some specific hypotheses and doing it ``manually''. In contrast, using
+model selection with AIC (or similar criteria) the procedure will run
+automatically and can potentially compare hundreds of models.
+
+
+A third difference is that most automated procedures such as \Rfunction{step}
+with AIC will add or remove a ``complete variable''. However, with
+\Rfunction{Anova} (and \Rfunction{glht}, and others) you can test specific
+hypotheses of interest to you, including hypotheses where, say, the average of
+two levels of a factor are equal to the third, etc.
+
+
+Finally, note that \Rfunction{anova} should only be used to compare nested models
+(even if \Rfunction{Anova} and others you can test hypotheses of interest to
+you). \Rfunction{step} will follow greedy comparison rules for moving from one
+model to another, but if you insist you could look at the AIC of a large
+collection of models (or all the possible models for a set of variables) and
+compare between models even if they are not nested versions of each other. Again,
+doing this using AIC might be sensible because the objective is prediction, not
+hypothesis testing.
+
+Simplifying the issues a little bit, hypothesis testing and model building using
+tools such as \Rfunction{anova} and \Rfunction{Anova} are things you do when you
+want to understand a phenomenon, whereas model selection using criteria such as
+AIC is what you do when you want to build models with the best predictive performance.
+
+
+As a consequence of the above, of course, sometimes using \Rfunction{step} is
+something that would make no sense and you would not even consider, for example
+in a clean, clear-cut experiment with two factors: you want to use an ANOVA, no
+need for \Rfunction{step}. And, similarly, with thousands of possible variables,
+running thousands of manually run model tests would not make sense if you are
+trying to build a good predictive model; use a procedure that will try to find
+the best model from the prediction point of view.
+
 
 
 \section{Experimental design matters}
