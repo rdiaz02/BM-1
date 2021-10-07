@@ -152,7 +152,7 @@ Please, \textbf{respect the copyright and license}. This material is
 \subsection{What is this about}
 \label{sec:what-this-about}
 
-The purpose of these notes is to try to clarify  questions about ``what
+The aim of these notes is to try to clarify  questions about ``what
 variables should we add to our models when our aim is interpretation''.
 
 As discussed in class, if our purpose when fitting statistical models is only
@@ -161,14 +161,14 @@ with or without other covariates, and other similar counterintuitive phenomena,
 are not a problem. The problem can arise if we want to interpret what the
 coefficients mean.
 
-The interpretation we often want to give is a causal one. For example, in a
-model where the dependent or outcome variable is cardiovascular health and one of
-the predictor variables is red wine we are, arguably, trying to understand if
-consuming red wine affects (i.e., has an effect on) cardiovascular health. We
-might want to do this so that we can make public health recommendations or take
-personal action (should I start drinking a little bit of wine?).  Intuitively, if
-a variable, X, has a causal effect on a variable, Y, manipulating X will change
-the value of Y.
+The interpretation we often want to give is a causal one. For example, in a model
+where the dependent or outcome variable is cardiovascular health and one of the
+predictor variables is red wine consumption we are, arguably, trying to
+understand if consuming red wine affects (i.e., has an effect on) cardiovascular
+health. We might want to do this so that we can make public health
+recommendations or take personal action (should I start drinking a little bit of
+wine?).  Intuitively, if a variable, X, has a causal effect on a variable, Y,
+manipulating X will change the value of Y.
 
 And what do we mean by causal effects? ``(...) estimation of causal effects in
 populations, that is, numerical quantities that measure changes in the
@@ -493,12 +493,13 @@ drawdag(fungus3, xlim = c(0.5, 3.5), ylim = c(-.1, 1.6))
 
 @ 
 
-In the above figure, Fungus is a descendant of both U and Treatment. This is
-called a \textbf{collider}. Conditioning on Fungus will lead to Treatment and
-moisture (U) being associated, even when they are really independent of each
-other. And that would lead to our mistakenly estimating that Treatment has an
-effect on Size (U affects Size and U is associated with Treatment when we
-condition on Fungus), when Treatment really does not have an effect on Size.
+In Figure \ref{fig:fungus_collider}, Fungus is a descendant of both U and
+Treatment. This is called a \textbf{collider}. Conditioning on Fungus will lead
+to Treatment and moisture (U) being associated, even when they are really
+independent of each other. And that would lead to our mistakenly estimating that
+Treatment has an effect on Size (U affects Size and U is associated with
+Treatment when we condition on Fungus), when Treatment really does not have an
+effect on Size.
 
 OK, this is getting complicated. Let us see the three basic DAG structures,
 and a few derived ones.
@@ -507,8 +508,9 @@ and a few derived ones.
 (But before we leave this example: what should we have done? Include in the model
 Treatment, which is the variable we are interested in, and also Plot, to decrease
 variability of the estimates. If we could we could have adjusted for U it would
-have been good, but we can't; anyway, U will increase the variability, but will
-not lead to bias. The bad idea was adjusting for Fungus.)
+have been good, but we can't; anyway, not including U in the model will increase
+the variability, but will not lead to bias. The bad idea was adjusting for
+Fungus.)
 
 \clearpage
 \section{Basic DAG structures}\label{dag-structs}
@@ -673,12 +675,12 @@ The following three expressions are equivalent, and you will find them in the li
 \item X and Y are independent \textit{if we condition on} Z (or
   \textit{conditioning on} Z).
 \item X and Y are independent \textit{if we adjust for} Z (or \textit{adjusting
-    for} Z).\footnote{X and Y are independent \textit{if we hold Z constant} can be
-    equivalent, though this is not as common as the above expressions with
+    for} Z).\footnote{X and Y are independent \textit{if we hold Z constant} can
+    be equivalent, though this is not as common as the above expressions with
     ``condition on'', ``given'', ``adjusting'', and we would need to be more
     precise about the meaning of \textit{holding constant}: are we really,
-    physically holding Z constant, or adjusting statistically for it, as in
-    conditioning?).}
+    physically holding Z constant via intervention, or adjusting statistically
+    for it, as in conditioning?).}
 \end{itemize}
 
 
@@ -1148,7 +1150,7 @@ find the causal DAGs from a set of data. We have focused ``just'' on measuring
 the effects of causes. For more on those topics, go to \citealp{hernan2020},
 \citealp{morgan_counterfactuals_2015}, \citealp{neal_causality_2020}).
 
-
+%% ZZ FIXME  what variables to add to a DAG
 
 \noindent\rule{\textwidth}{1pt}
 \clearpage
@@ -1350,8 +1352,7 @@ is:
   (...) a back-door path is defined as any path between the causal variable
   [treatment] and the outcome variable [our Y] that begins with an arrow that
   points to the causal variable
-\end{quoting}
-From section 1.5, p.\ 30, of \citet{morgan_counterfactuals_2015}.
+\end{quoting} \citet{morgan_counterfactuals_2015}, Section 1.5, p.\ 30. 
 
 
 \begin{quoting}
@@ -1361,7 +1362,7 @@ In a causal DAG, a
   from treatment to other variables (the descendants of treatment) are
   removed. That is, the path has an arrow pointing into treatment
 \end{quoting}  
-From section 7.1, p.\ 83, of \citet{hernan2020}.
+\citet{hernan2020},  Section 7.1, p.\ 83.
 
 
 
@@ -1497,6 +1498,7 @@ independencies and conditional independencies implied by a DAG.
 
 
 \section{Designed experiments and lack of confounding}\label{randomiz}
+\subsection{Randomization and exchangeability}
 In designed experiments with random assignment of experimental units (patients,
 petri dishes, whatever) to treatments, there is no
 confounding. There is no arrow to treatment assignment from anything else
