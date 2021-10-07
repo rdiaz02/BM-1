@@ -3047,6 +3047,7 @@ The three main types are:
 
 \section{Diagnostics}\label{diagnostics}
 
+\subsection{Model diagnostics: why, how}
 
 Wait!!! Do our models make sense? These are models, so we can, and should,
 check some of their basic assumptions. We cannot do justice to this
@@ -3163,6 +3164,7 @@ what I do with the \verb@par(oma = c(0, 0, 3, 0))@ (I actually do that inside th
 call to also allow to plot several figures at once: \verb@par(oma=c(0,0,3,0), mfrow=c(2,2))@)
 
 
+\clearpage
 \subsection{Diagnostics: examples with some of the regression models}\label{diag-regr}
 
 We will now use the two simple regression models we fitted in section
@@ -3250,6 +3252,7 @@ bit ugly, but it is hard to tell from relatively so little data\footnote{Again,
   distribution}. Finally, \Robject{AnovaModel.1}, from section \nameref{oneway},
 looks just fine. Please look at all of these yourself to see them.
 
+\clearpage
 \subsection{Diagnostics: more examples with regression and ANCOVA models}\label{diag-more-reg}
 
 <<f2d1z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance in ANCOVA model'>>=
@@ -3274,8 +3277,9 @@ plot(tgd2lm)
 
 ## Would this tell you anything?
 @
+\clearpage
 
-Trying to understand  the above patterns:
+Some plots to try to understand  the above patterns (these are just some initial steps):
 
 <<f2d12ww,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1'>>=
 ## library(lattice)
@@ -3296,7 +3300,9 @@ boxplot(fitted(tgd2lm) ~ tgd2$drug)
 
 \clearpage
 
-<<f2d12z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance. A regression model.'>>=
+\subsection{Diagnostics: more examples of non-constant variance (and other issues)}
+
+<<f2d12z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Another example with non-constant variance in a regression model.'>>=
 suppressWarnings(try(rm(x1, y1)))
 
 set.seed(3)
@@ -3327,7 +3333,7 @@ rm(x1, y1, x1y1, x1y1lm)
 
 
 
-<<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='And more non-constant variance of residuals plus other issues'>>=
+<<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Yet another example of non-constant variance (plus other issues)'>>=
 suppressWarnings(try(rm(X, U, Z, x1, y1, x1y1lm, x1y1)))
 
 set.seed(19)
@@ -3343,6 +3349,7 @@ rm(x1, y1, x1y1, x1y1lm)
 
 
 
+\clearpage
 
 \subsection{Diagnostics: a couple of examples from ANOVA models that are largely OK}
 
@@ -3362,7 +3369,7 @@ par(mfrow = c(2, 2), oma=c(0,0,3,0))
 plot(m6B)
 @
 
-
+\clearpage
 In the next plot what we probably want to understand is why we have those three
 large residuals. Those are leading to the pattern in the upper left diagnostic
 figure.
@@ -3383,6 +3390,7 @@ par(mfrow = c(2, 2), oma = c(0, 0, 3, 0))
 plot(mdsB)
 
 @
+\clearpage
 
 \subsection{Diagnostics: more examples with designed experiments}\label{diag-more-anova}
 
@@ -3599,7 +3607,7 @@ diff(range(hii3)) ## not constant
 % diff(range(hii2b))
 % diff(range(hii3))
 % @ 
-
+\clearpage
 \subsection{Diagnostics: further issues}
 
 For you to read and play around further:
@@ -3683,6 +3691,9 @@ For you to read and play around further:
 
 \section{Variable and model selection}
 
+\subsection{Why model selection?}
+
+
 You say you want to select variables? Select them for what? Prediction?
 Interpretation?  Variable selection is a touchy and delicate
 subject. First, procedures based purely in statistical criteria might
@@ -3698,6 +3709,9 @@ for instance using something like \verb@ anova(model1, model2) @, as we
 have seen (e.g., section \nameref{model-comp} or \nameref{ancova_rept}), might be
 a good idea. Notice, again, that \verb@ anova(model1, model2) @ is all
 about comparing models.
+
+
+\subsection{Model selection using AIC and \Rfunction{step}}
 
 
 If you really need automated or semiautomated procedures, then reasonable
