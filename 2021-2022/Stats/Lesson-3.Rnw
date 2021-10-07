@@ -3250,9 +3250,9 @@ relatively so little data\footnote{Again, this is an interesting case, since
 \Robject{AnovaModel.1}, from section \nameref{oneway}, looks just fine. Please
 look at all of these yourself to see them.
 
-\subsection{Diagnostics: more examples with regression models}\label{diag-more-reg}
+\subsection{Diagnostics: more examples with regression and ANCOVA models}\label{diag-more-reg}
 
-<<f2d1z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance'>>=
+<<f2d1z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance in ANCOVA model'>>=
 suppressWarnings(try(rm(list = ls()))) 
 suppressWarnings(try(rm(X, U, Z)))
 
@@ -3261,11 +3261,12 @@ e1 <- runif(100, 1, 15)
 e2 <- runif(250, 10, 20)
 tg1 <- 0 + 0.3 * e1 + rnorm(100)
 tg2 <- 2 + 0.2 * e2 
-tg2 <- tg2 + rnorm(25, sd = e2 * 0.1)
+## tg2 <- tg2 + rnorm(25, sd = e2 * 0.1)
+tg2 <- tg2 + rnorm(length(tg2), sd = e2 * 0.1)
 tg2 <- tg2 + rnorm(length(tg2))
 exposure <- c(e1, e2)
 tumor.size <- c(tg1, tg2)
-drug <- c(rep("A", 100), rep("B", 250))
+drug <- factor(c(rep("A", 100), rep("B", 250)))
 tgd2 <- data.frame(tumor.size, exposure, drug)
 rm(drug, tumor.size, exposure, e1, e2, tg1, tg2)
 ##ancova(tumor.size ~ exposure * drug, data = tgd2)
@@ -3273,17 +3274,37 @@ tgd2lm <- lm(tumor.size ~ exposure * drug, data = tgd2)
 par(mfrow = c(2, 2), oma=c(0,0,3,0))
 plot(tgd2lm)
 
+## Would this tell you anything?
+@
+
+Trying to understand  the above patterns:
+
+<<f2d12ww,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1'>>=
+## library(lattice)
+## xyplot(tumor.size ~ exposure | drug, data = tgd2)
+ancova(tumor.size ~ exposure * drug, data = tgd2)
+@ 
+
+<<f2d12ww,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1b'>>=
+library(lattice)
+xyplot(tumor.size ~ exposure | drug, data = tgd2)
+@ 
+
+
+<<f2d12ww2,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 2'>>=
+boxplot(fitted(tgd2lm) ~ tgd2$drug)
 @
 
 
+\clearpage
 
-<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance'>>=
+<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance. A regression model.'>>=
 suppressWarnings(try(rm(list = ls()))) 
 suppressWarnings(try(rm(X, U, Z, x1, y1)))
 
 set.seed(3)
 x1 <- runif(200, 1, 100)
-y1 <- 4 + 3 * x1 + rnorm(200, sd = 0.1 * (x1^0.7))
+y1 <- 4 + 3 * x1 + rnorm(200, sd = 20 * (x1^0.7))
 x1y1 <- data.frame(x1, y1)
 x1y1lm <- lm(y1 ~ x1, data = x1y1)
 par(mfrow = c(2, 2), oma=c(0,0,3,0))
@@ -3293,40 +3314,83 @@ rm(x1, y1, x1y1, x1y1lm)
 
 
 
-<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance and a few other issues'>>=
+% <<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance and a few other issues'>>=
+% suppressWarnings(try(rm(list = ls()))) 
+% suppressWarnings(try(rm(X, U, Z, x1, y1)))
+
+% set.seed(9)
+% x1 <- runif(200, 1, 100)
+% y1 <- 4 + 3 * x1 + rnorm(200, sd = 0.1 * (1/(x1^.9)))
+% x1y1 <- data.frame(x1, y1)
+% x1y1lm <- lm(y1 ~ x1, data = x1y1)
+% par(mfrow = c(2, 2), oma=c(0,0,3,0))
+% plot(x1y1lm)
+% rm(x1, y1, x1y1, x1y1lm)
+% @
+
+
+
+<<f2d77z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='And more non-constant variance of residuals plus other issues'>>=
 suppressWarnings(try(rm(list = ls()))) 
 suppressWarnings(try(rm(X, U, Z, x1, y1)))
 
-set.seed(9)
+set.seed(19)
 x1 <- runif(200, 1, 100)
-y1 <- 4 + 3 * x1 + rnorm(200, sd = 0.1 * (1/(x1^.9)))
+y1 <-  1e6 + 5 * x1 + rnorm(200, sd = (20/((x1/100)^1.1)))
 x1y1 <- data.frame(x1, y1)
 x1y1lm <- lm(y1 ~ x1, data = x1y1)
 par(mfrow = c(2, 2), oma=c(0,0,3,0))
 plot(x1y1lm)
+
 rm(x1, y1, x1y1, x1y1lm)
 @
 
 
 
-<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Weird things happening'>>=
+
+\subsection{Diagnostics: a couple of examples from ANOVA models that are largely OK}
+
+
+<<f2dg1az,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from an ANOVA model with interactions and unbalanced data'>>=
 suppressWarnings(try(rm(list = ls()))) 
-suppressWarnings(try(rm(X, U, Z, x1, y1)))
+suppressWarnings(try(rm(X, U, Z)))
+  
+set.seed(13)
+sex <- factor(rep(c("Male", "Female"), c(60, 60)))
+smoking <- factor(rep(rep(c("No", "Yes"), c(30, 30)), 2))
+hdl <- rep(c(1, 1.5, 5, 2), rep(30, 4))
+hdl <- hdl + rnorm(length(hdl), sd = 1.5)
+hdl1B <- data.frame(hdl, sex, smoking)[1:110,]
+rm(hdl, sex, smoking)
 
-set.seed(39)
-x1 <- runif(200, 1, 100)
-y1 <-  x1 + rnorm(200, sd = 0.1 * (1/(x1^1.7)))
-x1y1 <- data.frame(x1, y1)
-x1y1lm <- lm(y1 ~ x1, data = x1y1)
+m6B <- lm(hdl ~ smoking * sex, data = hdl1B)
 par(mfrow = c(2, 2), oma=c(0,0,3,0))
-plot(x1y1lm)
-rm(x1, y1, x1y1, x1y1lm)
+plot(m6B)
 @
 
 
+In the next plot what we probably want to understand is why we have those three
+large residuals. Those are leading to the pattern in the upper left diagnostic
+figure.
 
+<<f2d1v,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from another ANOVA model with interactions and unbalanced data'>>=
+suppressWarnings(try(rm(list = ls()))) 
+suppressWarnings(try(rm(X, U, Z)))
 
+set.seed(38)
+sex <- factor(rep(c("Male", "Female"), c(60, 60)))
+smoking <- factor(rep(rep(c("No", "Yes"), c(30, 30)), 2))
+hdl <- rep(c(3, 2, 6, 4), rep(30, 4))
+hdl <- hdl + rnorm(length(hdl), sd = 2)
+hdl[c(1, 21, 13)] <- hdl[c(1, 21, 13)] + 27
+hdl1B <- data.frame(hdl, sex, smoking)[1:110,]
+rm(hdl, sex, smoking)
 
+m6B <- lm(hdl ~ smoking * sex, data = hdl1B)
+par(mfrow = c(2, 2), oma = c(0, 0, 3, 0))
+plot(m6B)
+
+@
 
 \subsection{Diagnostics: more examples with designed experiments}\label{diag-more-anova}
 
