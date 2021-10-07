@@ -3252,10 +3252,8 @@ looks just fine. Please look at all of these yourself to see them.
 
 \subsection{Diagnostics: more examples with regression and ANCOVA models}\label{diag-more-reg}
 
-<<f2d1z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance in ANCOVA model'>>=
-suppressWarnings(try(rm(list = ls()))) 
-suppressWarnings(try(rm(X, U, Z)))
-
+<<f2d1z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance in ANCOVA model'>>=
+suppressWarnings(try(rm(e1, e2, tg1, tg2, drug, tumor.size, exposure)))
 set.seed(33)
 e1 <- runif(100, 1, 15)
 e2 <- runif(250, 10, 20)
@@ -3279,28 +3277,27 @@ plot(tgd2lm)
 
 Trying to understand  the above patterns:
 
-<<f2d12ww,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1'>>=
+<<f2d12ww,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1'>>=
 ## library(lattice)
 ## xyplot(tumor.size ~ exposure | drug, data = tgd2)
 ancova(tumor.size ~ exposure * drug, data = tgd2)
 @ 
 
-<<f2d12ww,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1b'>>=
+<<f2d12wwb,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1b'>>=
 library(lattice)
 xyplot(tumor.size ~ exposure | drug, data = tgd2)
 @ 
 
 
-<<f2d12ww2,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 2'>>=
+<<f2d12ww2,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 2'>>=
 boxplot(fitted(tgd2lm) ~ tgd2$drug)
 @
 
 
 \clearpage
 
-<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance. A regression model.'>>=
-suppressWarnings(try(rm(list = ls()))) 
-suppressWarnings(try(rm(X, U, Z, x1, y1)))
+<<f2d12z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance. A regression model.'>>=
+suppressWarnings(try(rm(x1, y1)))
 
 set.seed(3)
 x1 <- runif(200, 1, 100)
@@ -3314,7 +3311,7 @@ rm(x1, y1, x1y1, x1y1lm)
 
 
 
-% <<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance and a few other issues'>>=
+% <<f2d12z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance and a few other issues'>>=
 % suppressWarnings(try(rm(list = ls()))) 
 % suppressWarnings(try(rm(X, U, Z, x1, y1)))
 
@@ -3330,9 +3327,8 @@ rm(x1, y1, x1y1, x1y1lm)
 
 
 
-<<f2d77z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='And more non-constant variance of residuals plus other issues'>>=
-suppressWarnings(try(rm(list = ls()))) 
-suppressWarnings(try(rm(X, U, Z, x1, y1)))
+<<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='And more non-constant variance of residuals plus other issues'>>=
+suppressWarnings(try(rm(X, U, Z, x1, y1, x1y1lm, x1y1)))
 
 set.seed(19)
 x1 <- runif(200, 1, 100)
@@ -3351,9 +3347,7 @@ rm(x1, y1, x1y1, x1y1lm)
 \subsection{Diagnostics: a couple of examples from ANOVA models that are largely OK}
 
 
-<<f2dg1az,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from an ANOVA model with interactions and unbalanced data'>>=
-suppressWarnings(try(rm(list = ls()))) 
-suppressWarnings(try(rm(X, U, Z)))
+<<f2dg1az,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from an ANOVA model with interactions and unbalanced data'>>=
   
 set.seed(13)
 sex <- factor(rep(c("Male", "Female"), c(60, 60)))
@@ -3373,9 +3367,7 @@ In the next plot what we probably want to understand is why we have those three
 large residuals. Those are leading to the pattern in the upper left diagnostic
 figure.
 
-<<f2d1v,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from another ANOVA model with interactions and unbalanced data'>>=
-suppressWarnings(try(rm(list = ls()))) 
-suppressWarnings(try(rm(X, U, Z)))
+<<f2d1v,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from another ANOVA model with interactions and unbalanced data'>>=
 
 set.seed(38)
 exercise <- factor(rep(c("Type_I", "Type_II"), c(60, 60)))
