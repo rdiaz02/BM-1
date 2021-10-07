@@ -3644,11 +3644,11 @@ For you to read and play around further:
   
 \item Package \CRANpkg{car} and the accompanying book by Fox and Weisberg ``An R
   companion to applied regression, 3rd ed'' contain excellent and detailed
-  comments about those and other diagnostics, and several functions. Read chapter
-  8 of that book. It will explain you how to use them as well as possible
-  remedial measures. Actually, read the complete book. In the meantime, you can
-  also take a look, for a summary, at the very nice sections 8.3 to 8.5 in
-  Kabakoff's ``R in action.''
+  comments about those and other diagnostics, and examples of how to use the
+  functions in the \CRANpkg{car} package. Read chapter 8 of that book. It will
+  explain you how to use them as well as possible remedial measures. Actually,
+  read the complete book. In the meantime, you can also take a look, for a
+  summary, at the very nice sections 8.3 to 8.5 in Kabakoff's ``R in action.''
 
 \item There is in CRAN a very interesting package, \CRANpkg{gvlma}
   (\Burl{https://cran.r-project.org/web/packages/gvlma/}), by Pe\~{n}a and Slate,
