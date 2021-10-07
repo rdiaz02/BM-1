@@ -3043,6 +3043,8 @@ The three main types are:
   curved surfaces.
 \end{description}
 \clearpage
+
+
 \section{Diagnostics}\label{diagnostics}
 
 
@@ -3155,6 +3157,12 @@ upper left and bottom left differ in the apparent number of vertical
 lines. Do you understand why?
 
 
+An issue about syntax: if you want the plots to show, in the upper part of the
+figure, the actual model fitted, you might need to increase the margins. That is
+what I do with the \verb@par(oma = c(0, 0, 3, 0))@ (I actually do that inside the
+call to also allow to plot several figures at once: \verb@par(oma=c(0,0,3,0), mfrow=c(2,2))@)
+
+
 \subsection{Diagnostics: examples with some of the regression models}\label{diag-regr}
 
 We will now use the two simple regression models we fitted in section
@@ -3242,18 +3250,96 @@ relatively so little data\footnote{Again, this is an interesting case, since
 \Robject{AnovaModel.1}, from section \nameref{oneway}, looks just fine. Please
 look at all of these yourself to see them.
 
+\subsection{Diagnostics: more examples with regression models}\label{diag-more-reg}
+
+<<f2d1z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance'>>=
+suppressWarnings(try(rm(list = ls()))) 
+suppressWarnings(try(rm(X, U, Z)))
+
+set.seed(33)
+e1 <- runif(100, 1, 15)
+e2 <- runif(250, 10, 20)
+tg1 <- 0 + 0.3 * e1 + rnorm(100)
+tg2 <- 2 + 0.2 * e2 
+tg2 <- tg2 + rnorm(25, sd = e2 * 0.1)
+tg2 <- tg2 + rnorm(length(tg2))
+exposure <- c(e1, e2)
+tumor.size <- c(tg1, tg2)
+drug <- c(rep("A", 100), rep("B", 250))
+tgd2 <- data.frame(tumor.size, exposure, drug)
+rm(drug, tumor.size, exposure, e1, e2, tg1, tg2)
+##ancova(tumor.size ~ exposure * drug, data = tgd2)
+tgd2lm <- lm(tumor.size ~ exposure * drug, data = tgd2)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(tgd2lm)
+
+@
 
 
-\subsection{Diagnostics: a couple more examples with designed experiments}
+
+<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance'>>=
+suppressWarnings(try(rm(list = ls()))) 
+suppressWarnings(try(rm(X, U, Z, x1, y1)))
+
+set.seed(3)
+x1 <- runif(200, 1, 100)
+y1 <- 4 + 3 * x1 + rnorm(200, sd = 0.1 * (x1^0.7))
+x1y1 <- data.frame(x1, y1)
+x1y1lm <- lm(y1 ~ x1, data = x1y1)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(x1y1lm)
+rm(x1, y1, x1y1, x1y1lm)
+@
+
+
+
+<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='More non-constant variance and a few other issues'>>=
+suppressWarnings(try(rm(list = ls()))) 
+suppressWarnings(try(rm(X, U, Z, x1, y1)))
+
+set.seed(9)
+x1 <- runif(200, 1, 100)
+y1 <- 4 + 3 * x1 + rnorm(200, sd = 0.1 * (1/(x1^.9)))
+x1y1 <- data.frame(x1, y1)
+x1y1lm <- lm(y1 ~ x1, data = x1y1)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(x1y1lm)
+rm(x1, y1, x1y1, x1y1lm)
+@
+
+
+
+<<f2d12z,echo=FALSE, fig.pos = 'H',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Weird things happening'>>=
+suppressWarnings(try(rm(list = ls()))) 
+suppressWarnings(try(rm(X, U, Z, x1, y1)))
+
+set.seed(39)
+x1 <- runif(200, 1, 100)
+y1 <-  x1 + rnorm(200, sd = 0.1 * (1/(x1^1.7)))
+x1y1 <- data.frame(x1, y1)
+x1y1lm <- lm(y1 ~ x1, data = x1y1)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(x1y1lm)
+rm(x1, y1, x1y1, x1y1lm)
+@
+
+
+
+
+
+
+\subsection{Diagnostics: more examples with designed experiments}\label{diag-more-anova}
 
 Follow the text and the graphics. We will discuss this in class.
 
-%% zz: fixme: label plots clearly, using mar as above,
-%% and add legends to plots
-%% and why isn't myAdditive2b not showing?
+We will create a data set where the true model is one where there really is an
+interaction. And we will fit both an additive model (i.e., a model without
+interaction) and a model with interaction.
+
 
 <<>>=
-## Diagnostics suggest missing interaction
+## See how diagnostics suggest missing interaction or
+## at least suggest something is wrong.
 set.seed(1)
 sex <- factor(rep(c("Male", "Female"), c(20, 20)))
 drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
@@ -3268,17 +3354,35 @@ myAdditive2 <- lm(y ~ sex + drug, data = y.data1)
 myInteract2 <- lm(y ~ sex * drug, data = y.data1)
 summary(myAdditive2)
 summary(myInteract2)
+@ 
 
-## dev.off()
-par(mfrow = c(2, 3))
+We will now show diagnostic plots for the additive model and the model with interaction.
+
+
+
+<<fig.cap='Additive model, myAdditive2,  when there is interaction'>>=
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
 plot(myAdditive2, which = c(1:5)) ## look at first plot
+@
 
-## dev.off()
-par(mfrow = c(2, 3))
+
+
+
+
+<<fig.cap='Interaction model, myInteract2, when there is interaction'>>=
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
 plot(myInteract2, which = c(1:5))
+@
 
+\clearpage
+
+
+Now, we will create a data set where there is a point with a large value for
+Cook's statistic. The data are perfectly balanced and the large Cook's distance
+is, thus, the result of a large residual.
+
+<<>>=
 ############
-
 ## Large cook's in anova
 set.seed(1)
 sex <- factor(rep(c("Male", "Female"), c(20, 20)))
@@ -3297,37 +3401,148 @@ myAdditive2b <- lm(y ~ sex + drug, data = y.data2)
 ## myInteract <- lm(y ~ sex * drug, data = y.data2)
 ## summary(myAdditive)
 ## summary(myInteract)
+@ 
 
+<<fig.cap='myAdditive2b: large Cook with balanced data'>>=
 ## ## diagnostics, all of them except 6th
 ## we actually have a large Cook's distance
-par(mfrow = c(2, 3))
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
 plot(myAdditive2b, which = 1:5)
+@
 
+\clearpage
+
+
+Now, remove the offending value (\textbf{BEWARE: this is not necessarily what you
+should do in real life!! This is just for the sake of showing the diagnostic
+plots}). Pay attention at the change in the plots (and we no longer have constant
+leverage).
+
+<<>>=
 ## model with and without first obs
 summary(lm(y ~ sex + drug, data = y.data2))
 summary(lm(y ~ sex + drug, data = y.data2[-1, ]))
+@ 
 
-## diagnostics if we remove the offending value
-dev.off()
-par(mfrow = c(2, 3))
+<<fig.cap='myAdditive2b removing the large offending value'>>=
+#### Diagnostics if we remove the offending value
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
 plot(lm(y ~ sex + drug, data = y.data2[-1, ]), which = 1:5)
+@
 
+
+\clearpage
+
+Now, create unbalance in the data by removing two observations (but not the one
+with large residual). Notice how we get the plot of residuals vs.\ leverage and
+we can clearly see the observation with the large Cook's distance.
+
+<<>>=
 ## The model with two observations missing
 ## create unbalance
 y.data3 <- y.data2[-c(35, 40), ]
 with(y.data3, tapply(y, list(sex, drug), mean))
-
-dev.off()
-par(mfrow = c(2, 3))
 myAdditive3 <- lm(y ~ sex + drug, data = y.data3)
-plot(myAdditive3, which = 1:5) ## see Cook's
+@ 
 
-## some details, from plot.lm
+<<fig.cap='myAdditive3: missing two observations'>>=
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
+plot(myAdditive3, which = 1:5) ## see Cook's
+@ 
+\clearpage
+
+<<echo=TRUE,results='hide'>>=
+## A few more (maybe technical) details. Statistics for influence,
+## the ``hat'' matrix.
 (hii2b <- lm.influence(myAdditive2b, do.coef = FALSE)$hat) ## constant
 (hii3 <- lm.influence(myAdditive3, do.coef = FALSE)$hat) ##nope
-diff(range(hii2b))
-diff(range(hii3))
+
+diff(range(hii2b)) ## constant indeed
+diff(range(hii3)) ## not constant
 @ 
+
+
+
+% %% zz: fixme: label plots clearly, using mar as above,
+% %% and add legends to plots
+% %% and why isn't myAdditive2b not showing?
+
+% <<>>=
+% ## Diagnostics suggest missing interaction
+% set.seed(1)
+% sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+% drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+% y <- rep(c(8, 16, 10, 12), rep(10, 4))
+% y <- y + rnorm(length(y), sd = 1.5)
+% y.data1 <- data.frame(y, sex, drug)
+% rm(y, sex, drug)
+% with(y.data1, tapply(y, list(sex, drug), mean))
+
+% ## Fit the model
+% myAdditive2 <- lm(y ~ sex + drug, data = y.data1)
+% myInteract2 <- lm(y ~ sex * drug, data = y.data1)
+% summary(myAdditive2)
+% summary(myInteract2)
+
+% ## dev.off()
+% par(mfrow = c(2, 3))
+% plot(myAdditive2, which = c(1:5)) ## look at first plot
+
+% ## dev.off()
+% par(mfrow = c(2, 3))
+% plot(myInteract2, which = c(1:5))
+
+% ############
+
+% ## Large cook's in anova
+% set.seed(1)
+% sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+% drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+% y <- rep(c(8, 12, 11, 15), rep(10, 4))
+% y <- y + rnorm(length(y), sd = 1.5)
+% y.data2 <- data.frame(y, sex, drug)
+% rm(y, sex, drug)
+% ## create a large outlier
+
+% y.data2[1, 1] <- 30
+% with(y.data2, tapply(y, list(sex, drug), mean))
+
+% ## ## Fit the model
+% myAdditive2b <- lm(y ~ sex + drug, data = y.data2)
+% ## myInteract <- lm(y ~ sex * drug, data = y.data2)
+% ## summary(myAdditive)
+% ## summary(myInteract)
+
+% ## ## diagnostics, all of them except 6th
+% ## we actually have a large Cook's distance
+% par(mfrow = c(2, 3))
+% plot(myAdditive2b, which = 1:5)
+
+% ## model with and without first obs
+% summary(lm(y ~ sex + drug, data = y.data2))
+% summary(lm(y ~ sex + drug, data = y.data2[-1, ]))
+
+% ## diagnostics if we remove the offending value
+% dev.off()
+% par(mfrow = c(2, 3))
+% plot(lm(y ~ sex + drug, data = y.data2[-1, ]), which = 1:5)
+
+% ## The model with two observations missing
+% ## create unbalance
+% y.data3 <- y.data2[-c(35, 40), ]
+% with(y.data3, tapply(y, list(sex, drug), mean))
+
+% dev.off()
+% par(mfrow = c(2, 3))
+% myAdditive3 <- lm(y ~ sex + drug, data = y.data3)
+% plot(myAdditive3, which = 1:5) ## see Cook's
+
+% ## some details, from plot.lm
+% (hii2b <- lm.influence(myAdditive2b, do.coef = FALSE)$hat) ## constant
+% (hii3 <- lm.influence(myAdditive3, do.coef = FALSE)$hat) ##nope
+% diff(range(hii2b))
+% diff(range(hii3))
+% @ 
 
 \subsection{Diagnostics: further issues}
 
