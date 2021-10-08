@@ -170,10 +170,10 @@ recommendations or take personal action (should I start drinking a little bit of
 wine?).  Intuitively, if a variable, X, has a causal effect on a variable, Y,
 manipulating X will change the value of Y.
 
-And what do we mean by causal effects? ``(...) estimation of causal effects in
-populations, that is, numerical quantities that measure changes in the
-distribution of an outcome under different interventions.'' \citep[p.\
-v]{hernan2020}.
+And what do we mean by \textbf{causal effects}? ``(...) causal effects in
+populations, that is, \textbf{numerical quantities} that measure changes in the
+distribution of an outcome under different \textbf{interventions}.'' \citep[p.\
+v]{hernan2020} (emphasis is mine)
 
 
 \subsection{There is no such thing as  ``spurious associations''. But when people
@@ -190,8 +190,8 @@ better cardiovascular health being effects (or consequences) of the type of
 diet. But red wine has no direct effect on cardiovascular health (we will see
 examples of this pattern below: Figure \ref{dag-structs}). A similar well known
 phenomenon is the very real association between ice cream sales and homicide
-rates (increasing ice cream sales is positively correlated with homicide rates, at
-least in some parts of the world).
+rates (ice cream sales is positively correlated with homicide rates, at
+least in some parts of the world: more ice cream, more homicides).
 
 Some authors would say there is a ``spurious association'' or ``spurious
 correlation''\footnote{Instead of ``spurious'' you might read ``illusory'' or
@@ -363,13 +363,16 @@ S(m_common_cause_no_adjust)
 
 We must adjust (or control) for Age, the common cause of Exercise and Age: if we
 don't adjust for Age, the estimate of the effect of Exercise on Cholesterol is
-confounded by Age (or by Age having effects on both Exercise and
-Cholesterol)\footnote{When dealing with categorical variables, this pattern,
+confounded by Age having effects on both Exercise and
+Cholesterol\footnote{When dealing with categorical variables, this pattern,
   where the association of two variables changes, or even reverts its sign, when
   we account for another, is also called Simpson's paradox.}. Age is a
-confounder. Or, unless we adjust for Age, there will be \textbf{confounding}: the
-true causal relationship (or its absence) between Exercise and Cholesterol will
-be confounded by Cholesterol and Exercise both having Age as a common cause.
+\textbf{confounder}.% : there is \textbf{confounding} due to Age in the estimate of
+% the effect of Exercise on Cholesterol.
+
+% Or, unless we adjust for Age, there will be \textbf{confounding}: the
+% true causal relationship (or its absence) between Exercise and Cholesterol will
+% be confounded by Cholesterol and Exercise both having Age as a common cause.
 
 
 
@@ -583,24 +586,24 @@ text(x = 2.1, y = -.4, labels ="c) Inverted fork with collider.\n Z common effec
 @ 
 
 
-Each of those structures determines the relationships or pattern of association
-between variables.  For example, in the Chain case, we know that X causes Z that
-causes Y. Those are the causal relationships. Now, what \textbf{associations}
-will we observe? You can think of the DAGs as pipes, and association flows (or
-not) through these pipes (see \citealp[][ch.~6]{hernan2020}; in Miguel Hern\'an's
-edX
+Each of those structures determines the pattern of association between variables.
+For example, in the Chain case, we know that X causes Z that causes Y. Those are
+the causal relationships. Now, what \textbf{associations} will we observe? You
+can think of the DAGs as pipes, and association flows (or not) through these
+pipes (see \citealp[][ch.~6]{hernan2020}; in Miguel Hern\'an's edX
 course ``Causal Diagrams: Draw Your Assumptions Before Your Conclusions''\\
 \Burl{https://www.edx.org/course/causal-diagrams-draw-your-assumptions-before-your},
-you can see animations of this process).  A mediator or common cause, if
-conditioned upon, blocks the flow of information because it closes the pipe; in
+you can see animations of this process).  Both a mediator and a common cause, if
+conditioned upon, block the flow of information because they close the pipe; in
 contrast, a collider, if conditioned upon, opens the pipe.
 
-Put it differently, in the chain example in Figure \ref{fig:plot_dag_struct}, if
-we do not condition in Z, the pipe is open, so X and Y are
+Put it differently, in the chain example in Figure \ref{fig:plot_dag_struct} a),
+if we do not condition in Z, the pipe is open, so X and Y are
 associated\footnote{Strictly: ``are very likely associated'' as it could happen
   that they are not, but this would be rare.}. But if we condition on Z, we close
 the pipe, the flow of association, and now X and Y are conditionally independent
-given Z.
+given Z. The same thing happens in Figure \ref{fig:plot_dag_struct} b). But the
+opposite thing happens in Figure \ref{fig:plot_dag_struct} c).
 
 
 
@@ -618,11 +621,14 @@ More systematically:
   independent (there will be no association). $X \upmodels Y | Z$, \quad
   $X \cancel{\upmodels} Y$.
 
-  This is the usual example of \textbf{confounding}.
+  This is the usual example of \textbf{confounding}, where we see association
+  because of a common cause.
 
-\item Inverted fork with collider: X and Y are independent. But conditioning on Z will make X and Y associated
-  (if these were numerical variables and we assume a linear model, they would
-  show a correlation).  $X \cancel{\upmodels} Y | Z$, \quad $X \upmodels Y$.
+\item Inverted fork with collider: X and Y are independent. But conditioning on Z
+  will make X and Y associated\footnote{If these were numerical variables and we
+    assume a linear model, they would be correlated. Association and
+    non-independence are more general concepts than correlation.}
+  $X \cancel{\upmodels} Y | Z$, \quad $X \upmodels Y$.
    
   
 \end{enumerate}
@@ -680,7 +686,7 @@ The following three expressions are equivalent, and you will find them in the li
     ``condition on'', ``given'', ``adjusting'', and we would need to be more
     precise about the meaning of \textit{holding constant}: are we really,
     physically holding Z constant via intervention, or adjusting statistically
-    for it, as in conditioning?).}
+    for it, as in conditioning?.}
 \end{itemize}
 
 
