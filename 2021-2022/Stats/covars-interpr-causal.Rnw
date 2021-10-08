@@ -120,6 +120,13 @@ opts_knit$set(stop_on_error = 2L)
 \clearpage
 
 
+%% ZZ: FIXME
+%% add numerical examples of everything, including categorical data ones
+%% of Simpson's and Berkson's paradoxes
+
+%% And probably teach this before the categorical data analysis part
+
+
 \section*{License and copyright}\label{license}
 This work is Copyright, \copyright, 2021, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
