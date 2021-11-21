@@ -2824,7 +2824,7 @@ Should we use all covariates available to us in our models? It depends on what w
 want to do. If all we care is prediction, then maybe yes. If we care about
 interpretation, probably not. In particular, variables that are effects of the
 outcome variable (i.e., variables that are, causally, downstream from our ``y'')
-are often (but not always!) variables we do not want to adjust for. Likewise for
+are often variables we do not want to adjust for. Likewise for
 variables that are downstream from both the ``y'' and other predictor variables.
 
 
@@ -2847,15 +2847,16 @@ questions) are ones for which gathering experimental data is just not possible
 (ethically, logistically, etc).
 
 
-If we have time, we will briefly touch upon
-these issues in class. Some specific issues we will mention are:
-\begin{itemize}
-\item Counterfactuals
-\item DAGs (directed acyclic graphs) for representing our assumptions. (We have
-  already done so in some examples).
-\item The do operator and the interventionist account of causality and how it
-  relates to DAGs.
-\end{itemize}
+
+% If we have time, we will briefly touch upon
+% these issues in class. Some specific issues we will mention are:
+% \begin{itemize}
+% \item Counterfactuals
+% \item DAGs (directed acyclic graphs) for representing our assumptions. (We have
+%   already done so in some examples).
+% \item The do operator and the interventionist account of causality and how it
+%   relates to DAGs.
+% \end{itemize}
 
 The literature on causal inference has grown quite a bit in the last 10
 years. Some recommended readings, in approximate order of increasing difficulty
@@ -2868,13 +2869,14 @@ years. Some recommended readings, in approximate order of increasing difficulty
 \item Pearl, Glymour, Jewell, 2016, ``Causal inference in statistics: a primer''
   [Beware with errata: avoid early printings of the book and make sure to look at
   the errata page anyway!]
+\item Hern\'an and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
 \item Morgan and Winship, ``Counterfactuals and causal inference: methods and
   principles for social research'' [Yes, basically all examples are from
   sociology and political science, but that should not be a problem.]
-\item Hern\'an and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
 \end{itemize}
 
-
+A separate PDF is available for this topic, \texttt{covars-interpr-causal.pdf},
+and we will cover it at the end of this lesson.
 
 
 
