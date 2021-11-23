@@ -578,7 +578,7 @@ understand this!!! (But we have discussed this already).
 
 
 \subsubsection{Multiple comparisons, other contrasts,
-  etc} \label{othercontrasts} There is a wide literature on methods for
+  etc} \label{othercontrasts_multcomp} There is a wide literature on methods for
 adjusting for multiple comparisons in ANOVA and linear models. And
 sometimes a distinction is made between pre-planned and post-hoc
 comparisons. Tukey's approach is a widely accepted one (though there are
@@ -4242,7 +4242,7 @@ mean(df1$y) -
 @ 
 
 
-\subsection{Other contrasts}
+\subsection{Other contrasts}\label{othercontrasts_param}
 We are using \texttt{contr.treatment}, the default in R. There are other
 types. In particular, and when we want to estimate effects in the presence
 of interactions, we probably want to use \texttt{contr.sum}. We will not
@@ -4303,7 +4303,6 @@ understanding of what the numbers mean, but then for real you'll do this
 with a computer.
 
 \subsection{Three way anovas, factors with more than two classes, etc}
-\label{sec:three-way-anovas}
 There is nothing conceptually new, but the accounting gets more complicated.
 
 
