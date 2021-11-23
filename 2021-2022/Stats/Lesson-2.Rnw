@@ -551,7 +551,9 @@ How likely we are to detect a difference that really exists (power)
 depends on:
 
 \begin{itemize}
-\item The threshold we use for saying ``the means differ'' ($\alpha$ level, or Type I error).
+\item The threshold we use for saying ``the means differ'' ($\alpha$ level, or
+  Type I error). (Note: remember to ask me to explain the differences between
+  $\alpha$ level and Type I error and p-value).
 \item The sample size.
 \item The size of the effect (difference in means).
 \item The standard deviation.
@@ -1205,8 +1207,9 @@ Non-parametric procedures refer to methods that do not assume any particular
 probability distribution for the data. These methods often proceed by replacing
 the original data by their ranks. They offer some protection against deviations
 from some assumptions (e.g., deviations from normality).  But some times they
-might be testing a slightly different null hypothesis. Whether or not to use can
-sometimes be a contentious issue. Some considerations that come into play are:
+might be testing a slightly different null hypothesis. Whether or not to use them
+can sometimes be a contentious issue. Some considerations that come into play
+are:
 
 \begin{itemize}
 \item Do the data look bad enough that a parametric procedure will lead to
@@ -1410,7 +1413,7 @@ in Lesson 1).
 <<create_brca, echo=FALSE, results='hide'>>=
 set.seed(27)
 n1 <- 8
-n2 <-5
+n2 <- 5
 nn <- 3
 s <- rnorm(n1 + n2, 0, 2)
 s <- rep(s, rep(nn, n1 + n2))
