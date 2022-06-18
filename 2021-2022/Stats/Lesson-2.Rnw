@@ -1251,6 +1251,16 @@ at home and one at the office ---you can get one from Amazon for about 20
 edition. There is, by the same author, a smaller ``Introduction to
 categorical data analysis'').
 
+%% FIXME: say not a test of means and often not even of medians!!!
+
+%% 
+%% https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test
+
+%% https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/
+
+%% Christensen, W. F., & Zabriskie, B. N. (2022). When Your Permutation Test is Doomed to Fail. The American Statistician, 76(1) https://doi.org/10.1080/00031305.2021.1902856
+
+%% https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm
 
 
 \subsection{Two-sample Wilcoxon or Mann-Whitney test}
