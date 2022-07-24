@@ -4438,7 +4438,7 @@ AB: SS(AB|A, B) = R(A,B) - R(A, B, AB)
 
 Interaction need not be absent. But this does not mean these SS are
 interpretable. (And beware of the contrasts you use ---section
-\ref{othercontrasts}--- if you want to take a look at coefficients. Note
+\ref{othercontrasts_param}--- if you want to take a look at coefficients. Note
 also possible issues related to changes in results if you center the
 predictors in models with continuous predictors). We will not use Type III
 in this notes. Why? Read the paper by Bill Venables ``Exegeses on linear

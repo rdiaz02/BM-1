@@ -302,16 +302,28 @@ Let us no do a couple of plots by group. (You'll need to use the command line, s
 
 <<out.width='10cm',out.height='9cm'>>=
 ## First, load the lattice package
+## Functions histogram and bwplot are from that package
 library(lattice)
 histogram(~p53 | cond, data=dp53)
 @
+
+
+% You could also use the usual \texttt{hist} function, and overlay them:
+
+% <<histover,out.width='10cm', out.hight='9cm'>>=
+% hist(p53[cond == "Cancer"], col = rgb(1,0,0,0.5), data = dp53)
+% hist(p53[cond == "NC"], col = rgb(0,0,1, 0.5), add = TRUE)
+% @ 
 
 %% Next: replace by Boxplot
 <<out.width='10cm',out.height='9cm'>>=
 bwplot(~p53 | cond, data=dp53)
 @ 
 
-Note that you can, instead
+Note that, instead of the last call, you can use the \texttt{Boxplot} function (see below).
+
+
+
 
 \subsection{What are the plots telling you?}
 Now, think about what these plots tell you:
