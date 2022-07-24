@@ -17,7 +17,7 @@ options(width = 65)
 suppressMessages(require(BiocStyle, quietly = TRUE))
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
 ## suppressMessages(require(doBy, quietly = TRUE))
-suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
+## suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
 @ 
 
 %% not if using BiocStyle
@@ -283,31 +283,40 @@ par(op)
 @ 
 
 
-%% If loaded silently, as above, will not get in the menuse. So do not do
-%% that for interactive usage
-Now load the ``plotByGroup'' plugin \footnote{You don't have it installed?
-  Install it, then. You should know how to do it by now. The name is
-  ``RcmdrPlugin.plotByGroup''} and you'll find a new menu entry, under
-``Graphs'', that says ``Plot by group''. Use
+% %% If loaded silently, as above, will not get in the menuse. So do not do
+% %% that for interactive usage
+% Now load the ``plotByGroup'' plugin \footnote{You don't have it installed?
+%   Install it, then. You should know how to do it by now. The name is
+%   ``RcmdrPlugin.plotByGroup''} and you'll find a new menu entry, under
+% ``Graphs'', that says ``Plot by group''. Use
 
-\begin{itemize}
-\item histogram by group
-\item boxplot by group
-\end{itemize}
+Let us no do a couple of plots by group. (You'll need to use the command line, since a former plugin, ``RcmdrPlugin.plotByGroup'', is no longer available):
+
+
+
+% \begin{itemize}
+% \item histogram by group
+% \item boxplot by group
+% \end{itemize}
 
 
 <<out.width='10cm',out.height='9cm'>>=
+## First, load the lattice package
+library(lattice)
 histogram(~p53 | cond, data=dp53)
 @
+
+%% Next: replace by Boxplot
 <<out.width='10cm',out.height='9cm'>>=
 bwplot(~p53 | cond, data=dp53)
 @ 
 
+Note that you can, instead
 
 \subsection{What are the plots telling you?}
 Now, think about what these plots tell you:
 \begin{enumerate}
-\item The boxplots, is the ``boxplot by group'' more or less useful than
+\item Is the ``boxplot by group'' more or less useful than
   the built-in one?
 \item When was the stripchart specially useful? Could you see anything
   strange for brca2 without the stripchart?
