@@ -561,10 +561,10 @@ from them, what to do, etc.
 
 
 
-\subsection{\red{Confidence intervals and p-values: a longer discussion}}
+\subsection{Confidence intervals and p-values: a longer discussion}
 
-\red{Make sure you remember to look at the notes you took for the file
-  \texttt{confidence-intervals-p-values-interpretation.pdf}}.
+Make sure you remember to look at the notes you took for the file
+  \texttt{confidence-intervals-p-values-interpretation.pdf}.
 
 
 \section{Power of a test}
@@ -637,27 +637,27 @@ been mixing ideas that derive from Fisher's null hypothesis testing with ideas
 from Neyman and Pearson's alternative hypothesis and acceptance-rejection
 framework; we will not get further into this).
 
-\subsection{\red{An analogy: should I take the umbrella?}}
+\subsection{An analogy: should I take the umbrella?}
 
-\red{If the trade-off between Type I and Type II errors is not clear, remember
+If the trade-off between Type I and Type II errors is not clear, remember
   the analogy we used in class with respect to the umbrella (well, the behavior
   of taking or not the umbrella, as a function of meteorological predictions
   ---withe the \textbf{major} caveat that a p-value is \textbf{not} the
   probability of the null, whereas meteorological predictions are often the
-  probability of, say, rain).}
+  probability of, say, rain).
 
-\subsection{\red{The winner's curse}}
+\subsection{The winner's curse}
 
-\red{When studies have low power, estimates of effects from tests that yield
+When studies have low power, estimates of effects from tests that yield
   ``significant'' results are biased up (i.e., they are larger than they should
   be). In other words, for a given particular phenomenon, with low power studies,
   if you focus only on those papers with significant p-values, the effect
   estimates are too large (in absolute sense). So publication bias together with
   low power yields overestimates of effect sizes. If this is not clear, we will
-  explain it in class.}
+  explain it in class.
 
-\red{Here is a interesting and recent example where the winner's curse can be
-  playing a role: the possible use of botox to relieve depression   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}}.
+Here is a interesting and recent example where the winner's curse can be
+  playing a role: the possible use of botox to relieve depression   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}.
 
 
 
