@@ -45,7 +45,7 @@ labelsep=endash]{caption}
 %\usetikzlibrary{arrows,shapes,positioning}
 
 
-
+\usepackage{wasysym} %% smileys
 \usepackage[latin1]{inputenc}
 %\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -105,7 +105,7 @@ than the page numbers.
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014-2021 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
+This work is Copyright, \copyright, 2014-2022 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
 } Attribution-ShareAlike 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
 
@@ -242,7 +242,7 @@ dp53 <- read.table("P53.txt", header = TRUE, stringsAsFactors = TRUE)
 
 
 Notice the \texttt{stringsAsFactors = TRUE}: we want the strings to be
-turned into factors, so we ask for it.
+turned into factors, so we ask for it. This is no longer necessary with new versions of R.
 
 The first step ever is to look at the data. In fact, here we can look at
 all the original data. So go take a look at the data (``View data set'',
@@ -371,8 +371,7 @@ side by side to enhance understanding; b) how to do this in R.
 \section{Saving the things we do}
 
 (This material is completely optional, and it has to do with how we can do
-certain things in R, produce reports, etc, so we will not spend any time on it
-unless all the rest is clear).
+certain things in R, produce reports, etc, so we will not spend any time on it. It is here so that you can use it for your own lab reports.)
 
 
 \subsection{The R script}
@@ -469,9 +468,9 @@ A few ideas that should be clear after this section:
   estimator) are a type of statistic \footnote{Briefly: a statistic is
     number that can be computed from a sample. An estimator is a function
     used to calculate, or estimate, a quantity of a probability
-    distribution. The sample mean, with the function $\sum x/N$ is a
+    distribution. The sample mean, with the function $\sum x/N$, is a
     function of the data and is used to estimate the true mean of a
-    distribution.}
+    distribution using the data from a given sample.}
 \item What a t-statistic is (a t-statistic is a test statistic used in
   hypothesis testing; a test statistic is a statistic used in hypothesis
   testing).
@@ -488,7 +487,7 @@ A few ideas that should be clear after this section:
 
 
 If any one of the above is not clear, please ask it in class. Most of this,
-though, is material you have surely been taught before :-)
+though, is material you have surely been taught before  \smiley{} .  So if any of this is unclear, please ask in class after having looked a the notes from your previous stats classes and, maybe, the Wikipedia.
 
 
 
@@ -508,8 +507,7 @@ referred to as ``pseudoreplication'' \footnote{A major paper, a long while
 When comparing two means, \textbf{equality of variances} is also
 important. But detecting differences in variances is complicated. Two
 practical solutions are: Welch's test (the default in R) and using
-transformations %% (see also section \ref{transform})
-. However, think about
+transformations. However, think about
 the meaning of a comparison of means when variances are hugely different:
 do you really want to do that?
 
@@ -560,21 +558,14 @@ contains a great discussion of assumptions, consequences of deviations
 from them, what to do, etc.
 
 
-
-\subsection{Confidence intervals and p-values: a longer discussion}
-
-Make sure you remember to look at the notes you took for the file
-  \texttt{confidence-intervals-p-values-interpretation.pdf}.
-
-
 \section{Power of a test}
 How likely we are to detect a difference that really exists (power)
 depends on:
 
 \begin{itemize}
 \item The threshold we use for saying ``the means differ'' ($\alpha$ level, or
-  Type I error). (Note: remember to ask me to explain the differences between
-  $\alpha$ level and Type I error and p-value).
+  Type I error). (Note: if this is not clear, remember to ask me to explain the differences between
+  $\alpha$ level and Type I error and p-value and the usual table of errors, I and II, version decisions and truth).
 \item The sample size.
 \item The size of the effect (difference in means).
 \item The standard deviation.
@@ -660,6 +651,8 @@ Here is a interesting and recent example where the winner's curse can be
   playing a role: the possible use of botox to relieve depression   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}.
 
 
+  Oh, and the winner's curse is something that \textbf{can affect you too}; in other words, the winner's curse is not something that only happens to other researchers \smiley{}.
+
 
 %% \section{Data transformations}\label{transform}
 
@@ -700,6 +693,49 @@ Here is a interesting and recent example where the winner's curse can be
 %% t.test(pten ~ cond, data = dp53)
 %% t.test(logpten ~ cond, data = dp53)
 %% @ 
+
+
+\section{(Bio)equivalence testing and turning things around}
+We have set things up so that we \textbf{need strong enough evidence to reject the null} and we \textbf{use p-values of measures of strength of evidence AGAINST the null}. This is often what we want in science (why? think about how many papers with claims that are trivially generated under the null you want to read). But not always. And in many cases, in particular in issues related to public health, we might want to follow a precautionary principle (\Burl{https://en.wikipedia.org/wiki/Precautionary_principle}).
+
+For example, we might want to say ``We will only allow you to dump chlorine in the river if there is strong enough evidence that such action will not cause harm, for instance, will not increase fish mortality''. This is not something you can settle with p-values as we have used them. \red{Why??}
+
+What can we do? We want to invert the process. You would want a procedure for answering the following question: ``Is there strong enough evidence that, if chlorine has an effect, the effect is no larger than an increase in fish mortality of 1\%?''. This is like inverting the burden of proof: now we want evidence in favor of the null (or, more precisely, in favor of a hypothesis that says that things do not differ by more than a given, small, value). This can be done; in some cases it is relatively straightforward (comparing means), in many others it is not.
+
+We will not pursue this any further. But, please, think of other examples of similar cases. Examples involving, for example, human disease and certain environmental changes, or secondary effects of drugs.
+
+Oh, and, of course, this section emphasizes another idea: a large p-value is not evidence in favor of the null!!!
+
+
+
+
+  
+
+
+
+\section{Bayesian inference}
+
+We will quickly review the following issues (please, make sure to look at your intro probability/stats notes):
+\begin{itemize}
+\item What is Bayes rule (or Bayes theorem)
+\item Using Bayes rule to obtain the posterior probability of a hypothesis given data. Why this is a very attractive idea.
+\item The problems of trying to do that: where is the prior for the hypothesis coming from?
+\item Why we will not spend more time on this.
+\item That Bayes rule is \textbf{NOT} controversial at all: it is \textbf{the procedure to use} in many cases, for example diagnostic testing (probability of having disease X, given that you got a positive test result). But using Bayes rule can be controversial or complicated for the cases we discuss here.
+\item That most of the p-values you see in the literature are, in fact, not ``Bayesian p-values'' but rather use frequentist statistics, so you must know how to use and interpret them.
+\item (And that we do not have conceptual or philosophical problems with at least many Bayesian approaches, and use them when we think appropriate; it is just that for this class we do not deem it appropriate to go in that direction).
+\end{itemize}
+
+
+
+\section{Confidence intervals and p-values: a longer discussion}
+
+We now go over the file  \texttt{confidence-intervals-p-values-interpretation.pdf}.
+
+
+% Make sure you remember to look at the notes you took for the file
+%   \texttt{confidence-intervals-p-values-interpretation.pdf}.
+
 
 
 \clearpage
@@ -767,8 +803,8 @@ all(with(dmyc, table(id, cond)) == 1)
 
 The purpose of this section is to show you several different ways of reshaping
 data, but we will skip the details in class, unless you run intro problems. In
-class we will definitely cover section \ref{datashape} and read section
-\ref{reshapefinal}.
+class we will definitely cover section \ref{datashape}, \ref{reshaping} and read section
+\ref{reshapefinal}. The rest is left here so that you can refer to it when you need to do it with your own data, but, again, we will \textbf{not} cover it in class. You need to understand the source of the problem. The syntax for the solutions is not important (you have it here, and can refer to it when you need it).
 
 
 \subsubsection{The shape of the data}\label{datashape}
@@ -1354,6 +1390,89 @@ wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
 % wilcox.test(x, y)
 % @ 
 
+\subsection{What a two-sample Wilcoxon is not}
+
+Many people say ``I'll use a Wilcoxon test to compare the means''. Well \ldots the \textbf{Wilcoxon test is not a test of means}. It is often not even a test of medians.  The Wilcoxon test can reject the null even if the medians are the same, and the Wilcoxon test can fail to reject the null even if the medians differ a lot.
+
+How is this possible? Please, make sure you read this:
+
+\Bulr{https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm}
+
+%% in the directory as  graph-pad-link.png
+
+More details are available here: \Burl{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/} and in the Wikipedia entry for the Mann-Whitney U test. Many more details about permutation tests not testing what you might think they are testing are available, for example, from Christensen \& Zabriskie, 2022. When Your Permutation Test is Doomed to Fail. \textit{The American Statistician}, 76. \Burl{https://doi.org/10.1080/00031305.2021.1902856}
+
+
+A few examples? Sure. Run the following in R:
+
+<<>>=
+
+## Will accept, medians differ
+x <- c(rep(10, 1000), 11, rep(200, 1000))
+y <- c(rep(10, 1000), 100,  rep(200, 1000))
+summary(x)
+summary(y)
+wilcox.test(x, y)
+
+
+## Will accept, means differ
+x <- c(rep(10, 1000), 1e9, rep(1000, 1000))
+y <- c(rep(10, 1000), -1e9, rep(1000, 1000))
+summary(x)
+summary(y)
+wilcox.test(x, y)
+@ 
+
+
+
+
+<<>>=
+## Will reject, medians the same
+x <- c(rep(10, 1000), 11, rep(12, 1000))
+y <- c(rep(10, 1000), 11, rep(13, 1000))
+summary(x)
+summary(y)
+wilcox.test(x, y)
+
+## Will reject, means the same
+x <- seq(from = 10, to = 20, length.out = 1000)
+y <- c(rep(0, 999), 15000)
+summary(x)
+summary(y)
+wilcox.test(x, y)
+
+@ 
+
+
+
+<<>>=
+## Will not reject so
+## contrary to Conover, not really testing F(x)= G(x)
+x <- rnorm(10000, mean = 0, sd = 1)
+y <- rnorm(10000, mean = 0, sd = 20)
+wilcox.test(x, y)
+@
+
+<<fig.height=5, fig.width=5>>=
+stripchart(c(x, y) ~ c(rep("x", 10000), rep("y", 10000)), vertical = TRUE,
+           method = "jitter", ylab = "Value")
+@ 
+
+
+What is the Wilcoxon test testing? As the Wikipedia entry says ``the null hypothesis that, for randomly selected values X and Y from two populations, the probability of X being greater than Y is equal to the probability of Y being greater than X.''
+
+
+%
+
+%% FIXME: say not a test of means and often not even of medians!!!
+
+%% 
+%% https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test
+
+%% https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/
+
+%% Christensen, W. F., & Zabriskie, B. N. (2022). When Your Permutation Test is Doomed to Fail. The American Statistician, 76(1) https://doi.org/10.1080/00031305.2021.1902856
+%% https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm
 
 
 \subsection{Wilcoxon matched-pairs test}
