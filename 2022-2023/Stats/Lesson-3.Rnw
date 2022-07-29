@@ -961,6 +961,8 @@ things? %% And how do we interpret the
 %% said, we will get back to this later (\nameref{anovaaslm}).
 
 
+We will not emphasize understanding the coefficients in this class; we just wanted to show them to you, so you can see we are actually estimating three things. More details in \nameref{anovaaslm}, but those details \textbf{are not} needed.
+
 
 \subsubsection{Interaction model}
 
@@ -979,6 +981,7 @@ summary(m2)
 
 
 
+
 Check the interpretation of the interaction coefficient:
 <<>>=
 means[2, 2] - 
@@ -986,26 +989,37 @@ means[2, 2] -
 @ 
 
 
-\subsubsection{One observation per cell}
-\label{sec:one-observation-per}
+
+Again: we will not emphasize understanding the coefficients in this class; we just wanted to show them to you, so you can see we are actually estimating four things (in the previous example, we were estimating three). More details in \nameref{anovaaslm}, but those details \textbf{are not} needed.
 
 
-What if we only had one observation per cell?
 
-We can fit the additive model (but only 1 df left)
-<<>>=
-df2 <- df1[1:4, ]
-m3 <- lm(y ~ A + B, data = df2)
-anova(m3)
-summary(m3)
-@ 
+But let's do the following thought experiment. Suppose you have a two-way ANOVA. The first factor has four levels, the second factor has seven levels.
+\begin{itemize}
+\item How many coefficients will you be estimating in a model without interactions?
+\item How many coefficients will you be estimating in a model with interactions?
+\end{itemize}
 
-But we can't really fit the interaction model:
-<<>>=
-m4 <- lm(y ~ A * B, data = df2)
-anova(m4)
-summary(m4)
-@ 
+% \subsubsection{One observation per cell}
+% \label{sec:one-observation-per}
+
+
+% What if we only had one observation per cell?
+
+% We can fit the additive model (but only 1 df left)
+% <<>>=
+% df2 <- df1[1:4, ]
+% m3 <- lm(y ~ A + B, data = df2)
+% anova(m3)
+% summary(m3)
+% @ 
+
+% But we can't really fit the interaction model:
+% <<>>=
+% m4 <- lm(y ~ A * B, data = df2)
+% anova(m4)
+% summary(m4)
+% @ 
 
 
 
@@ -1211,13 +1225,12 @@ of one factor), it makes little sense to report any global main effects
 and we would rarely be interested in interpreting the significance (or
 not) of the Diet or Drug term. In general, \textbf{in the presence of
   interactions, we often refrain from interpreting main
-  effects}\footnote{Properly formulated, which also generally involves
+  effects; this is often referred as the ``marginality principle''}\footnote{Properly formulated, which also generally involves
   using other types of contrasts ---such as contr.sum, in R parlance---
   marginal tests in the presence of interactions, what are called Type
   III, can make sense, but are not always of interest. See also footnote
   \ref{fn:2} in section \nameref{orderfactors} for some entries and
-  references.}.
-
+  references.}. We return to this later.
 
 
 \subsection{An ANOVA without interactions}\label{anovanoint}
@@ -1244,7 +1257,7 @@ The next section introduces a common phenomenon that is sometimes surprising. We
 will try to provide some intuition about why this phenomenon happens.
 
 These are the key steps of the argument (take a piece of paper, and draw a
-bunch of two-by-two boxes with the sample sizes in each cell):
+bunch of two-by-two boxes with the sample sizes in each cell; \textbf{really, do this now}):
 
 \begin{enumerate}
 \item Suppose you do a two-way ANOVA where the dependent variable (Y) is ``awake
@@ -1473,11 +1486,51 @@ summary(m2)
 Do you understand what is going on?
 
 
-\subsection{ANOVA/linear models with more than two factors}
+\subsection{ANOVA/linear models with more than two factors}\label{more-than-two}
 We will present no examples, but life is filled with them. Think about
 cholesterol: to the experiment with drug and diet add a third factor:
 an exercise program. Or maybe a fourth factor too: a stress reduction
 program. Or maybe \ldots.
+
+
+
+Suppose we have a model with three factors, so a three-way ANOVA, with factors U, V, W. Before we continue, please write down the rows of the ANOVA table; do not fill up the numbers of SS, etc, but write down the rows. For example, one row will have ``V'', another ``U:V:W'', etc, etc. Fill up also the column with degrees of freedom, assuming that U has two levels ($U_1$, $U_2$), V has three, and W has four. Really, write down that table.
+
+Make sure you can understand why we have this table and what each row would be testing.
+
+
+Suppose we find out that:
+\begin{itemize}
+\item There is no evidence of three-way interaction.
+\item There is no evidence of interaction U-V.
+\item There is no evidence of interaction U-W.
+\item Only the interaction V-W is significant.
+\end{itemize}
+
+So that the next exercise is easy to do, make an annotation as ``highly signficant'' or ``obviously not significant'' in the interactions according to what we wrote above (e.g., the row with the U-V-W interaction with be labelled ``obviously not significant''.)
+
+
+Now, following what explained before (``the marginality principle''), where we said (\qref{2way-int}) ``in the 
+presence of interactions, we often refrain from interpreting main effects'', we will not test main effects that are marginal to any significant interaction. This means that:
+
+\begin{itemize}
+\item We will only examine the main effect of U.
+\item We will not examine the main effect of V, because there is a significant interaction V-W; in other words, the effect of V changes with the level of W.
+\item We will not examine the main effect of W, because there is a significant interaction V-W; in other words, the effect of W changes with the level of V. (This is exactly the same as in the previous line).
+\end{itemize}
+
+
+Let us repeat what we just did to make sure we understand what is going on. Write down what rows we would see in the ANOVA tables for the following cases; write down the terms and the d.f. 
+
+\begin{itemize}
+\item An experiment with three factors, A, B, C. A has 3 levels, B has four, C has five. We fit a model without any interactions.
+\item As above, but the model is one with all possible interactions.
+\item As in the first case, but the model is one with interactions between A and B, and interactions between A and C, and interactions between B and C (but no three-way interaction).
+  \begin{itemize}
+  \item Now, suppose the A-C interaction is NOT at all significant. What main effects can you test?
+  \item Now, suppose the A-C and A-B interactions are NOT at all significant. What main effects can you test?
+  \end{itemize}
+\end{itemize}
 
 
 
@@ -1549,6 +1602,8 @@ statistical analysis using R, 2nd ed'', and then the documentation of \CRANpkg{m
 
 \subsubsection{Multiple comparisons in multi-way ANOVA: main messages}
 \label{sec:mult-comp-multi}
+
+Again, it is the main messages that you need to understand. You can skip sections \ref{mult-comp-2-way-no-int} and \ref{mult-comp-2-way-int} and use them as reference when you need it. (Nope, those two sections will not be in the exam).
 
 \begin{itemize}
 \item In two-way (or three-way or \ldots, generally, multi-way) ANOVA
@@ -1640,7 +1695,7 @@ Alternatively, you might compute the difference and confidence interval at some
 other level of the other factor that is more relevant for your question.  Whether
 or not it makes sense to compute the CI at the average level of the interaction,
 or at what level it makes sense to do it is \textbf{highly context dependent}:
-this depends on how the interactions are, and what your scientific question is.
+this depends on how strong the interactions are (e.g., are effects being reverted, as in this example?), and what your scientific question is.
 Regardless, how that average of B/average of A/average of the interaction is
 defined and computed, how the average difference at the average of the other
 variable is computed, how that is done in R, how to specify other levels, etc, do
@@ -1652,6 +1707,9 @@ What matters is understanding that, with interactions, asking a question about
 difference between levels of A") cannot be answered without saying something
 about the level of B at which we want to compute that difference.
 
+And this, by the way, is strongly related to the ``marginality principle'' we have already discussed twice (\ref{2way-int}, \ref{more-than-two}).
+
+Now you can skip sections \ref{mult-comp-2-way-no-int} and \ref{mult-comp-2-way-int} and continue to section \ref{nonparanova}.
 
 
 
@@ -1913,7 +1971,7 @@ other things).
 
 
 
-\subsection{Nonparametric alternatives}
+\subsection{Nonparametric alternatives}\label{nonparanova}
 Are there nonparametric versions of the above procedures? For the one-way
 ANOVA the Kruskal-Wallis test is popular. For two-way designs with one
 observation per cell the Friedman test and the Quade test. But testing
@@ -2492,8 +2550,8 @@ anova(lm(lm(pemax ~ height + age, data = cystfibr2)))
 
 \subsection{Confidence intervals, confidence bands}\label{mult-regr-ci-pred}
 
-(This is also provided so that you have it in here if you need it, but you can
-skip it.)
+This is also provided so that you have it in here if you need it, but you can
+skip it.
 
 With multiple regression, visualizing confidence intervals and prediction
 intervals becomes much harder (we are no longer in 2D). There are ways of
@@ -2508,8 +2566,7 @@ predict(mcyst, interval = "confidence", level = 0.95)[1:5, ]
 predict(mcyst, interval = "prediction", level = 0.95)[1:5, ]
 @ 
 
-(Note the warning: the predictions should not be used to assess how well the
-model predicts the data used for the fitting itself.)
+Side note: pay attention to the warning: the predictions should not be used to assess how well the model predicts the data used for the fitting itself.
 
 With those values, you could then construct the plots you might want.
 
@@ -2959,159 +3016,6 @@ and we will cover it at the end of this lesson.
 
 
 
-
-
-
-
-
-\section{Dealing with ratios}\label{ratios}
-
-%% FIXME: 
-\red{FIXME: might want to add too examples like the one on pp.\ 364 and ff in
-Morgan and Winship ``Counterfactuals and causal inference'' (but for a RCD
-experiment on treatment assignment)}
-
-
-In biology (as well as in other disciplines) it is common for researchers
-to use ratios of variables to try to standardize/normalize a
-variable. This procedure looks deceptively simple, but it is not. Here, we
-will explore some of the problems\footnote{I thank Alba Concepcion, a
-  former student of BM-1, for asking me questions that prompted me to
-  write this section. She also provided the link to Curran-Everett's
-  paper}. You can find more details\footnote{With discussion about errors
-  in the X variable, an issue we have not covered here} in this commentary
-from Curran-Everett:
-\Burl{http://ajpadvan.physiology.org/cgi/doi/10.1152/advan.00053.2013}.
-
-Before we start, though, note that this section should not really be
-necessary after previous sections :-).
-
-
-
-
-So that nothing is hidden, I will simulate the data here, but in these
-notes I won't provide details about how/why the data have been simulated
-that way (the code is below; look at it if you want). We will pretend
-there is a response variable, called ``Y'', two groups (``g1'' and ``g2'')
-and another variable, called ``Z''. Z might be some reporter protein, or
-something that can be taken as a proxy for cell volume, etc.
-
-
-<<>>=
-set.seed(1) ## irrelevant, but so that we all 
-            ## get the same numbers
-n <- 20
-sd <- 0.5
-@ 
-
-
-
-\subsection{A misleading case with parallel lines}
-\label{mislead-ratios-1}
-
-
-<<>>=
-z1 <- runif(n, 1, 10)
-t1 <- factor(rep(c("g1", "g2"), rep(n, 2)))
-y1 <-  2 * z1 + 3 * as.numeric(t1) + rnorm(n, 0, sd)
-data1 <- data.frame(Y = y1, Z = z1, Group = t1, Ratio = y1/z1)
-@ 
-
-
-%%, fig.cap="Parallel slopes but ratio differences?">>=
-<<fig.height=6,fig.cap='Parallel slopes but ratio differences?'>>= 
-par(mfrow = c(1, 2))
-with(data1, plot(Ratio ~ Group))
-with(data1, plot(Y ~ Z, col = c("red", "blue")[Group]))
-abline(lm(Y ~ Z, subset(data1, Group == "g1")), col = "red")
-abline(lm(Y ~ Z, subset(data1, Group == "g2")), col = "blue")
-legend(x = 3, y = 20, legend = c("g1", "g2"), col = c("red", "blue"),
-       pch = 1)
-
-@ 
-
-<<>>=
-summary(lm(Y ~ Z * Group, data = data1))
-t.test(Ratio ~ Group, data = data1)
-## This is the equivalent to the t-test, except the
-## t-test used by default by R does not assume equal variances
-summary(aov(Ratio ~ Group, data = data1))
-@ 
-
-The lines are perfectly parallel, but the test for ratios says they
-differ. Why? Because it is forcing a regression through the origin. Note
-the the linear model does get the results right: there are no differences
-in the rate of change of Y relative to Z, but the groups differ in
-intercept. As you can see, the analysis with ratios is misleading.
-
-
-\subsection{A misleading case where ratios differ}
-\label{mislead-ratios2}
-
-Generate  the data:
-<<>>=
-set.seed(123)
-sd <- 0.1
-z2 <- seq(from = 1, to = 3, length.out = n)
-ya <- z2 + rnorm(n, 0, sd)
-yb <- 0.5 * z2 + 1 + rnorm(n, 0, sd)
-y <- c(ya, yb)
-tf <- factor(rep(c("g1", "g2"), rep(n, 2)))
-z <- rep(z2, 2)
-data2 <- data.frame(Y = y, Z = z, Group = tf, Ratio = y/z)
-@ 
-
-
-The figure and analysis:
-%% fig.cap="Different slopes and no ratio differences?">>=
-<<fig.height=6,fig.cap='Different slopes and no ratio differences?'>>=
-par(mfrow = c(1, 2))
-with(data2, plot(Ratio ~ Group))
-with(data2, plot(Y ~ Z, col = c("red", "blue")[Group]))
-abline(lm(Y ~ Z, subset(data2, Group == "g1")), col = "red")
-abline(lm(Y ~ Z, subset(data2, Group == "g2")), col = "blue")
-legend(x = 1.5, y = 2.5, legend = c("g1", "g2"), col = c("red", "blue"),
-       pch = 1)
-@ 
-
-<<>>=
-summary(lm(Y ~ Z * Group, data = data2))
-t.test(Ratio ~ Group, data = data2) ## or do an ANOVA, as above
-@ 
-
-
-The ratios do differ, if we do not force them through the origin: the rate
-of change of Y relative to Z differs between the two groups. But just
-comparing the ratios will not detect it. Again, a linear model does detect
-it just fine: you see a strong interaction between slope and
-group. And, again, the analysis of ratios is misleading.
-
-
-Log-transforming the ratio, using non-parametric statistics, etc, won't
-help; the problem is using the ratio.
-<<>>=
-t.test(log(Ratio) ~ Group, data = data2)
-with(data2, plot(log(Ratio) ~ Group))
-wilcox.test(Ratio ~ Group, data = data2)
-@ 
-
-
-\subsection{Diagnostics et al.\ and other warning signs}
-
-If you look closely, the data show warning signals, such as possible
-differences in variances of ratios. And if you have no idea about the
-model, you might be able to compare several and use diagnostics, as
-explained in section \nameref{diagnostics} to choose among models. But, in
-general, ratios are not the way to. And using diagnostics might require a
-decently large sample size. Summary: only use ratios if you really know
-what you are doing and have good reasons to do it. Otherwise, use linear
-models.
-
-By the way: we have covered just two very simple examples. Things can of
-course get a lot more complicated with non-linear relationships, etc.
-
-
-
 \section{Interactions, summary}\label{interaction-summ}
 The general pattern is always the same: the effect of one independent
 variable (say, A) depends on the setting of the other independent variable
@@ -3371,7 +3275,7 @@ plot(tgd2lm)
 @
 \clearpage
 
-Some plots to try to understand  the above patterns (these are just some initial steps):
+Some plots to try to understand  the patterns in the last residual plots. These are just some initial steps, the sort of thing I'd do if I found the above patterns; what could be happening? And here, the next plots clearly show what is happening. Can you tell what is going on?
 
 <<f2d12ww,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1'>>=
 ## library(lattice)
@@ -3393,6 +3297,8 @@ boxplot(fitted(tgd2lm) ~ tgd2$drug)
 \clearpage
 
 \subsection{Diagnostics: more examples of non-constant variance (and other issues)}
+
+The next example presents fairly common patterns:
 
 <<f2d12z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Another example with non-constant variance in a regression model.'>>=
 suppressWarnings(try(rm(x1, y1)))
@@ -3425,7 +3331,9 @@ rm(x1, y1, x1y1, x1y1lm)
 
 
 
-<<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Yet another example of non-constant variance (plus other issues)'>>=
+The next is a contrived example, but one that shows things are clearly wrong (look at the bottom left).
+
+<<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Yet another example of non-constant variance (plus other issues ---these is a contrived example)'>>=
 suppressWarnings(try(rm(X, U, Z, x1, y1, x1y1lm, x1y1)))
 
 set.seed(19)
@@ -3853,6 +3761,156 @@ later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
   in this context because he said ``To consult the statistician after an
   experiment is finished is often merely to ask him to conduct a post
   mortem examination. He can perhaps say what the experiment died of.''}
+
+
+
+\section{Dealing with ratios}\label{ratios}
+
+We will only cover this in class if we have time. But many of you deal with this issue, so you might want to read it anyway \smiley{} . 
+
+%% FIXME: 
+% \red{FIXME: might want to add too examples like the one on pp.\ 364 and ff in
+% Morgan and Winship ``Counterfactuals and causal inference'' (but for a RCD
+% experiment on treatment assignment)}
+
+
+In biology (as well as in other disciplines) it is common for researchers
+to use ratios of variables to try to standardize/normalize a
+variable. This procedure looks deceptively simple, but it is not. Here, we
+will explore some of the problems\footnote{I thank Alba Concepcion, a
+  former student of BM-1, for asking me questions that prompted me to
+  write this section. She also provided the link to Curran-Everett's
+  paper}. You can find more details\footnote{With discussion about errors
+  in the X variable, an issue we have not covered here} in this commentary
+from Curran-Everett:
+\Burl{http://ajpadvan.physiology.org/cgi/doi/10.1152/advan.00053.2013}.
+
+Before we start, though, note that this section should not really be
+necessary after previous sections :-).
+
+
+
+
+So that nothing is hidden, I will simulate the data here, but in these
+notes I won't provide details about how/why the data have been simulated
+that way (the code is below; look at it if you want). We will pretend
+there is a response variable, called ``Y'', two groups (``g1'' and ``g2'')
+and another variable, called ``Z''. Z might be some reporter protein, or
+something that can be taken as a proxy for cell volume, etc.
+
+
+<<>>=
+set.seed(1) ## irrelevant, but so that we all 
+            ## get the same numbers
+n <- 20
+sd <- 0.5
+@ 
+
+
+
+\subsection{A misleading case with parallel lines}
+\label{mislead-ratios-1}
+
+
+<<>>=
+z1 <- runif(n, 1, 10)
+t1 <- factor(rep(c("g1", "g2"), rep(n, 2)))
+y1 <-  2 * z1 + 3 * as.numeric(t1) + rnorm(n, 0, sd)
+data1 <- data.frame(Y = y1, Z = z1, Group = t1, Ratio = y1/z1)
+@ 
+
+
+%%, fig.cap="Parallel slopes but ratio differences?">>=
+<<fig.height=6,fig.cap='Parallel slopes but ratio differences?'>>= 
+par(mfrow = c(1, 2))
+with(data1, plot(Ratio ~ Group))
+with(data1, plot(Y ~ Z, col = c("red", "blue")[Group]))
+abline(lm(Y ~ Z, subset(data1, Group == "g1")), col = "red")
+abline(lm(Y ~ Z, subset(data1, Group == "g2")), col = "blue")
+legend(x = 3, y = 20, legend = c("g1", "g2"), col = c("red", "blue"),
+       pch = 1)
+
+@ 
+
+<<>>=
+summary(lm(Y ~ Z * Group, data = data1))
+t.test(Ratio ~ Group, data = data1)
+## This is the equivalent to the t-test, except the
+## t-test used by default by R does not assume equal variances
+summary(aov(Ratio ~ Group, data = data1))
+@ 
+
+The lines are perfectly parallel, but the test for ratios says they
+differ. Why? Because it is forcing a regression through the origin. Note
+the the linear model does get the results right: there are no differences
+in the rate of change of Y relative to Z, but the groups differ in
+intercept. As you can see, the analysis with ratios is misleading.
+
+
+\subsection{A misleading case where ratios differ}
+\label{mislead-ratios2}
+
+Generate  the data:
+<<>>=
+set.seed(123)
+sd <- 0.1
+z2 <- seq(from = 1, to = 3, length.out = n)
+ya <- z2 + rnorm(n, 0, sd)
+yb <- 0.5 * z2 + 1 + rnorm(n, 0, sd)
+y <- c(ya, yb)
+tf <- factor(rep(c("g1", "g2"), rep(n, 2)))
+z <- rep(z2, 2)
+data2 <- data.frame(Y = y, Z = z, Group = tf, Ratio = y/z)
+@ 
+
+
+The figure and analysis:
+%% fig.cap="Different slopes and no ratio differences?">>=
+<<fig.height=6,fig.cap='Different slopes and no ratio differences?'>>=
+par(mfrow = c(1, 2))
+with(data2, plot(Ratio ~ Group))
+with(data2, plot(Y ~ Z, col = c("red", "blue")[Group]))
+abline(lm(Y ~ Z, subset(data2, Group == "g1")), col = "red")
+abline(lm(Y ~ Z, subset(data2, Group == "g2")), col = "blue")
+legend(x = 1.5, y = 2.5, legend = c("g1", "g2"), col = c("red", "blue"),
+       pch = 1)
+@ 
+
+<<>>=
+summary(lm(Y ~ Z * Group, data = data2))
+t.test(Ratio ~ Group, data = data2) ## or do an ANOVA, as above
+@ 
+
+
+The ratios do differ, if we do not force them through the origin: the rate
+of change of Y relative to Z differs between the two groups. But just
+comparing the ratios will not detect it. Again, a linear model does detect
+it just fine: you see a strong interaction between slope and
+group. And, again, the analysis of ratios is misleading.
+
+
+Log-transforming the ratio, using non-parametric statistics, etc, won't
+help; the problem is using the ratio.
+<<>>=
+t.test(log(Ratio) ~ Group, data = data2)
+with(data2, plot(log(Ratio) ~ Group))
+wilcox.test(Ratio ~ Group, data = data2)
+@ 
+
+
+\subsection{Diagnostics et al.\ and other warning signs}
+
+If you look closely, the data show warning signals, such as possible
+differences in variances of ratios. And if you have no idea about the
+model, you might be able to compare several and use diagnostics, as
+explained in section \nameref{diagnostics} to choose among models. But, in
+general, ratios are not the way to. And using diagnostics might require a
+decently large sample size. Summary: only use ratios if you really know
+what you are doing and have good reasons to do it. Otherwise, use linear
+models.
+
+By the way: we have covered just two very simple examples. Things can of
+course get a lot more complicated with non-linear relationships, etc.
 
 
 \section{Additional reading}
