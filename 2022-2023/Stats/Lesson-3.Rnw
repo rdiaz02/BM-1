@@ -290,10 +290,14 @@ summary(AnovaModel.1)
 @ 
 
 We will cover this in more detail in class, in case you do not remember
-ANOVA. Read now the 2 and a half pages from Peter Dalgaard's book available in
+ANOVA.
+
+
+Read \textbf{now} the 2 and a half pages from Peter Dalgaard's book available in
 Moodle (\texttt{anova-basic-theory.pdf}), then read
 \texttt{anova-theory-even-simpler}, and then re-read Dalgaard's. If there are
 questions, we will cover them in class.
+
 
 
 Now, things to notice about the output:
@@ -393,6 +397,23 @@ look at each one of the three p-values and keep any with a p-value $\leq
 (\nameref{sec:mult-comp-fdr}). 
 
 
+Before we continue, though, we will use the following two examples. If you understand them, you understand why we need multiple comparisons:
+
+\begin{itemize}
+\item Russian roulette. (Disclaimer: we of course strongly discourage playing Russian roulette!). Suppose you have two friends, A and B. ``A'' intends to play Russian roulette once a year, ``B'' intends to play it ten times a year. Whose funeral are you likely to attend first?
+\item Lottery: we can give you either one lottery ticket or 20 lottery tickets (with different numbers). Assuming you have no problem with becoming rich, what option do you prefer?
+\end{itemize}
+
+
+Now, the following should be clear:
+\begin{itemize}
+\item If you test, say, 3 null hypotheses, and each one is true, and you reject any of the hypothesis at the 0.05 level, the probability that you will reject one or more null hypotheses when you shouldn't is larger than 0.05.
+\item If instead of testing 3 null hypotheses you test 20, the probability of rejecting one or more when you shouldn't is much larger than if you were just testing 3 null hypotheses.
+\end{itemize}
+
+If the above is still unclear, think about why it is more likely ``B'' will get killed first. Or why it is more likely you will become richer if we give you 20 different lottery tickets.
+
+
 
 
 To carry out all pairs of tests and control for multiple testing, carry
@@ -459,9 +480,27 @@ used. (You might want to make that even more explicit by using a title
 such as ``95\% family-wise confidence interval using Tukey contrasts'').
 
 Given how far two of the contrasts are from 0.0, it seems those are highly
-significant differences. Let's go to the numerical output.
+significant differences.
 
 
+Now, answer these questions (we will discuss them in class):
+
+\begin{itemize}
+\item If we had constructed \textbf{only} one of the confidence intervals (i.e., if we had not adjusted for multiple testing), that confidence interval would have been:
+  \begin{itemize}
+  \item narrower
+  \item wider
+  \end{itemize}
+
+\item If we had constructed, and adjusted for multiple testing 10 confidence intervals instead of three they would have been
+  \begin{itemize}
+  \item narrower
+  \item wider
+  \end{itemize}
+\end{itemize}
+
+
+ Let's go now to the numerical output.
 \subsubsection{The numerical output}
 
 This
@@ -567,12 +606,7 @@ estimate (e.g., a mean) and a 95\% confidence interval, where the interval
 goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
 there is a 95\% probability that the mean is between 1 and 2. That is not
 the correct interpretation of a confidence interval. Make sure you
-understand this!!! (But we have discussed this already).
-
-
-
-
-
+understand this!!! (But we have discussed this already in Lesson 2). 
 
 
 
@@ -600,8 +634,7 @@ correspondence between a t statistic and an F statistic).
 
 \subsection{Other ways of obtaining summaries}
 
-(This is a detail for those of you who want to see how to directly get
-things done in R).
+You can skip this section. This is a detail for those of you who want to see how to directly get things done in R.
 
 We have used above the \Rfunction{numSummary} function from
 \CRANpkg{RcmdrMisc} but we could have done it with other functions in R.
@@ -750,7 +783,7 @@ This might sound like a mess, but it really ain't. Think about it. It is
 so nice that it makes comparisons very simple, as Wright explains: ``An
 adjusted $P$-value can be compared directly with any chosen significance
 level $\alpha$: If the adjusted $P$-value is less than or equal to
-$\alpha$, the hypothesis is rejected.''
+$\alpha$, the hypothesis is rejected.'' (If you find this too advanced for now, don't worry. But remember this, once you feel more comfortable with these issues. And no, this paragraph will not be in the exam.)
 
 
 

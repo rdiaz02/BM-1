@@ -450,6 +450,7 @@ t.test(p53 ~ cond, data = dp53)
   \end{itemize}
 \item Do results agree with the figures? What figures?
 \item Oh, in fact: can we interpret the results?
+\item The output gives a confidence interval: what is that?
 \end{itemize}
 
 (We will spend time in class making sure all this is understood if you
@@ -490,6 +491,17 @@ If any one of the above is not clear, please ask it in class. Most of this,
 though, is material you have surely been taught before  \smiley{} .  So if any of this is unclear, please ask in class after having looked a the notes from your previous stats classes and, maybe, the Wikipedia.
 
 
+\subsection{Confidence intervals}
+
+If this is not obvious to you, ask it in class: a figure that shows an
+estimate (e.g., a mean) and a 95\% confidence interval, where the interval
+goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
+there is a 95\% probability that the mean is between 1 and 2. That is not
+the correct interpretation of a confidence interval. Make sure you
+understand this!!!
+
+
+In class we will very briefly cover how the confidence interval is constructed. In this case, it involves kind of turning around the logic of the p-value. 
 
 
 \subsection{Assumptions of the t-test}
@@ -700,9 +712,11 @@ We have set things up so that we \textbf{need strong enough evidence to reject t
 
 For example, we might want to say ``We will only allow you to dump chlorine in the river if there is strong enough evidence that such action will not cause harm, for instance, will not increase fish mortality''. This is not something you can settle with p-values as we have used them. \red{Why??}
 
-What can we do? We want to invert the process. You would want a procedure for answering the following question: ``Is there strong enough evidence that, if chlorine has an effect, the effect is no larger than an increase in fish mortality of 1\%?''. This is like inverting the burden of proof: now we want evidence in favor of the null (or, more precisely, in favor of a hypothesis that says that things do not differ by more than a given, small, value). This can be done; in some cases it is relatively straightforward (comparing means), in many others it is not.
+What can we do? We want to turn the process around. You would want a procedure for answering the following question: ``Is there strong enough evidence that, if chlorine has an effect, the effect is no larger than an increase in fish mortality of 1\%?''. This is like inverting the burden of proof: it is as if now we want evidence in favor of a hypothesis that says that things do not differ by more than a given, small, value (i.e., it seems we now want evidence in favor of what is often the null). In other words, we want strong evidence that the true value is inside the equivalence bounds, the bounds that say that ``things are similar, or equivalent'' (we have simplified things here, by just worrying about increases in fish mortality, but often we worry about deviations both up and down).
 
-We will not pursue this any further. But, please, think of other examples of similar cases. Examples involving, for example, human disease and certain environmental changes, or secondary effects of drugs.
+We can approach this problem as one of finding evidence against the (new null) hypothesis that things differ by more of the specified tolerance, in our case that 1\% increase in fish mortality; in other words, that the true value falls outside the equivalence bounds. If we can reject our new null that the groups differ by more than a given threshold (that the true difference falls outside the equivalence bounds), we have established that they are equivalent.  In some cases it is relatively straightforward to do this (such as with the TOST procedure), in many others it is not.
+
+We will not pursue this any further. But, please, think of other examples of similar cases. Examples involving, for example, human disease and certain environmental changes, or secondary effects of drugs, or that two drugs (say, brand and generic) are for all practical purposes identical.
 
 Oh, and, of course, this section emphasizes another idea: a large p-value is not evidence in favor of the null!!!
 
@@ -1396,7 +1410,7 @@ Many people say ``I'll use a Wilcoxon test to compare the means''. Well \ldots t
 
 How is this possible? Please, make sure you read this:
 
-\Bulr{https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm}
+\Burl{https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm}
 
 %% in the directory as  graph-pad-link.png
 
@@ -1519,7 +1533,7 @@ rank test directly from the menu.
 
 
 
-\subsection{A bad way to choose between nonparametric and parametric
+\subsection{A bad (very bad, terrible!) way to choose between nonparametric and parametric
   procedures}
 
 Don't do the following:
@@ -1548,7 +1562,7 @@ There are several problems with the above procedure, among them:
 \end{itemize}
 
 Even if this procedure is (or was) common in some circles, you now know why it is
-a bad idea. 
+a bad idea. Please, do not do this. 
 
 
 \clearpage
