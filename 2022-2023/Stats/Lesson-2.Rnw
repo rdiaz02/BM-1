@@ -44,13 +44,14 @@ labelsep=endash]{caption}
 %\usepackage{tikz}
 %\usetikzlibrary{arrows,shapes,positioning}
 
+\newcommand*{\myhref}[1]{\href{#1}{#1}}
 
 \usepackage{wasysym} %% smileys
 \usepackage[latin1]{inputenc}
 %\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-
+\newcommand*{\externalf}{{\textcolor{blue}{[See other file:] }}}
 \usepackage{gitinfo}
 
 %\usepackage{datetime}
@@ -571,20 +572,38 @@ from them, what to do, etc.
 
 
 \section{Power of a test}
+
+If there is a true difference in means we would like to detect it. Power refers to our ability to reject the null when it is false. This figure might help; rows refer to the true state of the Universe and columns to your decision. 
+
+
+\begin{table}[t!]
+\begin{tabular}{p{5.5cm}|>{\centering}p{2.5cm}|>{\centering}p{2.5cm}|}
+  \multicolumn{1}{c}{} & \multicolumn{1}{>{\centering}p{2.5cm}}{Null hypothesis not rejected} & 
+  \multicolumn{1}{>{\centering}p{2.5cm}}{Null hypothesis rejected}\tabularnewline
+  \cline{2-3} 
+  Means do not differ ($H_0$ \textit{is really true}) & Correct & Type I error\tabularnewline
+  \cline{2-3} 
+  Means differ ($H_0$ \textit{is really false}) & Type II error & Correct\tabularnewline
+  \cline{2-3} 
+\end{tabular}
+
+Power is $1 - Type II error$. Power is the probability of rejecting the null hypothesis when the null hypothesis is false.
+
+
+
 How likely we are to detect a difference that really exists (power)
 depends on:
 
 \begin{itemize}
 \item The threshold we use for saying ``the means differ'' ($\alpha$ level, or
-  Type I error). (Note: if this is not clear, remember to ask me to explain the differences between
-  $\alpha$ level and Type I error and p-value and the usual table of errors, I and II, version decisions and truth).
+  Type I error)\footnote{There is, actually, a difference between p-value and $\alpha$ level; the p-value is a function of the data, is something you compute with a given procedure for a given data set; the $\alpha$ level or Type I error rate is a property of the procedure.}.
 \item The sample size.
 \item The size of the effect (difference in means).
 \item The standard deviation.
 \end{itemize}
 
 
-Do you understand each one of these?
+
 
 
 Go play with the ``Teaching demos: Power of a test'' (from the
@@ -744,7 +763,7 @@ We will quickly review the following issues (please, make sure to look at your i
 
 \section{Confidence intervals and p-values: a longer discussion}
 
-We now go over the file  \texttt{confidence-intervals-p-values-interpretation.pdf}.
+\externalf We now go over the file \myhref{confidence-intervals-p-values-interpretation.pdf}. %% \texttt{confidence-intervals-p-values-interpretation.pdf}.
 
 
 % Make sure you remember to look at the notes you took for the file

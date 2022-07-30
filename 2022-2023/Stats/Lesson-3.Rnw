@@ -79,8 +79,8 @@ labelsep=endash]{caption}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{wasysym} %% smileys
-
-
+\newcommand*{\myhref}[1]{\href{#1}{#1}}
+\newcommand*{\externalf}{{\textcolor{blue}{[See other file:] }}}
 
 
 \usepackage{gitinfo}
@@ -260,7 +260,7 @@ has been flagged as a potential outlier and we will silent that output
 from now on in these notes).
 
 %% FIXME: using aov is misleading. Don't do it. Use anova(lm)
-\subsection{An ANOVA}\label{oneway}
+\subsection{An ANOVA; some basic theory and output}\label{oneway}
 
 We want to see if time of exercise makes any difference. Conducting three
 t-tests is not the best way to go here: our global null hypothesis is
@@ -293,10 +293,9 @@ We will cover this in more detail in class, in case you do not remember
 ANOVA.
 
 
-Read \textbf{now} the 2 and a half pages from Peter Dalgaard's book available in
-Moodle (\texttt{anova-basic-theory.pdf}), then read
-\texttt{anova-theory-even-simpler}, and then re-read Dalgaard's. If there are
-questions, we will cover them in class.
+\externalf Read \textbf{now} the 2 and a half pages from Peter Dalgaard's book available in
+Moodle (\myhref{anova-basic-theory.pdf}), then read
+\myhref{anova-theory-even-simpler.pdf}, and then re-read Dalgaard's. If there are questions, we will cover them in class.
 
 
 
@@ -397,11 +396,11 @@ look at each one of the three p-values and keep any with a p-value $\leq
 (\nameref{sec:mult-comp-fdr}). 
 
 
-Before we continue, though, we will use the following two examples, a depressing and an uplifting one. If you understand them, you understand why we need multiple comparisons:
+Understanding what we just said is crucial. So we will use another two examples, a depressing and an uplifting one. If you understand them, you understand why we need multiple comparisons:
 
 \begin{itemize}
 \item Russian roulette. (Important note: we of course strongly discourage playing Russian roulette!). Suppose you have two friends, ``A'' and ``B''. ``A'' intends to play Russian roulette once a year, ``B'' intends to play it ten times a year\footnote{We say ``intends to'': obviously, the first time that the gun fires is the last time the player plays the game}. Whose funeral are you likely to attend first?
-\item Lottery: we can give you either one lottery ticket or 20 lottery tickets (with different numbers). Assuming you have no problem with becoming rich, what option do you prefer?
+\item Lottery: we can give you either one lottery ticket or 20 lottery tickets (each with a different number). Assuming you have no problem with becoming rich, what option do you prefer?
 \end{itemize}
 
 
@@ -469,6 +468,19 @@ of what is happening with the p-values in
 
 
 \subsubsection{The plot of pairwise differences}
+
+
+\subsubsubsection{Side note: Interpreting confidence intervals}
+If this is not obvious to you, ask it in class: a figure that shows an
+estimate (e.g., a mean) and a 95\% confidence interval, where the interval
+goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
+there is a 95\% probability that the mean is between 1 and 2. That is not
+the correct interpretation of a confidence interval. Make sure you
+understand this!!! But we have discussed this already in Lesson 2. 
+
+Now, back to multiple testing.
+
+\subsubsubsection{The 95\% family-wise confidence interval}
 Look carefully at the plot in Figure \ref{fig:tukey1}: for each difference
 (for each \textbf{contrast}), it shows the estimate and a 95\% confidence
 interval around it. The plot title says ``95\% family-wise confidence
@@ -596,14 +608,6 @@ par(old.oma) ## restore graphics windows settings
 
 
 
-
-\subsubsection{Side note: Interpreting confidence intervals}
-If this is not obvious to you, ask it in class: a figure that shows an
-estimate (e.g., a mean) and a 95\% confidence interval, where the interval
-goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
-there is a 95\% probability that the mean is between 1 and 2. That is not
-the correct interpretation of a confidence interval. Make sure you
-understand this!!! (But we have discussed this already in Lesson 2). 
 
 
 
@@ -870,7 +874,7 @@ t-tests, but to any kind of test (comparing variances, correlations, etc).
 
 
 
-\subsection{Multiple comparisons: struck by lightning}
+\subsection{Multiple comparisons: struck by lightning, roulette, and lottery}
 
 This has been a short section, because we are skipping the technicalities
 and focus just on the big ideas. But this is a \textbf{VERY IMPORTANT}
@@ -878,8 +882,7 @@ section to remember. When you do many tests, some of them might have low
 p-values just by chance and you need to adjust for this. If any gene with
 a low p-value is declared significant (regardless of the size of the
 collection of tests) you will be likely to start claiming that many purely
-chance results are ``significant''. And you do not want that.
-
+chance results are ``significant''. And you do not want that. Again, go back to the examples of the lottery and the Russian roulette if this is not completely obvious.
 
 Remember that very rare events do happen, and they are almost certain to
 happen if the experiment is repeated many times (by the way, this is why
@@ -1227,12 +1230,12 @@ of one factor), it makes little sense to report any global main effects
 and we would rarely be interested in interpreting the significance (or
 not) of the Diet or Drug term. In general, \textbf{in the presence of
   interactions, we often refrain from interpreting main
-  effects; this is often referred as the ``marginality principle''}\footnote{Properly formulated, which also generally involves
+  effects; this is one consequence of what is often referred to as the ``marginality principle''}\footnote{Properly formulated, which also generally involves
   using other types of contrasts ---such as contr.sum, in R parlance---
   marginal tests in the presence of interactions, what are called Type
   III, can make sense, but are not always of interest. See also footnote
   \ref{fn:2} in section \nameref{orderfactors} for some entries and
-  references.}. We return to this later.
+  references.}. We return to this later in \qref{more-than-two}.
 
 
 \subsection{An ANOVA without interactions}\label{anovanoint}
@@ -1522,7 +1525,7 @@ presence of interactions, we often refrain from interpreting main effects'', we 
 \end{itemize}
 
 
-Let us repeat what we just did to make sure we understand what is going on. Write down what rows we would see in the ANOVA tables for the following cases; write down the terms and the d.f. 
+Let us repeat what we just did to make sure we understand what is going on. Write down what rows we would see in the ANOVA tables for the following cases; write down the terms and the d.f. Yes, \textbf{really, do this now}:
 
 \begin{itemize}
 \item An experiment with three factors, A, B, C. A has 3 levels, B has four, C has five. We fit a model without any interactions.
@@ -1596,9 +1599,7 @@ you, well, conduct multiple tests.
 
 
 In two-way and, more generally, multi-way ANOVA, this is more complicated. Among
-other questions you should ask yourself, at what levels of one variable will you
-be comparing the other? How does lack of balance affect the contrasts? Do you
-really want all possible contrasts? A good place to start reading on these issues
+other questions you should ask yourself, probably some of the first ones are: At what levels of one variable will I be comparing the other? How does lack of balance affect the contrasts? Do I really want all possible contrasts? A good place to start reading on these issues
 is chapter 14 (and section 5.3.2) of Everitt and Hothorn's ``A handbook of
 statistical analysis using R, 2nd ed'', and then the documentation of \CRANpkg{multcomp}.
 
@@ -1617,11 +1618,11 @@ Again, it is the main messages that you need to understand. You can skip section
   \end{itemize}
 \item When there are interactions, this is more complicated. For example, at what
   level of each variable do you want to estimate the differences in the other? A
-  very simple numerical example illustrating the problem is shown in \qref{ci-two-way-int-example}.
+  very simple numerical example illustrating the problem is shown below in \ref{ci-two-way-int-example}.
 \item Finally, in both cases, you might want to think if carrying out comparisons
   between \textbf{all} pairs of means is what you really want to do. (Of course,
   you \textbf{must} report what you really did: carrying out comparisons between
-  all pairs and reporting only a few is incorrect).
+  all pairs and reporting only a few is incorrect, leads to biases, and is scientifically dishonest and poor practice).
 \end{itemize}
 
 
@@ -1979,7 +1980,7 @@ ANOVA the Kruskal-Wallis test is popular. For two-way designs with one
 observation per cell the Friedman test and the Quade test. But testing
 interactions is not easy; one needs to use more sophisticated approaches
 as in permutation tests conditioning on permuting only within rows or
-columns, etc. We will not pursue this any further.
+columns, etc. Moreover, as was the case with the Wilcoxon test, nonparametric and permutation procedures might not be testing what you think they are testing, and they can be sensitive to features you are not interested in, or insensitive to what you are really interested in. These procedures, of course, are sometimes what needs to be done, but you should really understand what they are really doing and why an ANOVA will not do. We will not pursue this any further. 
 
 
 \clearpage
@@ -2122,12 +2123,12 @@ need to know the units!). And the t-statistic tests if the slope is
 0. There is certainly strong evidence that Metabolic rate increases with
 body mass.
 
-Do you know what ``R-squared'' refers to? And the rest of the output?
+Do you know what ``R-squared'' refers to (we explain this in more detail in section \qref{r2})? And the rest of the output?
 
 By the way, did you see the note about missingness? Do you know what that
 means? 
 
-\subsection{And how does it look like}
+\subsection{And how does it look like: should have plotted the data!}
 Eh!!! We should probably have plotted the data as the first thing.  First, let's
 do a scatterplot (you might want to unclick the ``Show spread''\footnote{I find
   the spread information to be confusing. But I like to leave the smoothed line,
@@ -2964,66 +2965,6 @@ and make sure things make sense with these new models: how we interpret
 coefficients and how many parameters we have.
 
 
-\section{Covariate adjustment and a few comments about causal
-  inference}\label{causal_covar}
-
-Should we use all covariates available to us in our models? It depends on what we
-want to do. If all we care is prediction, then maybe yes. If we care about
-interpretation, probably not. In particular, variables that are effects of the
-outcome variable (i.e., variables that are, causally, downstream from our ``y'')
-are often variables we do not want to adjust for. Likewise for
-variables that are downstream from both the ``y'' and other predictor variables.
-
-
-We have been using language a bit to casually (I wrote ``casually'', not
-``causally'' :-). But sometimes we will read our models as saying ``a unit increase
-in variable X1 is associate with these many units change in Y''. At other times,
-we will want (and even be able to say) ``a unit increase in variable X1 causes
-these many units change in Y''. These differences in wording also emphasize the
-possible difficulties in understanding the meaning of phrases like ``holding
-variable X2 constant, a unit change in variable X1 causes whatever''.
-
-
-That said, it is possible sometimes to use data, both experimental and
-observational, to make causal claims. Yes, we wrote observational, too. And it is
-actually good news that we can (sometimes, and under certain assumptions)
-estimate the effects of causes, since many important questions that concern us
-are inherently causal. For example ``will doing X minimize the risks of being
-infected by the coronavirus?''. An many of these questions (or aspects of these
-questions) are ones for which gathering experimental data is just not possible
-(ethically, logistically, etc).
-
-
-
-% If we have time, we will briefly touch upon
-% these issues in class. Some specific issues we will mention are:
-% \begin{itemize}
-% \item Counterfactuals
-% \item DAGs (directed acyclic graphs) for representing our assumptions. (We have
-%   already done so in some examples).
-% \item The do operator and the interventionist account of causality and how it
-%   relates to DAGs.
-% \end{itemize}
-
-The literature on causal inference has grown quite a bit in the last 10
-years. Some recommended readings, in approximate order of increasing difficulty
-(of the reading itself, or of working through all of the material) are:
-
-\begin{itemize}
-\item Pearl and Mackenzie, 2018, ``The book of why''.
-\item Rosenbaum, 2017, ``Observation and experiment. An introduction to causal inference'' (Rosenbaum does not use
-  DAGs)
-\item Pearl, Glymour, Jewell, 2016, ``Causal inference in statistics: a primer''
-  [Beware with errata: avoid early printings of the book and make sure to look at
-  the errata page anyway!]
-\item Hern\'an and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
-\item Morgan and Winship, ``Counterfactuals and causal inference: methods and
-  principles for social research'' [Yes, basically all examples are from
-  sociology and political science, but that should not be a problem.]
-\end{itemize}
-
-A separate PDF is available for this topic, \texttt{covars-interpr-causal.pdf},
-and we will cover it at the end of this lesson.
 
 
 
@@ -3773,6 +3714,67 @@ later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
   experiment is finished is often merely to ask him to conduct a post
   mortem examination. He can perhaps say what the experiment died of.''}
 
+
+
+\section{Covariate adjustment and a few comments about causal
+  inference}\label{causal_covar}
+
+Should we use all covariates available to us in our models? It depends on what we
+want to do. If all we care is prediction, then maybe yes. If we care about
+interpretation, probably not. In particular, variables that are effects of the
+outcome variable (i.e., variables that are, causally, downstream from our ``y'')
+are often variables we do not want to adjust for. Likewise for
+variables that are downstream from both the ``y'' and other predictor variables.
+
+
+We have been using language a bit to casually (I wrote ``casually'', not
+``causally'' :-). But sometimes we will read our models as saying ``a unit increase
+in variable X1 is associate with these many units change in Y''. At other times,
+we will want (and even be able to say) ``a unit increase in variable X1 causes
+these many units change in Y''. These differences in wording also emphasize the
+possible difficulties in understanding the meaning of phrases like ``holding
+variable X2 constant, a unit change in variable X1 causes whatever''.
+
+
+That said, it is possible sometimes to use data, both experimental and
+observational, to make causal claims. Yes, we wrote observational, too. And it is
+actually good news that we can (sometimes, and under certain assumptions)
+estimate the effects of causes, since many important questions that concern us
+are inherently causal. For example ``will doing X minimize the risks of being
+infected by the coronavirus?''. An many of these questions (or aspects of these
+questions) are ones for which gathering experimental data is just not possible
+(ethically, logistically, etc).
+
+
+
+% If we have time, we will briefly touch upon
+% these issues in class. Some specific issues we will mention are:
+% \begin{itemize}
+% \item Counterfactuals
+% \item DAGs (directed acyclic graphs) for representing our assumptions. (We have
+%   already done so in some examples).
+% \item The do operator and the interventionist account of causality and how it
+%   relates to DAGs.
+% \end{itemize}
+
+The literature on causal inference has grown quite a bit in the last 10
+years. Some recommended readings, in approximate order of increasing difficulty
+(of the reading itself, or of working through all of the material) are:
+
+\begin{itemize}
+\item Pearl and Mackenzie, 2018, ``The book of why''.
+\item Rosenbaum, 2017, ``Observation and experiment. An introduction to causal inference'' (Rosenbaum does not use
+  DAGs)
+\item Pearl, Glymour, Jewell, 2016, ``Causal inference in statistics: a primer''
+  [Beware with errata: avoid early printings of the book and make sure to look at
+  the errata page anyway!]
+\item Hern\'an and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
+\item Morgan and Winship, ``Counterfactuals and causal inference: methods and
+  principles for social research'' [Yes, basically all examples are from
+  sociology and political science, but that should not be a problem.]
+\end{itemize}
+
+\externalf A separate PDF is available for this topic, \myhref{covars-interpr-causal.pdf}. Please, read it \textbf{now}.
 
 
 \section{Dealing with ratios}\label{ratios}
