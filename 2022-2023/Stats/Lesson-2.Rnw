@@ -466,6 +466,7 @@ A few ideas that should be clear after this section:
 
 \begin{enumerate}
 \item The difference between a sample and a population
+\item That (most of the time) we use samples to make inferences about populations
 \item What a statistic is; estimators (for example, the sample mean is an
   estimator) are a type of statistic \footnote{Briefly: a statistic is
     number that can be computed from a sample. An estimator is a function
@@ -576,8 +577,8 @@ from them, what to do, etc.
 If there is a true difference in means we would like to detect it. Power refers to our ability to reject the null when it is false. This figure might help; rows refer to the true state of the Universe and columns to your decision. 
 
 
-\begin{table}[t!]
-\begin{tabular}{p{5.5cm}|>{\centering}p{2.5cm}|>{\centering}p{2.5cm}|}
+\begin{table}[h!]
+\begin{tabular}{p{6.5cm}|>{\centering}p{2.5cm}|>{\centering}p{2.5cm}|}
   \multicolumn{1}{c}{} & \multicolumn{1}{>{\centering}p{2.5cm}}{Null hypothesis not rejected} & 
   \multicolumn{1}{>{\centering}p{2.5cm}}{Null hypothesis rejected}\tabularnewline
   \cline{2-3} 
@@ -586,8 +587,8 @@ If there is a true difference in means we would like to detect it. Power refers 
   Means differ ($H_0$ \textit{is really false}) & Type II error & Correct\tabularnewline
   \cline{2-3} 
 \end{tabular}
-
-Power is $1 - Type II error$. Power is the probability of rejecting the null hypothesis when the null hypothesis is false.
+\end{table}
+Power is $1 - Type\ II\ error$. Power is the probability of rejecting the null hypothesis when the null hypothesis is false.
 
 
 
@@ -837,7 +838,7 @@ all(with(dmyc, table(id, cond)) == 1)
 The purpose of this section is to show you several different ways of reshaping
 data, but we will skip the details in class, unless you run intro problems. In
 class we will definitely cover section \ref{datashape}, \ref{reshaping} and read section
-\ref{reshapefinal}. The rest is left here so that you can refer to it when you need to do it with your own data, but, again, we will \textbf{not} cover it in class. You need to understand the source of the problem. The syntax for the solutions is not important (you have it here, and can refer to it when you need it).
+\ref{reshapefinal}. The rest is left here so that you can refer to it when you need to do it with your own data, but, again, we will \textbf{not} cover it in class: you need to understand the source of the problem but the syntax for the solutions is not important (you have it here, and can refer to it when you need it).
 
 
 \subsubsection{The shape of the data}\label{datashape}
@@ -1425,7 +1426,7 @@ wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
 
 \subsection{What a two-sample Wilcoxon is not}
 
-Many people say ``I'll use a Wilcoxon test to compare the means''. Well \ldots the \textbf{Wilcoxon test is not a test of means}. It is often not even a test of medians.  The Wilcoxon test can reject the null even if the medians are the same, and the Wilcoxon test can fail to reject the null even if the medians differ a lot.
+Many people say ``I'll use a Wilcoxon test to compare the means''. Well \ldots the \textbf{Wilcoxon test is not a test of means}. It is often not even a test of medians.  The Wilcoxon test can reject the null even if the medians are the same, and the Wilcoxon test can fail to reject the null even if the medians differ.
 
 How is this possible? Please, make sure you read this:
 
@@ -1494,6 +1495,8 @@ stripchart(c(x, y) ~ c(rep("x", 10000), rep("y", 10000)), vertical = TRUE,
 
 What is the Wilcoxon test testing? As the Wikipedia entry says ``the null hypothesis that, for randomly selected values X and Y from two populations, the probability of X being greater than Y is equal to the probability of Y being greater than X.''
 
+
+Summary: do not use a Wilcoxon expecting it to test for mean differences. And below we will emphasize another related message: do not use a Wilcoxon because of some ill-motivated fear of using the t-test.
 
 %
 
