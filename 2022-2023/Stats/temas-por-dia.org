@@ -1,0 +1,19 @@
+* Lesson 1: Lesson 1
+
+* Days for Lesson 2:
+- Secciones: 3 (plots), 5 (tow-sample t), 6 (power)
+- 6, 7 (equiv. testing), 8 (bayesian), 9 (conf. int: longer slides)
+- 9 (conf int longer slides), paired stuff: 10.1.1, 10.1.2, 10.2 a 10.5;  11 (one-sample), 12 (non-par), 13 (non-indep data)
+
+* Days for Lesson 3
+- Whatever remains from Lesson 2, start Lesson 3: sections 2 (one-way anova), 3 (fdr), some 4 (two-way anova).
+- 4 (two-way anova), 5 (regression), some 6 (multiple regr)
+- 6, 7 (ancova), 8
+- 9 (diagnostics), 10 (variable/model sel), 11 
+- 12 (causal inf)
+
+
+
+
+
+
