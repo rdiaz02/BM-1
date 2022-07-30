@@ -1151,7 +1151,9 @@ Look at the output, which I comment below
 <<>>=
 ## This fits the model. Pay attention to the "*"
 cholestanova <- (lm(y ~ Diet*Drug, data=dcholest))
-## This shows the ANOVA table. Notice the "Type II"
+## This shows the ANOVA table. Notice the "Type II".
+## And notice we are using function Anova with capital A
+## which is a function from the car package.
 Anova(cholestanova)
 
 ## Now we are shown the 3 by 2 table of means, standard deviations, and number 
@@ -1164,6 +1166,21 @@ tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
        function(x) sum(!is.na(x))) # counts
 @ 
 
+
+
+\subsubsection{\texttt{Anova}, \texttt{anova}, \texttt{aov}, \texttt{lm}, \texttt{summary}: what gives?}\label{what_gives}
+In R we often can use different ways of getting output from a linear model, including regression and ANOVA. This section briefly discusses issues specific to R. Most of this should be clear by the end of the course. These are they key messages. Refer to this section as needed while you use these notes.
+
+\begin{itemize}
+\item Function \texttt{lm} fits linear models, including regression and ANOVA's (most of them, not all).
+\item Function \texttt{aov} can also be used to fit ANOVA models. We do not use it to fit regression models. And most (not all, but not relevant for this course) of the models you can fit with \texttt{aov} you can fit with \texttt{lm}. As far as this course is concerned, their syntax is the same.
+\item \texttt{Anova} and \texttt{anova} give you ANOVA tables from models fitted with \texttt{lm}. The main difference between the two is that \texttt{Anova} gives, by default, what are called Type II sums of squares and tests, which we will use most of the time to deal with issues about order of factors. This will all be explained in detail.
+\item Function \texttt{anova} can also be used to compare models. We will see examples.
+\item Function \texttt{summary} on an object fitted with \texttt{aov} will also give you an ANOVA table. We will rarely use this (though it might be the code that some menus in R commander actually generate, and you might see it in other people's code).
+\item Function \texttt{summary} on an object fitted with \texttt{lm} will give, among others, a table of coefficients, not an ANOVA table.
+\end{itemize}
+
+Yes, this is a lot of terminology (jargon). And yes, it is potentially confusing. This should not be, though, an issue for understanding the conceptual and statistical issues discussed. 
 
 \subsection{Interactions}\label{2way-int}
 
@@ -1439,14 +1456,15 @@ If you want a very simple message: \textbf{unless you know what your are doing
   and/or you know your data fulfills certain properties, always expect order to
   matter}.
 
-In section \qref{ordermatter-appendix} we provide more details and examples. 
+In section \qref{ordermatter-appendix} we provide more details and examples.  That is optional reading and not part of this course.
 
 
 
 \subsection{One observation per cell}\label{one-obs-cell}
 
 
-Briefly: try not to do this. You will not be able to test interactions.
+Briefly: try not to fit models with a single observation per cell. You will not be able to test interactions. And, of course \ldots that would be a tiny sample size anyway.
+
 
 So far, we have had more than one observation for each combination of
 levels (i.e., more than one observation per cell, where cell means each of
@@ -1492,14 +1510,13 @@ Do you understand what is going on?
 
 
 \subsection{ANOVA/linear models with more than two factors}\label{more-than-two}
-We will present no examples, but life is filled with them. Think about
+We will not present detailed examples, but life is filled with them. Think about
 cholesterol: to the experiment with drug and diet add a third factor:
 an exercise program. Or maybe a fourth factor too: a stress reduction
 program. Or maybe \ldots.
 
 
-
-Suppose we have a model with three factors, so a three-way ANOVA, with factors U, V, W. Before we continue, please write down the rows of the ANOVA table; do not fill up the numbers of SS, etc, but write down the rows. For example, one row will have ``V'', another ``U:V:W'', etc, etc. Fill up also the column with degrees of freedom, assuming that U has two levels ($U_1$, $U_2$), V has three, and W has four. Really, write down that table.
+So let us gain some practice with them. Suppose we have a model with three factors, so a three-way ANOVA, with factors U, V, W. Before we continue, please write down the rows of the ANOVA table; do not fill up the numbers of SS, etc, but write down the rows. For example, one row will have ``V'', another ``U:V:W'', etc, etc. Fill up also the column with degrees of freedom (d.f.), assuming that U has two levels ($U_1$, $U_2$), V has three, and W has four. Really, write down that table.
 
 Make sure you can understand why we have this table and what each row would be testing.
 
@@ -1538,6 +1555,7 @@ Let us repeat what we just did to make sure we understand what is going on. Writ
 \end{itemize}
 
 
+Finally, repeat once more on your own. An experiment with four factors, the first with 2 levels, the second with 7 levels, the third with 4 levels, the fourth with 5 levels. Write the table, degrees of freedom, and think about hypotheses you can test depending on what interactions are or not significant.
 
 \subsection{Multiple comparisons of means in two-way ANOVA}\label{multcomp-two-way}
 % Can they be done? Yes. You can use the \Rfunction{glht} or the TukeyHDS
@@ -2221,7 +2239,7 @@ From ``Models'', ``Confidence interval plot'' (you need to have the
 ci.plot(metablog)
 @ 
 
-What are the bands? Make sure you understand the difference between the confidence interval and the prediction interval.
+What are the bands? Make sure you understand the difference between the confidence interval and the prediction interval bands.
 
 
 Maybe an example with more noise will help:
@@ -2238,6 +2256,18 @@ ci.plot(lm_cib_2)
 
 You can run the previous code changing the value of \texttt{N}, to get an
 intuition of the difference between the two bands.
+
+Basically:
+\begin{itemize}
+\item Confidence interval bands are for the regression line itself which is the same as saying that they are for the expected value of the response variable. (We are modeling $E[y] = \alpha + \beta x$). The more uncertain we are about the overall trend, about the line, the wider the confidence interval bands will be.
+  
+\item Prediction interval bands are for the observations; so, in addition to the uncertainty around the regression line, we have the $\sigma$, the variance of the observations around their mean value, around $E[y]$.
+\item To clarify the above, think about this: suppose you take a huge sample, say of size 10 million, of people and do a regression of body mass on body height. You will estimate the regression line with very little uncertainty. In other words, you will be very, very certain about where $E[body\_mass]$ is given $body\_height$. But \ldots no matter your sample size, there is quite a bit of variation in body mass for a given body height. So the prediction bands will be relatively wide, to accomodate this fact.
+
+  This is, by the way, the reason why you can be very certain about an overall trend (the expected value) and yet be unable to really predict any one specific individuals actual value.  It is crucial to understand the difference between predicting the mean and predicting a specific individual's value.
+
+  In contrast, if $\sigma$ is very, very, very tiny, then the prediction bands will be very, very close to the confidence interval bands. 
+\end{itemize}
 
 
 
@@ -2410,12 +2440,23 @@ Is this a problem? Well, you are trying to model pemax as a function of
 three variables, but those three variables are very highly correlated
 among themselves. Is this a common phenomenon: yes, it is rather common.
 
+Oh, and you might have realized that we are seeing another manifestation of the problem of the order of factors we saw with ANOVA.
+
+
+So, to summarize, when predictor variables are correlated:
+\begin{itemize}
+\item Even if each (or subsets of) predictor seem strongly associated to the outcome, their p-values could be large, and the sign of the associated reverted, when we fit all of the correlated predictors.
+\item The overall model (as given by the overall F statistic or the $R^2$) might indicate that the model is doing a decent job (certainly much better than fitting just a single mean), and yet the individual p-values might suggest that no individual predictor is relevant. 
+\end{itemize}
+
+What model should we choose? We will return to some of these questions in section \qref{modelsel}. For now, remember that prediction and interpretation are not necessarily the same objective (and, in fact, are often at odds with each other). The model with the best predictive power is often not the model that gives the best insight into the biological (or whatever) process. (And none of these might be, either, the models that are best for causal prediction; more on this later: \qref{causal_covar}).
+
 
 \subsection{$R^2$ and adjusted $R^2$}
 \label{r2}
 
 
-The following code shows in detail how $R^2$ and adjusted $R^2$ are computed. For this class, these are the key messages:
+For this class, these are the key messages:
 
 \begin{itemize}
 \item $R^2$ is the proportion of variability in the dependent variable accounted for (or explained) by the model. It is also the square of the correlation between observed and predicted (predicted according to the model) values of the dependent variable.
@@ -2614,10 +2655,10 @@ bootstrap instead of \Rfunction{confint}. See section 5.1.3 in Fox and Weisberg'
 \section{Continuous and discrete independent variables 
   and ANCOVA}\label{ancova}
 
-\subsection{A first example of ANCOVA with the cystfibr data}
+
+\subsection{The general scenario for ANCOVA}
 Right now, nothing should stop us from thinking about models where the
-right hand side contains both continuous and discrete variables. Let's do
-it with the cystic fibrosis data set.  ANCOVA refers to this mixture of
+right hand side contains both continuous and discrete variables. ANCOVA refers to this mixture of
 ANOVA and regression and stands for ``Analysis of
 covariance''\footnote{But this does not mean that we are comparing
   covariances, as in comparing correlations, between groups; we are
@@ -2627,7 +2668,31 @@ covariance''\footnote{But this does not mean that we are comparing
 are especial types of linear models.
 
 
-Let's fit a model where the independent variables are sex (discrete,
+Suppose you have a response variable, Y. And two predictor variables; variable A, which is discrete, and has, say, two levels (a1, a2). And variable X, which is continuous. Now, get a piece of paper and draw the following cases, in turn. Really, \textbf{do draw this}.
+\begin{itemize}
+\item The relationship between Y and X increases faster in a1 than in a2. Thus, the regression lines for a1 and a2 are not parallel (and will eventually cross each other).
+\item The relationships between Y and X change at the same rate for a1 and a2. Thus, they are parallel lines. But individuals of group a1 with value X = x have a larger value of Y than individual of group a2 for that value of X. So, as we said, lines are parallel, but they are separate. They have different intercepts.
+\item As the previous case, but now the intercept is the same. So you only see one line.
+\item There is not relationship between Y and X in any of the groups. (Or, if you insisted on putting a line, it would be of slope 0).
+\end{itemize}
+
+ANCOVA is a procedure for differentiating the above scenarios, starting from the first and moving down. It also works when the discrete group has more than two levels. And, for that matter, we can deal with more than one discrete variable and more than one continuous one, etc, etc: these are just linear models. As said several times already, we will use the name ANCOVA as this might be familiar. But once you understand the process, these are just linear models that allow to flexibly model scientific problems even if they no longer fit in the simple ANCOVA framework.
+
+
+Oh, and if you want some specific names for variables to draw the above figures, you can do as follows:
+\begin{itemize}
+\item Y is alertness, A is sex (male, female), X is amount of coffee.
+\item Y is metabolic rate, A is tetrapod group (bird, reptile, amphibian, mammal), X is body mass.
+\item Y is number of somatic mutations, A is type of tissue, X is age.
+\item etc, etc.
+\end{itemize}
+
+
+
+
+
+\subsection{A first example of ANCOVA with the cystfibr data}
+Let's fit an ANCOVA it with the cystic fibrosis data set.  The independent variables are sex (discrete,
 obviously) and age. However, sex is coded with 0/1 and we want it to be a
 factor, explictly. Let's recode it:
 
@@ -2764,12 +2829,12 @@ the smaller one. It clearly shows that, in this case, that the larger
 model model (the one with both a main effect of ``sex'' and an
 interaction) is not significantly better than the one without ``sex''. So
 we can just keep model \Robject{mcyst3}: there is no statistical evidence
-of \Robject{mcyst2} being any better.
+of \Robject{mcyst2} being any better. Again, notice how we have compared two models that, in this case, differed by the presence of several terms: the small model had only age, the large had sex and the interaction of sex and age. Being able to compare (nested ---see below) models that differ in several terms at once is really handy and there is no need to proceed by dropping one term at a time. 
 
 
 
 
-Three comments here:
+Three additional comments here:
 \begin{itemize}
 \item These tests only make sense for nested models (where the terms of
   one of the models is a subset of terms of the other). Beware that R does
@@ -2957,7 +3022,7 @@ variables, using the \Robject{hellung} dataset included in \CRANpkg{ISwR}.
 \subsection{More variables}
 We can extend the models to incorporate more variables, add interactions,
 etc. Interactions can involve more than two variables, can involve
-continuous and discrete variables, etc.
+continuous and discrete variables, etc, etc.
 
 \subsection{Parameters, coefficients}
 There is nothing conceptually new here. If you want the details, go to section \nameref{anovaaslm}
@@ -3282,7 +3347,7 @@ rm(x1, y1, x1y1, x1y1lm)
 % @
 
 
-
+\clearpage
 The next is a contrived example, but one that shows things are clearly wrong (look at the bottom left).
 
 <<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Yet another example of non-constant variance (plus other issues ---these is a contrived example)'>>=
@@ -3543,22 +3608,56 @@ For you to read and play around further:
 
 \clearpage
 
-\section{Variable and model selection}
+\section{Variable and model selection}\label{modelsel}
 
 \subsection{Why model selection?}
 
 
 You say you want to select variables? Select them for what? Prediction?
-Interpretation?  Variable selection is a touchy and delicate
+Interpretation?  Manipulation? Variable selection is a touchy and delicate
 subject. First, procedures based purely in statistical criteria might
 select ``statistically important'' variables (under some suitable
 definition of ``important''), but those need not be the most relevant from
-a biological point of view, or causally, etc
+a biological point of view, or causally, etc. This is a very quick summary:
 
-And with regards to the statistical procedures, we will summarize it as
+
+
+\begin{itemize}
+\item Prediction: predict a variable given others. This might be totally unrelated to intervention (which is often what causal inference is after) or understanding/gaining insight into a process.
+
+  Example: banks might want to filter customers unlikely to return a credit. They are not really trying to correct anyone's behavior, they are not trying to understand why people ask for money they cannot return. They just want to predict (so as not to offer them certain financial products).
+
+  Many models are of this kind. For example, many meteorological models are like this: if you see AEMET's predictions you only care about them being right (and they often are). You are not trying to modify anything (i.e., ``let's try to make of today a rainy day'') nor understand; and this is why purely phenomenological models of high complexity, including deep learning, with millions of parameters that our brains can't just wrap their heads around, are just fine for these tasks.
+
+  
+\item Interpretation/understanding/insight: why are things this way? What factors are relevant for a process and why? This is trying to gain scientific understanding. Is sleep deprivation what causes whatever? Or is it differences in light exposure? Or ... This is often what scientific modeling is about.
+
+  
+\item Causal inference, intervention: what would happen in Y if we manipulated X? For example, if we were to get people to eat legumes twice a week, how many colon cancers could we prevent?
+  
+  
+\end{itemize}
+
+
+  Yes, causal inference and intervention on the one hand and understanding on the other are often very closely related. But they are not the same. For example, you might have a relatively good understanding of a particular process, and yet be unable to predict exactly what an intervention will do because of the presence of modifier variables.
+
+  And sometimes we might not understand the mechanisms in detail\footnote{When one has an adequate understanding of mechanisms is actually a difficult question} and, yet, be able to conduct very successful interventions if we are able to estimate the causal effect of a variable\footnote{Briefly: the effect that changing, by manipulation, a variable from one state or value to another has on the outcome}.
+  
+
+  And intervention is not totally unrelated to successful prediction either, of course. Elements of models that play a role in meteorological and climatological prediction are also present in causal models that are used to guide (or try to guide, unfortunately without much success) actions to prevent the disaster of climate change; we are asking here ``what variables should we change, and to what values, to achieve this result or prevent this other result?''
+
+  But models that might be excellent for predictions of current outcome might be very bad at prediction under new circumstances; causal inference and intervention are after the last objective whereas you looking at AEMET in the morning is you concerned about prediction-without-trying-to-modify-or-understand.
+
+
+\subsection{Variable selection: the summary}
+
+With regards to the statistical procedures, we will summarize it as
 follows: please, please, please, distrust automated variable selection
 procedures that rely on p-values or F-statistics of individual variables
-(in all their variants, such as stepwise, etc). Careful model comparison,
+(in all their variants, such as stepwise, etc). These procedures rarely do what you want to do, are often extremely unstable, etc. They are trivial to implement, and that makes them very common, but they are rarely what you scientific question needs.
+
+
+Careful model comparison,
 for instance using something like \verb@ anova(model1, model2) @, as we
 have seen (e.g., section \nameref{model-comp} or \nameref{ancova_rept}), might be
 a good idea. Notice, again, that \verb@ anova(model1, model2) @ is all
