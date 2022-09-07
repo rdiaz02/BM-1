@@ -1,0 +1,373 @@
+ BM-2: Software for "Applied Stastics"
+ ======================================
+
+
+ You need to install software on your own laptop/computer at home. The
+ following are the installation instructions and information. Please:
+
+
+ 0. Before doing anything, make sure you read these instructions at least
+ once (again, before doing anything). Why? So that you have a general
+ idea of what is involved. For example, if you are a Mac user, you might
+ want to anticipate a few things (like having your operating system
+ updated, having X11/XQuartz installed, etc).
+
+ 00. Again, read what follows at least once before doing anything.
+
+ 1. Follow these instructions carefully.
+ 
+ 2. Follow the instructions in this order.
+
+ 3. Do all of this from a place where you have a reliable and fast
+ internet connection. If the connection fails during installation, things
+ can become a mess. This is actually the most common cause of problems.
+
+
+ If you have problems, repeat the above three steps. Remove everything you
+ have installed, and start all over. 
+
+ If you still have problems after that (you shouldn't) post your
+ questions, with detailed information (maybe including screen captures) of
+ the errors, in the Applied Statistics forum.
+
+
+Again: PLEASE FOLLOW THESE INSTRUCTIONS CAREFULLY AND EXACTLY AS
+EXPLAINED. (And, again, please read the instructions at least once before
+doing anything).
+
+
+ 1. Install R (http://cran.r-project.org). The binaries for each operating
+     system are available here: http://cran.r-project.org/bin/
+
+     1.1. For Linux, most distros have pre-built binaries, so with Debian
+     use apt-get install r-base r-base-dev, with Fedora and RH yum install
+     whatever, etc. There are instructions in the CRAN page if you need
+     them, though, for many distros.
+
+     However, if you use Ubuntu, please read the instructions in
+     http://cran.r-project.org/bin/linux/ubuntu/README.html, since the
+     default Ubuntu packages can be  outdated.
+
+     
+     1.2. If you use Windows, you want to install "base". It says so clearly:
+     "Binaries for base distribution. This is what you want to install R for the
+     first time."
+
+
+     	  1.2.1 After you download R, and right before installing it,
+	  you might want to disable the antivirus (some antiviruses lead
+	  to all sorts of difficult to diagnose problems and we cannot
+	  help with that). 
+	  
+          1.2.2 When you install R under Windows, and to avoid problems
+     	  later (with paths, with permissions, with local language
+     	  settings, etc) change the default path. Install R
+     	  into
+	  
+	       C:\R\
+	       (so you can have, for instance, C:\R\R-4.2.1)
+
+	  Choosing the installation directory is something you do
+     	  immediately after you click accept on the license. It is a
+     	  screen that says "Select Destination Location". In there, type
+     	  the above path: "C:\R" (without the quotes).
+
+	  Please, REALLY INSTALL TO "C:\R" UNDER WINDOWS. Many people
+     	  experience problems when they don't. These problems are
+     	  related to permissions and local language settings. Those
+     	  are solvable, but we cannot help. So do as we say: install
+     	  to "C:\R\R-4.2.1" or deal with the issues on you own.
+
+	  1.2.3. Click on "Install package translations" to make sure you
+	  get messages in English and in other languages (Spanish, or
+	  whatever).
+
+	  1.2.4. You probably want to check "Create a desktop
+	  shortcut" and "Create a Quick Launch shortcut". (And leave
+	  as checked the "Save version number in registry" and
+	  "Associate R with .RData file").
+	  
+	  1.2.5. You probably want to check on the "Use the SDI interface"
+	  in the preferences of R, right after you start it. Or go to
+	  "Edit" -> "GUI Preferences", check "SDI", the "Save...", and
+	  close and quit (say "No" to "Save the workspace image" question).
+
+     
+     1.3. If you use Mac, if you play with installation options, note that you
+     need to install the tcl/Tk X11 libraries. If you run into trouble, make sure
+     to read the FAQ (http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html). You
+     also probably want to read the instructions in the R commander page (we will
+     install the R commander package below) for macOS:
+     https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
+
+
+     1.4. Regardless of your operating system, please make sure you have
+     a current version of R (if you know what you are doing, it is also OK to
+     use development versions). Any version of R >= 4.0.0 should work, but
+     it is best if you use a current one.
+
+
+ 2. Install R commander.
+
+    There are installation instructions here:
+    http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
+
+
+    This is the summary, which should work for all operating systems (and will
+    install all dependencies)
+
+    2.1. Start R
+
+    2.2. Copy and paste the following in the console:
+
+
+    install.packages("Rcmdr")
+
+
+    Press Enter.
+
+    It might tell you (depending on operating systems and other settings
+    and if you did not use the path we suggest) that the system library is
+    not writable, and it will ask you if you want to install to a personal
+    library. Say yes.
+    
+    It will ask your for a mirror. I find that the mirrors in Austria and
+    Switzerland are often very reliable (more than the ones in Spain). So
+    use a mirror from Switzerland or Austria.
+
+    It will then download and install a bunch of things. It can take
+    several minutes (about 5) with a fast internet connection on a
+    reasonably fast computer.
+
+    If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT under 
+	Windows!!
+
+
+    2.3. When it is finished, in the R console do:
+       
+     library(Rcmdr)
+
+     Press Enter. It will tell you there are missing dependencies ("The
+     following packages used by Rcmdr are missing ...") and it will offer
+     to install them. Allow it to install all the missing dependencies
+     (the defaults in the window of "Install Missing Packages" should be
+     fine; no need to touch anything; just press OK). This should take a
+     couple minutes.
+
+     If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT under
+    Windows!!
+
+
+    2.4. Users of Mac: there are sometimes issues with Rcmdr if, say, X11 and/or
+    XQuartz are missing. Read the installation instructions for R commander given
+    above:
+    https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/installation-notes.html
+
+
+
+    2.5. Please, try to use the most recent version of Rcmdr. How can you
+    tell the version? Two ways:
+
+    2.5.1 From R itself do "library(help  = Rcmdr)" and it will procude
+    output that includes the Version number.
+
+    2.5.1. From Rcmdr itself: go to "Help" and click on "About Rcmdr"
+
+
+
+    2.6. Linux: some Linux distros ship pre-compiled versions of Rcmdr. So
+    you might install Rmcdr this way. But beware that some Linux distros
+    ship versions of Rcmdr that can be very outdated.
+
+	
+
+    2.7. Does the version of Rcmdr matter? Not a lot (assuming it is
+    anything > 2.3), but newer versions have more functionality. Make sure
+    you use a recent version, the one corresponding to the version of R.
+    
+
+   
+    
+ 3. Install a few R commander plugins and additional packages.
+
+    3.1. In the same R console (the R console, not the R commander window
+    ---the R console is the console or window that oppened first when you
+    started R, and it says "R console" at the top) session as before, copy
+    and paste
+
+    install.packages(c("RcmdrPlugin.TeachingDemos",
+   "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
+   "tkrplot", "doBy", "vcd", "ISwR"))
+
+
+    and press Enter. That will download and install a few things (it
+    should be done in a couple of minutes).
+
+	If it ever asks "Do you want to install from sources the packages
+    which need compilation?" say "No". THIS IS VERY IMPORTANT under
+	Windows!!
+
+
+    3.2. Exit R Commander and R. Under "File", in "R Commander", click on
+    "Exit", and in there on "Exit From Commander and R"
+   
+
+
+ 4. Install RStudio (www.rstudio.com). We want to use the "Desktop", that
+    you can download from here:
+
+    http://www.rstudio.com/products/rstudio/download/	
+
+
+ 
+    4.1. Install RStudio. RStudio has new releases frequently, so install
+    a recent version.
+
+    Of course, you want the RStudio for your operating system (Windows,
+    Mac, whatever).
+
+       4.2.1. Under Windows, you probably do not want to change the path
+       (we changed it for R, but we don't change it for RStudio).
+
+
+    4.2. Verify it works. Click on it and it should start, and you should
+    see an application with an R console (along with two or three other
+    windows).
+ 
+    Under Windows, you might see a warning that sterror_s is not found. It
+    seems inocuous: just type OK, and the thing will continue.
+
+   
+
+    4.3. Make sure everything works including R commander.
+
+     4.3.1 In RStudio, go to the R console (the left panel or the
+         bottom-left panel) and type
+         library("Rcmdr")
+ 	
+     4.3.2 Press enter.
+       You should see a new window that says "R Commander", and no warning
+       messages about missing dependencies. (Yes, it will say that it
+       is loading blablabla, etc. But no errors or missing depedencies).
+
+       Yes, some messages might be shown in a red font. But those need not
+       be errors (unless it says "Error" or "ERROR" and, not as serious
+       but worrisome, "Warning" or "WARNING"). And yes, you might see this message:
+       "The following object is masked from 'package:base':
+       errorCondition"; this is not an error. 
+
+     4.3.3.If there are still missing dependencies, you should be given the
+       option to install them by just clicking a button. Do so now.
+
+
+       
+       
+      
+5. Exit R Studio, RCommander, etc.
+
+   5.1. In R Commander, go to "File", "Exit", "From commander"
+
+   5.2. In RStudio go to "File", "Quit RStudio" (or "Quit session")
+
+   5.3. (There are other ways of exiting, like simply going to RStudio and
+    in the "File" menu clicking on "Quit R Studio". This looks abrupt and
+    in Windows can give you worrying messages, but it is OK. Similar
+    things can be done directly from R Commander, by exiting from "From
+    Commander and R").
+
+
+  5.4. If you get questions about "Save workspace image" just say "No".
+
+
+6. Double check things work:
+
+   6.1 Start RStudio.
+   
+   6.2 On the left or bottom-left panel type
+       library(Rcmdr)
+
+   6.3 When you get R Commander running, go to the R Commander menu and
+   under "Tools", "Load Rcmdr plugin(s)" select all of them.
+
+   6.4. You will get a message that says that the plugin will not be
+   available until the Commander is restarted. Click Yes to restart the
+   Commander.
+
+   6.5. If everything worked, you can now exit. If things did not, retrace
+   your steps or start all over and follow instructions carefully.
+
+   6.6. (When you exit, RStudio might crash. Don't worry. And you were
+   exiting anyway :-). 
+    
+***************************
+
+
+
+Some common questions in Windows:
+
+A. Where is the SDI thing? AND How do I change the language to English?
+
+These two are fixed from
+
+"Edit" -> "GUI preferences" (in Spanish: "Editar" -> "Preferencias de la
+interfaz grafica")
+
+
+Then click in "SDI"
+
+and under "Language for menus and messages" type "en" (without the quotes)
+
+
+And save it. It should be saved to a file named "Rconsole" that is often
+located in the Users directory under your username. So something like
+Users -> yourname.  Generally, the default file name offered by R is the
+correct one. So just click on "Save" and tell it to replace the file.
+
+
+
+B. I have an former version of R I want to preserve, and I would like to
+install all the packages I had for that version under the new. What can I
+do:
+
+This is a great procedure:
+
+https://stackoverflow.com/q/1401904
+
+
+Basically, first create a directory called "Temp", right under "C" (it is
+called Temp here, but it could be anything else). And then follow the
+instructions:
+
+
+##--run in the old version of R
+setwd("C:/Temp/")
+packages <- installed.packages()[,"Package"]
+save(packages, file="Rpackages")
+
+
+##--run in the new version
+setwd("C:/Temp/")
+load("Rpackages")
+for (p in setdiff(packages, installed.packages()[,"Package"]))
+install.packages(p)
+
+
+## If you also have BioConductor packages, modify the above last two lines as
+r <- getOption("repos")
+r["CRAN"] <- "http://stat.ethz.ch/CRAN"
+options(repos=r)
+install.packages("BiocManager")
+library(BiocManager)
+my.repos <- BiocManager::repositories()
+for (p in setdiff(packages, installed.packages()[,"Package"]))
+install.packages(p, repos = my.repos)
+
+
+
+
+Some of the other solutions you can find if you google around assume that
+you just want to use the new version of R. With this solution you keep
+your old version of R around, but use also the new one, with all the
+funcionality of the old. 
