@@ -303,9 +303,15 @@ doing anything).
     
 ***************************
 
+One common question in Mac:
+===========================
+
+- How can I change the language to English?
+  - Go here https://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html and then go the "Internationalization" section (https://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html#Internationalization-of-the-R_002eapp) and follow the instructions.
 
 
 Some common questions in Windows:
+=================================
 
 A. Where is the SDI thing? AND How do I change the language to English?
 
