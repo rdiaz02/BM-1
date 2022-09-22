@@ -572,6 +572,8 @@ contains a great discussion of assumptions, consequences of deviations
 from them, what to do, etc.
 
 
+%% FIXME: one vs two-tailed tests
+
 \section{Power of a test}
 
 If there is a true difference in means we would like to detect it. Power refers to our ability to reject the null when it is false. This figure might help; rows refer to the true state of the Universe and columns to your decision. 
