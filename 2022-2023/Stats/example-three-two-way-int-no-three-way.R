@@ -1,9 +1,18 @@
+## Example of how it is possible that in a 3-way ANOVA we have
+## all three two-way interactions but not the three-way interaction.
+
+
+
+
 library(car) ## We will use the "Anova" function from car
 
 ## Suppose a three way ANOVA with factors F1 (levels A and a),
 ## F2 (levels B and b) and F3 (levels D and d).
 
+## Create a data frame for the mean value at each of the combinations.
 ## Y is the mean of the response for all possible 8 cell means.
+## (Why this values? No particular reason, but see bottom for how
+## I to generate these kind of data)
 
 df1 <- data.frame(F1 = c(rep("A", 4), rep("a", 4)),
                   F2 = rep(c(rep("B", 2), rep("b", 2)), 2),
@@ -11,6 +20,9 @@ df1 <- data.frame(F1 = c(rep("A", 4), rep("a", 4)),
                   Y = c(2, 5, 1, 2, 3, 5, 0, 0))
 
 df1
+
+## Those means fulfill that there are two-way interactions, but no three-way
+## interaction. Let's show it
 
 
 ##
@@ -38,6 +50,7 @@ xtabs(Y ~ F1 + F3 + F2, data = df1)
 xtabs(Y ~ F2 + F3 + F1, data = df1)
 
 
+
 ## Let us generate some simulated data, and do an ANOVA
 ## I use a huge sample size to make sure not detecting the three-interaction
 ## is not because of lack of power (notice the huge F statistics for the two-way
@@ -62,7 +75,7 @@ summary(m1)
 ## F1A:F3D is -1; the interaction F1:F3 given above
 ## F2B:F3D is -2; the interaction F2:F3 given above
 
-## Double check means
+## Double check means of the simulated data
 aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 
 
