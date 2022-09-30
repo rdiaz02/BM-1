@@ -14,7 +14,7 @@ library(car) ## We will use the "Anova" function from car
 ## (Why this values? No particular reason, but see bottom for how
 ## I to generate these kind of data)
 
-## Actually, you might want to start from the bottom, "How to create this kinds
+## Actually, you might want to start from the bottom, "How to create these kinds
 ## of patterns", to see how this type of data can be easily generated. 
 
 
@@ -85,7 +85,7 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 
 
 
-#############   How to create this kinds of patterns #########
+#############   How to create these kinds of patterns #########
 
 ## How did I create this? It is actually easy. This is one way.
 
