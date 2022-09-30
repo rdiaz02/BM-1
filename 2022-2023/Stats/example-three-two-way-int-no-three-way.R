@@ -14,6 +14,11 @@ library(car) ## We will use the "Anova" function from car
 ## (Why this values? No particular reason, but see bottom for how
 ## I to generate these kind of data)
 
+## Actually, you might want to start from the bottom, "How to create this kinds
+## of patterns", to see how this type of data can be easily generated. 
+
+
+
 df1 <- data.frame(F1 = c(rep("A", 4), rep("a", 4)),
                   F2 = rep(c(rep("B", 2), rep("b", 2)), 2),
                   F3 = rep(c("D", "d"), 4),
@@ -80,7 +85,7 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 
 
 
-
+#############   How to create this kinds of patterns #########
 
 ## How did I create this? It is actually easy. This is one way.
 
@@ -101,17 +106,25 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 ## (this pattern ensures an interaction)
 ## so we have Yab = 0; YaB = 1, ...
 ## These numbers are the mean values YabD = 0, YaBD = 1, ... 
-## With those numbers, YAB deviates from additivity by -2:
+## With those numbers, YAB deviates from additivity by -2 and this will be
+## the magnitude of the interaction F1:F2.
 ## YAB = 0 + 1 + 3 - 2
 
 ## Now, for the table at d, change the difference YaB - Yab
 ## and the difference YAb - Yab.
-## This creates interactions F1:F3 and F2:F3.
+## Because these differences are different compared to what
+## they were in the "D" table, this creates interactions F1:F3 and F2:F3
 ## For no particular reason I decided to set Yabd = 0; then YaBd = 2
 ## (so now the increase moving right is 2, not 1 as with D) and then 
 ## YAbd = 5 (so now the increase moving down is 5, not 3).
+
 ## BUT, and this is crucial, ensure the lower right cell, YAB deviates from additivity
 ## by the same amount as in the table of D. So the YABd mean should be 5 (0 + 2 + 5 -2)
+
+## Of course the actual values of the magnitude of the interactions F1:F2, F1:F3,
+## F2:F3 are irrelevant. Any other values would have worked.
+
+
 
 ## We have created all three two-way interactions but not the three-way interaction.
 
