@@ -344,7 +344,7 @@ The process above generate data that look like this:
     \end{minipage}
   % \includegraphics[width=0.50\paperwidth,keepaspectratio]{chol-ex1.pdf}
   % \includegraphics[width=0.50\paperwidth,keepaspectratio]{chol-ex2.pdf}
-   \caption{\label{fig:chol-exercise-pearl-et-al}. Relationships between
+   \caption{\label{fig:chol-exercise-pearl-et-al} Relationships between
      Cholesterol and Exercise, by age and over the complete population. From
      \citet{pearl_causal_2016}, Figures 1.1. and 1.2 (which are the same as
      Figure 6.6 in \citealp{pearl2018}; a preview of chapter 1 of
