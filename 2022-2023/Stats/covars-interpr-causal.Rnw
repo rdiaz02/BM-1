@@ -517,8 +517,7 @@ and a few derived ones.
 
 (But before we leave this example: what should we have done? Include in the model
 Treatment, which is the variable we are interested in, and also Plot, to decrease
-variability of the estimates. If we could we could have adjusted for U it would
-have been good, but we can't; anyway, not including U in the model will increase
+variability of the estimates. If we could have adjusted for U, we would have adjusted for it, but we can't adjust for U; anyway, not including U in the model will increase
 the variability, but will not lead to bias. The bad idea was adjusting for
 Fungus.)
 
@@ -895,7 +894,7 @@ These are the consequences:
   
 \item Conditioning on W will not render X and Y independent. Notice also that \textbf{now Z is
   a collider with respect to X and W}. So conditioning on Z will induce an
-association between Z and W.
+association between X and W.
 
 In addition:
   \begin{enumerate}[label=\arabic*.]
@@ -918,6 +917,7 @@ In addition:
 
 \item Now Z is a collider with respect to all three pairs of variables X, Y, W. 
   \begin{enumerate}[label=\arabic*.]
+    \item X and Y are independent (we saw this before).
   \item X and W are independent.
   \item Y and W are independent.
   \item X and W are associated if we condition on Z (Z is a collider).
