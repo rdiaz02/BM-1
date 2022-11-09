@@ -1597,7 +1597,7 @@ adjust for the covariate.
 
 
 
-
+%% FIXME: in the future, use \bibliographystyle{jss2}
 {\small
   % \bibliography{refs}
   % \bibliographystyle{myplainnat}
