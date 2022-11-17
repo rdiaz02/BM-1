@@ -1076,7 +1076,7 @@ The ``birth weight paradox'' is explained in detail in
 \citet{hernandez-diaz2006}. The Wikipedia has it under the name ``Low
 birth-weight paradox''
 (\Burl{https://en.wikipedia.org/wiki/Low_birth-weight_paradox}). This is an issue
-of major practical relevance that, if poorly analized and understood, could like
+of major practical relevance that, if poorly analized and understood, could lead
 to harmful recommendations.
 
 I copy from p.\ 1115 of \citet{hernandez-diaz2006}:
@@ -1559,7 +1559,7 @@ covariates. % But then,
   % itself nor to the treatment actually received.
 
 
-\subsection{Randomization, exchangeability, counterfactuals and potential
+\subsection{Randomization, exchangeability, counterfactuals, and potential
   outcomes}\label{counterf}
 
 I have not used the words counterfactuals or potential outcomes. But

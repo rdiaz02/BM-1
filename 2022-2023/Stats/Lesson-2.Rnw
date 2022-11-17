@@ -243,7 +243,7 @@ dp53 <- read.table("P53.txt", header = TRUE, stringsAsFactors = TRUE)
 
 
 Notice the \texttt{stringsAsFactors = TRUE}: we want the strings to be
-turned into factors, so we ask for it. This is no longer necessary with new versions of R.
+turned into factors, so we ask for it. 
 
 The first step ever is to look at the data. In fact, here we can look at
 all the original data. So go take a look at the data (``View data set'',
@@ -492,6 +492,24 @@ A few ideas that should be clear after this section:
 If any one of the above is not clear, please ask it in class. Most of this,
 though, is material you have surely been taught before  \smiley{} .  So if any of this is unclear, please ask in class after having looked a the notes from your previous stats classes and, maybe, the Wikipedia.
 
+\subsubsection{What p-values and hypothesis testing are and are not}
+\label{sec:what-p-values}
+
+These ideas should be clear:
+\begin{itemize}
+\item We do not ``confirm the null hypothesis'': we fail to reject (and failing
+  to reject can be something trivial to achieve)
+\item The p-value is not the probability of the null hypothesis
+\item The p-value is not the probability of the alternative hypothesis
+\item The p-value can be used as a measure of strength of evidence
+  \textbf{against} the null hypothesis. Remember the logic ``either the null is
+  false or something as (un)likely as the p-value happened''
+\item p-values are computed using models that make some assumptions
+\item Using p-values is often a much more sensible idea than saying ``signficant''
+\item Hair-splitting over, say, $p = 10^{-13}$ and $p = 10^{-16}$ makes no sense
+\item p-values are not the only tool we can use: do not forget confidence intervals!!
+\end{itemize}
+
 
 \subsection{Confidence intervals}
 
@@ -683,6 +701,9 @@ When studies have low power, estimates of effects from tests that yield
 
 Here is a interesting and recent example where the winner's curse can be
   playing a role: the possible use of botox to relieve depression   \Burl{https://www.science.org/news/2021/06/can-botox-ease-depression-eliminating-frowns-researchers-have-doubts}.
+
+  The winner's curse is a \textbf{serious problem} (related to a bunch of others,
+  such as reporting/publication bias and the reproducibility crisis.).
 
 
   Oh, and the winner's curse is something that \textbf{can affect you too}; in other words, the winner's curse is not something that only happens to other researchers \smiley{}.
