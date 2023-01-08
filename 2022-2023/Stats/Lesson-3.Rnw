@@ -4542,6 +4542,142 @@ There is nothing conceptually new, but the accounting gets more complicated.
 
 
 
+\section{A two-way ANOVA with interaction: SS, coefficients}\label{two-way-by-hand}
+
+Here are some details about the sums of squares of the interaction term or a two-way Anova with interactions. This section is not required material.
+
+Some on-line material that covers this is (only the first uses R explicitly):
+\begin{itemize}
+\item \Burl{https://stats.libretexts.org/Courses/Taft_College/PSYC_2200\%3A_Elementary_Statistics_for_Behavioral_and_Social_Sciences_(Oja)/Unit_2\%3A_Mean_Differences/13\%3A_Factorial_ANOVA_(Two-Way)/13.03\%3A_Two-Way_ANOVA_Summary_Table/13.03.01\%3A_Calculating_Sum_of_Squares_for_the_Factorial_ANOVA_Summary_Table}
+\item \Burl{https://www.itl.nist.gov/div898/handbook/prc/section4/prc437.htm}
+\item \Burl{ https://www.stat.purdue.edu/~boli/stat512/lectures/topic7.pdf}
+\end{itemize}
+
+
+
+\vspace*{15pt}
+
+Create a data set
+<<aix1>>=
+
+y <- c(2, 3, 4, 0, 1, 2, 6, 7, 8, 1, 2, 3)
+A <- c(rep("a1", 6), rep("a2", 6))
+B <- rep(c(rep("b1", 3), rep("b2", 3)), 2)
+df1 <- data.frame(y, A = factor(A), B = factor(B))
+## Do not leave junk around and avoid confusion
+rm(y, A, B)
+
+
+## Create another data that is identical, but uses a different
+## level as reference for parameterization
+df2 <- df1
+df2$A <- factor(df2$A, levels = c("a2", "a1"))
+@
+
+
+Table of cell means:
+<<aixtab>>=
+xtabs(y ~ A + B, data = aggregate(y ~ A + B, data = df1, mean))
+@
+ 
+Fit the model
+
+<<aixm1m2>>=
+m1 <- lm(y ~ A * B, data = df1)
+
+## Same model
+m2 <- lm(y ~ A * B, data = df2)
+
+@ 
+
+Of course, we have identical ANOVA tables
+
+<<aixmant>>=
+## Identical ANOVA tables
+Anova(m1)
+Anova(m2)
+@ 
+
+But the actual coefficients differ, of course, since the reference is different:
+<<aixmcoefs>>=
+S(m1)
+S(m2)
+@ 
+The interaction coefficient for ``m1'' is the deviation of the cell for a2 and b2 from the expected under the additive model. Thus it is $2 - (3 + 4 -2)$, where 3 is the reference, a1, b1; 4 is the change from going from a1 to a2 (from 3 to 7); and 2 is the change from going from b1 to b2 (3 to 1). This we saw before.
+
+In ``m2'' we use a different reference and measure the coefficient as the deviation of a1:b2 from the expected: $1 - (7 - 4 - 5)$ (7 is the reference, a2:b1; and -4 and -5 are the deviations from moving to a1 and b2, respectively).
+
+
+What about the SS, sums of squares, of the interaction? Let us write our model again for the means
+
+\[ \mu_{i,j} = \mu + \alpha_i + \beta_j + (\alpha \beta)_{i,j}\]
+where $(\alpha \beta)_{i,j}$ is the interaction.
+
+How do we compute $(\alpha \beta)_{i,j}$? Just write them as deviations from the expected from the additive model:
+
+\[(\alpha \beta)_{i,j} = \mu_{i,j} - (\mu + \alpha_i + \beta_j)
+\]
+
+But we can write the interactions in terms of the marginal means in the table of means, the means of the columns and rows:
+
+\[(\alpha \beta)_{i,j} = \mu_{i,j} - \mu_{i.} - \mu_{.j} + \mu \]
+
+(The above are equivalent because $\alpha_i = \mu_{i.} - \mu$ and $\beta_j = \mu_{.j} - \mu$).
+
+In our case we have:
+\begin{itemize}
+\item $\mu_{a1,.} = 2$
+\item $\mu_{a2,.} = 4.5$
+\item $\mu_{.,b1} = 5$
+\item $\mu_{.,b2} = 1.5$
+\end{itemize}
+
+Do it with R
+<<aixmmmmf>>=
+addmargins(xtabs(y ~ A + B,
+                 data = aggregate(y ~ A + B, data = df1, mean)),
+           FUN = mean)
+@ 
+
+Now, the sums of squares for the interaction are obtained in the usual way (see Dalgaard's text for the one-way version)
+\[
+n \sum_{ij}\widehat{(\alpha \beta)}_{i,j}^2
+\]
+
+where $n$ are the number of observations per cell, 3 in our case.
+
+That is, of course, the same as
+
+\[n \sum_{i,j} (\widehat{\mu}_{i,j} - \widehat{\mu}_{i.} - \widehat{\mu}_{.j} + \widehat{\mu} )^2  \]
+
+In our case we have
+
+\begin{multline*}
+3 * ( (3 - 2 - 5 + 3.25)^2 + (1 - 2- 1.5 + 3.25)^2 + (7 - 5 - 4.5 + 3.25)^2 + (2 - 1.5 - 4.5 + 3.25)^2 )  =\\
+  3 * ((-0.75)^2 + 0.75^2 + 0.75^2 + (-0.75)^2) = 3 * 4 * 0.75^2
+\end{multline*}
+
+
+\subsection{Some intuition for the interaction: estimate of coefficient vs.~ Sums of Squares}
+\label{sec:some-intu-coeff}
+
+Why did we have an estimate of the coefficient of interaction of 3 (or -3, depending on the reference) and yet the SS is $3 * 4 * (0.75)^2$?
+
+
+When we compute the sums of squares for interaction we first fit a model with an overall (or common) mean, and rows and columns effects and then estimate the deviations of all cells from it to fund the sums of squares. In other words, the deviations that are squared and then summed are the deviations of all the observed cell means from a model with a common mean (the overall mean) and rows and columns effects (the marginal means) that combine additively. We are computing the variation due to interaction, the variation in cell means that deviates from the additive model.  In our case, when we computed the SS each of those cell deviations terms were $0.75$ or $-0.75$. 
+
+
+When we computed the coefficient of the interaction, say \texttt{Aa1:Bb2} we subtracted the mean of one cell (e.g., bottom right) from the sum of another cell (top left) as reference and the other two (bottom left and top right) as the ones that dictate the effect. So the reference and the other two cells were modelled perfectly, and all the deviation was placed in the remaining cell.
+
+
+We just said that when we computed the SS each of those cell deviations terms were $0.75$ or $-0.75$; this is the same as ``spreading'' the coefficient of $3$ (or $-3$) over all four cells equally: $3/4 = 0.75$. The $3$ (or the $-3$), in contrast, has just collapsed all of those differences in all the cells in a single cell. When computing predicted (fitted) values it makes no difference, but this is not what we want for computing sums of squares.
+
+
+Note that the estimate of the coefficient $3$ or $-3$ can change if we use the first cell or the second or \ldots as reference when we estimate the coefficient and this is why the coefficient is labelled as \texttt{Aa2:Bb2} or \texttt{Aa1:Bb2}, or whatever is appropriate depending on what you used as reference. None of this change of Coefficients matters when we compute the SS.
+
+
+
+Finally, note that the estimate of the interaction, e.g., \texttt{Aa2:Bb2} is -3, but it has an standard error estimate. The \textit{t-statistic} is -2.598. And its square is \ldots 6.75, exactly the same as the F statistic for the interaction, as we have 1 degree of freedom.
 
 
 
