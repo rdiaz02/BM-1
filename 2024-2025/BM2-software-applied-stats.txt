@@ -183,7 +183,7 @@ doing anything).
 
 
     2.7. Does the version of Rcmdr matter? Not a lot (assuming it is
-    anything > 2.3), but newer versions have more functionality. Make sure
+    anything > 2.7), but newer versions have more functionality. Make sure
     you use a recent version, the one corresponding to the version of R.
 
 

@@ -3654,7 +3654,7 @@ a biological point of view, or causally, etc. This is a very quick summary:
 With regards to the statistical procedures, we will summarize it as
 follows: please, please, please, distrust automated variable selection
 procedures that rely on p-values or F-statistics of individual variables
-(in all their variants, such as stepwise, etc). These procedures rarely do what you want to do, are often extremely unstable, etc. They are trivial to implement, and that makes them very common, but they are rarely what you scientific question needs.
+(in all their variants, such as stepwise, etc). These procedures rarely do what you want to do, are often extremely unstable, etc. They are trivial to implement, and that makes them very common, but they are rarely what your scientific question needs.
 
 
 Careful model comparison,
@@ -4017,7 +4017,7 @@ If you look closely, the data show warning signals, such as possible
 differences in variances of ratios. And if you have no idea about the
 model, you might be able to compare several and use diagnostics, as
 explained in section \nameref{diagnostics} to choose among models. But, in
-general, ratios are not the way to. And using diagnostics might require a
+general, ratios are not the way to analyze the data. And using diagnostics might require a
 decently large sample size. Summary: only use ratios if you really know
 what you are doing and have good reasons to do it. Otherwise, use linear
 models.
@@ -4664,7 +4664,7 @@ In our case we have
 Why did we have an estimate of the coefficient of interaction of 3 (or -3, depending on the reference) and yet the SS is $3 * 4 * (0.75)^2$?
 
 
-When we compute the sums of squares for interaction we first fit a model with an overall (or common) mean, and rows and columns effects and then estimate the deviations of all cells from it to fund the sums of squares. In other words, the deviations that are squared and then summed are the deviations of all the observed cell means from a model with a common mean (the overall mean) and rows and columns effects (the marginal means) that combine additively. We are computing the variation due to interaction, the variation in cell means that deviates from the additive model.  In our case, when we computed the SS each of those cell deviations terms were $0.75$ or $-0.75$.
+When we compute the sums of squares for interaction we first fit a model with an overall (or common) mean, and rows and columns effects and then estimate the deviations of all cells from it to find the sums of squares. In other words, the deviations that are squared and then summed are the deviations of all the observed cell means from a model with a common mean (the overall mean) and rows and columns effects (the marginal means) that combine additively. We are computing the variation due to interaction, the variation in cell means that deviates from the additive model.  In our case, when we computed the SS each of those cell deviations terms were $0.75$ or $-0.75$.
 
 
 When we computed the coefficient of the interaction, say \texttt{Aa1:Bb2} we subtracted the mean of one cell (e.g., bottom right) from the sum of another cell (top left) as reference and the other two (bottom left and top right) as the ones that dictate the effect. So the reference and the other two cells were modelled perfectly, and all the deviation was placed in the remaining cell.
