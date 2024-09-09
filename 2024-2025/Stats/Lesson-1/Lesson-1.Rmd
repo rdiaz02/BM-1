@@ -333,31 +333,31 @@ B. Mosaic plots (see lesson 4)
 5. Figure legends must always indicate what statistics are represented. In particular, when present, it should be clearly stated the kind of central and spread/error measure is represented. In addition, the number of independent biological replicates (the “n”) should be included in the figure legend.
 
 
-# Exercises
+<!-- # Exercises -->
 
-Please complete the following exercises and answer the corresponding questions in the “Self-evaluation”
-test in the Moodle page of the course.
+<!-- Please complete the following exercises and answer the corresponding questions in the “Self-evaluation” -->
+<!-- test in the Moodle page of the course. -->
 
-**Exercise 1**. You are measuring the volume of tumors in a set of mice treated with a new drug and write them down on a piece of paper. The file “tumor_vol.csv” contains the data. Now, you measure a new tumor and its size is 0.049 mm3. If by mistake you skip the first decimal digit and enter it as 0.51 instead of 0.051, how will the mean be affected? and the median? Import the data and edit it to generate two new data sets one including the value 0.51 and another including the value 0.051. Calculate summary statistics and represent the two data sets using a boxplots and strip charts. In the case of the data set containing the incorrect measure, which statistic (mean or median) describes best the data (i.e. is closer to statistic calculated from the data set with the correct measure)?
+<!-- **Exercise 1**. You are measuring the volume of tumors in a set of mice treated with a new drug and write them down on a piece of paper. The file “tumor_vol.csv” contains the data. Now, you measure a new tumor and its size is 0.049 mm3. If by mistake you skip the first decimal digit and enter it as 0.51 instead of 0.051, how will the mean be affected? and the median? Import the data and edit it to generate two new data sets one including the value 0.51 and another including the value 0.051. Calculate summary statistics and represent the two data sets using a boxplots and strip charts. In the case of the data set containing the incorrect measure, which statistic (mean or median) describes best the data (i.e. is closer to statistic calculated from the data set with the correct measure)? -->
 
-**Exercise 2**. Match each of the elements in a box plot with their meaning.
+<!-- **Exercise 2**. Match each of the elements in a box plot with their meaning. -->
 
-|Name                  |   Calculated as                                         |
-|:--------------------:|:-------------------------------------------------------:|
-|Dark line within box  |erroneous data values                                    |
-|Dots                  |IQR = Q3-Q1                                              |
-|"Whiskers"            |min, max                                                 |
-|Length of the box     |standard deviation                                       |
-|                      |      50th percentile (Q2)                               |
-|                      |any value farther than 1.5 times the IQR from Q1 or Q3   |
-|                      |most extreme value within 1.5 times the IQR from Q1 or Q3|
-|                      |mean                                                     |
-|                      |most extreme value within 1.5 times the IQR from the mean|
+<!-- |Name                  |   Calculated as                                         | -->
+<!-- |:--------------------:|:-------------------------------------------------------:| -->
+<!-- |Dark line within box  |erroneous data values                                    | -->
+<!-- |Dots                  |IQR = Q3-Q1                                              | -->
+<!-- |"Whiskers"            |min, max                                                 | -->
+<!-- |Length of the box     |standard deviation                                       | -->
+<!-- |                      |      50th percentile (Q2)                               | -->
+<!-- |                      |any value farther than 1.5 times the IQR from Q1 or Q3   | -->
+<!-- |                      |most extreme value within 1.5 times the IQR from Q1 or Q3| -->
+<!-- |                      |mean                                                     | -->
+<!-- |                      |most extreme value within 1.5 times the IQR from the mean| -->
 
-**Exercise 3**. Could you match histograms A-C to boxplots d1-d3? How does the value of the mean
-compares to the median in each group? and between groups? How does the IQR between groups compare?
+<!-- **Exercise 3**. Could you match histograms A-C to boxplots d1-d3? How does the value of the mean -->
+<!-- compares to the median in each group? and between groups? How does the IQR between groups compare? -->
 
-```{r fig10, out.width = "50%", fig.cap =  "Exercise 3", fig.align = "center", echo = FALSE}
-knitr::include_graphics("Exercise3.png")
-```
-**Exercise 4**. To analyze the effect of diet on the level of a lipid metabolite (lipid X), 6 mice were randomly divided in two groups and the animals in each group were fed with regular chow or high fat diet (HFD) for 10 weeks. Then, animals were euthanized and the level of the lipid metabolite was determined in four independent 1mg samples from the liver and gastrocnemius muscle of each mice. The file “metabolite_diet.xls” contains the amount of lipid (in microgr/mg tissue) in each sample. Reorder the data to generate a data matrix (do it manually by copying-pasting data sets) and save it as a comma-separated text file. How many rows does the resulting data matrix contain? What type each variable is? How many cases does it contain? Keeping in mind that with this experiment we wanted to know whether the HFD increases the content of lipid X in the liver (and/or the muscle), what is the “n” (independent biological replicates) of each treatment group? Make a plot of the results.
+<!-- ```{r fig10, out.width = "50%", fig.cap =  "Exercise 3", fig.align = "center", echo = FALSE} -->
+<!-- knitr::include_graphics("Exercise3.png") -->
+<!-- ``` -->
+<!-- **Exercise 4**. To analyze the effect of diet on the level of a lipid metabolite (lipid X), 6 mice were randomly divided in two groups and the animals in each group were fed with regular chow or high fat diet (HFD) for 10 weeks. Then, animals were euthanized and the level of the lipid metabolite was determined in four independent 1mg samples from the liver and gastrocnemius muscle of each mice. The file “metabolite_diet.xls” contains the amount of lipid (in microgr/mg tissue) in each sample. Reorder the data to generate a data matrix (do it manually by copying-pasting data sets) and save it as a comma-separated text file. How many rows does the resulting data matrix contain? What type each variable is? How many cases does it contain? Keeping in mind that with this experiment we wanted to know whether the HFD increases the content of lipid X in the liver (and/or the muscle), what is the “n” (independent biological replicates) of each treatment group? Make a plot of the results. -->
