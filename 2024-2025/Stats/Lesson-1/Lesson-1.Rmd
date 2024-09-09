@@ -45,15 +45,15 @@ Remember that R is used here to facilitate your learning process of applied stat
 
 
 ## Case 1: qPCR (from Prof. Luis del Peso's lab)
-You investigate the effect of drug X on EFNA3 mRNA levels using human vascular endothelial cells (HUVEC) as a model. To this end, you seed two culture plates with HUVEC from the same donor and treat one plate with the drug and the other with vehicle alone. Then, following the standard procedures in your lab, you extract total RNA from both culture plates and determine transcript abundance by RT-qPCR in three aliquots from each RNA sample (see figure 2.3). The experiment shows a clear effect of drug on EFNA3 mRNA level, but your supervisor is unconvinced claiming that you must validate this result in additional independent experiments. Why? you already have three replicates, aren’t they enough? Taking the advise you repeat the whole experiment three more times in different dates and using each time a new set of reagents and independent batches of cells from different donors. So you end up having 4 experiments x 3 qRT/PCR replicates =12 determinations for EFNA3 transcript in each condition (control and drug). A lot of data, good job, time to show your results to your supervisor...wait! How are you going to process this data? should you plot all 12 data points? what is the “n” of your experiment?
+You investigate the effect of drug X on EFNA3 mRNA levels using human vascular endothelial cells (HUVEC) as a model. To this end, you seed two culture plates with HUVEC from the same donor and treat one plate with the drug and the other with vehicle alone. Then, following the standard procedures in your lab, you extract total RNA from both culture plates and determine transcript abundance by RT-qPCR in three aliquots from each RNA sample (see Figure \@ref(fig:exp-design-luis)). The experiment shows a clear effect of drug on EFNA3 mRNA level, but your supervisor is unconvinced claiming that you must validate this result in additional independent experiments. Why? you already have three replicates, aren’t they enough? Taking the advise you repeat the whole experiment three more times in different dates and using each time a new set of reagents and independent batches of cells from different donors. So you end up having 4 experiments x 3 qRT/PCR replicates =12 determinations for EFNA3 transcript in each condition (control and drug). A lot of data, good job, time to show your results to your supervisor...wait! How are you going to process this data? should you plot all 12 data points? what is the “n” of your experiment?
 
 Does it really matter? If so, why?
 
-```{r out.width="50%", fig.cap =  "Experimental design of Case 1", fig.align= "center"}
+```{r exp-design-luis, fig.cap =  "Experimental design of Case 1", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("Case_Luis.png")
 ```
 
-> **Wait a minute: Variables**: How many variables do we have in this experiment? Can you detect any differences betweem them?
+**Wait a minute: Variables**: How many variables do we have in this experiment? Can you detect any differences betweem them?
 
 There are two main types of variables: **numerical**, (what we record is a number that represent a measurable quantity, e.g. height of an individual, the pg of mRNA per cell, the value of a magnetic resonance image on a pixel) and **categorical**, (what we record is a qualitative characteristic, e.g. the color of eyes, gender, brain region). The different values that a categorical variable can take are referred to as levels (e.g. the categorical variable brain region in our example has only two levels, hippocampus or cortex). The levels can show a natural order (e.g. level of education: elementary school, high school, college graduate, PhD), in this case they are termed ordinal categorical, or be unordered (our example of brain region) and then we call them nominal categorical variables (or just categorical). Numerical variables can be continuous (e.g. temperature) or discrete (e.g. number of siblings). Note that the label for some categorical variables are numbers (e.g. zip codes), which can mislead us to classify them as numerical. As a rule of thumb, with numerical variables it is sensible to add, subtract, or take averages with their values. In contrast, it does not make sense to apply arithmetic operations to categorical variables (what would be the meaning of adding of two zip codes?)
 
@@ -61,7 +61,7 @@ There are two main types of variables: **numerical**, (what we record is a numbe
 
 ## Subsetting and aggregating data
 
-We will now load the dataset corresponding to **case 1**. (If you only had the xls file, the first step would be to save data from the file “qPCR_data.xls” as a comma separated text file, “qPCR_data.csv”, to load it into R commander; we do not need to do this here, since we already have the csv file.) This data set contains the results of all four experiments (figure 2) arranged in three columns: experiment, treatment, EFN3A_levels. Note that data is already arranged as a data matrix, (i.e. “correct” way).
+We will now load the dataset corresponding to **case 1**. (If you only had the xls file, the first step would be to save data from the file “qPCR_data.xls” as a comma separated text file, “qPCR_data.csv”, to load it into R commander; we do not need to do this here, since we already have the csv file.) This data set contains the results of all four experiments  arranged in three columns: experiment, treatment, EFN3A_levels. Note that data is already arranged as a data matrix, (i.e. “correct” way).
 
 **Exercise**. How many variables does this data matrix contain? what type are they? Indicate the levels of the categorical variables, if any.
 
@@ -77,7 +77,7 @@ FirstExp <- subset(qPCRdata, Experiment == "qpcr2506")
 with(FirstExp, stripchart(EFNA3_level_AU ~ Treatment, method = "jitter", vertical = T, ylab = "EFNA3 mRNA level (AU)", xlab = "Treatment"))
 ```
 Now, what is the meaning of these replicates? is this result generalizable (i.e would you expect a
-similar result when choosing any other sample from the population?) The replicates in this case are just independent measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...) but it does not captures the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (sensible to culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor, see **figure 2**) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also **figure 4** extracted from it.
+similar result when choosing any other sample from the population?) The replicates in this case are just independent measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...) but it does not captures the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (sensible to culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also Figure \@ref(fig:fig-vaux) extracted from it.
 
 
 
@@ -107,7 +107,7 @@ We will work with experimental data from a **magnetic resonance imaging (MRI)** 
 
 *Experimental setup*
 
-We acquired a set of MRI of the brains of 40 animals, in different experimental conditions (**Figure 1**). The experiment went as follows: mice were anesthetized and placed inside an MRI scanner. We acquired an MRI of their brains, and obtained two coefficients (numerical values) the **ADC** (the Apparent Diffusion Coefficient of water molecules) and the **T2**, **for every pixel**. Afterwards, we administrated (via i.p.) a AQP-4 inhibitor solution (called TGN-20) to half of the animals (20), and a saline solution to the other half. Immediately after this administration, we acquired a second set of ADC and T2 sequences and registered the corresponding ADC and T2 values for every pixel. 20 minutes after, we administered to half of the animals a glucose solution, to the rest of animals a saline solution. Thus, we ended up having **4 experimental groups**, depending on the substances administered:
+We acquired a set of MRI of the brains of 40 animals, in different experimental conditions (Figure \@ref(fig:exp-design-blanca)). The experiment went as follows: mice were anesthetized and placed inside an MRI scanner. We acquired an MRI of their brains, and obtained two coefficients (numerical values) the **ADC** (the Apparent Diffusion Coefficient of water molecules) and the **T2**, **for every pixel**. Afterwards, we administrated (via i.p.) a AQP-4 inhibitor solution (called TGN-20) to half of the animals (20), and a saline solution to the other half. Immediately after this administration, we acquired a second set of ADC and T2 sequences and registered the corresponding ADC and T2 values for every pixel. 20 minutes after, we administered to half of the animals a glucose solution, to the rest of animals a saline solution. Thus, we ended up having **4 experimental groups**, depending on the substances administered:
 
 1. saline + saline ="Saline"  (10 animals)
 2. saline + glucose = "Glucose"  (10 animals)
@@ -123,8 +123,8 @@ Besides, we group our pixel values depending on the brain region they belong to:
 1. Hippocampus
 2. Cortex
 
-```{r out.width="75%", fig.cap = "Experimental design of case 1", fig.align= "center"}
-knitr::include_graphics("Experimental_design.png")
+```{r exp-design-blanca, out.width="75%", fig.cap = "Experimental design of case 2", fig.align= "center"}
+knitr::include_graphics("Experimental_design_Blanca.png")
 ```
 
 
@@ -142,7 +142,7 @@ Note that, for this lesson, we already provide you with the csv files. If you wa
 
 
 ## Using R commander
-• Open an R session through the Rgui interface. In th console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like figure 3:
+• Open an R session through the Rgui interface. In th console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like Figure \@ref(fig:Rfigures):
 
 ```{r Rfigures, fig.cap =  "Rgui interface (left) and Rcommander window (right)", fig.align= "center"}
 knitr::include_graphics("Rcmdr.png")
@@ -166,9 +166,9 @@ The dataset should contain a 240-rows and 6-column document with the ADC and T2 
 
 > *An MRI gives numerical information at a pixel (or voxel) level. In the experimental setup that we are currently investigating, each brain region studied (hippocampus or cortex) is composed by several pixels. On each individual animal, those pixels corresponding to the same region are considered as technical replicates representative of the region. To obtain the Brain_MR dataset that you just opened, we calculated, for every animal, a mean regional value.*
 
-It is important to distinguish, for every experimental setup, between technical replicates, biological replicates and sample size. Take a look at Figure 4.
+It is important to distinguish, for every experimental setup, between technical replicates, biological replicates and sample size. Take a look at Figure \@ref(fig:fig-vaux).
 
-```{r fig4, out.width = "65%", fig.cap =  "Biological replicates", fig.align = "center"}
+```{r fig-vaux, out.width = "65%", fig.cap =  "Biological replicates", fig.align = "center"}
 knitr::include_graphics("Biological_replicates.png")
 ```
 
@@ -221,7 +221,7 @@ Now, observe the "boxplot" below and try to see if you can understand better wha
         strip.background = element_blank(),
         strip.placement = "outside")
 ```
-> Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look to figure 7.
+> Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look at Figure \@ref(fig:fig7).
 
 ```{r fig7, out.width = "50%", fig.cap =  "Box plot paramaters", fig.align = "center", echo = FALSE}
 knitr::include_graphics("BoxPlot_def.png")
@@ -232,7 +232,10 @@ Now you will learn, using **Rcommander**, how to obtain some graphical represent
 class(Brain_MR$Animal)
 ```
 
-(Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (see Figure)
+(Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (Figure \@ref(fig:fig8)):
+
+
+
 
 ```{r fig8, out.width = "50%", fig.cap =  "Executing with Rcommander", fig.align = "center", echo = FALSE}
 knitr::include_graphics("FigClass.png")
