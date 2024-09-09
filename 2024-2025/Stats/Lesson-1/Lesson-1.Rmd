@@ -80,7 +80,7 @@ knitr::include_graphics("Case2.png")
 
 > **Wait a minute: Variables**: How many variables do we have in this experiment? Can you detect any differences betweem them?
 
-There are two main types of variables: **numerical**, (what we record is a number that represent a measurable quantity, e.g. height of an individual, the pg of mRNA per cell, the value of a magnetic resonance image on a pixel) and **categorical**, (what we record is a qualitative characteristic, e.g. the color of eyes, gender, brain region). The different values that a categorical variable can take are referred to as levels (e.g. the categorical variable brain region in our example has only two levels, hippocampus or cortex). The levels can show a natural order (e.g. level of education: elementary school, high school, college graduate, PhD), in this case they are termed ordinal categorical, or be unordered (our example of brain region) and then we call them nominal categorical variables (or just categorical). Numerical variables can be continuous (e.g. temperature) or discrete (e.g. number of siblings). Note that the label for some categorical variables are numbers (e.g. zip codes), which can mislead us to classify them as numerical. As a rule of thumb, with numerical variables it is sensible to add, subtract, or take averages with their values. In contrast, it does not make sense to apply arithmetic operations to categorical variables (what would be the meaning of adding of two zip codes?)*
+There are two main types of variables: **numerical**, (what we record is a number that represent a measurable quantity, e.g. height of an individual, the pg of mRNA per cell, the value of a magnetic resonance image on a pixel) and **categorical**, (what we record is a qualitative characteristic, e.g. the color of eyes, gender, brain region). The different values that a categorical variable can take are referred to as levels (e.g. the categorical variable brain region in our example has only two levels, hippocampus or cortex). The levels can show a natural order (e.g. level of education: elementary school, high school, college graduate, PhD), in this case they are termed ordinal categorical, or be unordered (our example of brain region) and then we call them nominal categorical variables (or just categorical). Numerical variables can be continuous (e.g. temperature) or discrete (e.g. number of siblings). Note that the label for some categorical variables are numbers (e.g. zip codes), which can mislead us to classify them as numerical. As a rule of thumb, with numerical variables it is sensible to add, subtract, or take averages with their values. In contrast, it does not make sense to apply arithmetic operations to categorical variables (what would be the meaning of adding of two zip codes?)
 
 
 # **Reading data**
@@ -89,7 +89,7 @@ You can find the data of this study in the files "Brain MRI". We start by loadin
 1. Open the "Brain_MR_data.xls" in excell
 2. Save it as .csv
 
-You are done. If you open the file with any text editor you’ll see rows of numbers, each row corresponding to one in the original excel file, delimited by commas. The comma separated values keep the same ordering as in the columns in the original file. Note that we can export data in this format using any delimiter instead of commas, which can be useful in some cases5. In this regard, tabs are commonly used as delimiters in text files instead of commas.
+You are done. If you open the file with any text editor you’ll see rows of numbers, each row corresponding to one in the original excel file, delimited by commas. The comma separated values keep the same ordering as in the columns in the original file. Note that we can export data in this format using any delimiter instead of commas, which can be useful in some cases. In this regard, tabs are commonly used as delimiters in text files instead of commas.
 
 ## Using R commander
 • Open an R session through the Rgui interface. In th console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like figure 3:
@@ -150,7 +150,7 @@ Before doing any statistical test to prove a certain finding, it is fundamental 
         strip.placement = "outside")
 ```
 
-To read a graph, we need to go through all the details. We can start by looking at the X and Y axis and think what they represent.Then the type of graph (boxplot, stripchart, bars with a measure of dispersion ...), the legend. In this case, with multiple subplots, what is each subplot representing? Can you guess what is it happening tin the Glucose and TGN.Glucose groups?
+To read a graph, we need to go through all the details. We can start by looking at the X and Y axis and think what they represent.Then the type of graph (boxplot, stripchart, bars with a measure of dispersion ...), the legend. In this case, with multiple subplots, what is each subplot representing? Can you guess what is it happening in the Glucose and TGN.Glucose groups?
 
 This plot, however, as it is displayed, lacks of something crucial: **the figure caption**. By only looking at the graphs, we can not know for sure what are the bars representing (is a mean values, what is the "n"?), nor what measure of dispersion it is plotted (standard error, standard deviation, confident intervals?)
 
@@ -176,11 +176,11 @@ Now, observe the "boxplot" below and try to see if you can understand better wha
 ```{r fig7, out.width = "50%", fig.cap =  "Box plot paramaters", fig.align = "center", echo = FALSE}
 knitr::include_graphics("BoxPlot_def.png")
 ```
-Now you will learn, using **Rcommander**, how to obtain some graphical representations such as the ones above. Before that, we need to check something. When R reads numbers it understands them has plane numbers. However, **in our data, "Animal",  should not be a numerical variable, it should be considered categorical or "factor" in R**. We need to convert the "Animal" variable from numerical into factor. In the "Rscript" space of Rcommander, type:
+Now you will learn, using **Rcommander**, how to obtain some graphical representations such as the ones above. Before that, we need to check something. When R reads numbers it understands them as plane numbers. However, **in our data, "Animal",  should not be a numerical variable, it should be considered categorical or "factor" in R**. We need to convert the "Animal" variable from numerical into factor. In the "Rscript" space of Rcommander, type:
 ```{r}
 print("class(Brain_MR$Animal)")
 ```
-(no commas). (Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the anser to this request is "integer" (see Figure)
+(no commas). (Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (see Figure)
 
 ```{r fig8, out.width = "50%", fig.cap =  "Executing with Rcommander", fig.align = "center", echo = FALSE}
 knitr::include_graphics("FigClass.png")
