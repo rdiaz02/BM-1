@@ -182,20 +182,28 @@ Now, observe the "boxplot" below and try to see if you can understand better wha
 knitr::include_graphics("BoxPlot_def.png")
 ```
 Now you will learn, using **Rcommander**, how to obtain some graphical representations such as the ones above. Before that, we need to check something. When R reads numbers it understands them as plane numbers. However, **in our data, "Animal",  should not be a numerical variable, it should be considered categorical or "factor" in R**. We need to convert the "Animal" variable from numerical into factor. In the "Rscript" space of Rcommander, type:
-```{r}
-print("class(Brain_MR$Animal)")
+
+```{r, results='hide'}
+class(Brain_MR$Animal)
 ```
-(no commas). (Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (see Figure)
+
+(Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (see Figure)
 
 ```{r fig8, out.width = "50%", fig.cap =  "Executing with Rcommander", fig.align = "center", echo = FALSE}
 knitr::include_graphics("FigClass.png")
 ```
+
 Then, in the Rscript console write:
-```{r}
-print("Brain_MR$Animal <- factor(Brain_MR$Animal)")
+```{r, results='hide'}
+Brain_MR$Animal <- factor(Brain_MR$Animal)
 ```
 
-Execute this order by, like before, selecting the sentence with cursor and the clicking "Execute". Now the variable should be a factor. You can check it by typing again: "class(Dataset$Animal)"
+Execute this order by, like before, selecting the sentence with cursor and the clicking "Execute". Now the variable should be a factor. You can check it by typing again: "class(Dataset$Animal)" (here we show the input and the output you should see)
+
+```{r}
+class(Brain_MR$Animal)
+```
+
 
 We are now ready to proceed with the plots. Select “Graphs” in the menu bar and look at all the graph options. To start with, it is always useful to explore **how data values are distributed: Histograms** are a useful representation to visualize the distribution of numerical data.
 
