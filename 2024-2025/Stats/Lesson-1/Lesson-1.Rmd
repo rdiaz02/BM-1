@@ -1,7 +1,9 @@
 ---
 title: "**Applied statistics 2024-2025: Lesson 1**"
 subtitle: "Data handling, plots and descriptive statistics"
-author: "Blanca Lizarbe, Department of Biochemistry (UAM), blanca.lizarbe@uam.es; some additions by Ramon Diaz-Uriarte"
+author:
+  - Blanca Lizarbe, Department of Biochemistry (UAM), blanca.lizarbe@uam.es;
+  - some additions by Ramon Diaz-Uriarte
 output:
    bookdown::pdf_document2: default
 
