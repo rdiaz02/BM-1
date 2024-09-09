@@ -1,7 +1,7 @@
 ---
-title: "**Applied statistics 2023-2024: Lesson 1**"
+title: "**Applied statistics 2024-2025: Lesson 1**"
 subtitle: "Data handling, plots and descriptive statistics"
-author: "Blanca Lizarbe, Department of Biochemistry (UAM), blanca.lizarbe@uam.es"
+author: "Blanca Lizarbe, Department of Biochemistry (UAM), blanca.lizarbe@uam.es; some additions by Ramon Diaz-Uriarte"
 output:
    bookdown::pdf_document2: default
 
@@ -50,18 +50,14 @@ Does it really matter? If so, why?
 knitr::include_graphics("Case_Luis.png")
 ```
 
-This is a simple scheme of the experimental design, what one of us (Ramon) draw to make sure they were understanding the key features of the design:
+A simple scheme of the experimental design, that one of us (Ramon) draw to make sure they were understanding the key features of the design, is shown in Figure \@ref(fig:exp-design-luis-one-donor).
 
 
 ```{r exp-design-luis-one-donor, fig.cap =  "Experimental design of Case 1, single donor.", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("design_one_donor.pdf")
 ```
 
-The above is for one donor.
-
-
-Now, this is a scheme with the four donors (the rightmost columns shows one possible way of indexing the observations and the average of the three replicates; that is not relevant now, but will be handy later).
-
+The above is for one donor. The scheme with the four donors is shown in Figure \@ref(fig:exp-design-luis-four-donors-mean); the rightmost columns shows one possible way of indexing the observations and the average of the three replicates; that is not relevant now, but will be handy later.
 
 ```{r exp-design-luis-four-donors-mean, fig.cap =  "Experimental design of Case 1, four donors.", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("design_four_donors_mean.pdf")
@@ -94,12 +90,15 @@ Note that, for this lesson, we already provide you with the csv files. If you wa
 Let us load the data from the qPCR_data.csv file. This data set contains the results of all four experiments  arranged in three columns: experiment, treatment, EFN3A_levels. Note that data is already arranged as a data matrix, (i.e. “correct” way). If you've used R before, you'll know how to do this. Otherwise, we'll use R Commander.
 
 
-### Using R commander
-• Open an R session through the Rgui interface. In the console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like Figure \@ref(fig:Rfigures):
-
-```{r Rfigures, fig.cap =  "Rgui interface (left) and Rcommander window (right)", fig.align= "center"}
+```{r Rfigures, fig.cap =  "Rgui interface (left) and Rcommander window (right)", fig.align= "center", echo=FALSE}
 knitr::include_graphics("Rcmdr.png")
 ```
+
+
+### Using R commander
+• Open an R session through the Rgui interface. In the console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like Figure \@ref(fig:Rfigures).
+
+
 
 • In the menu bar choose **Data–>Import data–>from text file**: Make sure you choose “Import data” and not use the “Load dataset” instead (see number 1 in 1). Before selecting the file, a window appears in which we need to specify several characteristics of the file, including the field separator (comma, white space...) and the decimal-point (comma or dots) (pay attention to selecting the appropriate ones). Finally, we select file “qPCR_data.csv” from the directory were you downloaded it to.
 
@@ -111,7 +110,7 @@ knitr::include_graphics("Rcmdr.png")
 
 If you have a look at the console, you will see that the command line looks like:
 
-```{r read}
+```{r readqpcr}
 qPCRdata <- read.table("qPCR_data.csv",  header=TRUE,
   stringsAsFactors=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 ```
@@ -131,13 +130,22 @@ The R code to produce this graph is shown below. This data looks nice: tightly p
 ```{r case2plot, fig.cap = "Plot of Case 1",out.width = "60%", fig.align='center'}
 
 FirstExp <- subset(qPCRdata, Experiment == "qpcr2506")
-with(FirstExp, stripchart(EFNA3_level_AU ~ Treatment, method = "jitter", vertical = T, ylab = "EFNA3 mRNA level (AU)", xlab = "Treatment"))
+
+with(FirstExp, stripchart(EFNA3_level_AU ~ Treatment,
+method = "jitter", vertical = TRUE,
+ylab = "EFNA3 mRNA level (AU)",
+xlab = "Treatment"))
 ```
+
+Before we continue: did you see the jittering? Did your figures have jittering? What is this jittering thing, why is it useful, how do we get it?
+
+
+
 Now, what is the meaning of these replicates? is this result generalizable (i.e would you expect a
 similar result when choosing any other sample from the population?) The replicates in this case are just independent measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...) but it does not captures the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (sensible to culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also Figure \@ref(fig:fig-vaux) extracted from it. See also Figure \@ref(fig:exp-design-luis-four-donors-mean) to make sure this is all clear.
 
 
-```{r fig-vaux, out.width = "65%", fig.cap =  "Biological replicates", fig.align = "center"}
+```{r fig-vaux, out.width = "65%", fig.cap =  "Biological replicates", fig.align = "center", echo=FALSE}
 knitr::include_graphics("Biological_replicates.png")
 ```
 
@@ -148,11 +156,17 @@ Thus, we must represent **all experiments**, but how? Should we represent all 4x
 In this case, we want to aggregate data by **calculating the mean of each group according to experiment date**. On the bar menu select **Data–>Active data set–>Aggregate variables in active data set**. Then, in the pop-up window, indicate the name for the aggregated data set (by default “AggregatedData”), select the variable you want to aggregate (in this case EFNA3_level_AU), the factors you’ll use to aggregate it (in this case both “Experiment” and “Treatment”) and finally select the function to aggregate data (in this case we’re interested in the calculating the mean). (See below for the R-code). Note that, all we have done is to calculate the mean of instances (rows) that had the same value for the “Experiment” and “Treatment” variables (the ones we used to aggregate data).
 
 ```{r figurex, fig.cap = "Plot of Case 1",out.width = "60%", fig.align='center'}
+
 qPCRmeans <- aggregate(qPCRdata[, c("EFNA3_level_AU"), drop = FALSE],
-by = list(Experiment = qPCRdata$Experiment, Treatment = qPCRdata$Treatment),
-mean)
-with(qPCRmeans, stripchart(EFNA3_level_AU ~ Treatment, method = "jitter",
-vertical = T, ylab = "EFNA3 mRNA level (AU)", xlab = "Treatment"))
+   by = list(Experiment = qPCRdata$Experiment,
+   Treatment = qPCRdata$Treatment),
+   mean)
+
+with(qPCRmeans,
+      stripchart(EFNA3_level_AU ~ Treatment,
+	  method = "jitter",
+      vertical = TRUE,
+	  ylab = "EFNA3 mRNA level (AU)", xlab = "Treatment"))
 ```
 
 
@@ -162,6 +176,41 @@ But ... would comparing the values from that figure be correct? Look again at Fi
 What is crucial to notice here is that $\bar{Y}_{11\cdot}$ and $\bar{Y}_{12\cdot}$ are from the same donor (donor number 1);
 likewise, $\bar{Y}_{21\cdot}$ and $\bar{Y}_{22\cdot}$ are from donor 2, ..., and $\bar{Y}_{41\cdot}$ and $\bar{Y}_{42\cdot}$ are from the fourth donor. Thus, the observations are paired: $\bar{Y}_{11\cdot}$ with $\bar{Y}_{12\cdot}$, $\bar{Y}_{21\cdot}$ with $\bar{Y}_{22\cdot}$, $\bar{Y}_{31\cdot}$ with $\bar{Y}_{32\cdot}$, and $\bar{Y}_{41\cdot}$ with $\bar{Y}_{42\cdot}$. The proper statistical (and graphical!) procedure ought to compare not all $\bar{Y}_{i1\cdot}$ with all the $\bar{Y}_{i2\cdot}$ but, rather, the four within-subject differences. We will cover this in detail in Lesson 2. But this should be clear from the design.
 
+
+
+
+
+## Summarizing data
+
+In descriptive statistics, there are several ways of summarizing the data in order to provide the information regarding its distribution. Typically, this information is intended to be shown as summarized as possible. You must have heard about the **mean** and standard error of the mean **SEM**, these are all different **summary statistics** parameters. The mean and SEM are commonly used to summarize a large amount of data, but there are other ways to convey this information. Another common measure of the center of the distribution is the **median** (the value such that 50\% of the observations are above and 50\% are below it; this is the same as sorting all the values and selecting the one in the middle --if there is odd number of values; if there is an even number of observations, one definition of the median takes the average of the two middle values); it is important to notice that median is a much more robust measure of center than the mean, that is, outliers (isolated values showing extreme values) have a more profound impact in the value of the mean. As for the measures of spread of data, the standard deviation (roughly the mean deviation of each data value from the mean) and the interquartile range (**IQR**) are commonly used in descriptive statistics.
+
+Other summary statistic commonly used as error bars are SEM and confidence intervals (**CI**). It should be noted however, that SEM and CI are measures of the **confidence of our estimates of the mean** rather than a mere description of the data spread. Thus, they are used in inferential statistics (make inferences about populations using data drawn from the population). We will see much more about SEM and CI during the course. Table 1provides a summary of measures of center and spread and reference Cumming et al. [2007] provides and excellent review about the use of error bars in experimental biology.
+
+> Take a look at the tables below. Are you familiar with the different terms?
+
+|Name                      |   Calculated as                                      |
+|:------------------------:|:----------------------------------------------------:|
+|median                    |50th percentile (Q2)                                  |
+|inter quartile range      |    IQR = Q3-Q1                                       |
+|range                     |    min, max                                          |
+|mean                      |$\overline{x}=\sum_{i=1}^{n}x_{i}$                    |
+|variance                  |$s^2=\frac{\sum_{i=1}^{n}(x_{i}-\overline{x})}{n-1}$  |
+|standard deviation        |$s=\sqrt{s^{2}}$                                      |
+|standard error of the mean|$SE_{\overline{x}}=\frac{s}{\sqrt{n}}$                |
+|confidence interval        |$\overline{x}\pm  CI width$                       |
+|coefficient of variation  |$\frac{s}{\overline{x}}*100$                          |
+
+
+
+<!-- We can obtain, for each experimental subgroup of the MRI experiment, the descriptive values of each time point. In **Rcommander** go to “Summaries” under the “Statistics” in the main menu and then select “Active data set”. -->
+
+
+We can obtain many of these easily for the different groups. One options is: **Statistics -> Summaries -> Tables of statistics**.  Here you can choose the variable, the factors to use (you can either summarize by experiment name, or by treatment, or by both) and the statistic to use. For example, to obtain the median for all 8 subgroups we see this code:
+
+```{r }
+Tapply(EFNA3_level_AU ~ Experiment + Treatment, median,
+  na.action=na.omit, data=qPCRdata) # median by groups
+```
 
 
 
@@ -189,7 +238,7 @@ Besides, we group our pixel values depending on the brain region they belong to:
 1. Hippocampus
 2. Cortex
 
-```{r exp-design-blanca, out.width="75%", fig.cap = "Experimental design of case 2", fig.align= "center"}
+```{r exp-design-blanca, out.width="75%", fig.cap = "Experimental design of case 2", fig.align= "center",  echo=FALSE}
 knitr::include_graphics("Experimental_design_Blanca.png")
 ```
 
@@ -222,61 +271,10 @@ It is important to distinguish, for every experimental setup, between technical 
 
 
 
-## Exploring data
 
-## Plots
+## Factors
 
-Before doing any statistical test to prove a certain finding, it is fundamental to have a perfectly clear overview of the experimental design, of the type of variables and data distribution. We are now going to learn how to explore the data by plotting it in representative ways. First, have a look at the bar graphs below: Can you give a **general description** of what they are expressing?
-
-```{r figure5, fig.height = 4, fig.width = 6, fig.cap= "Bar graphs of Case 1", fig.align='center'}
-  ggplot(Brain_MR, aes(as.factor(Time), ADC, fill = Time)) +
-  facet_wrap(vars(Area,Group),
-             ncol = 4,
-             strip.position = c("top"),
-             scales = "free") +
-  stat_summary(fun = mean,
-               geom = "bar")  +
-  stat_summary(fun.data = mean_sdl,
-               geom = "errorbar",
-               linetype = "dashed",
-               linewidth = 0.25)  +
-  scale_fill_brewer(palette = "Accent") +
-  ggtitle("Mean values in time points") + labs(x ="Time points", y= "ADC (µm2/s)") +
-  theme(plot.title = element_text(hjust = 0.5, size = 10),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        strip.text.y.right = element_text(size = 14),
-        strip.background = element_blank(),
-        strip.placement = "outside")
-```
-
-To read a graph, we need to go through all the details. We can start by looking at the X and Y axis and think what they represent.Then the type of graph (boxplot, stripchart, bars with a measure of dispersion ...), the legend. In this case, with multiple subplots, what is each subplot representing? Can you guess what is it happening in the Glucose and TGN.Glucose groups?
-
-This plot, however, as it is displayed, lacks of something crucial: **the figure caption**. By only looking at the graphs, we can not know for sure what are the bars representing (is a mean values, what is the "n"?), nor what measure of dispersion it is plotted (standard error, standard deviation, confident intervals?)
-
-Now, observe the "boxplot" below and try to see if you can understand better what was observed in the bar graphs with the "Glucose" and TGN.Glucose" groups:
-```{r figure6, fig.height = 4, fig.width = 6, fig.align ='center', fig.cap= "Box plot of Case 1"}
-
-  ggplot(Brain_MR, aes(as.factor(Time), ADC, fill = Time)) +
-  facet_wrap(vars(Area,Group),
-             ncol = 4,
-             strip.position = c("top"),
-             scales = "free") +
-  geom_boxplot() +
-  ggtitle("Mean values in time points") + labs(x ="Time points", y= "ADC (µm2/s)") +
-  theme(plot.title = element_text(hjust = 0.5, size = 10),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        strip.text.y.right = element_text(size = 14),
-        strip.background = element_blank(),
-        strip.placement = "outside")
-```
-> Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look at Figure \@ref(fig:fig7).
-
-```{r fig7, out.width = "50%", fig.cap =  "Box plot paramaters", fig.align = "center", echo = FALSE}
-knitr::include_graphics("BoxPlot_def.png")
-```
-Now you will learn, using **Rcommander**, how to obtain some graphical representations such as the ones above. Before that, we need to check something. When R reads numbers it understands them as plane numbers. However, **in our data, "Animal",  should not be a numerical variable, it should be considered categorical or "factor" in R**. We need to convert the "Animal" variable from numerical into factor. In the "Rscript" space of Rcommander, type:
+When R reads numbers it understands them as plane numbers. However, **in our data, "Animal",  should not be a numerical variable, it should be considered categorical or "factor" in R**. We need to convert the "Animal" variable from numerical into factor. In the "Rscript" space of Rcommander, type:
 
 ```{r, results='hide'}
 class(Brain_MR$Animal)
@@ -303,7 +301,36 @@ class(Brain_MR$Animal)
 ```
 
 
-We are now ready to proceed with the plots. Select “Graphs” in the menu bar and look at all the graph options. To start with, it is always useful to explore **how data values are distributed: Histograms** are a useful representation to visualize the distribution of numerical data.
+We are now ready to proceed with the plots and analyses.
+
+
+
+## Exploring data
+
+### Summarizing data
+As we did above, we can summarize the data for the different groups:
+**Statistics -> Summaries -> Tables of statistics** . For example, summarize the ADC variable by Animal, Area, Group, and Time. Do you understand why you get "NA"s? (Results not shown below, but please do it)
+
+```{r, results='hide'}
+Tapply(EFNA3_level_AU ~ Experiment + Treatment, median,
+  na.action=na.omit, data=qPCRdata) # median by groups
+```
+
+A more sensible summary would not use animal (why?):
+
+```{r, results='hide'}
+Tapply(ADC ~ Area + Group + Time, mean, na.action=na.omit, data=Brain_MR) # mean by groups
+
+```
+
+
+This, however, can get tiring and we probably prefer to use plots.
+
+### Plots
+
+#### Some simple plots
+
+Select “Graphs” in the menu bar and look at all the graph options. To start with, it is always useful to explore **how data values are distributed: Histograms** are a useful representation to visualize the distribution of numerical data.
 
 + Go to Graphs –> Histograms and select the variable to be represented (ADC).
 + Try representing ADC **by groups**,  ADC Vs Area, ADC Vs time,.
@@ -314,31 +341,147 @@ We are now ready to proceed with the plots. Select “Graphs” in the menu bar 
 
 >> Whenever you display graphs using the "buttons" of Rcommader, you can use the opportuninty to have a look at the console, where the code that is used to generate the graphs that you just obatined is pasted. If you learn the codes, you will be able to reproduce them yourself and start programming your own graphs (by coding you tipically have more options to costumize your work)
 
-## Summarizing data
-
-In descriptive statistics, there are several ways of summarizing the data in order to provide the information regarding its distribution. Typically, this information is intended to be shown as summarized as possible. You must have heard about the **mean** and standard error of the mean **SEM**, these are all different **summary statistics** parameters. The mean and SEM are commonly used to summarize a large amount of data, but there are other ways to convey this information. Another common measure of the center of the distribution is the **median** (the value such that 50\% of the observations are above and 50\% are below it; this is the same as sorting all the values and selecting the one in the middle --if there is odd number of values; if there is an even number of observations, one definition of the median takes the average of the two middle values); it is important to notice that median is a much more robust measure of center than the mean, that is, outliers (isolated values showing extreme values) have a more profound impact in the value of the mean. As for the measures of spread of data, the standard deviation (roughly the mean deviation of each data value from the mean) and the interquartile range (**IQR**) are commonly used in descriptive statistics.
-
-Other summary statistic commonly used as error bars are SEM and confidence intervals (**CI**). It should be noted however, that SEM and CI are measures of the **confidence on the determination of the mean** rather than a mere description of the data spread. Thus, they are used in inferential statistics (make inferences about populations using data drawn from the population). We will see much more about SEM and CI during the course. Table 1provides a summary of measures of center and spread and reference Cumming et al. [2007] provides and excellent review about the use of error bars in experimental biology.
-
-> Take a look at the tables below. Are you familiar with the different terms?
-
-|Name                      |   Calculated as                                      |
-|:------------------------:|:----------------------------------------------------:|
-|median                    |50th percentile (Q2)                                  |
-|inter quartile range      |    IQR = Q3-Q1                                       |
-|range                     |    min, max                                          |
-|mean                      |$\overline{x}=\sum_{i=1}^{n}x_{i}$                    |
-|variance                  |$s^2=\frac{\sum_{i=1}^{n}(x_{i}-\overline{x})}{n-1}$  |
-|standard deviation        |$s=\sqrt{s^{2}}$                                      |
-|standard error of the mean|$SE_{\overline{x}}=\frac{s}{\sqrt{n}}$                |
-|confident interval        |$\overline{x}\pm  Margin Error$                       |
-|coefficient of variation  |$\frac{s}{\overline{x}}*100$                          |
+This however, is rather limited in this case as it does not reflect the key features of the experimental design. For instance, we cannot directly show histograms of ADC by Area, Time, and Treatment (it is possible to do this from the command line, but we will not pursue it here).
 
 
-We can obtain, for each experimental subgroup of the MRI experiment, the descriptive values of each time point. In **Rcommander** go to “Summaries” under the “Statistics” in the main menu and then select “Active data set”.
+#### Bar graphs and boxplots
+
+Before doing any statistical test to examine a hypothesis, it is fundamental to have a perfectly clear overview of the experimental design, of the type of variables and data distribution. We are now going to learn how to explore the data by plotting it in representative ways. First, have a look at the bar graphs below: Can you give a **general description** of what they are expressing?
+
+(Note: the graph below cannot be created directly from R Commander, but we will create a similar one with R Commander later. You can, of course, copy the code in the console and run it)
+
+```{r figure5, fig.height = 4, fig.width = 6, fig.cap= "Bar graphs of Case 1", fig.align='center'}
+library(ggplot2)
+  ggplot(Brain_MR, aes(as.factor(Time), ADC, fill = Time)) +
+  facet_wrap(vars(Area,Group),
+             ncol = 4,
+             strip.position = c("top"),
+             scales = "free") +
+  stat_summary(fun = mean,
+               geom = "bar")  +
+  stat_summary(fun.data = mean_sdl,
+               geom = "errorbar",
+               linetype = "dashed",
+               linewidth = 0.25)  +
+  scale_fill_brewer(palette = "Accent") +
+  ggtitle("Mean values in time points") + labs(x ="Time points", y= "ADC (µm2/s)") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text.y.right = element_text(size = 14),
+        strip.background = element_blank(),
+        strip.placement = "outside")
+```
+
+To read a graph, we need to go through all the details. We can start by looking at the X and Y axis and think what they represent.Then the type of graph (boxplot, stripchart, bars with a measure of dispersion ...), the legend. In this case, with multiple subplots, what is each subplot representing? Can you guess what is it happening in the Glucose and TGN.Glucose groups?
+
+<!-- Outliers, scales -->
+
+This plot, however, as it is displayed, lacks of something crucial: **the figure caption**. By only looking at the graphs, we can not know for sure what are the bars representing (is a mean values, what is the "n"?), nor what measure of dispersion it is plotted (standard error, standard deviation, confident intervals?)
 
 
-# Managing data
+Moreover, is it sensible to use bars for these type of data?
+
+Finally, are the scales of all the subplots the same?
+
+
+Now, observe the boxplot below and try to see if you can understand better what was observed in the bar graphs with the "Glucose" and TGN.Glucose" groups (as before, this plot cannot be created directly using R Commander):
+```{r figure6, fig.height = 4, fig.width = 6, fig.align ='center', fig.cap= "Box plot of Case 1"}
+
+  ggplot(Brain_MR, aes(as.factor(Time), ADC, fill = Time)) +
+  facet_wrap(vars(Area,Group),
+             ncol = 4,
+             strip.position = c("top"),
+             scales = "free") +
+  geom_boxplot() +
+  ggtitle("Mean values in time points") + labs(x ="Time points", y= "ADC (µm2/s)") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text.y.right = element_text(size = 14),
+        strip.background = element_blank(),
+        strip.placement = "outside")
+```
+> Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look at Figure \@ref(fig:fig7).
+
+```{r fig7, out.width = "50%", fig.cap =  "Box plot paramaters", fig.align = "center", echo = FALSE}
+knitr::include_graphics("BoxPlot_def.png")
+```
+
+
+
+#### Bar graphs and boxpots from R Commander
+
+We can use R Commander to obtain complex conditioning plots as above. These use a different plotting system in R (lattice instead of ggplot).  For that, first load the HH R Commander plugin: **Tools -> Load Rcmdr plug-in(s) -> RcmdrPlugin.HH**. It will tell you that to make it available R Commander needs to restart: say yes.
+
+
+
+```{r load-hh,echo=FALSE}
+library(HH)
+```
+
+Now, you will see that there are more entries under some menus. Go to **Graphs** and click, there **Lattice plots**. We can produce a plot that, except for the error bars, is equivalent to the former graph barchart by selecting these options:
+
+```{r hh-bar-1, fig.cap =  "HH: options for the bar graph.", fig.align= "center", out.width="50%", echo=FALSE}
+knitr::include_graphics("hh-bar-1.png")
+```
+
+\clearpage
+
+
+And that produces this code and gives this figure
+```{r hh-bar-1-out}
+barchart(ADC ~ Group | Area, layout=c(1, 2), groups=Time, data= Brain_MR,
+  type="p", par.settings=simpleTheme(pch=16), origin=0,
+  auto.key=list(border=TRUE),
+  scales=list(x=list(relation='same', log=FALSE),
+  y=list(relation='same', log=FALSE)))
+
+```
+
+
+What about boxplots? We can obtain similar plots. For example, I first selected the following options
+
+```{r hh-bp-1, fig.cap =  "HH: options for the box plot.", fig.align= "center", out.width="50%", echo=FALSE}
+knitr::include_graphics("hh-bp-1.png")
+```
+
+\clearpage
+
+and those gave this plot (actually, I added the "rot" thing at the end, to have all tick labels horizontal)
+```{r hh-bp-1-out}
+bwplot(ADC ~ Time | Area + Group, outer=TRUE, layout=c(4, 2),
+data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
+auto.key=list(border=TRUE),
+scales=list(x=list(relation='same', log=FALSE),
+y=list(relation='free', log=FALSE, rot = 0)))
+```
+
+but, to make it comparable to the box plot above, I then edited the command line manually, and transposed "Group" and "Area", and then clicked on "Submit"
+
+
+```{r hh-bp-2}
+bwplot(ADC ~ Time | Group + Area, outer=TRUE, layout=c(4, 2),
+data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
+auto.key=list(border=TRUE),
+scales=list(x=list(relation='same', log=FALSE),
+y=list(relation='free', log=FALSE, rot = 0)))
+```
+
+**Do you think it is always best to allow the scales to differ?** What patterns are highlighted or masked by doing that? Compare with this figure (identical to above, except we did not allow the scales to vary between panels ---shown as "Y scales in different panels" in the GUI and as the "relation = 'same'" in the command)
+
+```{r hh-bp-3}
+bwplot(ADC ~ Time | Group + Area, outer=TRUE, layout=c(4, 2),
+data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
+auto.key=list(border=TRUE),
+scales=list(x=list(relation='same', log=FALSE),
+y=list(relation='same', log=FALSE)))
+```
+
+
+## Complex layouts
+We have used two different systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting. Using two different systems with different syntaxes is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations we saw above.
+
 
 ## Unstacking factors
 Have a look at the table below:
