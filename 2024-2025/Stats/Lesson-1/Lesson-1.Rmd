@@ -53,6 +53,25 @@ Does it really matter? If so, why?
 knitr::include_graphics("Case_Luis.png")
 ```
 
+This is a simple scheme of the experimental design, what one of us (Ramon) draw to make sure they were understanding the key features of the design:
+
+
+```{r exp-design-luis-one-donor, fig.cap =  "Experimental design of Case 1, single donor.", fig.align= "center", out.width="50%", echo=FALSE}
+knitr::include_graphics("design_one_donor.pdf")
+```
+
+The above is for one donor.
+
+
+Now, this is a scheme with the four donors (the rightmost columns shows one possible way of indexing the observations and the average of the three replicates; that is not relevant now, but will be handy later).
+
+
+```{r exp-design-luis-four-donors-mean, fig.cap =  "Experimental design of Case 1, four donors.", fig.align= "center", out.width="50%", echo=FALSE}
+knitr::include_graphics("design_four_donors_mean.pdf")
+```
+
+
+
 **Wait a minute: Variables**: How many variables do we have in this experiment? Can you detect any differences betweem them?
 
 There are two main types of variables: **numerical**, (what we record is a number that represent a measurable quantity, e.g. height of an individual, the pg of mRNA per cell, the value of a magnetic resonance image on a pixel) and **categorical**, (what we record is a qualitative characteristic, e.g. the color of eyes, gender, brain region). The different values that a categorical variable can take are referred to as levels (e.g. the categorical variable brain region in our example has only two levels, hippocampus or cortex). The levels can show a natural order (e.g. level of education: elementary school, high school, college graduate, PhD), in this case they are termed ordinal categorical, or be unordered (our example of brain region) and then we call them nominal categorical variables (or just categorical). Numerical variables can be continuous (e.g. temperature) or discrete (e.g. number of siblings). Note that the label for some categorical variables are numbers (e.g. zip codes), which can mislead us to classify them as numerical. As a rule of thumb, with numerical variables it is sensible to add, subtract, or take averages with their values. In contrast, it does not make sense to apply arithmetic operations to categorical variables (what would be the meaning of adding of two zip codes?)
@@ -83,8 +102,6 @@ similar result when choosing any other sample from the population?) The replicat
 
 
 
-
-
 Thus, we must represent **all experiments**, but how? should we represent all 4x3 individual data points for each condition? Well you have to ask, what is the “n” of your experiment? Since we want to make inferences about the biological population, our **“n” is the number of independent biological experiments**, in this case n = 4. Thus, we have to calculate the average of the technical replicates for each experiment and represent them. If we represent all 12 data points we are implying n = 12, which is not the case. We can easily **aggregate** (i.e. summarize) the data on the table according to a given factor.
 
 In this case, we want to aggregate data by **calculating the mean of each group according to experiment date**. On the bar menu select **Data–>Active data set–>Aggregate variables in active data set**. Then, in the pop-up window, indicate the name for the aggregated data set (by default “AggregatedData”), select the variable you want to aggregate (in this case EFNA3_level_AU), the factors you’ll use to aggregate it (in this case both “Experiment” and “Treatment”) and finally select the function to aggregate data (in this case we’re interested in the calculating the mean). (See below for the R-code). Note that, all we have done is to calculate the mean of instances (rows) that had the same value for the “Experiment” and “Treatment” variables (the ones we used to aggregate data).
@@ -98,7 +115,11 @@ vertical = T, ylab = "EFNA3 mRNA level (AU)", xlab = "Treatment"))
 ```
 
 
+But ... would comparing the values from that figure be correct? Look again at Figure \@ref(fig:exp-design-luis-four-donors-mean). The rightmost column indicates that $\bar{Y}_{11\cdot}$ is the average of observations $Y_{111}, Y_{112}, Y_{113}$. This is what we did above when we aggregated the values.
 
+
+What is crucial to notice here is that $\bar{Y}_{11\cdot}$ and $\bar{Y}_{12\cdot}$ are from the same donor (donor number 1);
+likewise, $\bar{Y}_{21\cdot}$ and $\bar{Y}_{22\cdot}$ are from donor 2, ..., and $\bar{Y}_{41\cdot}$ and $\bar{Y}_{42\cdot}$ are from the fourth donor. Thus, the observations are paired: $\bar{Y}_{11\cdot}$ with $\bar{Y}_{12\cdot}$, $\bar{Y}_{21\cdot}$ with $\bar{Y}_{22\cdot}$, $\bar{Y}_{31\cdot}$ with $\bar{Y}_{32\cdot}$, and $\bar{Y}_{41\cdot}$ with $\bar{Y}_{42\cdot}$. The proper statistical (and graphical!) procedure ought to compare not all $\bar{Y}_{i1\cdot}$ with all the $\bar{Y}_{i2\cdot}$ but, rather, the four within-subject differences. We will cover this in detail in Lesson 2. But this should be clear from the design.
 
 
 ## Case 2: Brain MRI (from Prof. Blanca Lizarbe's lab)
