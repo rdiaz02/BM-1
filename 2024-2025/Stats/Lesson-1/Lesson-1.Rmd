@@ -349,7 +349,7 @@ This however, is rather limited in this case as it does not reflect the key feat
 
 Before doing any statistical test to examine a hypothesis, it is fundamental to have a perfectly clear overview of the experimental design, of the type of variables and data distribution. We are now going to learn how to explore the data by plotting it in representative ways. First, have a look at the bar graphs below: Can you give a **general description** of what they are expressing?
 
-(Note: the graph below cannot be created directly from R Commander, but we will create a similar one with R Commander later. You can, of course, copy the code in the console and run it)
+(Note: the graph below cannot be created directly from R Commander, but we will create similar ones with R Commander later. You can, of course, copy the code in the console and run it)
 
 ```{r figure5, fig.height = 4, fig.width = 6, fig.cap= "Bar graphs of Case 1", fig.align='center'}
 library(ggplot2)
@@ -411,9 +411,9 @@ knitr::include_graphics("BoxPlot_def.png")
 
 
 
-#### Bar graphs and boxpots from R Commander
+#### Bar graphs and boxpots from R Commander with HH and lattice
 
-We can use R Commander to obtain complex conditioning plots as above. These use a different plotting system in R (lattice instead of ggplot).  For that, first load the HH R Commander plugin: **Tools -> Load Rcmdr plug-in(s) -> RcmdrPlugin.HH**. It will tell you that to make it available R Commander needs to restart: say yes.
+We can use R Commander to obtain complex conditioning plots as above. The first examples we will see use a different plotting system in R (lattice instead of ggplot).  For that, first load the HH R Commander plugin: **Tools -> Load Rcmdr plug-in(s) -> RcmdrPlugin.HH**. It will tell you that to make it available R Commander needs to restart: say yes.
 
 
 
@@ -431,7 +431,7 @@ knitr::include_graphics("hh-bar-1.png")
 
 
 And that produces this code and gives this figure
-```{r hh-bar-1-out}
+```{r hh-bar-1-out, fig.cap = "Barchart + lattice using HH"}
 barchart(ADC ~ Group | Area, layout=c(1, 2), groups=Time, data= Brain_MR,
   type="p", par.settings=simpleTheme(pch=16), origin=0,
   auto.key=list(border=TRUE),
@@ -450,7 +450,8 @@ knitr::include_graphics("hh-bp-1.png")
 \clearpage
 
 and those gave this plot (actually, I added the "rot" thing at the end, to have all tick labels horizontal)
-```{r hh-bp-1-out}
+
+```{r hh-bp-1-out, fig.cap =  "Lattice boxplot, rotated y-axis tick labels"}
 bwplot(ADC ~ Time | Area + Group, outer=TRUE, layout=c(4, 2),
 data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
 auto.key=list(border=TRUE),
@@ -461,7 +462,7 @@ y=list(relation='free', log=FALSE, rot = 0)))
 but, to make it comparable to the box plot above, I then edited the command line manually, and transposed "Group" and "Area", and then clicked on "Submit"
 
 
-```{r hh-bp-2}
+```{r hh-bp-2, fig.cap =  "Lattice boxplot: transposed Group and Area"}
 bwplot(ADC ~ Time | Group + Area, outer=TRUE, layout=c(4, 2),
 data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
 auto.key=list(border=TRUE),
@@ -471,7 +472,7 @@ y=list(relation='free', log=FALSE, rot = 0)))
 
 **Do you think it is always best to allow the scales to differ?** What patterns are highlighted or masked by doing that? Compare with this figure (identical to above, except we did not allow the scales to vary between panels ---shown as "Y scales in different panels" in the GUI and as the "relation = 'same'" in the command)
 
-```{r hh-bp-3}
+```{r hh-bp-3, fig.cap =  "Lattice boxplot: same scales for all panels."}
 bwplot(ADC ~ Time | Group + Area, outer=TRUE, layout=c(4, 2),
 data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
 auto.key=list(border=TRUE),
@@ -479,6 +480,113 @@ scales=list(x=list(relation='same', log=FALSE),
 y=list(relation='same', log=FALSE)))
 ```
 
+
+\clearpage
+
+#### Boxplots and violin plots from R Commander with KMggplot2 and ggplot2
+
+It is also possible to create plots using ggplot2 with R Commander (again, ggplot2 is the package used to create Figure \@ref(fig:figure6)). To do this we need to install package \texttt{RcmdrPlugin.KMggplot2} (yes, we did not ask you to do this initially because ... we only realized this now). To install the package, from the R console do this
+
+```{r install-kmggplot2, eval=FALSE}
+install.packages("RcmdrPlugin.KMggplot2")
+```
+```{r kmggplot2-load, include=FALSE}
+library(RcmdrPlugin.KMggplot2)
+```
+
+You only need to install it once.
+
+After it is installed, this is just like any other Rcmdr plugin: go to  **Tools -> Load Rcmdr plug-in(s)** and select "RcmdrPlugin.KMggplot2". R commander will ask to be restarted. Once it restarts, you will have a new menu entry, **KMggplot2**. You will see a bunch of entries there. Explore as you see fit. We will show a figure similar to  Figure \@ref(fig:figure6)).
+
+
+In the **KMggplot2** entry, I selected **Box plot/Violin plot/Confidence interval...**. And there, I used the options shown in Figure \@ref(fig:km0-settings) following:
+```{r km0-settings, fig.cap =  "KMggplot2: options for the box plot example.", fig.align= "center", out.width="80%", echo=FALSE}
+knitr::include_graphics("bp-ggp-0.png")
+```
+
+And that produced Figure \@ref(fig:km-bp0) (notice that, here, we cannot allow different scales for each panel, or "free scales")
+
+```{r km-bp0, fig.cap =  "KMggplot2: box plot example.", fig.align= "center", out.width="100%", echo=TRUE}
+.df <- data.frame(x = Brain_MR$Time, y = Brain_MR$ADC,
+                  s = Brain_MR$Area, t = Brain_MR$Group)
+.plot <- ggplot(data = .df, aes(x = factor(x), y = y)) +
+  stat_boxplot(geom = "errorbar", width = 0.5) +
+  geom_boxplot() +
+  facet_grid(s ~ t) +
+  xlab("Time") +
+  ylab("ADC") +
+  RcmdrPlugin.KMggplot2::theme_simple(base_size = 14,
+                                      base_family = "sans") +
+  theme(panel.spacing = unit(0.3, "lines"))
+print(.plot)
+rm(.df, .plot)
+```
+
+\clearpage
+
+To show some additional options, like coloring of each box plot and a different kind of plot, we will now plot the T2 variable (you can use ADC, but that color is being displayed is hard to see here because of the size of the boxes, and the violin plots are hard to see).
+
+
+I selected the options shown in Figure \@ref(fig:km1-settings) following:
+```{r km1-settings, fig.cap =  "KMggplot2: options for the violin plot example.", fig.align= "center", out.width="80%", echo=FALSE}
+knitr::include_graphics("bp-ggp-1b.png")
+```
+
+And that produced Figure \@ref(fig:km-vp1)
+```{r km-vp1, fig.cap =  "KMggplot2: violin plot example.", fig.align= "center", out.width="100%", echo=TRUE}
+.df <- data.frame(x = Brain_MR$Time, y = Brain_MR$T2,
+                  z = Brain_MR$Time, s = Brain_MR$Area,
+                  t = Brain_MR$Group)
+.plot <- ggplot(data = .df, aes(x = factor(x), y = y, fill = z)) +
+  geom_violin(position = position_dodge(width = 0.9)) +
+  stat_summary(fun.y = "median", geom = "point",
+               position = position_dodge(width = 0.9),
+               pch = 10, size = 4) +
+  geom_jitter(colour = "black",
+              position = position_jitterdodge(jitter.width = 0.25,
+                                              jitter.height = 0, dodge.width = 0.9)) +
+  facet_grid(s ~ t) +
+  xlab("Time") +
+  ylab("T2") +
+  labs(fill = "Time") +
+  RcmdrPlugin.KMggplot2::theme_simple(base_size = 14,
+                                      base_family = "sans") +
+  theme(panel.spacing = unit(0.3, "lines"))
+print(.plot)
+rm(.df, .plot)
+```
+
+\clearpage
+
+We have done three things: color the boxes, overimpose the points themselves, and use violin plots. Here, violin plots are a little bit of an overkill, because there are not those many data points. But violin plots can sometimes be good alternatives to boxplots as they show the distribution of the data, a density plot (somewhat similar to a histogram); the marker (the circled cross) indicates the median.
+
+Some other violin plots show also the 1st and 3rd IQRs, something that is easy to do by plotting both the violin and a boxplot in the same place;  this we need to do via the command line in R. In Figure \@ref(fig:km-vp-bp) all we do is add the line that says \texttt{geom\_boxplot(width = 0.1)} to the previous code in the R Commander console and execute it (OK, I also decrease the size of the points, so they do not interfere with us seeing the boxplots):
+
+```{r km-vp-bp, fig.cap =  "KMggplot2: violin + boxplot example.", fig.align= "center", out.width="22cm", echo=TRUE}
+.df <- data.frame(x = Brain_MR$Time, y = Brain_MR$T2,
+                  z = Brain_MR$Time, s = Brain_MR$Area,
+                  t = Brain_MR$Group)
+.plot <- ggplot(data = .df, aes(x = factor(x), y = y, fill = z)) +
+  geom_violin(position = position_dodge(width = 0.9)) +
+  geom_boxplot(width = 0.3) +
+  stat_summary(fun.y = "median", geom = "point",
+               position = position_dodge(width = 0.9),
+               pch = 10, size = 4) +
+  geom_jitter(colour = "black", size = 0.5,
+              position = position_jitterdodge(jitter.width = 0.25,
+                                              jitter.height = 0, dodge.width = 0.9)) +
+  facet_grid(s ~ t) +
+  xlab("Time") +
+  ylab("T2") +
+  labs(fill = "Time") +
+  RcmdrPlugin.KMggplot2::theme_simple(base_size = 14,
+                                      base_family = "sans") +
+  theme(panel.spacing = unit(0.3, "lines"))
+print(.plot)
+rm(.df, .plot)
+```
+
+\clearpage
 
 ## Complex layouts
 We have used two different systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting. Using two different systems with different syntaxes is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations we saw above.
