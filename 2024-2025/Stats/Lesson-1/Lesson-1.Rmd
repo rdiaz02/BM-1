@@ -560,7 +560,7 @@ rm(.df, .plot)
 
 We have done three things: color the boxes, overimpose the points themselves, and use violin plots. Here, violin plots are a little bit of an overkill, because there are not those many data points. But violin plots can sometimes be good alternatives to boxplots as they show the distribution of the data, a density plot (somewhat similar to a histogram); the marker (the circled cross) indicates the median.
 
-Some other violin plots show also the 1st and 3rd IQRs, something that is easy to do by plotting both the violin and a boxplot in the same place;  this we need to do via the command line in R. In Figure \@ref(fig:km-vp-bp) all we do is add the line that says \texttt{geom\_boxplot(width = 0.1)} to the previous code in the R Commander console and execute it (OK, I also decrease the size of the points, so they do not interfere with us seeing the boxplots):
+Some other violin plots show also the 1st and 3rd IQRs, something that is easy to do by plotting both the violin and a boxplot in the same place;  this we need to do via the command line in R. In Figure \@ref(fig:km-vp-bp) all we do is add the line that says \texttt{geom\_boxplot(width = 0.3)} to the previous code in the R Commander console and execute it (OK, I also decrease the size of the points, so they do not interfere with us seeing the boxplots, and remove the circled cross, as the median is also given by the box plot):
 
 ```{r km-vp-bp, fig.cap =  "KMggplot2: violin + boxplot example.", fig.align= "center", out.width="22cm", echo=TRUE}
 .df <- data.frame(x = Brain_MR$Time, y = Brain_MR$T2,
@@ -569,9 +569,6 @@ Some other violin plots show also the 1st and 3rd IQRs, something that is easy t
 .plot <- ggplot(data = .df, aes(x = factor(x), y = y, fill = z)) +
   geom_violin(position = position_dodge(width = 0.9)) +
   geom_boxplot(width = 0.3) +
-  stat_summary(fun.y = "median", geom = "point",
-               position = position_dodge(width = 0.9),
-               pch = 10, size = 4) +
   geom_jitter(colour = "black", size = 0.5,
               position = position_jitterdodge(jitter.width = 0.25,
                                               jitter.height = 0, dodge.width = 0.9)) +
