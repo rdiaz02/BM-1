@@ -1229,6 +1229,28 @@ Boxplot( ~ diff.nc.c, data = merged3, xlab = "",
 @
 
 
+We can also create a violin plot with the boxplot inside and the points jittered, as we did in Lesson 1, using KMggplot2, with some additional editing of the code by hand (and some more editing to fix a deprecation warning from ggplot2):
+
+<<diff-violin, fig.width=4.5, fig.height=4.5, echo=TRUE, fig.show = 'hold'>>=
+library(RcmdrPlugin.KMggplot2)
+
+.df <- data.frame(y = merged3$diff.nc.c)
+.plot <- ggplot(data = .df, aes(x = factor(1), y = y)) +
+  geom_violin() + geom_boxplot(width = 0.2) +
+  geom_jitter(colour = "black", width = 0.1, height = 0) +
+  scale_x_discrete(breaks = NULL) +
+  xlab("") +
+  ylab("Intra-subject difference (NC - Cancer)") +
+  theme_bw(base_size = 14, base_family = "sans") +
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+print(.plot)
+rm(.df, .plot)
+@
+
+In this case, the violin plot is an overkill because we have too few data points. This is just to show it as an example.
+
+
+
 % <<fig.width=5, fig.height=5, echo=TRUE>>=
 % diffs <- dmyc$myc[1:12] - dmyc$myc[13:24]
 % Boxplot( ~ diffs, xlab = "", ylab = "Intra-subject difference", main = "MYC")
@@ -1357,13 +1379,13 @@ Wilcoxon as with the t-test. Nonparametric tests are not
 ``assumption-free'' tests! (there is no such thing, in statistics or in life).
 
 
-An excellent non-parametrics book is Conover's ``Practical nonparametric
-statistics'', in its 3rd edition (it is so awesome, I have two copies, one
-at home and one at the office ---you can get one from Amazon for about 20
-\texteuro{}). (For more general categorical data analysis, Agresti's
-``Categorical data analysis'' is a must. It is now also in its third
-edition. There is, by the same author, a smaller ``Introduction to
-categorical data analysis'').
+% An excellent non-parametrics book is Conover's ``Practical nonparametric
+% statistics'', in its 3rd edition (it is so awesome, I have two copies, one
+% at home and one at the office ---you can get one from Amazon for about 20
+% \texteuro{}). (For more general categorical data analysis, Agresti's
+% ``Categorical data analysis'' is a must. It is now also in its third
+% edition. There is, by the same author, a smaller ``Introduction to
+% categorical data analysis'').
 
 %% FIXME: say not a test of means and often not even of medians!!!
 
