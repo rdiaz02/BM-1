@@ -314,8 +314,7 @@ As we did above, we can summarize the data for the different groups:
 **Statistics -> Summaries -> Tables of statistics** . For example, summarize the ADC variable by Animal, Area, Group, and Time. Do you understand why you get "NA"s? (Results not shown below, but please do it)
 
 ```{r, results='hide'}
-Tapply(EFNA3_level_AU ~ Experiment + Treatment, median,
-  na.action=na.omit, data=qPCRdata) # median by groups
+Tapply(ADC ~ Animal + Area + Group + Time, mean, na.action=na.omit, data=Brain_MR)
 ```
 
 A more sensible summary would not use animal (why?):
