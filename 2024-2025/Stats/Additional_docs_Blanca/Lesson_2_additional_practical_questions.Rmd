@@ -1,0 +1,202 @@
+---
+title: "Additional practical questions"
+output:
+     bookdown::pdf_document2: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(car)
+library(RcmdrMisc)
+library(ggplot2)
+library(knitr)
+library(rmarkdown)
+library(ggplot2)
+library(gridExtra)
+library(RcmdrPlugin.KMggplot2)
+library(RcmdrPlugin.HH)
+```
+
+# Identifying an experimental design, comparing two groups
+
+## Variables and experimental unit
+
+Look at this dataset and try to identify what was the design and what the experimenter was trying to do.
+
+```{r, echo = FALSE}
+## RDU: I copy the table from the PDF, replace " " by ", " and import.
+## df <- read.csv('C:/Users/BL.5060101/OneDrive - UAM/UAM/BM-2/exam/MRI.csv',  header = TRUE, sep = ";",)
+## df[,5] <- NULL
+## colnames(df) <- c("Subject.ID", "Group", "Protein.before","Protein.after")
+## df.measures <- data.frame( "Measure" = rep(seq(1:2),10), df)
+
+df <- read.csv("data_example_additional.csv", header = TRUE)
+kable(df, align = "c")
+```
+## Think whether the following senteces are TRUE or FALSE
+ (a) We have 10 independent measurements, each one with a  replicate (Protein.before, Protein.after).
+ (b) We have 40 independent measurements.
+ (c) We have 1 numerical variable.
+
+
+Now, try to describe the design. Be explicit about technical and biological replicates.
+
+
+## Optimal representation of the data
+
+Argue which of the following graphs are a better representations of the data (the answer could be "I'd use a different graph"; in this case, explain what and how you'd represent)
+
+```{r, echo=FALSE, fig.align='center',fig.height = 5, fig.width=5}
+
+## To keep things independent do data manipulations here
+## that do not affect anything below
+## so students can do things easily from scratch using R Commander
+
+df_gg <- df
+df_gg$Subject.ID <- as.factor(df_gg$Subject.ID)
+
+df_gg_m <- aggregate(df_gg[,c("Protein.before","Protein.after")],
+                     by = list(ID = df$Subject.ID, Group = df$Group),
+                     FUN = mean)
+
+df.r <- reshape(df_gg_m,
+                varying = list(c("Protein.before", "Protein.after")),
+                direction = "long",
+                idvar = "ID",
+                v.names = "Protein")
+
+one <- ggplot(df.r, aes(factor(time), Protein)) +
+  geom_boxplot() +
+  facet_grid(~ Group) +
+  ggtitle("Graph A") +
+  labs(x ="Time points", y= "Protein (µm2/s)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+two <- ggplot(df.r, aes(factor(time), Protein)) +
+  geom_point(size = 0.75) +
+  facet_grid(~ Group) +
+  ggtitle("Graph B") +
+  labs(x ="Time points", y= "Protein (µm2/s)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+three <- ggplot(df.r, aes(factor(time), Protein)) +
+  stat_summary(fun = mean, geom = "point") +
+  stat_summary(fun.data = mean_se, geom = "errorbar",
+               linetype = "dashed",
+               linewidth = 0.5) +
+  ggtitle("Graph C") +
+  facet_grid(~ Group) +
+  labs(x ="Time points", y= "Protein (µm2/s)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+four <- ggplot(df.r, aes(factor(time), Protein)) +
+  stat_summary(fun = mean, geom = "bar", fill = "White", colour = "Black") +
+  ggtitle("Graph D") +
+  facet_grid(~ Group) +
+  labs(x ="Time points", y= "Protein (µm2/s)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+grid.arrange(one,two,three,four, ncol = 2)
+#ggsave(file="Question1_1.png",g)
+
+## Make sure no left overs that would affect anything below
+rm(one, two, three, four, df_gg, df.r)
+```
+
+In A, C, D: we have no idea if we are representing all 40 points, or the averages or what.
+
+
+## Choosing between tests
+
+Taking into account that you want to compare the values of protein expression before an experimental manipulation ("x") and after such manipulation ("y") to n = 10 subjects, choose which of the following tests you would apply. In the following,  data "df.m" contains not the data above but the data after averaging the two measurements. In other words:
+
+```{r aggregate, echo = FALSE, eval = TRUE}
+
+df <- within(df, {
+  Measure <- factor(Measure, labels=c('1','2'))
+})
+df <- within(df, {
+  Subject.ID <- as.factor(Subject.ID)
+})
+
+
+df.m <- aggregate(cbind(Protein.after, Protein.before) ~ Group + Subject.ID, data=df, FUN=mean)
+
+```
+
+
+```{r, echo = TRUE}
+test1 <- t.test(x = df.m$Protein.before, y = df.m$Protein.after,
+                paired = TRUE, var.equal = FALSE)
+test1
+test2 <- t.test(x = df.m$Protein.before, y = df.m$Protein.after,
+                paired = FALSE, var.equal = FALSE)
+test2
+```
+a) test1 because is paired
+b) test2 because in not paired
+
+## Interpretation of tests
+
+From the previous outputs, we can deduce that:(Answer with TRUE or FALSE)
+a) Difference between mean values can be considered significant because the 95% CI include 0
+b) Because the p-value in test2 is higher than in test1, this indicates that the probability of   obtaining a significant difference between mean values is higher in test2
+c) There is no sufficient statistical evidence to support that the means are different
+
+
+
+## We ignored the Group in the tests: should we or shouldn't we?
+
+In the tests above, we ignored the group (Glucose vs.TGN+Glucose) (but note
+that, in the figures, we kept the two groups as separate). It is conceivable that the behavior of the two groups could differ. Incorporating additional variables is something we discuss in the next lesson.
+
+But we can actually ask (and do a formal test of) whether the within-individual differences have the same mean in the two groups. This is very easy: carry out a two-sample t-test comparing the within individual differences between the two groups. What exactly would this test be testing? Can you do it? How?
+
+
+### Steps
+
+- Recode Subject.ID as factor.
+- Aggregate Protein.after and Protein.before by Subject.ID and Group (if we do it by Group too, even if not necessary, we avoid Group being recoded. Now, why did I say that aggregating by Group is not really necessary?)
+- VERIFY a few cases (e.g., subjects 1, 10, 2, 5, 6, 8; this verification strategy is a sensible one: check cases at end of file, cases right on the border of the limits of the groups, and a few others; here, we check way too many, as checking 6 out of 10 is ... well, 60%; but if you have 1000 subjects, checking 6 is well worth it ).
+- Compute the difference Protein.after minus Protein.before.
+- Plot that difference, possibly by groups: i.e., plot two boxplots.
+- Carry out a t-test that compares the within-individual differences between the two groups.
+
+
+
+
+This is all doable from the R Commander interface. We won't show you the steps (try it yourself), just the output of a figure and the results of the test.
+
+
+
+```{r between-of-within, eval=TRUE, echo=FALSE}
+
+df.m$after_minus_before <- with(df.m, Protein.after - Protein.before)
+
+## ## Directly with the boxplot entry
+## Boxplot(after_minus_before ~ Group, data=df.m, id=list(method="y"))
+
+## With KMggplot2
+require("ggplot2")
+.df <- data.frame(x = df.m$Group, y = df.m$after_minus_before,
+                  z = df.m$Group)
+.plot <- ggplot(data = .df, aes(x = factor(x), y = y, fill = z)) +
+  stat_boxplot(geom = "errorbar", position = position_dodge(width = 0.9), width = 0.5) +
+  geom_boxplot(position = position_dodge(width = 0.9), outlier.colour = "transparent") +
+  geom_jitter(colour = "black", position = position_jitterdodge(jitter.width = 0.25, jitter.height = 0, dodge.width = 0.9)) +
+  xlab("Group") +
+  ylab("after_minus_before") +
+  labs(fill = "Group") +
+  theme_bw(base_size = 14, base_family = "sans")
+print(.plot)
+rm(.df, .plot)
+t.test(after_minus_before ~ Group, alternative = "two.sided", conf.level = .95, var.equal = FALSE, data = df.m)
+
+```
+
+
+
+Now, step back and look at the boxplots with the overimposed individual observations (the within-individual differences): How many points are there? How much variation is in there? Do you think we can be very confident in the results?
