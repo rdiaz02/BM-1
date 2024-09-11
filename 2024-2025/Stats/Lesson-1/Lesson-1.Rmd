@@ -593,14 +593,16 @@ We have used different plotting systems for moderately complex layouts. **Always
 
 
 ## Unstacking factors
-Have a look at the table below:
+Have a look at the table below (yes, some columns on the right have been cut):
 
 ```{r, echo = FALSE}
 library(knitr)
-DatasetWide <- reshapeL2W(Brain_MR, within=c("Time","Area"), id="Animal",
-  varying=c("ADC", "T2"), ignore=c("Group"))
+DatasetWide <- reshapeL2W(Brain_MR, within=c("Time","Area"),
+                          id="Animal",
+                          varying=c("ADC", "T2"))
 knitr::kable(DatasetWide,
-             col.names = c("ADC T0 \n hipp",
+             col.names = c("Group",
+                           "ADC T0 \n hipp",
                            "T2 T0 hipp",
                            "ADC T1 hipp",
                            "T2 T1 hipp",
@@ -613,7 +615,10 @@ knitr::kable(DatasetWide,
                            "ADC T2 cortex",
                            "T2  cortex"))
 ```
-The data can be organized in several ways. Our file "Brain_MR" was presented in the stacked or "long format", in which the "dependent variables" ADC and T2 are in a single column (each), and the conditions (Group, Time...), or independent variables, were indicated on separate columns. This format was very well fitted for statistical analysis. The table above is another type of representation "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go tho **Data–>Active dataset–>Reorganize from long to short"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
+The data can be organized in several ways. Our file "Brain_MR" was presented in the stacked or "long format", in which the "dependent variables" ADC and T2 are in a single column (each), and the conditions (Group, Time...), or independent variables, were indicated on separate columns. This format was very well fitted for statistical analysis.
+
+The table above is another type of representation called "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go to **Data–>Active dataset–>Reorganize from long to wide"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
+
 
 
 \clearpage
