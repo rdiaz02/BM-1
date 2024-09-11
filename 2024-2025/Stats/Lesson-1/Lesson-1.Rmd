@@ -306,6 +306,10 @@ class(Brain_MR$Animal)
 We are now ready to proceed with the plots and analyses.
 
 
+### Numeric variables to Factors via R Commander
+The above operation can be easily carried out using R Commander too. Where? Please, look for it and make sure you know how to do it.
+(Hint: Data -> Manage variables in active data set)
+
 
 ## Exploring data
 
