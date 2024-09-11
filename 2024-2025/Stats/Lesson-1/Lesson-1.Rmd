@@ -97,6 +97,10 @@ knitr::include_graphics("Rcmdr.png")
 ```
 
 
+(Note: if you run R Commander from R Studio, not the usual R interface, the output seems to always be redirected to the R Studio console, so there is no lower split in R Commander with "Output" or "Salida". This is not a problem; by the way, you can always force all output to be redirected to the R console from the R Commander options.)
+
+
+
 ### Using R commander
 • Open an R session through the Rgui interface. In the console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like Figure \@ref(fig:Rfigures).
 
