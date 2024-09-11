@@ -16,6 +16,9 @@ options(width = 65)
 ## suppressMessages(require(SparseM, quietly = TRUE)) ## gives warning
 suppressMessages(require(BiocStyle, quietly = TRUE))
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
+suppressMessages(library(RcmdrPlugin.HH, quietly = TRUE, warn.conflicts = FALSE))
+suppressMessages(library(RcmdrPlugin.KMggplot2, quietly = TRUE, warn.conflicts = FALSE))
+
 ## suppressMessages(require(doBy, quietly = TRUE))
 ## suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
 @
@@ -291,7 +294,7 @@ par(op)
 %   ``RcmdrPlugin.plotByGroup''} and you'll find a new menu entry, under
 % ``Graphs'', that says ``Plot by group''. Use
 
-Let us no do a couple of plots by group. (You'll need to use the command line, since a former plugin, ``RcmdrPlugin.plotByGroup'', is no longer available):
+Let us now do a couple of plots by group. (For the first two, you'll need to use the command line, since a former plugin, ``RcmdrPlugin.plotByGroup'', is no longer available):
 
 
 
@@ -321,8 +324,41 @@ histogram(~p53 | cond, data=dp53)
 bwplot(~p53 | cond, data=dp53)
 @
 
-Note that, instead of the last call, you can use the \texttt{Boxplot} function (see below).
 
+The last one we can also obtain from the \textbf{lattice plot ... (HH)} after loading the ``RcmdrPlugin.HH'':
+
+
+
+<<>>=
+bwplot(p53 ~ cond, data= dp53, type="p",
+       par.settings=simpleTheme(pch=16),
+       auto.key=list(border=TRUE),
+       scales=list(x=list(relation='same', log=FALSE),
+                   y=list(relation='same', log=FALSE)))
+@
+
+
+And a violin + boxplot showing the points themselves, using package RcmdrPlugin.KMggplot2 (and we rotate it ... just because we can):
+
+<<fig.show = 'hold'>>=
+.df <- data.frame(x = dp53$cond, y = dp53$p53, z = dp53$cond)
+.plot <- ggplot(data = .df,
+                aes(x = factor(x), y = y, fill = z)) +
+  geom_violin(position = position_dodge(width = 0.9)) +
+  geom_boxplot(width =  0.2) +
+  geom_jitter(colour = "black",
+              position =
+                position_jitterdodge(jitter.width = 0.25,
+                                     jitter.height = 0,
+                                     dodge.width = 0.9)) +
+  coord_flip() +
+  xlab("cond") +
+  ylab("p53") +
+  labs(fill = "cond") +
+  theme_bw(base_size = 14, base_family = "sans")
+print(.plot)
+rm(.df, .plot)
+@
 
 
 
@@ -523,7 +559,9 @@ understand this!!!
 
 In class we will very briefly cover how the confidence interval is constructed. In this case, it involves kind of turning around the logic of the p-value.
 
-%% FIXME: redirect to document Conf. intevalñs with R Cmdr de Blanca.
+\externalf Please look at file \myhref{Lesson\_2\_Confidence\_intervals\_with\_Rcmdr.pdf}.
+
+
 
 \subsection{Assumptions of the t-test}
 
@@ -566,30 +604,20 @@ limit theorem'').
 
 
 
-Of course, although this should be obvious: when we talk about symmetry,
-normality, etc, we are talking about the data distribution of \textbf{each
-  group separately}. Please, read this carefully: \textbf{each group separately}. For example, \textbf{it makes no sense to check if the distribution of the complete set of data, of the two groups together, is normally distributed}.  This should be obvious: if it is not, draw two normal distributions (with different means) by hand, with different means and think about what happens if you put together samples from each one of them and look at the distribution. At any rate, testing for normality is not sensible most of the time ---we return to this below. When we deal with linear models we will examine distribution assumptions, but looking at the residuals.
+Of course, although this should be obvious: when we talk about symmetry, normality, etc, we are talking about the data distribution of \textbf{each group separately}. Please, read this carefully: \textbf{each group separately}. For example, \textbf{it makes no sense to check if the distribution of the complete set of data, of the two groups together, is normally distributed}.  This should be obvious: if it is not, draw two normal distributions (with different means) by hand, with different means and think about what happens if you put together samples from each one of them and look at the distribution. At any rate, testing for normality is not sensible most of the time ---we return to this below. When we deal with linear models we will examine distribution assumptions, but looking at the residuals.
 
-Finally, \textbf{outliers} can be a serious concern (by the way, outliers,
-or potential outliers ---under some definition of outlier--- get flagged
-by function \Rfunction{Boxplots} in R). In general, points very far from
-the rest of the points will have severe effects on the value computed for
-the mean (not the median ---this is also related to why nonparametric
-procedures can be more robust). What to do, however, is not obvious. An
-outlier might be the consequence of an error in data recording. But it
-might also be a perfectly valid point and it might actually be the
-``interesting stuff''. Sometimes people carry out (and, of course,
-\textbf{should explicitly report}) analysis with and without the outlier;
-sometimes the same qualitative conclusions are reached, sometimes
-not. Please, think carefully about what an outlier is before proceeding
-with your analysis but do not get into the habit of automatically getting
-rid of potential outliers. And whatever you do, you should report it.
+
+
+Finally, \textbf{outliers} can be a serious concern (by the way, outliers, or potential outliers ---under some definition of outlier--- get flagged by function \Rfunction{Boxplots} in R). In general, points very far from the rest of the points will have severe effects on the value computed for the mean (not the median ---this is also related to why nonparametric procedures can be more robust). What to do, however, is not obvious. An outlier might be the consequence of an error in data recording. But it might also be a perfectly valid point and it might actually be the ``interesting stuff''. Sometimes people carry out (and, of course, \textbf{should explicitly report}) analysis with and without the outlier; sometimes the same qualitative conclusions are reached, sometimes not. Please, think carefully about what an outlier is before proceeding with your analysis but do not get into the habit of automatically getting rid of potential outliers. And whatever you do, you should report it.
 
 
 The book by Rupert Miller ``Beyond Anova'' (Chapman and Hall, 1997)
 contains a great discussion of assumptions, consequences of deviations
 from them, what to do, etc.
 
+
+\section{One vs two-tailed tests}
+\red{To be written. We will explain in class what the difference is. And why will discuss why, except for exceptional circumstances, using one-tailed tests with the t-test for comparing two groups is a bad idea.}
 
 %% FIXME: one vs two-tailed tests
 
@@ -859,16 +887,9 @@ all(with(dmyc, table(id, cond)) == 1)
 
 \subsection{Reshaping the data for a paired t-test}
 
-The purpose of this section is to show you several different ways of reshaping
-data, but we will skip the details in class, unless you run intro problems. In
-class we will definitely cover section \ref{datashape}, \ref{reshaping} and read section
-\ref{reshapefinal}. The rest is left here so that you can refer to it when you need to do it with your own data, but, again, we will \textbf{not} cover it in class: you need to understand the source of the problem but the syntax for the solutions is not important (you have it here, and can refer to it when you need it).
+The purpose of this section is to show you several different ways of reshaping data, but we will skip the details in class, unless you run intro problems. In class we will definitely cover section \ref{datashape}, \ref{reshaping} and read section \ref{reshapefinal}. The rest is left here so that you can refer to it when you need to do it with your own data, but, again, we will \textbf{not} cover it in class: you need to understand the source of the problem but the syntax for the solutions is not important (you have it here, and can refer to it when you need it).
 
-
-\subsubsection{The shape of the data}\label{datashape}
-Often, when you know you are only going to do a paired test you can
-organize your data in a table structure like the one in Table
-\ref{unstacked}:
+\subsubsection{The shape of the data}\label{datashape} Often, when you know you are only going to do a paired test you can organize your data in a table structure like the one in Table \ref{unstacked}:
 
 \begin{table}[h!]
 \begin{tabular}{ccc}
@@ -878,7 +899,7 @@ organize your data in a table structure like the one in Table
   maria&29&56\\
   \ldots&\ldots&\ldots\\
 \end{tabular}
-\caption{Paired data in a ``unstacked'' shape/format.}\label{unstacked}
+\caption{Paired data in a ``unstacked'' or ``wide'' shape/format.}\label{unstacked}
 \end{table}
 
 
@@ -931,9 +952,31 @@ reshaping data must be done with a lot of care. You do not need to
 remember the details here, you just need to be aware of the issues.
 
 
-\subsubsection{Reshaping using the menus}\label{reshapemenu}
 
 
+
+\subsubsection{Reshaping using R Commander (I)}
+\label{sec:reshaping-rcmdr-1}
+
+(Yes, we already saw  this in Lesson 1) We will turn the data from long to wide. You already know how to do it (see Figure \ref{reshape-rcmdr}):
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.40\paperwidth,keepaspectratio]{l2-reshape-rcmdr.png}
+ \caption{\label{reshape-rcmdr} Reshaping using R Commander (I).}
+ \end{center}
+ \end{figure}
+
+
+ And this is the code produced from R Commander:
+<<>>=
+dmycWide <- reshapeL2W(dmyc, within="cond", id="id", varying="myc")
+@
+
+
+\subsubsection{Reshaping using R Commander (II)}\label{reshapemenu}
+
+This is a less elegant approach, though in simple cases will work:
 
 \begin{enumerate}
 \item Create a data set that contains only the values for observations
@@ -962,9 +1005,12 @@ remember the details here, you just need to be aware of the issues.
   \verb@merge(cc, nc, all=TRUE, by="row.names")@).
 \end{enumerate}
 
-
 %% Note: this does not work unless we do further work:
 %% merge(dmyc[, dmyc$cond == "NC], dmyc[, dmyc$cond == "Cancer"], all = TRUE, by = "row.names")
+
+
+
+
 
 \subsubsection{Reshaping with \Rfunction{unstack}}\label{reshapestack}
 
@@ -1011,8 +1057,7 @@ Verify we are now ok comparing merged2 with dmyc.
 \subsubsection{Reshaping with \Rfunction{reshape}}
 \label{reshapereshape}
 
-This is another built-in function in R, \Rfunction{reshape}. This can be a
-complicated function to use, but it is extremely powerful. I'll use it
+This is another built-in function in R, \Rfunction{reshape} (and the one used internally by the \texttt{reshapeL2W} from R Commander). This can be a complicated function to use, but it is extremely powerful. I'll use it
 here fully specifying all the  arguments\footnote{In this case, you
   do not need to specify the \texttt{v.names} argument, for example, but
   I'd rather be explicit.}:
@@ -1035,8 +1080,7 @@ library(tidyr)
 (merged4 <- spread(dmyc, cond, myc))
 @
 
-You can compare with \texttt{merged3} and \texttt{merged2} and \texttt{merged},
-and verify they have the same data.
+You can compare with \texttt{dmycWide} and \texttt{merged3} and \texttt{merged2} and \texttt{merged}, and verify they have the same data.
 
 
 \subsubsection{\Rfunction{dcast} from \CRANpkg{reshape2}?}
@@ -1056,8 +1100,7 @@ As it says, you could try doing the reshaping using \Rfunction{dcast} from
 
 A few comments:
 \begin{itemize}
-\item This data reshaping is not strictly necessary from doing a paired
-  t-test in R but it is for R Commander (see below ---section \ref{ptr}).
+\item This data reshaping is not strictly necessary from doing a paired t-test in R but it is for R Commander (see below ---section \ref{ptr}).
 \item We will see below a way to carry out these same analyses with a
   linear model (section \ref{lm-paired}). And no reshaping needed.
 
@@ -1067,7 +1110,7 @@ A few comments:
   complicated, it allows you to be completely explicit about what is what.
 \end{itemize}
 
-%%% FIXME
+
 %%% On Rcmdr: say something about where to redirect output, in Rcmdr
 %%% options?
 %% Even if one redirects ouptu to consloe from Rcmdr, when using Rcmdr
@@ -1137,21 +1180,21 @@ t-test as if they were two independent samples. The differences are rather
 dramatic!
 
 
-I'll use \texttt{merged3}; you can use \texttt{merged} or \texttt{merged2}
+I'll use \texttt{dmycWide}; you can use \texttt{merged3} or \texttt{merged} or \texttt{merged2}
 or \texttt{merged4}
 if you want. I'll type the expressions directly. You can of course get
 this from R Commander (under ``Statistics'', ``Means'').
 
 <<>>=
 ## Paired; you can get this from R Commander too
-t.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided',
+t.test(dmycWide$myc.NC, dmycWide$myc.Cancer, alternative='two.sided',
        conf.level=.95,  paired=TRUE)
 @
 
 
 <<>>=
 ## Two-sample
-t.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided',
+t.test(dmycWide$myc.NC, dmycWide$myc.Cancer, alternative='two.sided',
        conf.level=.95,  paired=FALSE)
 @
 
@@ -1185,13 +1228,13 @@ boxes ``New variable name'' and ``Expression to compute''
 
 You will see this in the R Script:
 <<>>=
-merged3$diff.nc.c <- with(merged3, myc.NC - myc.Cancer)
+dmycWide$diff.nc.c <- with(dmycWide, myc.NC - myc.Cancer)
 @
 
 
 Now, do a single-sample t-test:
 <<>>=
-with(merged3, (t.test(diff.nc.c, alternative='two.sided', mu=0.0,
+with(dmycWide, (t.test(diff.nc.c, alternative='two.sided', mu=0.0,
                       conf.level=.95)))
 @
 
@@ -1225,7 +1268,7 @@ very good idea. % In fact, I will now create them from scratch directly from R
 
 
 <<fig.width=5.5, fig.height=5.5, echo=TRUE, fig.show = 'hold'>>=
-Boxplot( ~ diff.nc.c, data = merged3, xlab = "",
+Boxplot( ~ diff.nc.c, data = dmycWide, xlab = "",
          ylab = "Intra-subject difference (NC - Cancer)", main = "MYC")
 @
 
@@ -1235,7 +1278,7 @@ We can also create a violin plot with the boxplot inside and the points jittered
 <<diff-violin, fig.width=4.5, fig.height=4.5, echo=TRUE, fig.show = 'hold'>>=
 library(RcmdrPlugin.KMggplot2)
 
-.df <- data.frame(y = merged3$diff.nc.c)
+.df <- data.frame(y = dmycWide$diff.nc.c)
 .plot <- ggplot(data = .df, aes(x = factor(1), y = y)) +
   geom_violin() + geom_boxplot(width = 0.2) +
   geom_jitter(colour = "black", width = 0.1, height = 0) +
@@ -1388,16 +1431,6 @@ Wilcoxon as with the t-test. Nonparametric tests are not
 % edition. There is, by the same author, a smaller ``Introduction to
 % categorical data analysis'').
 
-%% FIXME: say not a test of means and often not even of medians!!!
-
-%%
-%% https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test
-
-%% https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/
-
-%% Christensen, W. F., & Zabriskie, B. N. (2022). When Your Permutation Test is Doomed to Fail. The American Statistician, 76(1) https://doi.org/10.1080/00031305.2021.1902856
-
-%% https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm
 
 
 \subsection{Two-sample Wilcoxon or Mann-Whitney test}
@@ -1480,7 +1513,7 @@ How is this possible? Please, make sure you read this:
 
 %% in the directory as  graph-pad-link.png
 
-More details are available here: \Burl{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/} and in the Wikipedia entry for the Mann-Whitney U test. Many more details about permutation tests not testing what you might think they are testing are available, for example, from Christensen \& Zabriskie, 2022. When Your Permutation Test is Doomed to Fail. \textit{The American Statistician}, 76. \Burl{https://doi.org/10.1080/00031305.2021.1902856}
+More details are available here: \Burl{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/} and in the Wikipedia entry for the Mann-Whitney U test (\Burl{https://en.wikipedia.org/wiki/Mann\%E2\%80\%93Whitney_U_test}). Many more details about permutation tests not testing what you might think they are testing are available, for example, from Christensen \& Zabriskie, 2022. When Your Permutation Test is Doomed to Fail. \textit{The American Statistician}, 76. \Burl{https://doi.org/10.1080/00031305.2021.1902856}
 
 
 A few examples? Sure. Run the following in R:
@@ -1546,16 +1579,6 @@ Summary: do not use a Wilcoxon expecting it to test for mean differences. And be
 
 %
 
-%% FIXME: say not a test of means and often not even of medians!!!
-
-%%
-%% https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test
-
-%% https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1120984/
-
-%% Christensen, W. F., & Zabriskie, B. N. (2022). When Your Permutation Test is Doomed to Fail. The American Statistician, 76(1) https://doi.org/10.1080/00031305.2021.1902856
-%% https://www.graphpad.com/guides/prism/latest/statistics/stat_nonparametric_tests_dont_compa.htm
-
 
 \subsection{Wilcoxon matched-pairs test}
 
@@ -1574,11 +1597,11 @@ distribution.
 
 Go do it with the dmyc data we used for the paired t-test (section
 \ref{pairedt}). Remember we had to reshape the data (section
-\ref{reshaping}) so I will reuse our \texttt{merged3} data set:
+\ref{reshaping}) so I will reuse our \texttt{dmycWide} data set:
 
 
 <<>>=
-wilcox.test(merged3$myc.NC, merged3$myc.Cancer, alternative='two.sided',
+wilcox.test(dmycWide$myc.NC, dmycWide$myc.Cancer, alternative='two.sided',
             paired=TRUE)
 @
 
@@ -1593,7 +1616,7 @@ Remember we computed intra-subject differences before
 (section \ref{paired-single}), so we will reuse them:
 
 <<>>=
-wilcox.test(merged3$diff.nc.c)
+wilcox.test(dmycWide$diff.nc.c)
 @
 
 For versions of R Commander 2.1-0 or later you can run the Wilcoxon signed
@@ -1606,7 +1629,7 @@ rank test directly from the menu.
 
 Don't do the following:
 \begin{enumerate}
-\item Carry out a test for normality
+\item Carry out a test for normality (I guess for each group separately if and independent-samples t-test ---testing for normality collapsing the two groups would be absolutely nonsensical).
 \item If failed, use a nonparametric test. Otherwise a t-test.
 \end{enumerate}
 
@@ -1833,7 +1856,7 @@ difficult to detect) problem. This kind of meaningless analysis can lead
 to lots of non-reproducible results.
 
 Which brings us to the fundamental idea of \textbf{thinking carefully
-  about the experimental design}, something we will take a quick look at
+  about the experimental design}, something we saw already in Lesson 1 and will take a quick look at
 in Lesson 3.
 
 %% The opposite can also happen, as you can see from the ACRB.txt file (do it
@@ -1897,8 +1920,7 @@ categorical, ordinal, and interval data, but they are far from trivial).
 
 
 To make the point more clear, this is an example from the data for the TFM
-(``trabajo fin de master'') from a former student of BM-1\footnote{This is
-  true. I am not making it up.}. Briefly, she was interested in the rates
+(``trabajo fin de master'') from a former student of BM-2. Briefly, she was interested in the rates
 of chromosomal aberrations in different types of couples that went to a
 fertility clinic. For instance, suppose you want to examine incidence of
 aneuploidy in embryos from two groups of fathers, ``younger fathers'' and
