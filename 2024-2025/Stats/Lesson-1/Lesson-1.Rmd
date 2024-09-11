@@ -48,20 +48,20 @@ You investigate the effect of drug X on EFNA3 mRNA levels using human vascular e
 
 Does it really matter? If so, why?
 
-```{r exp-design-luis, fig.cap =  "Experimental design of Case 1", fig.align= "center", out.width="50%", echo=FALSE}
+```{r exp-design-luis, fig.cap =  "Experimental design of Case 1", fig.align= "center", out.width="70%", echo=FALSE}
 knitr::include_graphics("Case_Luis.png")
 ```
 
 A simple scheme of the experimental design, that one of us (Ramon) draw to make sure they were understanding the key features of the design, is shown in Figure \@ref(fig:exp-design-luis-one-donor).
 
 
-```{r exp-design-luis-one-donor, fig.cap =  "Experimental design of Case 1, single donor.", fig.align= "center", out.width="50%", echo=FALSE}
+```{r exp-design-luis-one-donor, fig.cap =  "Experimental design of Case 1, single donor.", fig.align= "center", out.width="70%", echo=FALSE}
 knitr::include_graphics("design_one_donor.pdf")
 ```
 
 The above is for one donor. The scheme with the four donors is shown in Figure \@ref(fig:exp-design-luis-four-donors-mean); the rightmost columns shows one possible way of indexing the observations and the average of the three replicates; that is not relevant now, but will be handy later.
 
-```{r exp-design-luis-four-donors-mean, fig.cap =  "Experimental design of Case 1, four donors.", fig.align= "center", out.width="50%", echo=FALSE}
+```{r exp-design-luis-four-donors-mean, fig.cap =  "Experimental design of Case 1, four donors.", fig.align= "center", out.width="80%", echo=FALSE}
 knitr::include_graphics("design_four_donors_mean.pdf")
 ```
 
@@ -206,7 +206,7 @@ Other summary statistic commonly used as error bars are SEM and confidence inter
 
 <!-- We can obtain, for each experimental subgroup of the MRI experiment, the descriptive values of each time point. In **Rcommander** go to “Summaries” under the “Statistics” in the main menu and then select “Active data set”. -->
 
-
+### Tables of summary statistics {#table-sum-stats}
 We can obtain many of these easily for the different groups. One options is: **Statistics -> Summaries -> Tables of statistics**.  Here you can choose the variable, the factors to use (you can either summarize by experiment name, or by treatment, or by both) and the statistic to use. For example, to obtain the median for all 8 subgroups we see this code:
 
 ```{r }
@@ -217,7 +217,7 @@ Tapply(EFNA3_level_AU ~ Experiment + Treatment, median,
 
 
 
-
+\clearpage
 # Case 2: Brain MRI (from Prof. Blanca Lizarbe's lab)
 
 We will work with experimental data from a **magnetic resonance imaging (MRI)** studies. The experiments are performed to investigate *the role of Aquaporin-4 (water-channel protein) in brain glucose uptake*. Briefly, we know from previous works that, in mice, systemic glucose administration alters some brain MRI parameters. Now, we want to understand whether this glucose-induced changes are mediated by AQP-4, and designed a quite complete experimental setup to test that.
@@ -309,7 +309,7 @@ We are now ready to proceed with the plots and analyses.
 
 ## Exploring data
 
-### Summarizing data
+### Summarizing data {#table-sum-stats-2}
 As we did above, we can summarize the data for the different groups:
 **Statistics -> Summaries -> Tables of statistics** . For example, summarize the ADC variable by Animal, Area, Group, and Time. Do you understand why you get "NA"s? (Results not shown below, but please do it)
 
@@ -349,9 +349,9 @@ This however, is rather limited in this case as it does not reflect the key feat
 
 Before doing any statistical test to examine a hypothesis, it is fundamental to have a perfectly clear overview of the experimental design, of the type of variables and data distribution. We are now going to learn how to explore the data by plotting it in representative ways. First, have a look at the bar graphs below: Can you give a **general description** of what they are expressing?
 
-(Note: the graph below cannot be created directly from R Commander, but we will create similar ones with R Commander later. You can, of course, copy the code in the console and run it)
+Note: the graph below, Figure \@ref(fig:figure5), cannot be created directly from R Commander, but we will create similar ones with R Commander later. You can, of course, copy the code in the console and run it.
 
-```{r figure5, fig.height = 4, fig.width = 6, fig.cap= "Bar graphs of Case 1", fig.align='center'}
+```{r figure5, fig.show = 'hold', fig.height = 4, fig.width = 6, fig.cap= "Bar graphs of Case 1", fig.align='center'}
 library(ggplot2)
   ggplot(Brain_MR, aes(as.factor(Time), ADC, fill = Time)) +
   facet_wrap(vars(Area,Group),
@@ -385,9 +385,11 @@ Moreover, is it sensible to use bars for these type of data?
 
 Finally, are the scales of all the subplots the same?
 
+\clearpage
 
-Now, observe the boxplot below and try to see if you can understand better what was observed in the bar graphs with the "Glucose" and TGN.Glucose" groups (as before, this plot cannot be created directly using R Commander):
-```{r figure6, fig.height = 4, fig.width = 6, fig.align ='center', fig.cap= "Box plot of Case 1"}
+Now, observe the boxplot below, in Figure \@ref(fig:figure6), and try to see if you can understand better what was observed in the bar graphs with the "Glucose" and TGN.Glucose" groups (as before, this plot cannot be created directly using R Commander):
+
+```{r figure6, fig.height = 4, fig.width = 6, fig.show = 'hold', fig.align ='center', fig.cap= "Box plot of Case 1"}
 
   ggplot(Brain_MR, aes(as.factor(Time), ADC, fill = Time)) +
   facet_wrap(vars(Area,Group),
@@ -405,11 +407,12 @@ Now, observe the boxplot below and try to see if you can understand better what 
 ```
 > Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look at Figure \@ref(fig:fig7).
 
-```{r fig7, out.width = "50%", fig.cap =  "Box plot paramaters", fig.align = "center", echo = FALSE}
+```{r fig7, out.width = "50%", fig.cap =  "Box plot elements.", fig.align = "center", echo = FALSE}
 knitr::include_graphics("BoxPlot_def.png")
 ```
 
 
+\clearpage
 
 #### Bar graphs and boxpots from R Commander with HH and lattice
 
@@ -417,21 +420,21 @@ We can use R Commander to obtain complex conditioning plots as above. The first 
 
 
 
-```{r load-hh,echo=FALSE}
+```{r load-hh,echo=FALSE,include=FALSE}
 library(HH)
 ```
 
-Now, you will see that there are more entries under some menus. Go to **Graphs** and click, there **Lattice plots**. We can produce a plot that, except for the error bars, is equivalent to the former graph barchart by selecting these options:
+Now, you will see that there are more entries under some menus. Go to **Graphs** and click, there **Lattice plots**. We can produce a plot that, except for the error bars, is equivalent to the former graph barchart by selecting these options (Figure \@ref(fig:hh-bar-1)):
 
-```{r hh-bar-1, fig.cap =  "HH: options for the bar graph.", fig.align= "center", out.width="50%", echo=FALSE}
+```{r hh-bar-1, fig.show = 'hold', fig.cap =  "HH: options for the bar graph.", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("hh-bar-1.png")
 ```
 
 \clearpage
 
 
-And that produces this code and gives this figure
-```{r hh-bar-1-out, fig.cap = "Barchart + lattice using HH"}
+And that produces this code and gives this figure (Figure \@ref(fig:hh-bar-1-out))
+```{r hh-bar-1-out, fig.show = 'hold', fig.cap = "Barchart + lattice using HH."}
 barchart(ADC ~ Group | Area, layout=c(1, 2), groups=Time, data= Brain_MR,
   type="p", par.settings=simpleTheme(pch=16), origin=0,
   auto.key=list(border=TRUE),
@@ -441,17 +444,17 @@ barchart(ADC ~ Group | Area, layout=c(1, 2), groups=Time, data= Brain_MR,
 ```
 
 
-What about boxplots? We can obtain similar plots. For example, I first selected the following options
+What about boxplots? We can obtain similar plots. For example, I first selected the following options (Figure \@ref(fig:hh-bp-1))
 
-```{r hh-bp-1, fig.cap =  "HH: options for the box plot.", fig.align= "center", out.width="50%", echo=FALSE}
+```{r hh-bp-1, fig.show = 'hold', fig.cap =  "HH: options for the box plot.", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("hh-bp-1.png")
 ```
 
 \clearpage
 
-and those gave this plot (actually, I added the "rot" thing at the end, to have all tick labels horizontal)
+and those gave this plot, Figure \@ref(fig:hh-bp-1-out) (actually, I added the "rot = 0" option on the last line, to have all tick labels horizontal)
 
-```{r hh-bp-1-out, fig.cap =  "Lattice boxplot, rotated y-axis tick labels"}
+```{r hh-bp-1-out, fig.show = 'hold', fig.cap =  "Lattice boxplot, rotated y-axis tick labels."}
 bwplot(ADC ~ Time | Area + Group, outer=TRUE, layout=c(4, 2),
 data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
 auto.key=list(border=TRUE),
@@ -459,10 +462,10 @@ scales=list(x=list(relation='same', log=FALSE),
 y=list(relation='free', log=FALSE, rot = 0)))
 ```
 
-but, to make it comparable to the box plot above, I then edited the command line manually, and transposed "Group" and "Area", and then clicked on "Submit"
+And, to make it comparable to the box plot above, I then edited the command line manually, and transposed "Group" and "Area", and then clicked on "Submit", which yields Figure \@ref(fig:hh-bp-2):
 
 
-```{r hh-bp-2, fig.cap =  "Lattice boxplot: transposed Group and Area"}
+```{r hh-bp-2, fig.show = 'hold', fig.cap =  "Lattice boxplot: transposed Group and Area and free scales."}
 bwplot(ADC ~ Time | Group + Area, outer=TRUE, layout=c(4, 2),
 data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
 auto.key=list(border=TRUE),
@@ -470,9 +473,9 @@ scales=list(x=list(relation='same', log=FALSE),
 y=list(relation='free', log=FALSE, rot = 0)))
 ```
 
-**Do you think it is always best to allow the scales to differ?** What patterns are highlighted or masked by doing that? Compare with this figure (identical to above, except we did not allow the scales to vary between panels ---shown as "Y scales in different panels" in the GUI and as the "relation = 'same'" in the command)
+**Do you think it is always best to allow the scales to differ?** What patterns are highlighted or masked by doing that? Compare Figure \@ref(fig:hh-bp-2) with the next one, Figure \@ref(fig:hh-bp-3), which is identical to the former one, except we did not allow the scales to vary between panels ---shown as "Y scales in different panels" in the GUI and as the "relation = 'same'" in the command:
 
-```{r hh-bp-3, fig.cap =  "Lattice boxplot: same scales for all panels."}
+```{r hh-bp-3, fig.show = 'hold', fig.cap =  "Lattice boxplot: transposed Group and Area but same scales for all panels."}
 bwplot(ADC ~ Time | Group + Area, outer=TRUE, layout=c(4, 2),
 data= Brain_MR, type="p", par.settings=simpleTheme(pch=16),
 auto.key=list(border=TRUE),
@@ -490,7 +493,7 @@ It is also possible to create plots using ggplot2 with R Commander (again, ggplo
 ```{r install-kmggplot2, eval=FALSE}
 install.packages("RcmdrPlugin.KMggplot2")
 ```
-```{r kmggplot2-load, include=FALSE}
+```{r kmggplot2-load, include=FALSE,echo=FALSE}
 library(RcmdrPlugin.KMggplot2)
 ```
 
@@ -499,14 +502,14 @@ You only need to install it once.
 After it is installed, this is just like any other Rcmdr plugin: go to  **Tools -> Load Rcmdr plug-in(s)** and select "RcmdrPlugin.KMggplot2". R commander will ask to be restarted. Once it restarts, you will have a new menu entry, **KMggplot2**. You will see a bunch of entries there. Explore as you see fit. We will show a figure similar to  Figure \@ref(fig:figure6)).
 
 
-In the **KMggplot2** entry, I selected **Box plot/Violin plot/Confidence interval...**. And there, I used the options shown in Figure \@ref(fig:km0-settings) following:
-```{r km0-settings, fig.cap =  "KMggplot2: options for the box plot example.", fig.align= "center", out.width="80%", echo=FALSE}
+In the **KMggplot2** entry, I selected **Box plot/Violin plot/Confidence interval...**. And there, I used the options shown in Figure \@ref(fig:km0-settings):
+```{r km0-settings, fig.show = 'hold', fig.cap =  "KMggplot2: options for the box plot example.", fig.align= "center", out.width="80%", echo=FALSE}
 knitr::include_graphics("bp-ggp-0.png")
 ```
 
-And that produced Figure \@ref(fig:km-bp0) (notice that, here, we cannot allow different scales for each panel, or "free scales")
+And that produced Figure \@ref(fig:km-bp0) (notice that, with KMggplot2, we cannot allow different scales for each panel, or "free scales", though we could edit the code by hand and add it ---not shown here)
 
-```{r km-bp0, fig.cap =  "KMggplot2: box plot example.", fig.align= "center", out.width="100%", echo=TRUE}
+```{r km-bp0, fig.show = 'hold', fig.cap =  "KMggplot2: box plot example.", fig.align= "center", out.width="100%", echo=TRUE}
 .df <- data.frame(x = Brain_MR$Time, y = Brain_MR$ADC,
                   s = Brain_MR$Area, t = Brain_MR$Group)
 .plot <- ggplot(data = .df, aes(x = factor(x), y = y)) +
@@ -527,13 +530,13 @@ rm(.df, .plot)
 To show some additional options, like coloring of each box plot and a different kind of plot, we will now plot the T2 variable (you can use ADC, but that color is being displayed is hard to see here because of the size of the boxes, and the violin plots are hard to see).
 
 
-I selected the options shown in Figure \@ref(fig:km1-settings) following:
-```{r km1-settings, fig.cap =  "KMggplot2: options for the violin plot example.", fig.align= "center", out.width="80%", echo=FALSE}
+I selected the options shown in Figure \@ref(fig:km1-settings):
+```{r km1-settings, fig.show = 'hold', fig.cap =  "KMggplot2: options for the violin plot example.", fig.align= "center", out.width="80%", echo=FALSE}
 knitr::include_graphics("bp-ggp-1b.png")
 ```
 
 And that produced Figure \@ref(fig:km-vp1)
-```{r km-vp1, fig.cap =  "KMggplot2: violin plot example.", fig.align= "center", out.width="100%", echo=TRUE}
+```{r km-vp1, fig.show = 'hold', fig.cap =  "KMggplot2: violin plot example.", fig.align= "center", out.width="100%", echo=TRUE}
 .df <- data.frame(x = Brain_MR$Time, y = Brain_MR$T2,
                   z = Brain_MR$Time, s = Brain_MR$Area,
                   t = Brain_MR$Group)
@@ -558,11 +561,11 @@ rm(.df, .plot)
 
 \clearpage
 
-We have done three things: color the boxes, overimpose the points themselves, and use violin plots. Here, violin plots are a little bit of an overkill, because there are not those many data points. But violin plots can sometimes be good alternatives to boxplots as they show the distribution of the data, a density plot (somewhat similar to a histogram); the marker (the circled cross) indicates the median.
+We have done three things: color the boxes (by using the "Stratum" option), overimpose the jittered points themselves ("Add data point"), and use violin plots ("Plot type"). Here, violin plots are a little bit of an overkill, because there are not those many data points. But violin plots can sometimes be good alternatives to boxplots as they show the distribution of the data using a density plot (somewhat similar to a histogram); the marker (the circled cross) indicates the median.
 
-Some other violin plots show also the 1st and 3rd IQRs, something that is easy to do by plotting both the violin and a boxplot in the same place;  this we need to do via the command line in R. In Figure \@ref(fig:km-vp-bp) all we do is add the line that says \texttt{geom\_boxplot(width = 0.3)} to the previous code in the R Commander console and execute it (OK, I also decrease the size of the points, so they do not interfere with us seeing the boxplots, and remove the circled cross, as the median is also given by the box plot):
+Some other violin plots show also the 1st and 3rd IQRs, something that is easy to do by plotting both the violin and a boxplot in the same place;  this we need to do via the command line in R (as KMggplot2 does not include this option). In Figure \@ref(fig:km-vp-bp) all we do is add the line that says \texttt{geom\_boxplot(width = 0.3)} to the previous code in the R Commander console and execute it (OK, I also decrease the size of the points, so they do not interfere with us seeing the boxplots, and remove the circled cross, as the median is also given by the box plot):
 
-```{r km-vp-bp, fig.cap =  "KMggplot2: violin + boxplot example.", fig.align= "center", out.width="22cm", echo=TRUE}
+```{r km-vp-bp, fig.show = 'hold', fig.cap =  "KMggplot2: violin + boxplot example.", fig.align= "center", out.width="22cm", echo=TRUE}
 .df <- data.frame(x = Brain_MR$Time, y = Brain_MR$T2,
                   z = Brain_MR$Time, s = Brain_MR$Area,
                   t = Brain_MR$Group)
@@ -586,7 +589,7 @@ rm(.df, .plot)
 \clearpage
 
 ## Complex layouts
-We have used two different systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting. Using two different systems with different syntaxes is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations we saw above.
+We have used different plotting systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting. Using different systems with different syntax is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations as we saw in sections \@ref(table-sum-stats) and \@ref(table-sum-stats-2).
 
 
 ## Unstacking factors
@@ -613,6 +616,7 @@ knitr::kable(DatasetWide,
 The data can be organized in several ways. Our file "Brain_MR" was presented in the stacked or "long format", in which the "dependent variables" ADC and T2 are in a single column (each), and the conditions (Group, Time...), or independent variables, were indicated on separate columns. This format was very well fitted for statistical analysis. The table above is another type of representation "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go tho **Data–>Active dataset–>Reorganize from long to short"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
 
 
+\clearpage
 
 # Summary
 
