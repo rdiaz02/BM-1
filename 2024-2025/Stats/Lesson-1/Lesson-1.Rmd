@@ -592,7 +592,7 @@ rm(.df, .plot)
 We have used different plotting systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting. Using different systems with different syntax is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations as we saw in sections \@ref(table-sum-stats) and \@ref(table-sum-stats-2).
 
 
-## Unstacking factors
+## Unstacking: long and wide formats
 Have a look at the table below (yes, some columns on the right have been cut):
 
 ```{r, echo = FALSE}
