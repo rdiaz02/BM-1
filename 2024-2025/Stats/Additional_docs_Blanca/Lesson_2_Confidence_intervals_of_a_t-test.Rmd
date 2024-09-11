@@ -1,0 +1,163 @@
+---
+title: "Corrections notes/class, additional info on normalitiy assumptions, degrees of freedom and confident intervals of a t-test"
+author: "Blanca Lizarbe, blanca.lizarbe@uam.es"
+date: "19-09-2023"
+output:
+     bookdown::pdf_document2: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(car)
+library(RcmdrMisc)
+library(ggplot2)
+library(knitr)
+```
+
+# Corrections
+
+## SE of a mean
+
+In the initial notes of **Lesson 1** the standard error of the mean (SE) formula was incorrect. It is now corrected, as: $SE = s/\sqrt{N}$ where s is the standard deviation.
+
+## Whiskers on a boxplot
+
+There are **alternative ways to represent the whiskers in a boxplot**. In our notes on Lesson 1, we said that the whiskers extended from a minimum of (Q1 - 1.5IQR) to a maximum of (Q3 + 1.5IQR). But then, in the boxplots of p53 this was not the case (they did not look symmetric, right?). In fact, int the *boxplot* function of R, whiskers are defined ("coded") differently. Specifically by: $upper whisker = min(max(x), Q_3 + 1.5 * IQR)$, $lower whisker = max(min(x), Q_1 – 1.5 * IQR)$. This means that, for an upper whisker, R selects the lower value between either Q3 + 1.5IQR or the maximum. For the lower whisker, R automatically selects the greatest value between Q1-1.5IQR or the minimum x. That is why the upper or lower values in an R boxplot can appear with different length. 
+
+# Normality assumptions and normality tests 
+
+In order to perform t-tests, we neet to take into account the normality of the data. It is an important assumption in which a wide variety of statistical procedures depend. We should always be sure of such assumptions and check that they are correct. However, normality tests are not the way to do this. Why?
+
+1. In large samples (n > 30), the Central Limit Theorem usually applies, and we need not worry about the normality of our data. 
+
+2. In cases where the previous does not apply, let’s consider how we can check for normality. We can build a small sample (N = 10):
+
+```{r out.width="50%",fig.align='center', echo = TRUE}
+small.samp <- c(7.2,1.3,6,2.2,8.5,9.1,2,8.2,1.1,6.7)
+hist(small.samp)
+```
+With this histogram, this does not appear like a normal distribution to us. However, if we perform a **Shapiro test**
+```{r, echo = TRUE}
+shapiro.test(small.samp)
+```
+We obtain a value p > 0.05, which means that we can not conclude that df deviates from normality. What is actually happening? In small samples the normality tests are underpowered to detect deviations from normality. In order to chech form normality, it is more recommended to perform **qq-plots**, such as the following:
+
+```{r out.width="50%",fig.align='center'}
+qqnorm(small.samp)
+qqline(small.samp)
+```
+```{r, echo = TRUE}
+set.seed(1)
+small.samp.normal <- rnorm(10, mean = 0, sd = 1)
+
+q.small.samp.normal <- quantile(small.samp.normal,
+                                c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1))
+q.small.samp <- quantile(small.samp,
+                                c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1))
+
+plot(q.small.samp.normal,q.small.samp)
+```
+
++ Normal Q-Q plots allow a qualitative interpretation of the normality (or not) of a data set: The idea is to represent the quantiles of the specific data sample in the Y axis (df in our case) Vs the cuantiles of a Normal Standard distribution on the X axis. If the data has a normal distribution, the resulting plot will be a 45 degree line. If the two distributions being compared are identical, the Q-Q plot follows the 45° line y = x  
+
++ If the general trend of the Q-Q plot is flatter than the line y = x, the distribution plotted on the horizontal axis is more dispersed than the distribution plotted on the vertical axis.  
+
++ Conversely, if the general trend of the Q-Q plot is steeper than the line y = x, the distribution plotted on the vertical axis is more dispersed than the distribution plotted on the horizontal axis. Q-Q plots are often arced, or "S" shaped, indicating that one of the distributions is more skewed than the other, or that one of the distributions has heavier tails than the other.  
+
+3. We can now test a large sample (n = 500) which we know is normally distributed. We can observe the histogram, the qqplot and perform a shapiro test. 
+
+```{r, echo = TRUE, fig.height = 3, fig.width= 6, fig.align='center'}
+par(mfrow = c(1,2))
+set.seed(1)
+x <- rnorm(5000, mean = 0.62, sd = 0.1)
+y <- runif(5000, min = 0.4, max = 0.69)
+z <- x + y 
+# Create the histogram with 50 bars
+hist(z, breaks = 50)
+qqnorm(z, cex = 0.25)
+qqline(z)
+shapiro.test(z)
+```
+As it happens with statistical tests, the power of the normality tests directly depends on the sample size, so **with a huge sample like this (N = 5000), a slight deviation from normality will make the p-value  small.**
+
+Remember: the p-value is not a measure of how important an effect is, just of whether random noise could cause it; so with a big enough sample size any irrelevantly small effect will bring the p-value to basically 0.
+
+# Confident intervals of a t-test
+
+## Equations of the CI
+
+Using the Rcmdr Pluguin, we saw how a 95% CI of a mean was constructed. We defined the CI as those boundaries that, when evaluating the mean age on samples sizes of 25 men, on 100 different villages, 95% of the times the resulting sample mean included the true mean (within the boundaries). We did not specified how they could be calculated. We will do it now. For small samples sizes, those CI are calculated as: 
+\[
+\makebox[\linewidth]{$CI_H=\overline{X}-t_{n-1}SE$}
+\]
+\[
+\makebox[\linewidth]{$CI_L=\overline{X}+t_{n-1}SE$}
+\]
+If we calculate the total length of the CI:
+\[
+\makebox[\linewidth]{$CI=\overline{X}\pm t_{n-1}SE$}
+\]
+The n-1 in the equations is the degrees of freedom (df) and tells us which of the t-distributions to use. For a 95% confidence interval, we find the value of t for a two-tailed test with probability of .05, for the appropriate degrees of freedom.
+
+## Interpretation of a CI of a t-test
+
+We can continuue with the previous example, of measuring at which age men with heart diseases on the CM started to have heart problems. But we now want to establish if this age, measured in Madrid, is significantly different than the corresponding age of men living in Galicia. To start with, we could take 1 sample of N individuals in Madrid and 1 sample N individuals in Galicia. Which is the expected difference of the means? We will first start with an example in which we establish a true mean of both 75, in each autonomous community. 
+
+We can take the previous CI equations, and instead of the confident interval of a mean,  calculate the confident interval of the difference of the means, by substituting:
+\[
+\makebox[\linewidth]{$CI=(\overline{X_1}-\overline{X_2})\pm t_{n-1, \alpha }SE(\overline{X_1}-\overline{X_2})$}
+\]
+Where now $\overline{X_1}$ and $\overline{X_2}$ represent the mean value of samples 1 and 2, respectively, and SE their corresponding errors. 
+
+Under the null hypothesis (equal means), the subtraction: $\overline{X_1} - \overline{X_2}$ should be zero. 
+ 
+We could do this several times, hundreds of times (take hundreds of samples of N individuals). For each case, we could perform a t.test and obtain a $t$ value. If we did that, under the null hypothesis, we would obtain a distribution of t-values that looked like:
+# Example
+```{r, echo = TRUE}
+# Generate a vector of 100 values between -6 and 6
+x <- seq(-6, 6, length = 100)
+
+# Degrees of freedom
+df = 17
+colour = "green"
+plot(x,dt(x, 17), type = "l", col = colour, lwd = 2, xlab = "t values", 
+     main = "Distribution of t values for df = 17")
+
+# Add vertical line
+
+abline(v=0, col="red")
+abline(v=qt(0.025,17), col ="red")
+abline(v=qt(0.975,17), col ="red")
+arrows(x0 = 0,y0 = 0.1,
+       x1=qt(0.025,17),y1=0.1,
+       code = 2)
+arrows(x0=0,y0=0.1,
+       x1=qt(0.975,17),y1=0.1)
+
+```
+The distribution is centered around zero, as expected, because we knew that the true difference is zero. The arrows are showing the corresponding **CI** of the differences of the means, calculated using the definition of the equation above: they are constructed in a way that they cover **the 95% of the area under the curve**. Similarly to the CI of the means, this expresses the boundaries in which the sample means contain 95% of the times the true mean. Thus, any value falling outside this range is quite unlikely to be obtained, under the null. If, on the contrary, we do survey a new specific sample that has a t-value above such limits, we can reject the null hypothesis that the corresponding samples have equal ages of heart problems origins.   
+
+**On a t-test, the CI provided in reflects, again, the boundaries in which we assume the true mean is contained. Thus, in order to reject the null, the CI need to NOT CONTAIN the 0**
+
+# Degrees of freedom
+
+The degrees of freedom (df) are defined as the number of independent values or quantities which can be assigned to a statistical distribution. 
+
++ Degrees of freedom refers to the **number of observations that are free to vary** 
++ are essential for assessing the importance and the validity of the null hypothesis
++ Computation of these values usually depends upon the number of data records available in the sample set.
+**Example**:  
+
++ If we take a sample of **4 observations** from a population (8, 9, 11, 12), then these four scores are free to vary in any way (they can be any value, there no *a priori* restrictions).  
+
++ If we then use this sample of four observations to calculate the **standard deviation of the population**, we have to use **the mean of the sample as an estimate of the population’s mean**. Thus we hold **one parameter constant**.  
+
++ With this parameter fixed (mean = 10), can all four scores from our sample vary? The answer is "NO", because **to keep the mean constant** only three values are free to vary.  
+
++ **If we hold one parameter constant then the degrees of freedom must be one less than the sample size**. This fact explains why when we use a sample to estimate the standard deviation of a population, we have to divide the sums of squares by N-1 rather than N alone.  
+
+> The fact that the degrees of freedom of a sample are "n-1" is the reason why the variance of a pupulation ($s^2$) is calculated as $s^2=\frac{\sum_{i=1}^{n}(x_{i}-\overline{x})}{n-1}$ (with n-1 in the denominator). On the contrary, **to calculate the SE of the mean, we divide only by n**. 
+This is based on the following: from central limit theorem, we know that our sample distribution is normal with $mean=\mu _e$, where $\mu _e$ is **the estimated population mean** and it is a random variable that depends upon the choice of our random samples. In other words, any change in our sample distribution changes our $\mu _e$. The Standard error of the mean simply quantifies this change by computing the standard deviation of our estimate, $\mu _e$, of the underlying population mean $\mu$. Formally, it can be computed as follows:
+
+$\sigma _{SEM}^2 = variance(\mu _e)=variance(\frac{\sum_{i=1}^{n}x_{i}}{n})=\frac{1}{n^2}variance(\sum_{i=1}^{n}x_{i})=\frac{1}{n^2}\sum_{i=1}^{n}variance(x_i)=\frac{ns^2}{n^2}=\frac{s^2}{n}$

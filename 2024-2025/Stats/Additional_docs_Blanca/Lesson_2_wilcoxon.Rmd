@@ -1,0 +1,86 @@
+---
+title: "Wilcoxon test: an example"
+author: "Blanca Lizarbe"
+date: "2023-09-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+# Wilcoxon tests
+
+Let's use it on an example from the book "Discover statistic using R" by Z. Field, A. Field and J. Miles.
+
+```{r, echo = TRUE}
+df <- data.frame(participant = c(seq(1,10,1), seq(11,20,1)), 
+                 Drug = c(rep("Ecstasy",10),rep("Alcohol",10)), 
+                 BDI = c(28,35,35,24,39,32,27,29,36,35,5,6,30,8,9,7,6,17,3,10))
+```
+We will first explore our data
+```{r, echo = TRUE, fig.height = 3, fig.width = 4, fig.align='center'}
+ggplot(df, aes(BDI)) +
+  geom_histogram(aes(y = after_stat(count)), colour = "grey" , binwidth = 2) + 
+  facet_grid(~Drug)
+
+```
+
+Then, proceed as follows:  
+
+1. We arrange the data frame by "BDI" scores, in ascending order:
+```{r, echo = TRUE}
+require(knitr)
+df_s <- df[order(df$BDI),]
+rownames(df_s) <- NULL
+kable(df_s[,])
+```
+2. Assign the corresponding ranks. Note: if two (or more) scores are equal (which are called "ties"), calculate a "mean rank value" and assign it to all equal-scores values.
+```{r, echo = TRUE}
+df_s$rank=c(seq(1,20,1))
+df_s$rank[3] = 3.5
+df_s$rank[4] = 3.5
+df_s$rank[16] = df_s$rank[17] = df_s$rank[18] = 17
+kable(df_s)
+```
+3. Sum the rank values for each group
+```{r}
+rank_sums <- aggregate(df_s$rank, list(df_s$Drug), sum)
+kable(rank_sums)
+```
+We can observe that group Ecstasy shows a **much higher ranksum**  than the group Alcohol, indicating that the sample from the ecstasy group has much higher BDI values. We need to find a "statistic" that provides a standardized comparison between ranksums. To that extent, we need to take into account the number of subjects of the sample (otherwise, the larger the group is, the higher the ranksums are). We calculate a "mean rank" for each group, which consists in summing up all the ranks for each group, with $Rankmean = n*(n+1)/2$.
+
+```{r}
+rank_mean <- 10*11/2
+```
+
+We define the statistic "W" as:
+
+$W = rank_{sum}-rank_{mean}$  
+
+Thus, for each group:
+
+$W_1=59-55 = 4$
+$W_2=151-55 = 96$
+
+Typically, we take the smallest of these values to be our test statistic, therefore **the test statistic for the Wednesday data is W = 4**. However, which of the two values of W is reported by R, depends on which way around you input variables into the function.
+
+Once we know how to calculate a statistic, we need to know how to proceed to find a p-value. R has a function to calculate the W statistic and the associated p-value:
+
+```{r, echo = TRUE}
+wilcox.test(df_s$BDI ~ df_s$Drug, alternative = c("two.sided"), exact = NULL)
+```
+Thus, for the BDI score, the p-value is 0.000569. We could say that the type of drug did  significantly affected BDI depression levels the day after.
+
+## Calculation of the p-values from the W statistic.
+
+The following explanation is **ONLY ADDITIONAL: we will not cover it at class**. Yo can jump to the function "Wilcoxon test". There are two ways of calcualting the p-value of a W statistic:
+
++ The **exact approach** uses a Monte Carlo method to obtain the significance level. This basically involves creating lots of data sets that match the sample, but instead of putting people into the correct groups, it puts them into a random group. Because the people were assigned to a group randomly, we know that the null hypothesis is true – so it calculates the value for W, based on these data in which the null hypothesis is true. It does this thousands of times, and looks at how often the difference that appears in the data when the null hypothesis is true is as large as the difference in your data. This method is great, because we don’t need to make any assumptions about the distribution, but as the sample size increases, the length of time it takes increases more and more. In addition, if you have ties in the data, you cannot use the exact method.
+
++ With **large sample sizes**, a normal approximation is used to calculate the p-value. The normal approximation doesn’t assume that the data are normal. Instead, it assumes that **the sampling distribution of the W statistic is normal** N(mu, sigma2), with $mu = n1(n1 + n2 +1)/2$ and  $sigma2 = n1n2(n1 + n2 +1)/12$ . This means that a **z transformation** can be applied,**a standard error can be computed** and hence a **p-value**.
+
+> The default in R is to use a normal approximation if the sample size is larger than 40; and if you have ties, you have to use a normal approximation whether you like it or not. If you use a normal approximation to calculate the p-value, you also have the option to use a continuity correction.The reason for the continuity correction is that we’re using a normal distribution, which is smooth, but a person can change in rank only by 1 (or 0.5, if there are ties), which is not smooth. Therefore, the p-value using the normal approximation is a little too small; the continuity correction attempts to rectify this problem but can make your p-value a little too high instead. The difference that the correction makes is pretty small – there is no consensus on the best thing to do. If you don’t specify, R will include the correction.
+
+

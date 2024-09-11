@@ -1,0 +1,63 @@
+---
+title: "Chapter 9: Basic analysis of categorical data"
+author: "Blanca Lizarbe"
+date: "15/10/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 1 Basic analysis of categorical data and contingency tables.
+
+
+Imagine we have a certain contingency table, where we summarize the data collected from a sample of population that either expresses factor Z (or not), and either developed cancer (or not). We want to assess the relationship between expressing the Factor Z and developing cancer.
+
+|                       |Cancer|Non-Cancer|
+|:---------------------:|:----:|:--------:|
+|expressing factor Z    | 356  |  122     |
+|Not expressing factor Z| 122  |  356     |
+
+In order to test that, we would calculate a $\chi ^2$ test, with 
+\[
+\makebox[\linewidth]{$\chi ^2=\sum_{i=1}^{n}\frac{(observed_{i}-expected_i)^2}{expected_i}$}
+\]
+
+Where the "expected" cell values would result from calculating the expected frequency table, (the table that we fill with the frequencies calculated as if there was no influence between variables, not shown here).
+
+Imagine now we take another sample of population to assess the same relationship. We obtain the following:
+
+|                       |Cancer|Non-Cancer|
+|:---------------------:|:----:|:--------:|
+|expressing factor Z    | 300  |  80      |
+|Not expressing factor Z| 95   |  310     |
+
+If we wanted to test statistically the relationship between factor z and cancer, we would proceed to calculate the table of expected frequencies, again, and the corresponding $\chi ^2$ test.
+
+We could go on and evaluate $n$ number of samples. How would the $\chi ^2$ test change? We could fill in a table, or plot a graph, to see how many times we obtained a specific $\chi ^2$ value in all the samples of population we took. How would a graphical representation between the number of times a $\chi ^2$ was obtained (y axis) Vs the $\chi ^2$ value, look?
+
+Luckily for us, the distribution of the $\chi ^2$ values ($\chi ^2$ ~ squared difference of random normal numbers)  has already been studied, under the null hypothesis (expected frequency values and observed values do not differ). That is: the **probability** of obtaining a specific $\chi ^2$ value from random normal samples follows approximately a $\chi ^2$ distribution. At the same time, this distribution depends on the number of variables that you are working with. In the previous example, our 2 variables imply that we have 1 degree of freedom. The $\chi ^2$ distribution for df=1 looks like: 
+
+```{r, echo=FALSE, fig.align='center',fig.height=4, fig.width=6}
+par(mfrow=c(1,2))
+s=seq(0,10,0.005)
+plot(s,dchisq(s,1),xlab='Chi-sqare', ylab='probability density function', 
+     main = 'Chi-Square Distr. (df = 1)')
+plot(s,pchisq(s,1),xlab='Chi-sqare',ylab='accumulated probability',
+main = 'Chi-Square Distr. (df = 1)')
+#dchisq(1,1)
+#pchisq(1,1)
+#qchisq(0.95,1)
+```
+
+Which means that the probability of obtaining a $\chi ^2$ value of, for example, 1, is 0.2419 (you can check in the left graph that for X=1, y=0.249). On the other hand, the probability of obtaining **at least** a $\chi ^2$ value of 1, could be calculated as either the integral between x=0 and X=1 of the curve on the left graph (integral=area under the curve from 0 to the point that we are testing) or can be seen on the right graph (for X=1, y=0.6826). Note: a 0.6826 probability of obtaining $\chi ^2 \le 1$ under the null, is equivalent to a probability of (1-0.6826) of obtaining $\chi ^2\ge 1$ under the null.
+
+This can make us think that there is a certain x (a$\chi ^2$, I say x because is the x axis of the graph) from which the probability of obtaining it is 95% (finding the x which its y is 0.95). This can be calculated and is x=3.841. These type of values are known, and provided in the "famous"  $\chi ^2$ tables. You can check below that for df=1, the $\chi ^2=3.8141$ is related with the p=0.05 (again, 95% on the left is equivalent to 5% on the right). 
+
+```{r out.width="80%", fig.capt="Figure 2", fig.align= "center", echo=FALSE}
+knitr::include_graphics("C:/Users/Adminlab/Dropbox/Mi PC (scerdanpt03)/Documents/UAM/BM-2/Exam/Chi-square-table.png")
+```
+
+Now, remember that we are doing all this process (equation, graphs, probabilities...) under the NULL hypothesis, which states that the expected and observed values do not differ. Thus, when we obtain a specific $\chi ^2$ value from a $\chi ^2$ test, and we look at the tables and look where does our $\chi ^2$ falls between, what we are saying is "the probability of obtaining a $\chi ^2$ value as big as we obtained (bigger than) is between 0.01 and 0.05 (for example), if the null hypothesis was true (factor Z is not related to cancer). Thus, with small p-values we reject null hypothesis (we would say then that factor Z affects cancer).
+
+For further degrees of freedom (more variables) the idea is the same, but the $\chi ^2$ distributions are different.
