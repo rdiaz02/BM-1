@@ -177,7 +177,7 @@ doing anything).
 
 
     2.6. Linux: some Linux distros ship pre-compiled versions of Rcmdr. So
-    you might install Rmcdr this way. But beware that some Linux distros
+    you might install Rcmdr this way. But beware that some Linux distros
     ship versions of Rcmdr that can be very outdated.
 
 
@@ -198,6 +198,7 @@ doing anything).
 
     install.packages(c("RcmdrPlugin.TeachingDemos",
    "RcmdrPlugin.survival", "RcmdrPlugin.sos" , "RcmdrPlugin.HH",
+   "RcmdrPlugin.KMggplot2",
    "tkrplot", "doBy", "vcd", "ISwR"))
 
 
