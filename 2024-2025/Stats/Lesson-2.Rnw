@@ -523,6 +523,7 @@ understand this!!!
 
 In class we will very briefly cover how the confidence interval is constructed. In this case, it involves kind of turning around the logic of the p-value.
 
+%% FIXME: redirect to document Conf. intevalñs with R Cmdr de Blanca.
 
 \subsection{Assumptions of the t-test}
 
@@ -567,7 +568,7 @@ limit theorem'').
 
 Of course, although this should be obvious: when we talk about symmetry,
 normality, etc, we are talking about the data distribution of \textbf{each
-  group separately}.
+  group separately}. Please, read this carefully: \textbf{each group separately}. For example, \textbf{it makes no sense to check if the distribution of the complete set of data, of the two groups together, is normally distributed}.  This should be obvious: if it is not, draw two normal distributions (with different means) by hand, with different means and think about what happens if you put together samples from each one of them and look at the distribution. At any rate, testing for normality is not sensible most of the time ---we return to this below. When we deal with linear models we will examine distribution assumptions, but looking at the residuals.
 
 Finally, \textbf{outliers} can be a serious concern (by the way, outliers,
 or potential outliers ---under some definition of outlier--- get flagged
