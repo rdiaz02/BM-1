@@ -1,0 +1,1117 @@
+%% RDU
+%% Material from Luis del Peso Ovalle
+%% Original file was .lyx. Exported as Rnw.
+%% Trying to make it self-contained
+
+%% - .png figures: not having original pngs, I screen capture from the PDF
+%%                 and remove original path
+%% - csv files: remove path, leave them in this same directory
+
+\documentclass[twoside,english]{extarticle}
+\usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\ttdefault}{cmtt}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+% \usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=2cm,rmargin=2cm,headheight=1.5cm,headsep=0.5cm,footskip=0.5cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{babel}
+\usepackage{array}
+\usepackage{verbatim}
+\usepackage{cprotect}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage[authoryear]{natbib}
+\usepackage[pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Special footnote code from the package 'stblftnt.sty'
+%% Author: Robin Fairbairns -- Last revised Dec 13 1996
+\let\SF@@footnote\footnote
+\def\footnote{\ifx\protect\@typeset@protect
+    \expandafter\SF@@footnote
+  \else
+    \expandafter\SF@gobble@opt
+  \fi
+}
+\expandafter\def\csname SF@gobble@opt \endcsname{\@ifnextchar[%]
+  \SF@gobble@twobracket
+  \@gobble
+}
+\edef\SF@gobble@opt{\noexpand\protect
+  \expandafter\noexpand\csname SF@gobble@opt \endcsname}
+\def\SF@gobble@twobracket[#1]#2{}
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\newcommand{\lyxaddress}[1]{
+	\par {\raggedright #1
+	\vspace{1.4em}
+	\noindent\par}
+}
+\newlist{casenv}{enumerate}{4}
+\setlist[casenv]{leftmargin=*,align=left,widest={iiii}}
+\setlist[casenv,1]{label={{\itshape\ \casename} \arabic*.},ref=\arabic*}
+\setlist[casenv,2]{label={{\itshape\ \casename} \roman*.},ref=\roman*}
+\setlist[casenv,3]{label={{\itshape\ \casename\ \alph*.}},ref=\alph*}
+\setlist[casenv,4]{label={{\itshape\ \casename} \arabic*.},ref=\arabic*}
+\theoremstyle{plain}
+\newtheorem{thm}{\protect\theoremname}
+\theoremstyle{definition}
+\newtheorem{xca}[thm]{\protect\exercisename}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{float}
+\usepackage[utf8]{inputenc}
+
+\makeatother
+
+\providecommand{\casename}{Case}
+\providecommand{\exercisename}{Exercise}
+\providecommand{\theoremname}{Theorem}
+
+\begin{document}
+\title{BM1, Applied Statistics, Lesson 4: Basic analysis of categorical data
+and contingency tables}
+\author{Luis del Peso Ovalle}
+\maketitle
+
+\lyxaddress{Dept. Biochemistry, Universidad Autonoma de Madrid}
+
+\lyxaddress{Instituto de Investigaciones Biomedicas \textquotedblleft Alberto
+Sols\textquotedblright{} (UAM-CSIC)}
+
+\lyxaddress{Madrid, Spain}
+\date{02/18/2020}
+
+\tableofcontents{}
+
+\newpage{}
+
+\section{Basic analysis of categorical data and contingency tables.}
+
+\paragraph{In this chapter we will learn about:}
+\begin{itemize}
+\item differentiate goodness of fit and analysis of independence
+\item contingency tables
+\item statistical test for categorical variables (Chi square test and Fisher's
+exact test)
+\item graphical visualization of categorical data
+\end{itemize}
+
+\paragraph{We will also learn how to generate contingency tables and perform
+relevant test in R commander.}
+\begin{quote}
+Disclaimer: This document is not, nor does the author pretend it to
+be, a substitute for the reference books cited in the syllabus. It
+is intended as a mere guide for the course contents. Moreover, it
+may (and surely does) contain errors.
+\end{quote}
+
+\section{Study Cases}
+
+\paragraph{Study the following two cases. In which way are they different to
+the other cases we have analyzed so far?}
+\begin{casenv}
+\item To explore the physiological functions of endothelin-2 (EDN2), a research
+group generated gene-targeted mouse models. The offspring of the matting
+between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{}
+, and 42 Et2 \textendash /\textendash{} mice\footnote{data from J Clin Invest. 2013;123(6):2643\textendash 2653.}.
+Does the inactivation of this gene affect viability? In other words,
+are these offspring numbers significantly different from the expected
+Mendelian ratio 1:2:1?
+\item Gene expression profiling experiments demonstrate that exposure of
+cells to hypoxia results in changes in the expression of several hundred
+genes (table \ref{tab:Frequency-of-HRE}). The Hypoxia Inducible Factor
+(HIF) is a transcription factor that binds the motif RCGTG (Hypoxia
+Response Element, HRE) and plays a key role in the transcriptional
+effects of hypoxia. Table \ref{tab:Frequency-of-HRE}, shows the number
+of hypoxia-responsive genes that have HRE motifs in their promoter
+regions. Does HIF/HRE show any preference for up- or downregulation?
+\begin{table}[h]
+\caption{\protect\label{tab:Frequency-of-HRE}Frequency of HRE in the promoters
+of hypoxia-responsive genes}
+
+\centering{}%
+\begin{tabular}{|c|c|c|}
+\hline
+ & HRE+ & HRE-\tabularnewline
+\hline
+\hline
+Upregulated & 145 & 113\tabularnewline
+\hline
+Non regulated & 3766 & 7459\tabularnewline
+\hline
+Downregulated & 69 & 121\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+\end{casenv}
+
+\section{Files we will use}
+\begin{itemize}
+\item mice\_genotypes.csv
+\item Hyp\_effect.csv
+\item RefSeq\_All\_Chr.csv
+\end{itemize}
+
+\section{Categorical data}
+
+\paragraph{The two cases described above have in common that they refer to categorical
+attributes (variables) in a nominal scale. That is, they both deal
+with categorical\protect\footnote{recall that a categorical variable, also referred as nominal, is one
+that simply allows you to assign observations to each of the levels
+(categories) of the variable} data. In the first case, we are recording the genotypes of the offspring
+and thus we can only assign each individual to one of the categories
+(+/+, +/- and -/-). Unlike other type of variables we can not calculate
+mean, median or rank of the genotype. In fact, the only thing we can
+do is count the frequencies of cases (mice in this case) in each of
+the categories of the variable. In other words, we tally up categorical
+variables to generate the frequency of cases in each of the possible
+levels of the variable. In case \#1 above, we would register the number
+of +/+, +/- and -/- mice. Thus, in these cases we would model the
+data on the frequency of cases in each possible level\protect\footnote{For this reason, oftentimes the analysis of categorical data is referred
+to as frequency analysis}. Likewise, in the second case, we are measuring two nominal variables
+from a set of genes: effect of hypoxia on their transcripcion (levels:
+upregulation, no effect, downregulation) and the presence of HRE in
+their promoters (levels: present/+ or absent/-). Table \ref{tab:Frequency-of-HRE},
+reports the frequency of genes in each of the possible categories.
+In summary, categorical data represent the distribution of samples
+into several mutually exclusive categories (also called levels) and
+this usually involves counting how many cases (mice in the first case,
+genes in the second) are in each qualitative category/level.}
+
+\section{Comparing observed and expected frequencies}
+
+\paragraph{Let's focus on the first case which is a typical (and quite boring...)
+example analysis of categorical data. The question was: does the inactivation
+of this gene affect viability? well, if the gene has no effect on
+embryonic viability, we would expect the typical Mendelian ratio of
+genotypes. So, the question can be rephrased as: are the observed
+genotype frequencies significantly different from the expected Mendelian
+ratio 1:2:1 (0.25:0.5:0.25)? The observed ratios are (40/154):(72/154):(42/152)
+or 0.26:0.47:0.27, which are quite similar to the expected ratios
+but certainly not the same. However, we should not be surprised as
+we would expect some variation due to chance. The question is, how
+far from the expected frequencies are we willing to accept before
+we suspect some effect of the gene knockout on viability? To answer
+this question we could compare observed and expected frequencies and,
+when the difference exceeds a threshold, conclude that the observed
+frequencies depart from expected. This is exactly what the Pearson's\protect\footnote{there are other chi-squared test for categorical data, but this is
+the more popular by far.}\protect\footnote{do not mistake it for the Pearson correlation coefficient, which indicates
+the extend to which two numerical variables are linearly related.} chi-squared test, also known as the chi-squared goodness-of-fit test,
+does. }
+
+\subsection{Chi-squared statistic}
+
+\paragraph{So, as usual, we start with the hypothesis that there is no effect
+of gene deletion on viability and thus the frequencies of genotypes
+are Mendelian so that any departure from the expected is due to chance
+(this is our null hypothesis). Next we want to test whether the data
+supports this hypothesis or disproves it in favor of the alternate
+hypothesis (i. e. there is effect on viability). To this end, we have
+to calculate the difference between the observed and expected values
+to get a measure (an statistic) of how far our data departs from the
+expected. This statistic is the chi-square($\chi^{2}$), that is calculated
+according to the formula: $\chi^{2}=\sum_{category}\frac{\left(observed_{i}-expected_{i}\right)^{2}}{expected_{i}}$.
+Note that, the closer the observed and expected frequencies, the smaller
+the value of the chi-square statistic. Thus, increasing values of
+this statistic would support the alternative hypothesis (the observed
+ratios do not fit the expected values)\protect\footnote{Residuals are the difference between the observed and expected values.
+The magnitude of each residual indicates how much each of the observed
+frequencies differs from what is expected. The residuals are typically
+standardized (by dividing by the square of the expected frequencies)
+to enable individual residuals to be compared relative to one another.
+Large values of residuals indicate large deviations from what is expected
+and thus also indicate large contribution to the overall association.
+On addition, the sign (+ or \textminus ) of the residual indicates
+whether the frequencies were higher or lower than expected. Pearson's
+residuals are calculated as $\frac{observed-expected}{\sqrt{expected}}$}. }
+
+\begin{comment}
+Explain how residuals indicate the direction of change.
+\end{comment}
+
+
+\subsection{Pearson's Chi-square test}
+
+\paragraph{Once we have an statistic that reflects the agreement between the
+two distributions, we just need to set a threshold of how large this
+value can be before we reject the null hypothesis. Fortunately, the
+distribution of chi-square($\chi^{2}$) values under the null hypothesis
+is known (see figure \ref{fig:Chi-squared-probability-distribu})
+and, from this distribution, we can calculate how likely a chi-square($\chi^{2}$)
+value like the one we got is compatible with the null hypothesis (how
+likely is a chi-squared with that value is observed under the null
+hypothesis).}
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Chi-squared-probability-distribu}Chi-squared probability
+distribution}
+
+<<chi_square_prob_distr,echo=F,fig.width=4, fig.height=4, fig.show='hold'>>=
+x<-seq(from=0,to=50,by=0.1)
+color=c("black","red","blue","green","magenta")
+DF=c(1,2,3,5,10)
+plot(x,dchisq(x,df=DF[1]),col=color[1],type="l",lwd=2,frame.plot=F,xlab="chi-square value",xlim=c(0,25),ylim=c(0,0.5),ylab="Probability")
+for (idx in 2:5) {
+  points(x,dchisq(x,df=DF[idx]),col=color[idx],type="l",lwd=2)
+}
+legend("topright",legend=paste(DF,"df"),fill=color)
+@
+\end{figure}
+
+\begin{comment}
+Although the chi-square distribution could be calculated empirically
+by a manual or computer simulation (e.g. fill a bag with balls labelled
+``+/+'', ``+/-'' or ``-/-'' so that their proportions are 1:2:1.
+Then, take a random sample and compute the $\chi^{2}$ value. Repeat
+many times and plot the $\chi^{2}$ values obtained in each iteration),
+the distributions of statistics such as the chi-square distribution
+are derived analytically, that is the formula (function) that it follows
+is derived from first principles.
+\end{comment}
+
+
+\cprotect\paragraph{Note however that shape of the chi-square($\chi^{2}$) distribution
+depends on the degrees of freedom\protect\footnote{Recall that degrees of freedom is a measure of how many values are
+free to vary when determining independent estimates of parameters.
+When calculating frequencies in categorical data, the degrees of freedom
+correspond to the total number of categories minus one. For example
+in case 1, once we know the frequencies of two genotypes the value
+of the third is calculated from these two, i.e. only two categories
+out of three are \textquotedblleft free to vary\textquotedblright .
+Thus degrees of freedom= 3 categories -1 = 2.}%
+\begin{comment}
+Note that as the degrees of freedom increase the distribution of expected
+chi-square values under the null hypothesis contain increasingly large
+values. My interpretation is that, since the chi-squares statistics
+is a sum across levels and for each level we always expect some deviation
+due to chance, the larger the number of levels the higher the value
+of chi-square expected by chance.
+\end{comment}
+\begin{comment}
+From wikipedia: In statistics, the number of degrees of freedom is
+the number of values in the final calculation of a statistic that
+are free to vary. The number of independent ways by which a dynamic
+system can move without violating any constraint imposed on it, is
+called degree of freedom. In other words, the degree of freedom can
+be defined as the minimum number of independent coordinates that can
+specify the position of the system completely. Mathematically, degrees
+of freedom is the number of dimensions of the domain of a random vector,
+or essentially the number of 'free' components (how many components
+need to be known before the vector is fully determined).
+\end{comment}
+. So, to determine the probability of getting a chi-square value equal
+or higher than ours under the null hypothesis, we have to compare
+it with the appropriate chi-square($\chi^{2}$) distribution according
+to the degrees of freedom in our case. Note that the chi-square distribution
+is bounded by zero (the chi-square value cannot be negative because
+the difference is squared) and infinite and it is not symmetrical.
+Moreover, the peak of the distribution is not at zero as one would
+intuitively expect. In fact, the peak approach to zero for small df
+but departs from zero for increasingly larger df. The reason is that
+the more categories/levels there are (df=\#categories-1), the more
+likely the observed and expected frequencies will differ just by chance%
+\begin{comment}
+As the chi-square statistic is a sum of residuals across categories,
+the larger the number of categories the larger the value of chi-square.
+In each category there is a random chance to have higher/lower number
+than expected, since they are squared, in each category there is a
+random chance of having a number larger than expected. As the number
+of categories increases the sum of these deviations increases. Note
+that residuals (observed-expected) are normalized to the expected
+values not to the number of categories.
+\end{comment}
+. Thus, chi-square values far below the peak of the distribution would
+imply than the agreement between observed and expected is even better
+than what you would expected by chance. For this reason, chi-square
+tests are typically one-tailed test focusing on the right-hand tail
+(the discrepancy is too-large to be observed under the null hypothesis).
+Nevertheless, it is also possible to perform two-tail tests and focus
+on the left-hand tail. Note that, in this case, we are asking whether
+the discrepancy between observed and expected values are smaller that
+you would expect just by chance. If the one-tailed test focusing on
+the left hand of the distribution is significant the interpretation
+is that the data is \textquotedblleft too good to be true\textquotedblright{}
+pointing to dishonesty on the part of the researcher\protect\footnote{Indeed the extraordinary conformity of Gregor Mendel\textquoteright s
+pea experiments have been subjected to such skepticism. Also, it is
+suspected that he looked at many phenotypical characteristics, several
+of which did not follow a typical Mendelian pattern (e.g. genes in
+sex chromosomes, and other) so he just ignored those features and
+focus those that adhere to his law...This debate, known as the \textquotedblleft Mendel-Fisher
+controversy\textquotedbl{} have lasted for over a hundred years and
+it involves Fisher, Pearson and other statisticians and it is still
+alive as shown by the very recent article in science by Radick \citet{Radick2015}.} or some flaw in the data or experimental design.}
+
+\subsubsection{Pearson's chi-squared test in R}
+
+\paragraph{Getting back to our problem (case \#1), to determine if the offspring
+of the mating between EDN2+/- animals is significantly different from
+expected values, we just have to perform a (goodness-of-fit) chi-squared
+test. Firstly, we import data in file \textquotedblleft mice\_genotypes.csv\textquotedblright{}
+into R. As always, it is a good idea to take a look at the data and,
+to this end, you can generate a pie or bar plot (figure \ref{fig:Representing-categorical-data}).
+As we mentioned earlier (Lesson 1), these are the typical representations
+for categorical data. In fact, because it only contains categorical
+data, these are the only options available in R commander for this
+data set.}
+
+\begin{comment}
+Note that in this case the bar plot does not contain any error bar
+because it represent the absolute (or relative) numbers of cases in
+each level, there is no uncertainty about its value.
+\end{comment}
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Representing-categorical-data}Representing categorical
+data (I)}
+
+<<GrphCatDataI,fig.width=10,fig.height=4,echo=-1>>=
+mice<-data.frame(ID=paste("id",formatC(1:154,digits=0,width=4,flag=0),sep=""),Genotype=sample(c(rep("wt/wt",40),rep("wt/mut",72),rep("mut/mut",42))))
+par(mfrow=c(1,2))
+pie(table(mice$Genotype))
+barplot(table(mice$Genotype),xlab="Genotype",ylab="Frequency")
+@
+\end{figure}
+
+
+\paragraph{We can ask for the frequency counts by selecting \emph{Summaries
+\textendash > Frequency} distributions under the \emph{Statistics}
+menu (figure \ref{fig:Chi-square-test-in}, follow up to step 2 and
+click \textquotedblleft OK\textquotedblright{} button). In the \textquotedblleft Output\textquotedblright{}
+window you'll get the absolute and relative number of cases for each
+level of the categorical variable \textquotedblleft Genotype\textquotedblright .}
+
+\paragraph{Within this same menu we can perform a chi-square goodness of fit
+test by selecting the box for this test (see figure \ref{fig:Chi-square-test-in}
+step 3). Importantly, when we ask for the test, a pop-up window prompt
+us to indicate the expected frequencies (figure \ref{fig:Chi-square-test-in}
+step 4). By default the program will assign equal frequencies to each
+category. In our case, we should, enter 0.25:0.5:0.25 corresponding
+to the expected frequencies under the null hypothesis (i.e. Mendelian
+ratio)}
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Chi-square-test-in}Chi-square test in R (I)}
+
+\centering{}\includegraphics[width=10cm]{pasted14-rdu.png}
+\end{figure}
+
+
+\paragraph{Note that we did not have to explicitly indicate the degrees of freedom
+as the program calculates it from the number of categories (see output
+from the test). Now, the test returns a p-value of 0.7. Because the
+resulting probability it is not small, we cannot rule out the null
+hypothesis and hence we conclude that we do not have enough evidence
+supporting that the ratios are not mendelian. Note that this is not
+the same as concluding that ratios are Mendelian. In figure, you'll
+find the R code to perform this test. }
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Code-for-chi-square}Code for chi-square test}
+
+<<Rcode_for_chisquare,tidy=TRUE,echo=-1>>=
+mice<-data.frame(ID=paste("id",formatC(1:154,digits=0,width=4,flag=0),sep=""),Genotype=sample(c(rep("wt/wt",40),rep("wt/mut",72),rep("mut/mut",42))))
+table(mice$Genotype)
+chisq.test(table(mice$Genotype),p=c(0.25,0.5,0.25))
+@
+\end{figure}
+
+
+\section{Chi-square test for heterogeneity}
+
+\paragraph{Now, let focus on the second case above in which we wanted to determine
+whether HIF binding was preferentially associated induction/repression
+of gene expression or had no preference. As we mentioned before, we
+are dealing also with categorical data, but there are two important
+differences with the previous case. The first one is that we have
+two categorical variables (presence of HRE and effect of hypoxia on
+gene expression) instead of one. Secondly, in the previous case we
+wanted to compare the observed frequencies to those expected under
+a specific null hypothesis (Mendelian frequencies). How do we calculate
+the expected frequencies in this second case? In other words, what
+is the null hypothesis in this case? The key to the answer is that,
+in this case, we are actually testing whether there is an association
+between the two variables we are measuring (note that we are asking
+whether the presence of an HRE is associated with gene expression).
+In this scenario our null hypothesis is that there is no association
+between these variables. That is, we want to test if the distribution
+of frequencies of each level of the categorical variable X differ
+across the levels of the other categorical variable (Y) or if frequencies
+of X are the same regardless the levels of Y. In fact, this is analogous
+to the interactions in factorial ANOVA.}
+
+\subsection{Contingency tables}
+
+\paragraph{To analyze the interaction between categorical variables, we use
+\emph{contingency tables}. This is just a way to organize and visualize
+this type of data. To construct them we just write of a table with
+the levels of one variable in one dimension across the levels of the
+other variable in the second dimension. In fact, table \ref{tab:Frequency-of-HRE}
+is a contingency table that summarizes the observed data. The organization
+of data in this way allow us to compute the expected frequencies under
+the null hypothesis that both variables are independent (i.e. there
+is no association between the presence of the HRE an the regulation
+of gene expression by hypoxia). We can compute a table of the expected
+frequencies by completing each cell according to the formula $expected_{rc}=\frac{margin_{r}margin_{c}}{total}$
+where \emph{margin\protect\textsubscript{r}} is the sum of frequencies
+in row \emph{r} (total row \emph{r}), \emph{margin\protect\textsubscript{c}}
+is the sum of frequencies in column \emph{c} (total column \emph{r}),
+and \emph{total} is the sum of frequencies in all cells (total number
+of observations). The only thing this formula does is to compute how
+the total counts in a given level of variable X would distribute across
+the different levels of Y if they are independent.}
+
+\paragraph{Although we will only deal with two variables in this class, you
+could construct multi-way contingency tables for more than two categorical
+variables.}
+
+\begin{comment}
+to make it easier to understand use the following example. We are
+interested in studying weather the color of the clothes a person wears
+depend on their gender. We sample a group of 100 people (the class)
+in which are 60 women and 40 men. And found that 20 of women wear
+colorful (yellow, pink, red,...) raincoats whereas 40 wear dark (black,
+grey, blue) raincoats. Among men, the numbers are 5 (colorful) and
+35 (dark). What numbers would we expect if the two variables were
+independent (null hypothesis)? One way to think about it is: everyone
+in the class leave their raincoats in the hangers, then randomly assign
+raincoats to each person. What would be the distribution of colors
+among men and women in the class? use a contingency table with gender
+in the rows and colors in the columns to compute the expected write
+down the marginals and distribute colors (column marginals) between
+male and female according to the proportion between the row marginals.
+The expected numbers under the null hypothesis (variables are independent)
+could be obtained using a thought experiment: All people in the class
+leave their raincoat in the hangers, then a randomly picked raincoat
+is assigned to each person in the class, then count the number of
+males/females wearing colorful/dark rainbows. Repeat the experiment
+n times. Since 1/4 of the raincoats are colorful, a quarter of the
+women and a quarter of men will receive a colorful coat on average,
+that is 15 women and 10 men.
+\end{comment}
+
+
+\subsection{Chi-squared test for heterogeneity\protect\footnote{also known as chi-squared test of independence to differentiate it
+from the goodness of fit describe before} in R}
+
+\paragraph{Read the data in file \textquotedblleft Hyp\_effect.csv\textquotedblright{}
+into R and take a look at the raw data (\textquotedblleft View data
+set\textquotedblright{} button). As you will see there are 11673 genes
+whose response to hypoxia has been determined and categorized as \textquotedblleft UP\textquotedblright{}
+(upregulated or induced), \textquotedblleft DOWN\textquotedblright{}
+(downregulated or repressed) or \textquotedblleft NO\textquotedblright{}
+(expression not altered by hypoxia). You can get these numbers from
+\emph{Statistics->Summaries->Frequency distributions}. Also, the presence
+of the HIF binding site has been determined in the promoter of each
+gene and recorded as \textquotedblleft YES\textquotedblright{} (present)
+or \textquotedblleft NO\textquotedblright{} (not present). We could
+also explore the data using bar and pie graphs as we did above for
+case \#1. Moreover, using R we can represent both variables simultaneously
+(see figure \ref{fig:Chi-square-test-in-1}), but this function is
+not implemented in R commander. Finally, we can generate a contingency
+table from the Statistics menu: Statistics->Contingency tables->Two-way
+table (see figure \ref{fig:Chi-square-test-in-1} and follow it skipping
+step 3a) and also perform a chi-square test on this table (see figure
+\ref{fig:Chi-square-test-in-1}). }
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
+
+\centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
+\end{figure}
+
+
+\paragraph{Because the resulting probability is small, you reject the hypothesis
+that presence of HRE and gene expression are independent. }
+
+\paragraph{Note that, to calculate the degrees of freedom, for contingency tables
+we multiply the number of categories (minus 1) of each variable. For
+example, in a case with two variables with 2 and 3 categories respectively
+(as in the case \#2), df=(2-1){*}(3-1)=2. }
+
+\begin{comment}
+Finally, it should be noted that the degrees of freedom are not based
+on the number of observations as with a Student's t or F-distribution.
+For example, if testing for a fair, six-sided die, there would be
+five degrees of freedom because there are six categories/parameters
+(each number). The number of times the die is rolled will have absolutely
+no effect on the number of degrees of freedom.
+
+The degrees of freedom in the case of contingency tables can be visualized
+as the marginal occupying the calls in the contingency adjacent to
+them, the remaining empty cells are the df.
+\end{comment}
+
+
+\subsection{Visualizing multivariate categorical data}
+
+We can use stacked bar plots to visualize multivariate categorical
+data. To this end just go to the bar graph under the graph menu (figure
+\ref{fig:Stacked-bar-plot}, step 1). Pick a variable to represent,
+e.g. ``HRE'' (figure \ref{fig:Stacked-bar-plot}, step 2a), and
+then click on plot by groups (step 2b, figure \ref{fig:Stacked-bar-plot})
+to select the ``grouping'' variable. Finally, under options select
+you can set other aesthetic details (step 4, figure \ref{fig:Stacked-bar-plot}).
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Stacked-bar-plot}Stacked bar plot}
+
+\centering{}\includegraphics[width=12cm]{pasted4.png}
+\end{figure}
+
+
+\paragraph{Mosaic plots are a very informative two-dimensional representation
+of the categorical data (see figure \ref{fig:Visualization-of-multivariate}).
+Unfortunately it is not implemented in R commander. Finally, an additional
+type of graph to represent categorical data is described in reference
+\citet{Xu2010} (by the way, this reference is a nice review of categorical
+data analysis in experimental biology).}
+
+\begin{comment}
+By me: I guess that the Pearson residuals represented in mosaic plots
+by the mosaic function are the difference between the observed and
+expected values. See footnote above.
+\end{comment}
+
+\begin{figure}[h]
+
+\caption{\protect\label{fig:Visualization-of-multivariate}Visualization of
+multivariate categorical data}
+
+<<label="visualizing multivariate categorical data", tidy=TRUE,fig.width=4,fig.height=4,echo=-2,warning=F,error=F,message=F>>=
+library(vcd)
+HRE<-read.table("Hyp_effect.csv",sep=",",head=T)
+mosaic(xtabs(~HRE+Effect, data=HRE),shade=T)
+@
+\end{figure}
+
+
+\section{Limitations of the chi-square test}
+
+\paragraph{It is important to note that we can apply the chi-square test provided:}
+\begin{itemize}
+\item All \emph{observations} are independent\footnote{do not mistake it for independence of \emph{variables}}.
+For example the genotype of a mouse does not affect the genotype of
+other mice or the presence/absence of HRE in a given gene has no effect
+on other genes. In the case they are not independent, the McNemar's
+test should be used instead (see \ref{sec:Other-test-for}).
+\item Simple random sample \textendash{} The sample data is a random sampling
+from a fixed distribution or population where every collection of
+members of the population of the given sample size has an equal probability
+of selection.
+\item Sample size (whole table) \textendash{} A sample with a sufficiently
+large size is assumed. If a chi squared test is conducted on a sample
+with a smaller size, then the chi squared test will yield an inaccurate
+inference. The researcher, by using chi squared test on small samples,
+might end up committing a Type II error.
+\item Expected cell count \textendash{} Adequate expected cell counts. No
+more than 20\% of the expected frequencies are less than five\footnote{A common rule is 5 or more in all cells of a 2-by-2 table, and 5 or
+more in 80\% of cells in larger tables, but no cells with zero expected
+count.}. Because, when expected frequencies are small, the calculated value
+of chi-square tends to be too large and will therefore indicate a
+lower than appropriate probability, thereby increasing the risk of
+Type I error\footnote{To visualize this, imagine that you are trying to estimate if a couple
+with a single child have the expected ratio of 50\% female:50\%male.
+Regardless the sex of the child, the observed frequencies (100\%:0\%
+or 0\%:100\%) will differ dramatically from the expected ones. The
+small sample size avoids getting an accurate estimation of the frequencies.}.
+\end{itemize}
+
+\paragraph{There are several alternatives (other than increasing sample size!),
+when the fourth (and/or third?) condition is not met:}
+\begin{enumerate}
+\item Yates\textquoteright{} correction or the continuity correction\footnote{technically it is applicable only in cases with df=1}.
+It simply consists in subtracting 0.5 from the absolute value\footnote{by using the absolute value we ensure that we always decrease the
+value of the difference} of the difference between observed and expected counts: $\chi^{2}=\sum_{category}\frac{\left(|observed_{i}-expected_{i}|-0.5\right)^{2}}{expected_{i}}$
+. Obviously, this result in smaller values of the chi-square($\chi^{2}$)
+statistic\footnote{Note also that it will have much higher relative impact when frequency
+counts are small than when they are large} and thus larger p-values.
+\item Randomization test. This test is unique in that it does not calculates
+an statistic that is then used to compute the probability but instead
+it does calculates the probability empirically by simulating the repeated
+random sampling of an hypothetical population containing the expected
+proportions in each category. Thus, when conducting a good-of-fitness
+test with a sample size and/or expected counts are less than 5 for
+more than 20\% of the cells, the randomization test should be used
+instead. %
+\begin{comment}
+by me: this just simulates multiple random samples from the expected
+distribution (or the null), computes the chi-square statistic for
+each of them and counts the number of times the value of the statistic
+is higher that the one observed.
+
+In R it is done using the chisq.test() function with the argument
+\emph{simulate.p.value=T}. In this case the p-value is derived via
+Monte Carlo simulation. The repeated random sampling from an hypothetical
+population is an example of a more general procedure called Montecarlo
+Simulation Method that uses the properties of the sample, or the expected
+properties of a population, and takes a large number of simulated
+random samples to create a distribution that would apply under the
+null hypothesis.
+\end{comment}
+\item Fisher's Exact test. It can be used for 2x2 contingency tables regardless
+the sample size. It does not calculates any statistic but instead
+calculates the probability of the observed distribution directly.
+However, unlike the randomization tests, it does not relies on random
+sampling, instead it computes the exact probability of getting the
+observed distribution (and any other more extreme) by ``counting''
+all the possible combinations that lead to the observed frequencies.
+\begin{comment}
+From: \url{http://www.physics.csbsju.edu/stats/exact.html} , from
+\url{http://www.biostathandbook.com/fishers.html}, from \url{http://www.stat.wisc.edu/~st571-1/06-tables-2.pdf}
+(this one is saved in the folder ``Estadistica\_y\_probabilidad''
+under ``Books'' in my computer) and from \citet{McKillup2012}.
+In the exact method, we view the particular contingency table we got
+in our experiment as embedded in a universe of similar tables that
+have the same outcome probabilities as our table (i.e., have the same
+row totals) and the same distribution of treatments (i.e., have the
+same column totals). To compute the exact probability we generate
+all possible variations of the table that have the same column and
+row counts. Then calculate the probability of each table and then
+sum the probability of the given table and every other \textquotedbl unusual\textquotedbl{}
+table. (The \textquotedbl unusual\textquotedbl{} tables are those
+that have probabilities less than or equal to the given table.) If
+the total probability of such unusual tables is \textquotedbl small\textquotedbl{}
+\textendash that is if it is rare to have observed such unlikely tables\textendash{}
+we can reject the null hypothesis. To calculate the probability of
+each table we just sample each category without replacement and compute
+the it. To calculate the probability of each table (i.e. of getting
+the exact number we have in each cell of the table) we use the hypergeometric
+distribution. The hypergeometric distribution is similar to the binomial
+distribution in that it counts the number of successes in a sample
+of size n , but the sample is made without replacement from a finite
+population, and so separate trials are not independent. For example,
+a bucket contains r red balls and w white balls and n balls are sampled
+without replacement. If the random variable X counts the number of
+red balls in the sample, then the probability of X=k under the hypergeometric
+distribution is: $P(X=k)=\frac{\left(\begin{array}{c}
+r\\
+k
+\end{array}\right)\left(\begin{array}{c}
+w\\
+n-w
+\end{array}\right)}{\left(\begin{array}{c}
+r+w\\
+n
+\end{array}\right)}$. Then in the case of a contingency table, we can model it as:
+
+\begin{tabular}{|c|c|}
+\hline
+X & rt1-X\tabularnewline
+\hline
+ct1-X & ct2-rt1+X\tabularnewline
+\hline
+\end{tabular}
+
+where rt1 and rt2 are row totals and ct1 and ct2 column totals.
+
+The probability of this table under the hypergeometric distribution
+is:ion is: $P(X)=\frac{\left(\begin{array}{c}
+rt1\\
+X
+\end{array}\right)\left(\begin{array}{c}
+rt2\\
+ct1-X
+\end{array}\right)}{\left(\begin{array}{c}
+rt1+rt2\\
+ct1
+\end{array}\right)}$.
+
+See \url{https://en.wikipedia.org/wiki/Hypergeometric_distribution}
+\end{comment}
+Fisher's exact test is more accurate than the chi-square test when
+the expected numbers are small, thus it is advisable to use Fisher's
+exact test rather than chi-square test of independence when the total
+sample size is less than say 1000.
+\end{enumerate}
+
+\section{Randomization test and Fisher's exact test in R}
+
+To compute the Fisher's exact test in R commander, the only thing
+we have to do is select ``Fisher's test'' instead of ``chi-square''
+under the ``contingency tables'' menu (see step 3a in figure \ref{fig:Chi-square-test-in-1}).
+Please note that, although the original Fisher's exact test was designed
+for 2x2 contingency tables, in R it has been extended to work with
+larger tables such as the one in our example (3x2).
+
+\paragraph{Unfortunately, the randomization test can not be accessed from R
+commander file menu. However, it is extremely easy to perform this
+test from the command line. You just need to include the argument
+\emph{simulate.p.value = TRUE} in the chi-square function (see figure
+\ref{fig:Heterogeneity,-randomization-and}).}
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Heterogeneity,-randomization-and}Heterogeneity,
+randomization and Fisher's test in R }
+
+<<randomization test,echo=-1,fig.width=4,fig.height=4>>=
+Hx<-read.table("Hyp_effect.csv",head=T,sep=",")
+with(xtabs(~Effect+HRE),data=Hx)
+contTable<-with(xtabs(~Effect+HRE),data=Hx)
+#Chi-square test
+chisq.test(contTable)
+#Randomization test
+chisq.test(contTable,simulate.p.value = TRUE)
+#Fisher's exact test
+fisher.test(contTable)
+@
+\end{figure}
+
+
+\section{Strength of association}
+
+\paragraph{The statistical test we have seen indicate when there is a statistically
+significant relationship between two variables, but it does not indicate
+how strong the association is. Moreover, for large sample sizes it
+is easy to get a very small p-value even when the difference between
+the observed and expected values is small\protect\footnote{Note that this is true for any other statistical test, not just those
+for categorical variables}. In words, a statistically significant p-value does not necessarily
+indicates a significant difference from the practical (or biological)
+point of view. For all this reasons, it is not advisable to draw conclusions
+just based on the p-value and we should also pay attention to the
+\emph{effect size}, that is the difference between the null and actual
+value of the parameter of interest. In the case of chi-square test
+we can use an \emph{odds ratio} or the \emph{risk ratio} to quantify
+the strength of the association. For the table:}
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+ &  & \multicolumn{2}{c|}{Var1}\tabularnewline
+\hline
+\hline
+ &  & Y & N\tabularnewline
+\hline
+\multirow{2}{*}{Var2} & Y & a & b\tabularnewline
+\cline{2-4}
+ & N & c & d\tabularnewline
+\hline
+\end{tabular}
+
+Rate = proportion in group with condition present ($Rate_{a}=\frac{a}{a+b}$;$Rate_{b}=\frac{c}{c+d}$)
+
+Then risk ratio is: $Rr=\frac{Rate_{a}}{Rate_{b}}$
+
+Odds=probability \emph{of success}/(1-probability \emph{of success})
+($Odds_{1}=\frac{P_{a}}{(1-P_{a})}=\frac{a/\left(a+b\right)}{1-(a/\left(a+b\right))}=\frac{a}{b}$;$Odds_{2}=\frac{c}{d}$)
+
+Then the odds Ratio is: $OR=\frac{Odds_{1}}{Odds_{2}}$ and the log
+OR is: $LOR=\ln\left(OR\right)$
+
+\subsection{More on entering categorical data in R commander}
+
+\paragraph{Lets explore the strength of associations in further detail. Imagine
+that you study the association between the presence of a given SNP
+and cancer development and, after studying a large number of cases
+you get the following results:}
+
+\begin{tabular}{|c|c|c|}
+\hline
+ & Cancer & Healthy\tabularnewline
+\hline
+\hline
+SNP present & 549 & 49788\tabularnewline
+\hline
+SNP absent & 461 & 51898\tabularnewline
+\hline
+\end{tabular}
+
+\paragraph{As we have seen above, R can compute the contingency table from raw
+data. However, since even very large raw data files can be summarized
+in a few numbers, sometimes it is just easier to type the contingency
+table directly into R commander. In addition, in many cases, we will
+just get the tabulated rather than raw data. For these reasons, R
+commander includes a specific menu to facilitate this task. In order
+to get familiar with it, we are going to enter the data corresponding
+to case \#2 as provided in table \ref{tab:Frequency-of-HRE}. }
+
+\paragraph{To enter these values in a tabular form go to Statistics->Contingency
+tables->Enter and analyze... select the appropriate number of rows
+and columns and enter the values. Finally select the test(s) you want
+to run (see figure \ref{fig:Entering-contingency-tables}).}
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Entering-contingency-tables}Entering contingency
+tables}
+
+\centering{}\includegraphics[width=12cm]{pasted9.png}
+\end{figure}
+
+
+\paragraph{Please take a look at the OR in the output of the Fisher's exact
+test. Also compute by hand the risk of developing cancer in the population
+with and without the SNP (compute the risk ratio). How large is the
+ratio?}
+
+\section{\protect\label{sec:Other-test-for}Other test for categorical data}
+
+
+\paragraph{Finally, be aware that we have only scratched the surface of categorical
+data analysis. There are many other tests that can be applied to specific
+cases involving categorical data:}
+\begin{enumerate}
+\item For simple cases in which the categorical variable has only to possible
+levels (``success'' and ``failure'') and when certain conditions
+are met, the sampling distribution of the estimated proportion is
+nearly normal and inference can be done using parametric test much
+like for numerical data. %
+\begin{comment}
+See ``Data Analysis and statistical Inference'' course notes and
+book ``OpenIntro Statistics''
+
+This test can be applied when: 1) each sample point can result in
+just two possible outcomes (that is when the categorical variable
+has only two levels). 2) there are at least 10 observations in each
+category level. If these conditions are met, then the sampling distribution
+of the estimated proportion is nearly normal and inference can be
+done much like for numerical data.
+
+\paragraph{For example (from \protect\url{https://www.cliffsnotes.com/study-guides/statistics/univariate-inferential-tests/test-for-comparing-two-proportions}),
+a public health researcher wants to know how two high schools\textemdash one
+in the inner city and one in the suburbs\textemdash differ in the
+percentage of students who smoke. A random survey of students gives
+the following results: }
+
+\begin{table}[h]
+\caption{example proportion test}
+
+\begin{tabular}{|c|c|c|}
+\hline
+ & n & smokers\tabularnewline
+\hline
+\hline
+inner city & 125 & 47\tabularnewline
+\hline
+suburban & 153 & 52\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+
+\paragraph{{[}note that this can be represented as a 2x2 contingency table with
+variable Smoker (yes,no) versus location (inner-city, suburban){]}
+The proportion of smokers in inner-city school is 47/125=0.376 and
+the proportion of smokers in the suburban school is 52/153=0.340.
+Are these proportions significantly different?. {[}the following by
+me{]} To address this question the tests assumes that the distribution
+of sample proportions follows a normal distribution (similar to the
+central limit theorem for sample means) and thus we can compare the
+two proportions using a z-score (equivalent to a t-test). }
+
+\paragraph{In the case of comparing the proportion observed in a sample with
+an expected value (e.g. the proportion of males in a course with the
+value of 0.5 expected for the general population), we only have to
+compute the sd the population which is given by the formula: $\sqrt{\frac{p_{0}\left(1-p_{0}\right)}{n}}$
+and then compute the z-score (z statistic): $z=\frac{\hat{p}-p_{o}}{\sqrt{\frac{p_{0}\left(1-p_{0}\right)}{n}}}$
+where $\hat{p}$ is the expected proportion in the general population.
+The the probability can be read from a standard normal table (or distribution).
+E.g. if z>1.96 (or z<-1.96), p<0.05 and if z>2.6 (or z<-2.6), p<0.01.
+In the case of the comparison between proportions in two populations
+we will use $z=\frac{p_{1}-p_{2}}{\sqrt{\frac{p_{1}\left(1-p_{1}\right)}{n_{1}}+\frac{p_{2}\left(1-p_{2}\right)}{n_{2}}}}$}
+\end{comment}
+\item The McNemar test (or McNemar Chi-square test) is a variant of the
+chi-square test used to compare categorical dependent (paired or matched)
+samples. For example, the presence of a disease (categorized as ``present'',
+``absent'') in a group of individuals before and after taking an
+experimental drug to treat it. Disease in each individual is recorded
+before and after treatment. Thus data are not independent (paired
+data). Another example: Incidence of a disease in individuals exposed
+to a drug using their siblings as matched controls. The exposure to
+the drug is recorded for the diseased individual and the healthy sibling.
+Again the data are not independent (matched data). %
+\begin{comment}
+In R it is implemented in the mcnemar.test() function.
+
+The following is adapted from:
+
+\url{http://www.biostat.umn.edu/~susant/Fall11ph6414/Section12_Part2.pdf}
+
+and
+
+\url{https://en.wikipedia.org/wiki/McNemar's_test}
+
+The following are contingency tables for the above examples
+
+\begin{tabular}{|c|c|c|}
+\hline
+ & after:absent & after:present\tabularnewline
+\hline
+\hline
+before:absent & a & b\tabularnewline
+\hline
+before:present & c & d\tabularnewline
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|}
+\hline
+ & sibling:non-exposed & sibling:exposed\tabularnewline
+\hline
+\hline
+patient:non-exposed & a & b\tabularnewline
+\hline
+patient:exposed & c & d\tabularnewline
+\hline
+\end{tabular}
+
+Note that, in the first case, cells contain the number of individuals
+(e.g. ``c'' is the number of individuals with skin rash prior treatment
+that still suffer it after treatment), whereas in the second case
+cells contains pairs of individuals (e.g. ``c'' records the number
+of pairs in which the diseased individual was exposed to the drug
+and the healthy sibling was not exposed). The ``b'' and ``c''
+are called the \cprotect\emph{discordant} cells because they represent
+pairs with a difference, where as ``a'' and ``d'' are \cprotect\emph{concordant}.
+
+The null hypothesis in the first case is that the proportion of subjects
+positive for the disease is the same before and after treatment is
+the same. In the second case the proportion individuals exposed to
+the drug is the same for healthy and sick individuals. In any case,
+under the null, we would expect b=c. Thus, the McNemar\textquoteright s
+Chi - square statistic is calculated using the counts in the \textquoteleft b\textquoteright{}
+and \textquoteleft c\textquoteright{} cells of the table: $\chi^{2}=\frac{\left(b-c\right)^{2}}{b+c}$.
+If the null hypothesis is true the McNemar Chi - square statistic
+= 0.
+
+There are alternatives to the McNemar test for paired categorical
+data: binomial sign test, Cochran's Q test, Liddlell's,...
+\end{comment}
+\item The Cochran\textendash Mantel\textendash Haenszel chi-square test
+computes the probability of the null hypothesis that two nominal variables
+are conditionally independent in each stratum of a third variable.
+\begin{comment}
+It can be performed in R using the mantelhaen.test() function. For
+example, in the dataset \textquotedblleft Arthritis\textquotedblright{}
+from the vcd package, the effect of a treatment (placebo vs treated)
+is recorded in the variable \textquotedblleft Improved\textquotedblright{}
+(levels: none, some, marked). They also recorded the gender of patients
+(Sex: male, female), thus we can the hypothesis that Treatment and
+Improved variables are independent within each level of the variable
+Sex. That is, we are testing whether treated individuals improved
+more than those receiving placebos when controlling for sex (see figure
+{[}fig:Cochran-Mantel-Haenszel-test{]}).
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Cochran-Mantel-Haenszel-test}Cochran-Mantel-Haenszel
+test}
+
+<<Cochram,tidy=TRUE>>=
+library (vcd)
+head(Arthritis)
+summary(Arthritis)
+mytable<-xtabs(~Treatment+Improved+Sex,data=Arthritis)
+mantelhaen.test(mytable)
+@
+\end{figure}
+\end{comment}
+\item A particularly problematic subtype of categorical data are ordinal
+variables. See \url{http://jeromyanglim.blogspot.com.es/2009/10/analysing-ordinal-variables.html}.%
+\begin{comment}
+see \url{https://onlinecourses.science.psu.edu/stat504/book/export/html/90}This
+type of data can be analyzed as nominal variables, but then information
+about order is lost. There are several way to analyze this type of
+data and exploit the order information. One way is to study their
+linear trend or correlation using (variants?) of the Pearson's or
+Spearman's correlation coefficients. Another way is to use the Mantel-Haenszel
+statistics for testing independence between two ordinal variables.
+Mantel-Haenszel (MH) statistic, M2, applies to both the Pearson and
+Spearman correlation. It tests the null hypothesis of independence
+with ordinal variables (i.e., correlation parameter, rho, is equal
+to zero) versus the two-sided alternative (i.e., correlation parameter,
+rho, is not zero). To compute M2 we need to assign scores to both
+rows and columns. Scores are numerical values that we assign to each
+item in each category of our ordinal variables. There are several
+types of scores that can be assigned. The package vcdExtra includes
+the function CMHtest() to compute this test.
+\end{comment}
+\end{enumerate}
+
+\section{Summary}
+\begin{enumerate}
+\item There are two common questions for categorical data:
+
+\begin{enumerate}
+\item does the data fits a given/expected distribution of proportions (goodness
+of fit)
+\item are two categorical variables independent? (heterogeneity)
+\end{enumerate}
+\item Chi-square test can used to analyze both goodness of fit and independence,
+provided certain restrictions are met.
+\item For small sample sizes Fisher's exact test is an alternative to the
+chi-square test for independence.
+\item Pie and bar graphs are appropriate to represent a single categorical
+variable, whereas stacked bar plots and mosaic plots are used to represent
+multivariate categorical data.
+\end{enumerate}
+
+\section{Exercises}
+\begin{xca}
+A common assumption in DNA sequence analysis is that the frequency
+of all four nucleotides is the same (0.25\% each). However, the alignment
+of several thousand exon-intron boundaries, reveals that the first
+base of the intron (5' splice site) tends to be a G. After recording
+the number of each base at this position in your alignment, which
+test would you apply to determine whether the nucleotide distribution
+at this position is significantly different from a random alignment
+of DNA fragments?
+\end{xca}
+
+sep
+\begin{xca}
+You suspect that the presence of a disease is associated to a certain
+variation (represented by the genotype ``-''). To test this hypothesis,
+you look at the genotype of group of individuals suffering from the
+disease and healthy controls. The results are in the following table.
+Compute by hand what would be the expected distribution if the variation
+does not affects the presence of the disease. Is the the mutation
+associated to the disease? compute the chi-square statistic by hand.
+
+\begin{tabular}{|c|c|c|}
+\hline
+ & Sick & Healthy\tabularnewline
+\hline
+\hline
++/+ & 10 & 125\tabularnewline
+\hline
++/- & 9 & 60\tabularnewline
+\hline
+-/- & 6 & 25\tabularnewline
+\hline
+\end{tabular}
+\end{xca}
+
+sep
+\begin{xca}
+You want to know if there is a bias in the gene content for the +
+and - DNA strands of mammals. Since the human genome is well characterized,
+you decide to use it as a representative sample of the mammalian genomes
+to address this question. The file RefSeq\_All\_Chr.csv contains information
+about all reference transcripts in the human genome . Import this
+table into R commander (note that it is a tab-separated text file)
+and process it to investigate if there is evidence for a bias in gene
+content. What does the p-value inform about the bias? read references
+\citet{Nuzzo2014} and \citet{Halsey2015} about p-values and effect
+size.
+\end{xca}
+
+% \bibliographystyle{plainnat}
+% \bibliography{/home/luis/Documents/Lab_DB/Bibliography/library.bib/library}
+
+\end{document}
