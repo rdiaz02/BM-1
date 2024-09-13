@@ -3874,7 +3874,7 @@ years. Some recommended readings, in approximate order of increasing difficulty
   sociology and political science, but that should not be a problem.]
 \end{itemize}
 
-\externalf A separate PDF is available for this topic, \myhref{covars-interpr-causal.pdf}. Please, read it \textbf{now}.
+\externalf A separate PDF is available for this topic, \myhref{covars-interpr-causal.pdf}. Please, read it: we will cover it on the last day assigned to Lesson 3.
 
 
 \section{Dealing with ratios}\label{ratios}
