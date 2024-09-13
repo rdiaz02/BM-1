@@ -20,6 +20,25 @@ library(Rcmdr)
 library(RcmdrMisc)
 ```
 
+<!-- What we will cover today/what you can expect to learn today -->
+
+<!-- 1. Use R: read data and do plots -->
+<!--    - sophisticated plots -->
+<!--     - original data or of summary statistics -->
+<!--     - reflect they features of the experimantal design -->
+<!--     - appropriate for the question and data -->
+<!--    - being able to deal with possibly annoying formatting issues -->
+
+
+<!-- 2. Extracting the key experimental design features from the description -->
+<!--    - Decide what type of plots you want -->
+<!--      - data and/or summary statistics -->
+<!--      - type of plots -->
+<!--        - conditioning plots -->
+<!--        - scale of the axes (mainly y-axis) -->
+<!--        - repeated observations of the same individual -->
+
+
 
 # **Data and graphs**
 
@@ -491,6 +510,12 @@ scales=list(x=list(relation='same', log=FALSE),
 y=list(relation='same', log=FALSE)))
 ```
 
+<!-- FIXME: uncomment this for 2025-26 -->
+<!-- **Repeated observations of the same subjects**  Does the same animal provide more than one data point? If unsure, check the data themselves.  Is the answer clear from the data file? -->
+
+<!-- Now, do you think the plots in this file make that obvious? How/what could you modify? Would it make sense/would this be worth it? How could you provide this information (e.g., figure legend) to alert the reader that analyses incorporate a subject effect that is not shown in the figures? -->
+
+
 
 \clearpage
 
@@ -626,6 +651,12 @@ knitr::kable(DatasetWide,
 The data can be organized in several ways. Our file "Brain_MR" was presented in the stacked or "long format", in which the "dependent variables" ADC and T2 are in a single column (each), and the conditions (Group, Time...), or independent variables, were indicated on separate columns. This format was very well fitted for statistical analysis.
 
 The table above is another type of representation called "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go to **Data–>Active dataset–>Reorganize from long to wide"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
+
+
+<!-- Uncoment for 2025-26 -->
+<!-- ### Wide to long -->
+<!-- What about the opposite transformation? This can be more complex, but try it. To get an idea, do it with the PCR data. Use the data where we already have means, and turn it into a wide format. Now, turn it back into a long format. Note that you might want, before the final step, to make sure that there is a column (not just rownames) with the Experiment information (i.e., with the name of the experiment). -->
+
 
 
 
