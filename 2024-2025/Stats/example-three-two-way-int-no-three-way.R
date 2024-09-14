@@ -11,11 +11,11 @@ library(car) ## We will use the "Anova" function from car
 
 ## Create a data frame for the mean value at each of the combinations.
 ## Y is the mean of the response for all possible 8 cell means.
-## (Why this values? No particular reason, but see bottom for how
-## I to generate these kind of data)
+## (Why these values? No particular reason, but see bottom for how
+## to generate these kind of data)
 
 ## Actually, you might want to start from the bottom, "How to create these kinds
-## of patterns", to see how this type of data can be easily generated. 
+## of patterns", to see how these type of data can be easily generated.
 
 
 
@@ -41,7 +41,7 @@ df1
 xtabs(Y ~ F1 + F2 + F3, data = df1)
 
 
-## If there is not F1:F2 change with F3, that means no F1:F2:F3 interaction.
+## If there is no F1:F2 change with F3, that means no F1:F2:F3 interaction.
 ## The next two are just saying the same thing.
 
 
@@ -63,13 +63,13 @@ xtabs(Y ~ F2 + F3 + F1, data = df1)
 
 reps <- 10000
 dfrep <- do.call(rbind, replicate(reps, df1, simplify = FALSE))
-## We must add some noise; I'll keep it tiny, so patterns easier to see.
+## We must add some noise; I'll keep it tiny, so patterns are easier to see.
 dfrep$Y <- dfrep$Y + rnorm(nrow(dfrep), mean =  0, sd = .001)
 
 ## Fit the model and check the Anova table
 m1 <- lm(Y ~ F1 * F2 * F3, data = dfrep)
 Anova(m1)
-## Remember! If you do this many, many times, sometimes you'll see
+## Remember that if you do this many times, sometimes you'll see
 ## a signficant p-value for the interaction.
 
 
@@ -87,15 +87,15 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 
 #############   How to create these kinds of patterns #########
 
-## How did I create this? It is actually easy. This is one way.
+## It is actually easy. This is one way.
 
 ## Draw two 2x2 tables, one for "d" and another for "D". For example, for D we have:
 ##       b   B
-##  a  Yab   YaB 
+##  a  Yab   YaB
 ##  A  YAb   YAB
 
 
-## We have to such tables, one for "d" and one for "D". (You can think of the
+## We have two such tables, one for "d" and one for "D". (You can think of the
 ## cells as being, then, Yabd, YaBd, ... for the "d" table and
 ## YabD, YaBD, ..., for the "D" table).
 
@@ -105,7 +105,7 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 ## 0, 1, 2, 3, starting from top left and moving clockwise
 ## (this pattern ensures an interaction)
 ## so we have Yab = 0; YaB = 1, ...
-## These numbers are the mean values YabD = 0, YaBD = 1, ... 
+## These numbers are the mean values YabD = 0, YaBD = 1, ...
 ## With those numbers, YAB deviates from additivity by -2 and this will be
 ## the magnitude of the interaction F1:F2.
 ## YAB = 0 + 1 + 3 - 2
@@ -115,20 +115,15 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 ## Because these differences are different compared to what
 ## they were in the "D" table, this creates interactions F1:F3 and F2:F3
 ## For no particular reason I decided to set Yabd = 0; then YaBd = 2
-## (so now the increase moving right is 2, not 1 as with D) and then 
+## (so now the increase moving right is 2, not 1 as with D) and then
 ## YAbd = 5 (so now the increase moving down is 5, not 3).
 
-## BUT, and this is crucial, ensure the lower right cell, YAB deviates from additivity
-## by the same amount as in the table of D. So the YABd mean should be 5 (0 + 2 + 5 -2)
+## BUT, and this is crucial, ensure the lower right cell,
+## YAB deviates from additivity by the same amount as in the table of D.
+## So the YABd mean should be 5 (0 + 2 + 5 -2)
 
-## Of course the actual values of the magnitude of the interactions F1:F2, F1:F3,
-## F2:F3 are irrelevant. Any other values would have worked.
+## Of course the actual values of the magnitude of the interactions F1:F2,
+## F1:F3, F2:F3 are irrelevant. Any other values would have worked.
 
-
-
-## We have created all three two-way interactions but not the three-way interaction.
-
-
-
-
-
+## We have created all three two-way interactions but not a
+## three-way interaction.
