@@ -102,10 +102,10 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 ## The values in the cells are the cell means.
 ## Let us give them numbers. Start with that table for D.
 ## Ensure it shows interaction F1:F2. For example fill with numbers
-## 0, 1, 2, 3, starting from top left and moving clockwise
+## 0, 1, 2, 3, starting from top left and moving counter-clockwise
 ## (this pattern ensures an interaction)
 ## so we have Yab = 0; YaB = 1, ...
-## These numbers are the mean values YabD = 0, YaBD = 1, ...
+## These numbers are the mean values YabD = 0, YAbD = 1, ...
 ## With those numbers, YAB deviates from additivity by -2 and this will be
 ## the magnitude of the interaction F1:F2.
 ## YAB = 0 + 1 + 3 - 2
@@ -114,9 +114,9 @@ aggregate(Y ~ F1 + F2 + F3, FUN = function(x) round(mean(x), 2), data = dfrep)
 ## and the difference YAb - Yab.
 ## Because these differences are different compared to what
 ## they were in the "D" table, this creates interactions F1:F3 and F2:F3
-## For no particular reason I decided to set Yabd = 0; then YaBd = 2
+## For no particular reason I decided to set Yabd = 0; then YAbd = 2
 ## (so now the increase moving right is 2, not 1 as with D) and then
-## YAbd = 5 (so now the increase moving down is 5, not 3).
+## YaBd = 5 (so now the increase moving down is 5, not 3).
 
 ## BUT, and this is crucial, ensure the lower right cell,
 ## YAB deviates from additivity by the same amount as in the table of D.
