@@ -3722,19 +3722,19 @@ These are three key features of AIC:
 
 \begin{enumerate}
 \item AIC (under certain assumptions) is an unbiased estimate of the predictive accuracy of the model: the expected likelihood of the model when applied to new data (see Figure \ref{aic-otsuka}).
-\item AIC measures (again, under certain assumptions) the difference (the Kullback-Leibler divergence) between the predictions of the model and the true values.
+\item AIC measures (again, under certain assumptions) how close to the true values are the predictions of the model\footnote{Here, ``how close'' is evaluated using the Kullback-Leibler divergence, a measure of distance between probability distributions.}.
 \item AIC is equivalent to leave-one-out cross-validation for (many) linear models (including linear regression and mixed-effects).
 \end{enumerate}
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=0.40\paperwidth,keepaspectratio]{aic-otsuka.png}
-    \caption{\label{aic-otsuka} From Figure 4.2, p.~116 of J.\ Otsuka, 2023, ``Thinking about statistics. The philosophical foundations.'', Routledge.}
+    \caption{\label{aic-otsuka} AIC as estimate of expected likelihood.  From J.\ Otsuka, 2023, \textit{Thinking about statistics. The philosophical foundations.}, Routledge, Figure 4.2, p.~116.}
   \end{center}
 \end{figure}
 
 
-The importance of the above results is huge. And the above three results are all related.
+The importance of the above three results is huge.
 
 
 Now, suppose we have a bunch of models, and we measure the AIC of each. Model selection via AIC will tells us to prefer the model with the largest AIC. (Note: largest if we define AIC as above; we should prefer the model with the smallest AIC if we define AIC as
