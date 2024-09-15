@@ -3655,7 +3655,7 @@ This is a very quick summary of some of the reasons why we fit statistical model
 
   Many other models are of this kind. For example, many meteorological models are like this: if you see AEMET's predictions you only care about them being right (and they often are). You are not trying to modify anything (i.e., ``let's try to make of today a rainy day'') nor understand.
 
-  Incidentally, that we care just about prediction is what makes models of high complexity, including deep learning, with millions of parameters that our brains can't just wrap their heads around, fine for many these tasks\footnote{Yes, we can argue that interpretable AI and machine learning models are important, for practical reasons ---better predictions---, for ethical reasons, for legal reasons, and for conceptual reasons.}
+  Incidentally, that we care just about prediction is what makes models of high complexity, including deep learning, with millions of parameters that our brains can't just wrap their heads around, fine for many these tasks\footnote{Yes, we can argue that interpretable AI and machine learning models are important, for practical reasons ---better predictions---, for ethical reasons, for legal reasons, and for conceptual reasons.}.
 
 
 \item Causal inference, intervention: what would happen in Y if we manipulated X? For example, if we were to get people to eat legumes twice a week, how many colon cancers could we prevent?
