@@ -3711,11 +3711,11 @@ AIC stands for Akaike Information Criterion. This is the AIC of a model:
 
 \(2\ \ln(\hat{L}) - 2\ k\)
 
-where \(k\) is the number of parameters, \(\hat{L}\) is the likelihood of the model at the maximum likelihood parameters (and \(\ln\) is the  base \(e\) logarithm). (Many definitions of AIC multiply the above by \(-1\),, as we will see below, but that is irrelevant; so if with our definition better models are those with larger AIC, if you multiply by -1, better models are those with smaller AIC).
+where \(k\) is the number of parameters, \(\hat{L}\) is the likelihood of the model at the maximum likelihood parameters (and \(\ln\) is the  base \(e\) logarithm). (Many definitions of AIC multiply the above by \(-1\), as we will see below, but that is irrelevant; so if with our definition better models are those with larger AIC, if you multiply by -1, better models are those with smaller AIC).
 
 And what is the likelihood? You should now this already. If not, ask in class, but essentially, \(L(\theta)\), is the probability of the data under parameter \(\theta\) (it is better to think of the joint density, as that includes, then, continuous distributions). For a data set, we can find the value of \(\theta\), the parameters, that makes that likelihood as large as it can be; this would be the maximum likelihood estimate of the parameter(s) \(\theta\).  So in the expression above, \(\hat{L}\) is the value of the likelihood when evaluated with the paramenters that make that likelihood as large as possible, i.e., at the value(s) that make the data as likely as possible. In a regression example, this would be the value of the likelihood when the regression coefficientes (and the intercept) take the values estimated by your regression software.
 
-What is AIC computing then? The log of the likelihood penalized by the number of parameters.
+What is AIC computing then? The log of the likelihood penalized by the number of parameters. In other words, AIC is showing the trade-off between good fit (to the current data) and number of parameters: models with many parameters might be able to adjust the data better (i.e., have larger likelihood), but slight increases in likelihood might not justify some of those parameters. So AIC says something like ``larger likelihood is good, but do not get carried away adding too many parameters''. With too many parameters, the model might be just too complex. Too complex for what? Not for the present data (the likelihood increased), but too complex to make good predictions in other data sets. Too many parameters increase the risk of overfitting.
 
 
 These are three key features of AIC:
@@ -3747,6 +3747,7 @@ Before we continue, it is crucial that we understand that:
 
 \begin{enumerate}
 \item  The model thus selected (i.e., the model with the best AIC) need not be the model that has ``all and every parameter that really affects the outcome'': ``smaller models'', models that do not include some parameters, might actually work better. Make sure you understand this.
+  To repeat: for a given sample size, the best model according to AIC might tell you NOT to include a variable that really has an effect (that is ``significant''). Variables that ``really have an effect'' do not necessarily improve predictive performance. Yes, this means that ``true models'' are not necessarily the best models for predictive performance, and simpler models are often better. Can you think of a reason why this could be the case?
 
 \item The size (the number of parameters) of the selected model depends on the sample size: with larger samples sizes, we can often afford to fit larger models, and thus with larger sample sizes AIC will often select larger models.
 \end{enumerate}
