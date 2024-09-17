@@ -3748,9 +3748,11 @@ Before we continue, it is crucial that we understand that:
 \begin{enumerate}
 \item  The model thus selected (i.e., the model with the best AIC) need not be the model that has ``all and every parameter that really affects the outcome'': ``smaller models'', models that do not include some parameters, might actually work better. Make sure you understand this.
 
-  To repeat: for a given sample size, the best model according to AIC might tell you NOT to include a variable that really has an effect (that is ``significant''). Variables that ``really have an effect'' do not necessarily improve predictive performance. Yes, this means that ``true models'' are not necessarily the best models for predictive performance, and simpler models are often better. Can you think of a reason why this could be the case?
+  To repeat: for a given sample size, the best model according to AIC might tell you NOT to include a variable that really has an effect (that is ``significant''). Not all variables that ``really have an effect''  necessarily improve predictive performance; similarly, if the relationship is really slightly quadratic, adding the parameter for the quadratic term not necessarily improves the predictive performance. Yes, this means that ``true models'' (in terms of variables, parameters, etc) are not necessarily the best models for predictive performance, and simpler models are often better. Can you think of a reason why this could be the case? (Hint: you need to estimate the model from data.)
 
-\item The size (the number of parameters) of the selected model depends on the sample size: with larger samples sizes, we can often afford to fit larger models, and thus with larger sample sizes AIC will often select larger models.
+
+\item The size (the number of parameters) of the selected model depends on the sample size: with larger samples sizes, we can often afford to fit larger models, and thus with larger sample sizes AIC will often select larger models. (Larger can mean ``more variables'' or ``more parameters'' if we include, say, non-linear relationships, etc).
+
 \end{enumerate}
 
 
