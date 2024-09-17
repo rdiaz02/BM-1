@@ -795,6 +795,20 @@ Oh, and, of course, this section emphasizes another idea: a large p-value is not
 
 
 
+Figure \ref{fig-equiv}, from Lakens et al. 2018\footnote{Lakens et al.(2018). Equivalence Testing for Psychological Research: A Tutorial. \textit{Advances in Methods and Practices in Psychological Science}, 1(2): 259--269. \Burl{https://doi.org/10.1177/2515245918770963}}, shows equivalence testing alongside the usual null hypothesis significance testing, as well as other tests. Which of the four cases represented corresponds to the chlorine example in the notes? What case would represent examining if the effects of the brand name drug and a generic are similar?
+
+
+\begin{figure}[h!]
+ \begin{center}
+\includegraphics[width=0.80\paperwidth,keepaspectratio]{bioequiv-lakens-2018.png}
+ \caption{\label{fig-equiv} Equivalence testing, from Lakens et al 2018. Figure 1 in Lakens et al.(2018). Equivalence Testing for Psychological Research: A Tutorial. \textit{Advances in Methods and Practices in Psychological Science}, 1(2): 259--269. \Burl{https://doi.org/10.1177/2515245918770963}.
+}
+ \end{center}
+ \end{figure}
+
+
+
+
 
 
 
