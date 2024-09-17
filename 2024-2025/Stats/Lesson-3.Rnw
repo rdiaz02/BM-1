@@ -3721,7 +3721,7 @@ What is AIC computing then? The log of the likelihood penalized by the number of
 These are three key features of AIC:
 
 \begin{enumerate}
-\item AIC (under certain assumptions) is an unbiased estimate of the predictive accuracy of the model: the expected likelihood of the model when applied to new data (see Figure \ref{aic-otsuka}).
+\item AIC (under certain assumptions) is an unbiased estimate of the predictive accuracy of the model: the expected likelihood of the model when applied to new data (see Figure \ref{aic-otsuka}, from Otsuka (2023), \textit{Thinking about statistics. The philosophical foundations}.).
 \item AIC measures (again, under certain assumptions) how close to the true values are the predictions of the model\footnote{Here, ``how close'' is evaluated using the Kullback-Leibler divergence, a measure of distance between probability distributions.}.
 \item AIC is equivalent to leave-one-out cross-validation for (many) linear models (including linear regression and mixed-effects).
 \end{enumerate}
@@ -3729,7 +3729,7 @@ These are three key features of AIC:
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=0.40\paperwidth,keepaspectratio]{aic-otsuka.png}
-    \caption{\label{aic-otsuka} AIC as estimate of expected likelihood.  From J.\ Otsuka, 2023, \textit{Thinking about statistics. The philosophical foundations.}, Routledge, Figure 4.2, p.~116.}
+    \caption{\label{aic-otsuka} AIC as estimate of expected likelihood.  From J.\ Otsuka (2023), \textit{Thinking about statistics. The philosophical foundations.}, Routledge, Figure 4.2, p.~116.}
   \end{center}
 \end{figure}
 
