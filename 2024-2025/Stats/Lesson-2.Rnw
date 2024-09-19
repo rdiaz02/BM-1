@@ -1601,14 +1601,10 @@ Summary: do not use a Wilcoxon expecting it to test for mean differences. And be
 When we have paired data, the idea here is to assess whether the within-pair differences are symmetrically distributed (generally around zero). As we are talking about symmetry, this means that this test can be used \textbf{only with interval scale} data (see also section \ref{wpi}).
 
 
-The null hypothesis is that the differences are symmetrically distributed around some value (generally zero). We can therefore reject the null if the differences are symmetrical around some other value, or if the differences are not symmetrical around the posited value (as we said, generally 0), or a combination of both. Put differently, if we reject the null, we could be rejecting it for different reasons (asymmetry, symmetry around a value different from the one specified by the null), or combinations of those reasons\footnote{This is discussed, for example, in \Burl{https://stats.stackexchange.com/questions/348057/wilcoxon-signed-rank-symmetry-assumption}. Note, by the way, that this is not unique to this test: many tests can reject the null for a variety of reasons, and this is common in permutation-based tests.}. As usual, try to look at plots to disentangle what might be the case.
+The null hypothesis is that the differences are symmetrically distributed around some value (generally zero). We can therefore reject the null if the differences are symmetrical around some other value, or if the differences are not symmetrical around the posited value (as we said, generally 0), or a combination of both. Put differently, if we reject the null, we could be rejecting it for different reasons (asymmetry, symmetry around a value different from the one specified by the null), or combinations of those reasons\footnote{This is discussed, for example, in \Burl{https://stats.stackexchange.com/questions/348057/wilcoxon-signed-rank-symmetry-assumption}. Note, by the way, that this is not unique to this test: many tests can reject the null for a variety of reasons, and this is common in permutation-based tests.}. As usual, try to look at plots to disentangle what might be the case. It is often the case that, if we are dealing with within-individual differences, for example a ``before vs.~ after'' design, those within-individual differences will tend to be symmetric even if the center of the distribution shifts (regardless of the original distribution of the ``before'' measure ---see also the example in \ref{sym-paired-t}), but not always.
 
-In a nutshell, this is what the test does: for each pair, it computes the
-difference of the two measures (thus, taking differences must make sense,
-and it does not for ordinal data but it does for interval data). These
-differences (discarding the sign) are then ranked, and then the sum of the
-ranks of all the positive differences is computed and compared to the null
-distribution.
+
+How does the test work? In a nutshell, this is what the test does: for each pair, it computes the difference of the two measures (thus, taking differences must make sense, and it does not for ordinal data but it does for interval data). These differences (discarding the sign) are then ranked, and then the sum of the ranks of all the positive differences is computed and compared to the null distribution.
 
 
 
@@ -1639,6 +1635,9 @@ wilcox.test(dmycWide$diff.nc.c)
 
 For versions of R Commander 2.1-0 or later you can run the Wilcoxon signed
 rank test directly from the menu.
+
+
+Before we move on: what is the role of symmetry in the paired t-test? To try to make progress thinking about this, remember that the paired t-test is the same as testing the mean of the within-individual differences against a pre-specified mean. Go to Appendix, section \ref{sym-paired-t} for an example.
 
 
 
@@ -1971,6 +1970,33 @@ or a two-samples Wilcoxon test.
 
 
 \section{Appendix}
+
+\subsection{Symmetry and the paired t-test}\label{sym-paired-t}
+
+If you have access to it, Rupert Miller ``Beyond Anova'' (Chapman and Hall, 1997), bottom of p.~8 and p.~9 discusses this issue. In class, we will quickly discuss the code below:
+
+<<>>=
+## "num" random deviates from an exponential.
+## Play with num if you want. We use a very large num
+## to make it easier to see the patterns.
+num <- 1000
+d1 <- rexp(n = num, rate = 1)
+## The exponential is clearly asymmetric
+hist(d1)
+
+## Shift those numbers by adding 3, and a little bit of noise
+d2 <- d1 + 3 + rnorm(num, sd = 0.2)
+hist(d2)
+
+## What about the differences?
+d_d1_d2 <- d2 - d1
+hist(d_d1_d2)
+@
+
+So in many cases skewness (asymmetry) tends to cancel out (e.g., for example when we add a constant value plus some random, symmetric noise).
+
+
+And this emphasizes something else: when examining if assumptions are reasonable, think about what you are examining. Here, the distribution that matters is the distribution of the within-individual differences, not each of the separate distributions \texttt{d1} or \texttt{d2}. Your test is about individual differences, not about \texttt{d1} or \texttt{d2}.
 
 \subsection{A first taste of linear models}\label{lm-paired}
 
