@@ -1598,7 +1598,10 @@ Summary: do not use a Wilcoxon expecting it to test for mean differences. And be
 
 \subsection{Wilcoxon signed-rank test: matched-pairs or single sample test}
 
-When we have paired data, the idea here is to assess whether the within-pair differences are symmetrically distributed around zero. As we are talking about symmetry, this means that this test can be used \textbf{only with interval scale} data (see also section \ref{wpi}).
+When we have paired data, the idea here is to assess whether the within-pair differences are symmetrically distributed (generally around zero). As we are talking about symmetry, this means that this test can be used \textbf{only with interval scale} data (see also section \ref{wpi}).
+
+
+The null hypothesis is that the differences are symmetrically distributed around some value (generally zero). We can therefore reject the null if the differences are symmetrical around some other value, or if the differences are not symmetrical around the posited value (as we said, generally 0), or a combination of both. Put differently, if we reject the null, we could be rejecting it for different reasons (asymmetry, symmetry around a value different from the one specified by the null), or combinations of those reasons\footnote{This is discussed, for example, in \Burl{https://stats.stackexchange.com/questions/348057/wilcoxon-signed-rank-symmetry-assumption}. Note, by the way, that this is not unique to this test: many tests can reject the null for a variety of reasons, and this is common in permutation-based tests.}. As usual, try to look at plots to disentangle what might be the case.
 
 In a nutshell, this is what the test does: for each pair, it computes the
 difference of the two measures (thus, taking differences must make sense,
@@ -1606,6 +1609,8 @@ and it does not for ordinal data but it does for interval data). These
 differences (discarding the sign) are then ranked, and then the sum of the
 ranks of all the positive differences is computed and compared to the null
 distribution.
+
+
 
 
 Go do it with the dmyc data we used for the paired t-test (section
@@ -1634,6 +1639,7 @@ wilcox.test(dmycWide$diff.nc.c)
 
 For versions of R Commander 2.1-0 or later you can run the Wilcoxon signed
 rank test directly from the menu.
+
 
 
 
