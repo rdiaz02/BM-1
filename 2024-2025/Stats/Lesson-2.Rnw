@@ -1973,24 +1973,29 @@ or a two-samples Wilcoxon test.
 
 \subsection{Symmetry and the paired t-test}\label{sym-paired-t}
 
-If you have access to it, Rupert Miller ``Beyond Anova'' (Chapman and Hall, 1997), bottom of p.~8 and p.~9 discusses this issue. In class, we will quickly discuss the code below:
+In the paired t-test symmetry of the within-subject differences is important. This we know, because the paired t-test is just a one-sample t-test applied to within subject differences (and the usual assumptions of the one-sample t-test apply, one of them being that the data have an approximately symmetrical distribution).
+
+In the paired t-test, though, the within-individual differences (more generally, the within-experimental unit differences) are coming from, well, differences of, say, ``before'' and ``after'' distributions. How relevant is the distribution of those ``before'' and ``after''? In other words, if we define within-individual-difference as \(W\), with \(w_i = u_i - v_i\) (where \(U\) could be the ``after'' and \(V\) the ``before''), what is the relevance of the distributions of \(U\) and \(V\)? What can we expect about \(W\)?
+
+
+If you have access to it, Rupert Miller's ``Beyond Anova'' (Chapman and Hall, 1997), bottom of p.~8 and p.~9 discusses this issue. In class, we will quickly discuss the code below:
 
 <<>>=
 ## "num" random deviates from an exponential.
 ## Play with num if you want. We use a very large num
 ## to make it easier to see the patterns.
 num <- 1000
-d1 <- rexp(n = num, rate = 1)
+V <- rexp(n = num, rate = 1)
 ## The exponential is clearly asymmetric
-hist(d1)
+hist(V)
 
 ## Shift those numbers by adding 3, and a little bit of noise
-d2 <- d1 + 3 + rnorm(num, sd = 0.2)
-hist(d2)
+U <- V + 3 + rnorm(num, sd = 0.2)
+hist(U)
 
 ## What about the differences?
-d_d1_d2 <- d2 - d1
-hist(d_d1_d2)
+W <- U - V
+hist(W)
 @
 
 So in many cases skewness (asymmetry) tends to cancel out (e.g., for example when we add a constant value plus some random, symmetric noise).
