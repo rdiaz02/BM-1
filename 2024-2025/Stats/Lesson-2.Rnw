@@ -1447,14 +1447,16 @@ Wilcoxon as with the t-test. Nonparametric tests are not
 
 
 
-\subsection{Two-sample Wilcoxon or Mann-Whitney test}
+\subsection{Wilcoxon rank-sum test or Mann-Whitney U test: 2 independent samples}
 
 This test applies to data of ordinal and interval scales. The basic logic
 is: put all the observations together, rank them, and examine if the sum
 of the ranks of one of the groups is larger (or smaller) than the
-sum of the ranks from the other. If this makes sense to you, you should
+sum of the ranks from the other\footnote{The actual test statistic reported by R is not this one, but is one that is linearly related to it. Likewise, the equivalent Mann-Whitney U test uses another different statistic, but the test results are identical.}. If this makes sense to you, you should
 understand why you can use both ordinal and interval scales.
 
+
+%% The W statistic is: sum(ranks)[group = A] - n*(n+1)/2; where n is the sample size of the group in question.
 
 Just go do it with R Commander. It is under ``Statistics'',
 ``Nonparametric tests''. Do it for p53, pten, and brca1. Compare the
@@ -1517,7 +1519,7 @@ wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
 % wilcox.test(x, y)
 % @
 
-\subsection{What a two-sample Wilcoxon is not}
+\subsection{What a rank-sum Wilcoxon test is not}
 
 Many people say ``I'll use a Wilcoxon test to compare the means''. Well \ldots the \textbf{Wilcoxon test is not a test of means}. It is often not even a test of medians.  The Wilcoxon test can reject the null even if the medians are the same, and the Wilcoxon test can fail to reject the null even if the medians differ.
 
@@ -1594,12 +1596,9 @@ Summary: do not use a Wilcoxon expecting it to test for mean differences. And be
 %
 
 
-\subsection{Wilcoxon matched-pairs test}
+\subsection{Wilcoxon signed-rank test: matched-pairs or single sample test}
 
-The idea here is to assess whether the within-pair differences are
-symmetrically distributed around zero. As we are talking about symmetry,
-this means that this test can be used \textbf{only with interval scale}
-data (see also section \ref{wpi}).
+When we have paired data, the idea here is to assess whether the within-pair differences are symmetrically distributed around zero. As we are talking about symmetry, this means that this test can be used \textbf{only with interval scale} data (see also section \ref{wpi}).
 
 In a nutshell, this is what the test does: for each pair, it computes the
 difference of the two measures (thus, taking differences must make sense,
