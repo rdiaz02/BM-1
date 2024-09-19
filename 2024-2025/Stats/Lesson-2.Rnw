@@ -1672,7 +1672,7 @@ There are several problems with the above procedure, among them:
 
 Even if this procedure is (or was) common in some circles, you now know why it is a bad idea. Please, do not do this.
 
-Again, this is the type of ``cargo-cult statistics'' {\footnotesize (``going through the motions with scant understanding''; Stark and Saltelli, 2018. Cargo-cult statistics and scientific crisis. \textit{Significance}, 15) } that does no body any good. Think about your data, what you want to test (is it means? or is it something else?), what are reasonable assumptions (heavy tails, asymmetries, etc) and whether the deviations are likely to cause trouble. The above simple-minded (brain-dead, actually) procedure is no substitute for thinking.
+Again, this is the type of ``cargo-cult statistics''\footnote{``going through the motions with scant understanding''; Stark and Saltelli, 2018. Cargo-cult statistics and scientific crisis. \textit{Significance}, 15.} that does no body any good. Think about your data, what you want to test (is it means? or is it something else?), what are reasonable assumptions (heavy tails, asymmetries, etc) and whether the deviations are likely to cause trouble. The above simple-minded (brain-dead, actually) procedure is no substitute for thinking.
 
 
 
@@ -1987,21 +1987,22 @@ If you have access to it, Rupert Miller's ``Beyond Anova'' (Chapman and Hall, 19
 num <- 1000
 V <- rexp(n = num, rate = 1)
 ## The exponential is clearly asymmetric
-hist(V)
+hist(V, breaks = 20)
 
 ## Shift those numbers by adding 3, and a little bit of noise
 U <- V + 3 + rnorm(num, sd = 0.2)
-hist(U)
+hist(U, breaks = 20)
 
 ## What about the differences?
 W <- U - V
-hist(W)
+hist(W, breaks = 20)
 @
 
 So in many cases skewness (asymmetry) tends to cancel out (e.g., for example when we add a constant value plus some random, symmetric noise).
 
 
-And this emphasizes something else: when examining if assumptions are reasonable, think about what you are examining. Here, the distribution that matters is the distribution of the within-individual differences, not each of the separate distributions \texttt{d1} or \texttt{d2}. Your test is about individual differences, not about \texttt{d1} or \texttt{d2}.
+And this emphasizes something else: when examining if assumptions are reasonable, think about what you are examining. Here, the distribution that matters is the distribution of the within-individual differences (\(W\)), not each of the separate distributions \(U\) or \(V\): your test is about individual differences, \(W\), not about \(U\) or \(V\).
+
 
 \subsection{A first taste of linear models}\label{lm-paired}
 
