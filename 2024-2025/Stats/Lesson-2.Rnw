@@ -1665,8 +1665,12 @@ There are several problems with the above procedure, among them:
   face value (as it is conditional on the normality test).
 \end{itemize}
 
-Even if this procedure is (or was) common in some circles, you now know why it is
-a bad idea. Please, do not do this.
+Even if this procedure is (or was) common in some circles, you now know why it is a bad idea. Please, do not do this.
+
+Again, this is the type of ``cargo-cult statistics'' {\footnotesize (``going through the motions with scant understanding''; Stark and Saltelli, 2018. Cargo-cult statistics and scientific crisis. \textit{Significance}, 15) } that does no body any good. Think about your data, what you want to test (is it means? or is it something else?), what are reasonable assumptions (heavy tails, asymmetries, etc) and whether the deviations are likely to cause trouble. The above simple-minded (brain-dead, actually) procedure is no substitute for thinking.
+
+
+
 
 
 \clearpage
