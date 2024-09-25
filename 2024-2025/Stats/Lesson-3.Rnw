@@ -766,7 +766,7 @@ each case.
 In the example in section \nameref{multcomp1} $U + V + T + S = 3$ (beware, 3
 is the number of \textbf{hipothesis tests}, it is not the number of means;
 in our case, both are three, but Table \ref{table-multcomp} reflects
-number of hypothesis, not tests). Procedures such as the one we used
+number of hypothesis, not number of means). Procedures such as the one we used
 (Tukey) or Bonferroni or similar ones, try to control the probability that
 $V \geq 1$. They control what is called the ``family-wise error rate''
 (FWER).
@@ -782,7 +782,7 @@ rate provide are mechanisms for ensuring that $Pr(V \geq 1)$ is below a
 number you specify (e.g., 0.05).
 
 
-Note that, in our usage of Tukey, we did not pre-specify that $Pr(V \geq
+Note that, in our usage of Tukey, we did not pre-specify the actual $Pr(V \geq
 1)$. The procedure is run, and it gives us ``adjusted p-values''. And what
 is an adjusted p-value?  The classical paper from Wright, 1992, ``Adjusted
 p-values for simultaneous inference'', \textit{Biometrics}, 48:
@@ -790,8 +790,7 @@ p-values for simultaneous inference'', \textit{Biometrics}, 48:
 adjusted $P$-value for a particular hypothesis within a collection of
 hypotheses, then, is the smallest overall (i.e., 'experimentwise')
 significance level at which the particular hypothesis would be rejected.''
-This might sound like a mess, but it really ain't. Think about it. It is
-so nice that it makes comparisons very simple, as Wright explains: ``An
+Read it very carefully: it makes comparisons very simple; as Wright explains: ``An
 adjusted $P$-value can be compared directly with any chosen significance
 level $\alpha$: If the adjusted $P$-value is less than or equal to
 $\alpha$, the hypothesis is rejected.'' (If you find this too advanced for now, don't worry. But remember this once you feel more comfortable with these issues. And no, this paragraph will not be in the exam.)
@@ -807,7 +806,7 @@ There is a different approach to the multiple testing problem. In this
 approach we focus on controlling the fraction of false positives. The
 total number of null hypothesis we reject is $V+S$. The intuitive idea
 behind the control of the false discovery rate (\textbf{FDR}) is to bound
-(to set an upper limit to) to the ratio $\frac{V}{V+S}$\footnote{There are
+(to set an upper limit to) the ratio $\frac{V}{V+S}$\footnote{There are
   several different approaches. The most common one is to control $FDR =
   E(Q)$ where $Q=V/(V+S)$ if $V + S > 0$ (and $Q = 0$ otherwise). But
   there are others, such as the $pFDR$, etc.}.
@@ -828,7 +827,7 @@ that now these p-values are adjusted for FDR (not adjusted for control of
 the family wise error rate).  So, when we deal with FDR, the adjusted
 p-value of an individual hypothesis is the lowest level of FDR for which
 the hypothesis is first included in the set of rejected hypotheses (e.g.,
-Reiner et al., 2003, \textit{Bioinformatics}).
+Reiner et al., 2003, \textit{Bioinformatics}\footnote{Reiner et al. (2003). Identifying differentially expressed genes using false discovery rate controlling procedures. Bioinformatics, 19(3), 368--375. https://doi.org/10.1093/bioinformatics/btf877}).
 
 
 The FDR is usually employed in screening procedures, where we are willing
@@ -953,8 +952,8 @@ m1 <- lm(y ~ A + B, data = df1)
 anova(m1)
 @
 
-The above is the anova table; we will say many more things later about
-that.
+The above is the anova table; later, we will say many more things about
+it.
 
 
 But for now notice also this output, that gives the estimated coefficients:
