@@ -316,7 +316,7 @@ features ---annoyances?--- of R. I'll explain them in class. But the key concept
 do not change. For example, go to ``Statistics -> Fit models models -> Linear model'' (Linear model, NOT regression: do you know why?). Then, go to ``Models -> Hypothesis test -> ANOVA model''
 
 
-<<results='hide'>>=
+<<>>=
 LinearModel.1 <- lm(activ ~ ftraining, data = dmit)
 Anova(LinearModel.1, type="II")
 @
@@ -324,11 +324,9 @@ Anova(LinearModel.1, type="II")
 In most of this course we will generally prefer this second route (i.e., functions \texttt{lm} with \texttt{Anova}).
 
 
-We will cover this in more detail in class, in case you do not remember
-ANOVA.
+\vspace*{25pt}
 
-
-\externalf Read \textbf{now} the 2 and a half pages from Peter Dalgaard's book available in
+\externalf We will cover this in more detail in class, in case you do not remember ANOVA. So  read \textbf{now} the 2 and a half pages from Peter Dalgaard's book available in
 Moodle (\myhref{anova-basic-theory.pdf}), then read
 \myhref{anova-theory-even-simpler.pdf}, and then re-read Dalgaard's. If there are questions, we will cover them in class.
 
