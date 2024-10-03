@@ -1514,8 +1514,8 @@ independencies and conditional independencies implied by a DAG.
 
 
 
-\section{Designed experiments and lack of confounding}\label{randomiz}
-\subsection{Randomization and exchangeability}
+% \section{Designed experiments and lack of confounding}\label{randomiz}
+\section{Randomization and exchangeability in designed experiments}
 In designed experiments with random assignment of experimental units (patients,
 petri dishes, whatever) to treatments, there is no
 confounding. There is no arrow to treatment assignment from anything else
@@ -1541,7 +1541,7 @@ see chapter 8 in \citet{hernan2020}. On both issues, see also chapter 5 in
 \citet{westreich2019} for a shorter discussion.
 
 
-\subsection{Terminology: exchangeability, ignorability}\label{ignorab}
+\section{Terminology: exchangeability, ignorability}\label{ignorab}
 
 More on ``exchangeability''. What follows is just for completeness, and because I
 tend to trip over terminological issues.
@@ -1563,7 +1563,7 @@ covariates. % But then,
   % itself nor to the treatment actually received.
 
 
-\subsection{Randomization, exchangeability, counterfactuals, and potential
+\section{Randomization, exchangeability, counterfactuals, and potential
   outcomes}\label{counterf}
 
 I have not used the words counterfactuals or potential outcomes. But
