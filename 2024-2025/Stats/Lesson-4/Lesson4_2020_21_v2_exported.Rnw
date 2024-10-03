@@ -30,7 +30,7 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{graphicx}
-\usepackage[authoryear]{natbib}
+\usepackage{natbib}
 \usepackage[pdfusetitle,
  bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
  breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
@@ -80,6 +80,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{float}
 \usepackage[utf8]{inputenc}
+
+
+
+% \usepackage{doi}
+% %% Next works with doi package, but the first part is colored differently
+%% \renewcommand{\doitext}{DOI: https://doi.org/}
+%% So use this instead, modified from
+%% https://tex.stackexchange.com/a/482395
+\newcommand*{\doi}{}
+\makeatletter
+\newcommand{\doi@}[1]{\href{https://doi.org/#1}{\textcolor{black}{DOI: } https://doi.org/#1}}
+\DeclareRobustCommand{\doi}{\hyper@normalise\doi@}
+\makeatother
 
 
 \usepackage[dvipsnames,table]{xcolor}
@@ -1167,8 +1180,8 @@ content. What does the p-value inform about the bias? read references
 size.
 \end{xca}
 
-% \bibliographystyle{plainnat}
-% \bibliography{library.bib/library}
+%\bibliographystyle{jss2}
+\bibliographystyle{natbib_paren_date_urlbst}
 
 \bibliography{refs}
 
