@@ -1602,6 +1602,7 @@ effect (what we get when we don't). In the confounding case, of course, we must
 adjust for the covariate.
 
 
+\section{References}
 
 %% FIXME: in the future, use \bibliographystyle{jss2}
 {\small
