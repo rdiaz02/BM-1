@@ -211,7 +211,7 @@ And the reason we can tell ``there is something wrong going on here if we infer
 an effect of red wine on health'' is, precisely, because we are trying to use a
 model that has causal interpretations. We are trying to answer questions such as
 ``Is red wine really good for your health?''  or ``Is switching from not
-consuming red wine to consuming moderates amount of it a good idea?''. See
+consuming red wine to consuming moderate amounts of it a good idea?''. See
 \citet[][p.\ 84, for similar comments]{hernan2020}
 
 
