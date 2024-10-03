@@ -2866,8 +2866,8 @@ anova(mcyst3, mcyst2)
 
 This is a comparison of two models using an F test: it tests whether the
 larger (more complex, with more terms) model is significantly better than
-the smaller one. It clearly shows that, in this case, that the larger
-model model (the one with both a main effect of ``sex'' and an
+the smaller one. It clearly shows that, in this case,  the larger
+model (the one with both a main effect of ``sex'' and an
 interaction) is not significantly better than the one without ``sex''. So
 we can just keep model \Robject{mcyst3}: there is no statistical evidence
 of \Robject{mcyst2} being any better. Again, notice how we have compared two models that, in this case, differed by the presence of several terms: the small model had only age, the large had sex and the interaction of sex and age. Being able to compare (nested ---see below) models that differ in several terms at once is really handy and there is no need to proceed by dropping one term at a time.
@@ -2944,7 +2944,7 @@ We will see interactions, parallel and non-parallel slopes, and more
 comparison of models. Again, these analyses are not fully correct as we
 ignore phylogenetic relatedness. But they are nice to illustrate a couple
 of points. We will directly use log transformations (again, theory and
-previous empirical evidence indicate this is the way to go ---and I looked
+previous empirical evidence indicate this is the way to go ---and we looked
 at a couple of different models already).
 
 
@@ -3255,13 +3255,7 @@ distribution has several very large residuals, is heavy tailed, and also
 somewhat skewed.
 
 The bottom right can be hard to interpret: it shows two quantities
-(residuals and leverage) that, together, are part of Cook's distance, that
-measures the effect of individual points on the fitted coefficients
-(values of Cook's distance larger than 1 usually indicate a possibly very
-influential point, but any point with a widely outstanding Cook's distance
-deserves a closer look).  The plot called ``Influence plots'' is very
-similar to this one. However, I often find it simpler to look at plots
-Cook's distance (function \Rfunction{cooks.distance}).
+(residuals and leverage) that, together, are part of Cook's distance. Cook's distance measures the effect of individual points on the fitted coefficients (values of Cook's distance larger than 1 usually indicate a possibly very influential point, but any point with a widely outstanding Cook's distance deserves a closer look).  The plot called ``Influence plots'' is very similar to this one. However, I often find it simpler to look at plots Cook's distance (function \Rfunction{cooks.distance}).
 
 
 
@@ -3682,7 +3676,7 @@ This is a very quick summary of some of the reasons why we fit statistical model
 
   Yes, causal inference and intervention on the one hand and understanding on the other are often very closely related. But they are not the same. For example, you might have a relatively good understanding of a particular process, and yet be unable to predict exactly what an intervention will do because of the presence of modifier variables.
 
-  And sometimes we might not understand the mechanisms in detail\footnote{When one has an adequate understanding of mechanisms is actually a difficult question} and, yet, be able to conduct very successful interventions if we are able to estimate the causal effect of a variable\footnote{Briefly: the effect that changing, by manipulation, a variable from one state or value to another has on the outcome}.
+  And sometimes we might not understand the mechanisms in detail\footnote{When one has an adequate understanding of mechanisms is actually a difficult question.} and, yet, be able to conduct very successful interventions if we are able to estimate the causal effect of a variable\footnote{Briefly: the effect that changing, by manipulation, a variable from one state or value to another has on the outcome.}.
 
 
   And intervention is not totally unrelated to successful prediction either, of course. Elements of models that play a role in meteorological and climatological prediction are also present in causal models that are used to guide (or try to guide, unfortunately without much success) actions to prevent the disaster of climate change; we are asking here ``what variables should we change, and to what values, to achieve this result or prevent this other result?''
@@ -3731,7 +3725,7 @@ where \(k\) is the number of parameters, \(\hat{L}\) is the likelihood of the mo
 
 And what is the likelihood? You should now this already. If not, ask in class, but essentially, \(L(\theta)\), is the probability of the data under parameter \(\theta\) (it is better to think of the joint density, as that includes, then, continuous distributions). For a data set, we can find the value of \(\theta\), the parameters, that makes that likelihood as large as it can be; this would be the maximum likelihood estimate of the parameter(s) \(\theta\).  So in the expression above, \(\hat{L}\) is the value of the likelihood when evaluated with the paramenters that make that likelihood as large as possible, i.e., at the value(s) that make the data as likely as possible. In a regression example, this would be the value of the likelihood when the regression coefficientes (and the intercept) take the values estimated by your regression software.
 
-What is AIC computing then? The log of the likelihood penalized by the number of parameters. In other words, AIC is showing the trade-off between good fit (to the current data) and number of parameters: models with many parameters might be able to adjust the data better (i.e., have larger likelihood), but slight increases in likelihood might not justify some of those parameters. So AIC says something like ``larger likelihood is good, but do not get carried away adding too many parameters''. With too many parameters, the model might be just too complex. Too complex for what? Not for the present data (the likelihood increased), but too complex to make good predictions in other data sets. Too many parameters increase the risk of overfitting.
+What is AIC computing then? The log of the likelihood penalized by the number of parameters. In other words, AIC is showing the trade-off between good fit (to the current data) and number of parameters: models with many parameters might be able to adjust the data better (i.e., have larger likelihood), but slight increases in likelihood might not justify some of those parameters. So AIC says something like ``larger likelihood is good, but do not get carried away adding too many parameters''. With too many parameters, the model might be just too complex. Too complex for what? Not for the present data (the likelihood increased), but too complex for making good predictions in other data sets. Too many parameters increase the risk of \textbf{overfitting}.
 
 
 These are three key features of AIC:
@@ -3820,7 +3814,7 @@ step(longev_b_r, direction = "both")
 
 The \textbf{major difference} is that when we compare models using \Rfunction{anova}, or
 examine each of the terms in a fitted model with, say, \textbf{\Rfunction{Anova}, we are
-conducting statistical hypothesis testing}. In contrast, the AIC criterion is not
+conducting statistical hypothesis testing}\footnote{The hypotheses tests we conduct with Anova are, in fact, comparisons of models, where we test the null hypothesis that the smaller model is good enough.}. In contrast, the AIC criterion is not
 used to conduct hypothesis testing, but is a criterion related to predictive
 performance; so when we carry out \textbf{model selection using AIC we are trying to find
 the best model where ``best'' is ``best from the point of view of prediction''}.
@@ -3926,7 +3920,7 @@ later\footnote{R.\ Fisher, one of the fathers of modern statistics, as
   well as modern quantitative and evolutionary genetics, is often quoted
   in this context because he said ``To consult the statistician after an
   experiment is finished is often merely to ask him to conduct a post
-  mortem examination. He can perhaps say what the experiment died of.''}
+  mortem examination. He can perhaps say what the experiment died of.''}.
 
 
 
@@ -3980,7 +3974,7 @@ years. Some recommended readings, in approximate order of increasing difficulty
 \item Rosenbaum, 2017, ``Observation and experiment. An introduction to causal inference'' (Rosenbaum does not use
   DAGs)
 \item Pearl, Glymour, Jewell, 2016, ``Causal inference in statistics: a primer''
-  [Beware with errata: avoid early printings of the book and make sure to look at
+  [Beware of errata: avoid early printings of the book and make sure to look at
   the errata page anyway!]
 \item Hern\'an and Robins. 2020. ``Causal inference: what if''. Available from \Burl{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
 \item Morgan and Winship, ``Counterfactuals and causal inference: methods and
