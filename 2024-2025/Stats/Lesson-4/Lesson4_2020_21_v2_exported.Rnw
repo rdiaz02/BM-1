@@ -99,6 +99,7 @@
 \title{BM1, Applied Statistics, Lesson 4: Basic analysis of categorical data
 and contingency tables}
 \author{Luis del Peso Ovalle}
+\date{2020-02-18}
 \maketitle
 
 \lyxaddress{Dept. Biochemistry, Universidad Autonoma de Madrid}
@@ -107,7 +108,7 @@ and contingency tables}
 Sols\textquotedblright{} (UAM-CSIC)}
 
 \lyxaddress{Madrid, Spain}
-\date{02/18/2020}
+
 
 \tableofcontents{}
 
@@ -286,16 +287,16 @@ legend("topright",legend=paste(DF,"df"),fill=color)
 @
 \end{figure}
 
-\begin{comment}
-Although the chi-square distribution could be calculated empirically
-by a manual or computer simulation (e.g. fill a bag with balls labelled
-``+/+'', ``+/-'' or ``-/-'' so that their proportions are 1:2:1.
-Then, take a random sample and compute the $\chi^{2}$ value. Repeat
-many times and plot the $\chi^{2}$ values obtained in each iteration),
-the distributions of statistics such as the chi-square distribution
-are derived analytically, that is the formula (function) that it follows
-is derived from first principles.
-\end{comment}
+% \begin{comment}
+% Although the chi-square distribution could be calculated empirically
+% by a manual or computer simulation (e.g. fill a bag with balls labelled
+% ``+/+'', ``+/-'' or ``-/-'' so that their proportions are 1:2:1.
+% Then, take a random sample and compute the $\chi^{2}$ value. Repeat
+% many times and plot the $\chi^{2}$ values obtained in each iteration),
+% the distributions of statistics such as the chi-square distribution
+% are derived analytically, that is the formula (function) that it follows
+% is derived from first principles.
+% \end{comment}
 
 
 Note however that shape of the chi-square($\chi^{2}$) distribution
@@ -308,26 +309,26 @@ of the third is calculated from these two, i.e. only two categories
 out of three are \textquotedblleft free to vary\textquotedblright .
 Thus degrees of freedom= 3 categories -1 = 2.}.
 
-\begin{comment}
-Note that as the degrees of freedom increase the distribution of expected
-chi-square values under the null hypothesis contain increasingly large
-values. My interpretation is that, since the chi-squares statistics
-is a sum across levels and for each level we always expect some deviation
-due to chance, the larger the number of levels the higher the value
-of chi-square expected by chance.
-\end{comment}
-\begin{comment}
-From wikipedia: In statistics, the number of degrees of freedom is
-the number of values in the final calculation of a statistic that
-are free to vary. The number of independent ways by which a dynamic
-system can move without violating any constraint imposed on it, is
-called degree of freedom. In other words, the degree of freedom can
-be defined as the minimum number of independent coordinates that can
-specify the position of the system completely. Mathematically, degrees
-of freedom is the number of dimensions of the domain of a random vector,
-or essentially the number of 'free' components (how many components
-need to be known before the vector is fully determined).
-\end{comment}
+% \begin{comment}
+% Note that as the degrees of freedom increase the distribution of expected
+% chi-square values under the null hypothesis contain increasingly large
+% values. My interpretation is that, since the chi-squares statistics
+% is a sum across levels and for each level we always expect some deviation
+% due to chance, the larger the number of levels the higher the value
+% of chi-square expected by chance.
+% \end{comment}
+% \begin{comment}
+% From wikipedia: In statistics, the number of degrees of freedom is
+% the number of values in the final calculation of a statistic that
+% are free to vary. The number of independent ways by which a dynamic
+% system can move without violating any constraint imposed on it, is
+% called degree of freedom. In other words, the degree of freedom can
+% be defined as the minimum number of independent coordinates that can
+% specify the position of the system completely. Mathematically, degrees
+% of freedom is the number of dimensions of the domain of a random vector,
+% or essentially the number of 'free' components (how many components
+% need to be known before the vector is fully determined).
+% \end{comment}
 
 So, to determine the probability of getting a chi-square value equal
 or higher than ours under the null hypothesis, we have to compare
@@ -339,18 +340,21 @@ Moreover, the peak of the distribution is not at zero as one would
 intuitively expect. In fact, the peak approach to zero for small df
 but departs from zero for increasingly larger df. The reason is that
 the more categories/levels there are (df=\#categories-1), the more
-likely the observed and expected frequencies will differ just by chance%
-\begin{comment}
-As the chi-square statistic is a sum of residuals across categories,
-the larger the number of categories the larger the value of chi-square.
-In each category there is a random chance to have higher/lower number
-than expected, since they are squared, in each category there is a
-random chance of having a number larger than expected. As the number
-of categories increases the sum of these deviations increases. Note
-that residuals (observed-expected) are normalized to the expected
-values not to the number of categories.
-\end{comment}
-. Thus, chi-square values far below the peak of the distribution would
+likely the observed and expected frequencies will differ just by chance.
+
+
+% \begin{comment}
+% As the chi-square statistic is a sum of residuals across categories,
+% the larger the number of categories the larger the value of chi-square.
+% In each category there is a random chance to have higher/lower number
+% than expected, since they are squared, in each category there is a
+% random chance of having a number larger than expected. As the number
+% of categories increases the sum of these deviations increases. Note
+% that residuals (observed-expected) are normalized to the expected
+% values not to the number of categories.
+% \end{comment}
+
+Thus, chi-square values far below the peak of the distribution would
 imply than the agreement between observed and expected is even better
 than what you would expected by chance. For this reason, chi-square
 tests are typically one-tailed test focusing on the right-hand tail
@@ -384,11 +388,11 @@ for categorical data. In fact, because it only contains categorical
 data, these are the only options available in R commander for this
 data set.
 
-\begin{comment}
-Note that in this case the bar plot does not contain any error bar
-because it represent the absolute (or relative) numbers of cases in
-each level, there is no uncertainty about its value.
-\end{comment}
+% \begin{comment}
+% Note that in this case the bar plot does not contain any error bar
+% because it represent the absolute (or relative) numbers of cases in
+% each level, there is no uncertainty about its value.
+% \end{comment}
 
 \begin{figure}[h]
 \caption{\protect\label{fig:Representing-categorical-data}Representing categorical
@@ -494,30 +498,30 @@ Although we will only deal with two variables in this class, you
 could construct multi-way contingency tables for more than two categorical
 variables.
 
-\begin{comment}
-to make it easier to understand use the following example. We are
-interested in studying weather the color of the clothes a person wears
-depend on their gender. We sample a group of 100 people (the class)
-in which are 60 women and 40 men. And found that 20 of women wear
-colorful (yellow, pink, red,...) raincoats whereas 40 wear dark (black,
-grey, blue) raincoats. Among men, the numbers are 5 (colorful) and
-35 (dark). What numbers would we expect if the two variables were
-independent (null hypothesis)? One way to think about it is: everyone
-in the class leave their raincoats in the hangers, then randomly assign
-raincoats to each person. What would be the distribution of colors
-among men and women in the class? use a contingency table with gender
-in the rows and colors in the columns to compute the expected write
-down the marginals and distribute colors (column marginals) between
-male and female according to the proportion between the row marginals.
-The expected numbers under the null hypothesis (variables are independent)
-could be obtained using a thought experiment: All people in the class
-leave their raincoat in the hangers, then a randomly picked raincoat
-is assigned to each person in the class, then count the number of
-males/females wearing colorful/dark rainbows. Repeat the experiment
-n times. Since 1/4 of the raincoats are colorful, a quarter of the
-women and a quarter of men will receive a colorful coat on average,
-that is 15 women and 10 men.
-\end{comment}
+% \begin{comment}
+% to make it easier to understand use the following example. We are
+% interested in studying weather the color of the clothes a person wears
+% depend on their gender. We sample a group of 100 people (the class)
+% in which are 60 women and 40 men. And found that 20 of women wear
+% colorful (yellow, pink, red,...) raincoats whereas 40 wear dark (black,
+% grey, blue) raincoats. Among men, the numbers are 5 (colorful) and
+% 35 (dark). What numbers would we expect if the two variables were
+% independent (null hypothesis)? One way to think about it is: everyone
+% in the class leave their raincoats in the hangers, then randomly assign
+% raincoats to each person. What would be the distribution of colors
+% among men and women in the class? use a contingency table with gender
+% in the rows and colors in the columns to compute the expected write
+% down the marginals and distribute colors (column marginals) between
+% male and female according to the proportion between the row marginals.
+% The expected numbers under the null hypothesis (variables are independent)
+% could be obtained using a thought experiment: All people in the class
+% leave their raincoat in the hangers, then a randomly picked raincoat
+% is assigned to each person in the class, then count the number of
+% males/females wearing colorful/dark rainbows. Repeat the experiment
+% n times. Since 1/4 of the raincoats are colorful, a quarter of the
+% women and a quarter of men will receive a colorful coat on average,
+% that is 15 women and 10 men.
+% \end{comment}
 
 
 \subsection{Chi-squared test for heterogeneity\protect\footnote{also known as chi-squared test of independence to differentiate it
@@ -558,18 +562,18 @@ we multiply the number of categories (minus 1) of each variable. For
 example, in a case with two variables with 2 and 3 categories respectively
 (as in the case \#2), df=(2-1){*}(3-1)=2.
 
-\begin{comment}
-Finally, it should be noted that the degrees of freedom are not based
-on the number of observations as with a Student's t or F-distribution.
-For example, if testing for a fair, six-sided die, there would be
-five degrees of freedom because there are six categories/parameters
-(each number). The number of times the die is rolled will have absolutely
-no effect on the number of degrees of freedom.
+% \begin{comment}
+% Finally, it should be noted that the degrees of freedom are not based
+% on the number of observations as with a Student's t or F-distribution.
+% For example, if testing for a fair, six-sided die, there would be
+% five degrees of freedom because there are six categories/parameters
+% (each number). The number of times the die is rolled will have absolutely
+% no effect on the number of degrees of freedom.
 
-The degrees of freedom in the case of contingency tables can be visualized
-as the marginal occupying the calls in the contingency adjacent to
-them, the remaining empty cells are the df.
-\end{comment}
+% The degrees of freedom in the case of contingency tables can be visualized
+% as the marginal occupying the calls in the contingency adjacent to
+% them, the remaining empty cells are the df.
+% \end{comment}
 
 
 \subsection{Visualizing multivariate categorical data}
@@ -593,7 +597,7 @@ Mosaic plots are a very informative two-dimensional representation
 of the categorical data (see figure \ref{fig:Visualization-of-multivariate}).
 Unfortunately it is not implemented in R commander. Finally, an additional
 type of graph to represent categorical data is described in reference
-\citet{Xu2010} (by the way, this reference is a nice review of categorical
+\citet{xu2010a} (by the way, this reference is a nice review of categorical
 data analysis in experimental biology).
 
 \begin{comment}
@@ -662,22 +666,27 @@ random sampling of an hypothetical population containing the expected
 proportions in each category. Thus, when conducting a good-of-fitness
 test with a sample size and/or expected counts are less than 5 for
 more than 20\% of the cells, the randomization test should be used
-instead. %
-\begin{comment}
-by me: this just simulates multiple random samples from the expected
-distribution (or the null), computes the chi-square statistic for
-each of them and counts the number of times the value of the statistic
-is higher that the one observed.
+instead.
 
-In R it is done using the chisq.test() function with the argument
-\emph{simulate.p.value=T}. In this case the p-value is derived via
-Monte Carlo simulation. The repeated random sampling from an hypothetical
-population is an example of a more general procedure called Montecarlo
-Simulation Method that uses the properties of the sample, or the expected
-properties of a population, and takes a large number of simulated
-random samples to create a distribution that would apply under the
-null hypothesis.
-\end{comment}
+
+
+% \begin{comment}
+% by me: this just simulates multiple random samples from the expected
+% distribution (or the null), computes the chi-square statistic for
+% each of them and counts the number of times the value of the statistic
+% is higher that the one observed.
+
+% In R it is done using the chisq.test() function with the argument
+% \emph{simulate.p.value=T}. In this case the p-value is derived via
+% Monte Carlo simulation. The repeated random sampling from an hypothetical
+% population is an example of a more general procedure called Montecarlo
+% Simulation Method that uses the properties of the sample, or the expected
+% properties of a population, and takes a large number of simulated
+% random samples to create a distribution that would apply under the
+% null hypothesis.
+% \end{comment}
+
+
 \item Fisher's Exact test. It can be used for 2x2 contingency tables regardless
 the sample size. It does not calculates any statistic but instead
 calculates the probability of the observed distribution directly.
@@ -685,69 +694,73 @@ However, unlike the randomization tests, it does not relies on random
 sampling, instead it computes the exact probability of getting the
 observed distribution (and any other more extreme) by ``counting''
 all the possible combinations that lead to the observed frequencies.
-\begin{comment}
-From: \url{http://www.physics.csbsju.edu/stats/exact.html} , from
-\url{http://www.biostathandbook.com/fishers.html}, from \url{http://www.stat.wisc.edu/~st571-1/06-tables-2.pdf}
-(this one is saved in the folder ``Estadistica\_y\_probabilidad''
-under ``Books'' in my computer) and from \citet{McKillup2012}.
-In the exact method, we view the particular contingency table we got
-in our experiment as embedded in a universe of similar tables that
-have the same outcome probabilities as our table (i.e., have the same
-row totals) and the same distribution of treatments (i.e., have the
-same column totals). To compute the exact probability we generate
-all possible variations of the table that have the same column and
-row counts. Then calculate the probability of each table and then
-sum the probability of the given table and every other \textquotedbl unusual\textquotedbl{}
-table. (The \textquotedbl unusual\textquotedbl{} tables are those
-that have probabilities less than or equal to the given table.) If
-the total probability of such unusual tables is \textquotedbl small\textquotedbl{}
-\textendash that is if it is rare to have observed such unlikely tables\textendash{}
-we can reject the null hypothesis. To calculate the probability of
-each table we just sample each category without replacement and compute
-the it. To calculate the probability of each table (i.e. of getting
-the exact number we have in each cell of the table) we use the hypergeometric
-distribution. The hypergeometric distribution is similar to the binomial
-distribution in that it counts the number of successes in a sample
-of size n , but the sample is made without replacement from a finite
-population, and so separate trials are not independent. For example,
-a bucket contains r red balls and w white balls and n balls are sampled
-without replacement. If the random variable X counts the number of
-red balls in the sample, then the probability of X=k under the hypergeometric
-distribution is: $P(X=k)=\frac{\left(\begin{array}{c}
-r\\
-k
-\end{array}\right)\left(\begin{array}{c}
-w\\
-n-w
-\end{array}\right)}{\left(\begin{array}{c}
-r+w\\
-n
-\end{array}\right)}$. Then in the case of a contingency table, we can model it as:
 
-\begin{tabular}{|c|c|}
-\hline
-X & rt1-X\tabularnewline
-\hline
-ct1-X & ct2-rt1+X\tabularnewline
-\hline
-\end{tabular}
 
-where rt1 and rt2 are row totals and ct1 and ct2 column totals.
+% \begin{comment}
+% From: \url{http://www.physics.csbsju.edu/stats/exact.html} , from
+% \url{http://www.biostathandbook.com/fishers.html}, from \url{http://www.stat.wisc.edu/~st571-1/06-tables-2.pdf}
+% (this one is saved in the folder ``Estadistica\_y\_probabilidad''
+% under ``Books'' in my computer) and from \citet{McKillup2012}.
+% In the exact method, we view the particular contingency table we got
+% in our experiment as embedded in a universe of similar tables that
+% have the same outcome probabilities as our table (i.e., have the same
+% row totals) and the same distribution of treatments (i.e., have the
+% same column totals). To compute the exact probability we generate
+% all possible variations of the table that have the same column and
+% row counts. Then calculate the probability of each table and then
+% sum the probability of the given table and every other \textquotedbl unusual\textquotedbl{}
+% table. (The \textquotedbl unusual\textquotedbl{} tables are those
+% that have probabilities less than or equal to the given table.) If
+% the total probability of such unusual tables is \textquotedbl small\textquotedbl{}
+% \textendash that is if it is rare to have observed such unlikely tables\textendash{}
+% we can reject the null hypothesis. To calculate the probability of
+% each table we just sample each category without replacement and compute
+% the it. To calculate the probability of each table (i.e. of getting
+% the exact number we have in each cell of the table) we use the hypergeometric
+% distribution. The hypergeometric distribution is similar to the binomial
+% distribution in that it counts the number of successes in a sample
+% of size n , but the sample is made without replacement from a finite
+% population, and so separate trials are not independent. For example,
+% a bucket contains r red balls and w white balls and n balls are sampled
+% without replacement. If the random variable X counts the number of
+% red balls in the sample, then the probability of X=k under the hypergeometric
+% distribution is: $P(X=k)=\frac{\left(\begin{array}{c}
+% r\\
+% k
+% \end{array}\right)\left(\begin{array}{c}
+% w\\
+% n-w
+% \end{array}\right)}{\left(\begin{array}{c}
+% r+w\\
+% n
+% \end{array}\right)}$. Then in the case of a contingency table, we can model it as:
 
-The probability of this table under the hypergeometric distribution
-is:ion is: $P(X)=\frac{\left(\begin{array}{c}
-rt1\\
-X
-\end{array}\right)\left(\begin{array}{c}
-rt2\\
-ct1-X
-\end{array}\right)}{\left(\begin{array}{c}
-rt1+rt2\\
-ct1
-\end{array}\right)}$.
+% \begin{tabular}{|c|c|}
+% \hline
+% X & rt1-X\tabularnewline
+% \hline
+% ct1-X & ct2-rt1+X\tabularnewline
+% \hline
+% \end{tabular}
 
-See \url{https://en.wikipedia.org/wiki/Hypergeometric_distribution}
-\end{comment}
+% where rt1 and rt2 are row totals and ct1 and ct2 column totals.
+
+% The probability of this table under the hypergeometric distribution
+% is:ion is: $P(X)=\frac{\left(\begin{array}{c}
+% rt1\\
+% X
+% \end{array}\right)\left(\begin{array}{c}
+% rt2\\
+% ct1-X
+% \end{array}\right)}{\left(\begin{array}{c}
+% rt1+rt2\\
+% ct1
+% \end{array}\right)}$.
+
+% See \url{https://en.wikipedia.org/wiki/Hypergeometric_distribution}
+% \end{comment}
+
+
 Fisher's exact test is more accurate than the chi-square test when
 the expected numbers are small, thus it is advisable to use Fisher's
 exact test rather than chi-square test of independence when the total
@@ -889,60 +902,65 @@ levels (``success'' and ``failure'') and when certain conditions
 are met, the sampling distribution of the estimated proportion is
 nearly normal and inference can be done using parametric test much
 like for numerical data. %
-\begin{comment}
-See ``Data Analysis and statistical Inference'' course notes and
-book ``OpenIntro Statistics''
-
-This test can be applied when: 1) each sample point can result in
-just two possible outcomes (that is when the categorical variable
-has only two levels). 2) there are at least 10 observations in each
-category level. If these conditions are met, then the sampling distribution
-of the estimated proportion is nearly normal and inference can be
-done much like for numerical data.
-
-\paragraph{For example (from \protect\url{https://www.cliffsnotes.com/study-guides/statistics/univariate-inferential-tests/test-for-comparing-two-proportions}),
-a public health researcher wants to know how two high schools\textemdash one
-in the inner city and one in the suburbs\textemdash differ in the
-percentage of students who smoke. A random survey of students gives
-the following results: }
-
-\begin{table}[h]
-\caption{example proportion test}
-
-\begin{tabular}{|c|c|c|}
-\hline
- & n & smokers\tabularnewline
-\hline
-\hline
-inner city & 125 & 47\tabularnewline
-\hline
-suburban & 153 & 52\tabularnewline
-\hline
-\end{tabular}
-\end{table}
 
 
-\paragraph{{[}note that this can be represented as a 2x2 contingency table with
-variable Smoker (yes,no) versus location (inner-city, suburban){]}
-The proportion of smokers in inner-city school is 47/125=0.376 and
-the proportion of smokers in the suburban school is 52/153=0.340.
-Are these proportions significantly different?. {[}the following by
-me{]} To address this question the tests assumes that the distribution
-of sample proportions follows a normal distribution (similar to the
-central limit theorem for sample means) and thus we can compare the
-two proportions using a z-score (equivalent to a t-test). }
+% \begin{comment}
+% See ``Data Analysis and statistical Inference'' course notes and
+% book ``OpenIntro Statistics''
 
-\paragraph{In the case of comparing the proportion observed in a sample with
-an expected value (e.g. the proportion of males in a course with the
-value of 0.5 expected for the general population), we only have to
-compute the sd the population which is given by the formula: $\sqrt{\frac{p_{0}\left(1-p_{0}\right)}{n}}$
-and then compute the z-score (z statistic): $z=\frac{\hat{p}-p_{o}}{\sqrt{\frac{p_{0}\left(1-p_{0}\right)}{n}}}$
-where $\hat{p}$ is the expected proportion in the general population.
-The the probability can be read from a standard normal table (or distribution).
-E.g. if z>1.96 (or z<-1.96), p<0.05 and if z>2.6 (or z<-2.6), p<0.01.
-In the case of the comparison between proportions in two populations
-we will use $z=\frac{p_{1}-p_{2}}{\sqrt{\frac{p_{1}\left(1-p_{1}\right)}{n_{1}}+\frac{p_{2}\left(1-p_{2}\right)}{n_{2}}}}$}
-\end{comment}
+% This test can be applied when: 1) each sample point can result in
+% just two possible outcomes (that is when the categorical variable
+% has only two levels). 2) there are at least 10 observations in each
+% category level. If these conditions are met, then the sampling distribution
+% of the estimated proportion is nearly normal and inference can be
+% done much like for numerical data.
+
+% \paragraph{For example (from \protect\url{https://www.cliffsnotes.com/study-guides/statistics/univariate-inferential-tests/test-for-comparing-two-proportions}),
+% a public health researcher wants to know how two high schools\textemdash one
+% in the inner city and one in the suburbs\textemdash differ in the
+% percentage of students who smoke. A random survey of students gives
+% the following results: }
+
+% \begin{table}[h]
+% \caption{example proportion test}
+
+% \begin{tabular}{|c|c|c|}
+% \hline
+%  & n & smokers\tabularnewline
+% \hline
+% \hline
+% inner city & 125 & 47\tabularnewline
+% \hline
+% suburban & 153 & 52\tabularnewline
+% \hline
+% \end{tabular}
+% \end{table}
+
+
+% \paragraph{{[}note that this can be represented as a 2x2 contingency table with
+% variable Smoker (yes,no) versus location (inner-city, suburban){]}
+% The proportion of smokers in inner-city school is 47/125=0.376 and
+% the proportion of smokers in the suburban school is 52/153=0.340.
+% Are these proportions significantly different?. {[}the following by
+% me{]} To address this question the tests assumes that the distribution
+% of sample proportions follows a normal distribution (similar to the
+% central limit theorem for sample means) and thus we can compare the
+% two proportions using a z-score (equivalent to a t-test). }
+
+% \paragraph{In the case of comparing the proportion observed in a sample with
+% an expected value (e.g. the proportion of males in a course with the
+% value of 0.5 expected for the general population), we only have to
+% compute the sd the population which is given by the formula: $\sqrt{\frac{p_{0}\left(1-p_{0}\right)}{n}}$
+% and then compute the z-score (z statistic): $z=\frac{\hat{p}-p_{o}}{\sqrt{\frac{p_{0}\left(1-p_{0}\right)}{n}}}$
+% where $\hat{p}$ is the expected proportion in the general population.
+% The the probability can be read from a standard normal table (or distribution).
+% E.g. if z>1.96 (or z<-1.96), p<0.05 and if z>2.6 (or z<-2.6), p<0.01.
+% In the case of the comparison between proportions in two populations
+% we will use $z=\frac{p_{1}-p_{2}}{\sqrt{\frac{p_{1}\left(1-p_{1}\right)}{n_{1}}+\frac{p_{2}\left(1-p_{2}\right)}{n_{2}}}}$}
+% \end{comment}
+
+
+
 \item The McNemar test (or McNemar Chi-square test) is a variant of the
 chi-square test used to compare categorical dependent (paired or matched)
 samples. For example, the presence of a disease (categorized as ``present'',
@@ -952,113 +970,125 @@ before and after treatment. Thus data are not independent (paired
 data). Another example: Incidence of a disease in individuals exposed
 to a drug using their siblings as matched controls. The exposure to
 the drug is recorded for the diseased individual and the healthy sibling.
-Again the data are not independent (matched data). %
-\begin{comment}
-In R it is implemented in the mcnemar.test() function.
+Again the data are not independent (matched data).
 
-The following is adapted from:
 
-\url{http://www.biostat.umn.edu/~susant/Fall11ph6414/Section12_Part2.pdf}
+% %
+% \begin{comment}
+% In R it is implemented in the mcnemar.test() function.
 
-and
+% The following is adapted from:
 
-\url{https://en.wikipedia.org/wiki/McNemar's_test}
+% \url{http://www.biostat.umn.edu/~susant/Fall11ph6414/Section12_Part2.pdf}
 
-The following are contingency tables for the above examples
+% and
 
-\begin{tabular}{|c|c|c|}
-\hline
- & after:absent & after:present\tabularnewline
-\hline
-\hline
-before:absent & a & b\tabularnewline
-\hline
-before:present & c & d\tabularnewline
-\hline
-\end{tabular}
+% \url{https://en.wikipedia.org/wiki/McNemar's_test}
 
-\begin{tabular}{|c|c|c|}
-\hline
- & sibling:non-exposed & sibling:exposed\tabularnewline
-\hline
-\hline
-patient:non-exposed & a & b\tabularnewline
-\hline
-patient:exposed & c & d\tabularnewline
-\hline
-\end{tabular}
+% The following are contingency tables for the above examples
 
-Note that, in the first case, cells contain the number of individuals
-(e.g. ``c'' is the number of individuals with skin rash prior treatment
-that still suffer it after treatment), whereas in the second case
-cells contains pairs of individuals (e.g. ``c'' records the number
-of pairs in which the diseased individual was exposed to the drug
-and the healthy sibling was not exposed). The ``b'' and ``c''
-are called the \cprotect\emph{discordant} cells because they represent
-pairs with a difference, where as ``a'' and ``d'' are \cprotect\emph{concordant}.
+% \begin{tabular}{|c|c|c|}
+% \hline
+%  & after:absent & after:present\tabularnewline
+% \hline
+% \hline
+% before:absent & a & b\tabularnewline
+% \hline
+% before:present & c & d\tabularnewline
+% \hline
+% \end{tabular}
 
-The null hypothesis in the first case is that the proportion of subjects
-positive for the disease is the same before and after treatment is
-the same. In the second case the proportion individuals exposed to
-the drug is the same for healthy and sick individuals. In any case,
-under the null, we would expect b=c. Thus, the McNemar\textquoteright s
-Chi - square statistic is calculated using the counts in the \textquoteleft b\textquoteright{}
-and \textquoteleft c\textquoteright{} cells of the table: $\chi^{2}=\frac{\left(b-c\right)^{2}}{b+c}$.
-If the null hypothesis is true the McNemar Chi - square statistic
-= 0.
+% \begin{tabular}{|c|c|c|}
+% \hline
+%  & sibling:non-exposed & sibling:exposed\tabularnewline
+% \hline
+% \hline
+% patient:non-exposed & a & b\tabularnewline
+% \hline
+% patient:exposed & c & d\tabularnewline
+% \hline
+% \end{tabular}
 
-There are alternatives to the McNemar test for paired categorical
-data: binomial sign test, Cochran's Q test, Liddlell's,...
-\end{comment}
+% Note that, in the first case, cells contain the number of individuals
+% (e.g. ``c'' is the number of individuals with skin rash prior treatment
+% that still suffer it after treatment), whereas in the second case
+% cells contains pairs of individuals (e.g. ``c'' records the number
+% of pairs in which the diseased individual was exposed to the drug
+% and the healthy sibling was not exposed). The ``b'' and ``c''
+% are called the \cprotect\emph{discordant} cells because they represent
+% pairs with a difference, where as ``a'' and ``d'' are \cprotect\emph{concordant}.
+
+% The null hypothesis in the first case is that the proportion of subjects
+% positive for the disease is the same before and after treatment is
+% the same. In the second case the proportion individuals exposed to
+% the drug is the same for healthy and sick individuals. In any case,
+% under the null, we would expect b=c. Thus, the McNemar\textquoteright s
+% Chi - square statistic is calculated using the counts in the \textquoteleft b\textquoteright{}
+% and \textquoteleft c\textquoteright{} cells of the table: $\chi^{2}=\frac{\left(b-c\right)^{2}}{b+c}$.
+% If the null hypothesis is true the McNemar Chi - square statistic
+% = 0.
+
+% There are alternatives to the McNemar test for paired categorical
+% data: binomial sign test, Cochran's Q test, Liddlell's,...
+% \end{comment}
+
+
 \item The Cochran\textendash Mantel\textendash Haenszel chi-square test
 computes the probability of the null hypothesis that two nominal variables
 are conditionally independent in each stratum of a third variable.
-\begin{comment}
-It can be performed in R using the mantelhaen.test() function. For
-example, in the dataset \textquotedblleft Arthritis\textquotedblright{}
-from the vcd package, the effect of a treatment (placebo vs treated)
-is recorded in the variable \textquotedblleft Improved\textquotedblright{}
-(levels: none, some, marked). They also recorded the gender of patients
-(Sex: male, female), thus we can the hypothesis that Treatment and
-Improved variables are independent within each level of the variable
-Sex. That is, we are testing whether treated individuals improved
-more than those receiving placebos when controlling for sex (see figure
-{[}fig:Cochran-Mantel-Haenszel-test{]}).
 
-\begin{figure}[h]
-\caption{\protect\label{fig:Cochran-Mantel-Haenszel-test}Cochran-Mantel-Haenszel
-test}
+% \begin{comment}
+% It can be performed in R using the mantelhaen.test() function. For
+% example, in the dataset \textquotedblleft Arthritis\textquotedblright{}
+% from the vcd package, the effect of a treatment (placebo vs treated)
+% is recorded in the variable \textquotedblleft Improved\textquotedblright{}
+% (levels: none, some, marked). They also recorded the gender of patients
+% (Sex: male, female), thus we can the hypothesis that Treatment and
+% Improved variables are independent within each level of the variable
+% Sex. That is, we are testing whether treated individuals improved
+% more than those receiving placebos when controlling for sex (see figure
+% {[}fig:Cochran-Mantel-Haenszel-test{]}).
 
-<<Cochram,tidy=TRUE>>=
-library (vcd)
-head(Arthritis)
-summary(Arthritis)
-mytable<-xtabs(~Treatment+Improved+Sex,data=Arthritis)
-mantelhaen.test(mytable)
-@
-\end{figure}
-\end{comment}
+% \begin{figure}[h]
+% \caption{\protect\label{fig:Cochran-Mantel-Haenszel-test}Cochran-Mantel-Haenszel
+% test}
+
+% <<Cochram,tidy=TRUE>>=
+% library (vcd)
+% head(Arthritis)
+% summary(Arthritis)
+% mytable<-xtabs(~Treatment+Improved+Sex,data=Arthritis)
+% mantelhaen.test(mytable)
+% @
+% \end{figure}
+% \end{comment}
+
+
+
 \item A particularly problematic subtype of categorical data are ordinal
 variables. See \url{http://jeromyanglim.blogspot.com.es/2009/10/analysing-ordinal-variables.html}.%
-\begin{comment}
-see \url{https://onlinecourses.science.psu.edu/stat504/book/export/html/90}This
-type of data can be analyzed as nominal variables, but then information
-about order is lost. There are several way to analyze this type of
-data and exploit the order information. One way is to study their
-linear trend or correlation using (variants?) of the Pearson's or
-Spearman's correlation coefficients. Another way is to use the Mantel-Haenszel
-statistics for testing independence between two ordinal variables.
-Mantel-Haenszel (MH) statistic, M2, applies to both the Pearson and
-Spearman correlation. It tests the null hypothesis of independence
-with ordinal variables (i.e., correlation parameter, rho, is equal
-to zero) versus the two-sided alternative (i.e., correlation parameter,
-rho, is not zero). To compute M2 we need to assign scores to both
-rows and columns. Scores are numerical values that we assign to each
-item in each category of our ordinal variables. There are several
-types of scores that can be assigned. The package vcdExtra includes
-the function CMHtest() to compute this test.
 
-\end{comment}
+
+
+% \begin{comment}
+% see \url{https://onlinecourses.science.psu.edu/stat504/book/export/html/90}This
+% type of data can be analyzed as nominal variables, but then information
+% about order is lost. There are several way to analyze this type of
+% data and exploit the order information. One way is to study their
+% linear trend or correlation using (variants?) of the Pearson's or
+% Spearman's correlation coefficients. Another way is to use the Mantel-Haenszel
+% statistics for testing independence between two ordinal variables.
+% Mantel-Haenszel (MH) statistic, M2, applies to both the Pearson and
+% Spearman correlation. It tests the null hypothesis of independence
+% with ordinal variables (i.e., correlation parameter, rho, is equal
+% to zero) versus the two-sided alternative (i.e., correlation parameter,
+% rho, is not zero). To compute M2 we need to assign scores to both
+% rows and columns. Scores are numerical values that we assign to each
+% item in each category of our ordinal variables. There are several
+% types of scores that can be assigned. The package vcdExtra includes
+% the function CMHtest() to compute this test.
+
+% \end{comment}
 
 \end{enumerate}
 
@@ -1138,6 +1168,8 @@ size.
 \end{xca}
 
 % \bibliographystyle{plainnat}
-% \bibliography{/home/luis/Documents/Lab_DB/Bibliography/library.bib/library}
+% \bibliography{library.bib/library}
+
+\bibliography{refs}
 
 \end{document}
