@@ -123,6 +123,9 @@ Sols\textquotedblright{} (UAM-CSIC)}
 \lyxaddress{Madrid, Spain}
 
 
+\lyxaddress{Modifications by Ramon Diaz-Uriarte, 2024-10.}
+
+
 \tableofcontents{}
 
 \newpage{}
@@ -131,21 +134,20 @@ Sols\textquotedblright{} (UAM-CSIC)}
 
 \paragraph{In this chapter we will learn about:}
 \begin{itemize}
-\item differentiate goodness of fit and analysis of independence
+\item the difference between testing goodness of fit and testing independence
 \item contingency tables
-\item statistical test for categorical variables (Chi square test and Fisher's
-exact test)
+\item statistical test for categorical variables (Chi square test and Fisher's exact test)
 \item graphical visualization of categorical data
 \end{itemize}
 
-\paragraph{We will also learn how to generate contingency tables and perform
-relevant test in R commander.}
-\begin{quote}
-Disclaimer: This document is not, nor does the author pretend it to
-be, a substitute for the reference books cited in the syllabus. It
-is intended as a mere guide for the course contents. Moreover, it
-may (and surely does) contain errors.
-\end{quote}
+\paragraph{We will also learn how to generate contingency tables and perform relevant test in R commander.}
+% \begin{quote}
+% Disclaimer: This document is not, nor does the author pretend it to
+% be, a substitute for the reference books cited in the syllabus. It
+% is intended as a mere guide for the course contents. Moreover, it
+% may (and surely does) contain errors.
+% \end{quote}
+
 
 \section{Study Cases}
 
@@ -210,7 +212,9 @@ variables to generate the frequency of cases in each of the possible
 levels of the variable. In case \#1 above, we would register the number
 of +/+, +/- and -/- mice. Thus, in these cases we would model the
 data on the frequency of cases in each possible level\protect\footnote{For this reason, oftentimes the analysis of categorical data is referred
-to as frequency analysis}. Likewise, in the second case, we are measuring two nominal variables
+  to as frequency analysis}.
+
+In the second case, we are measuring two nominal variables
 from a set of genes: effect of hypoxia on their transcripcion (levels:
 upregulation, no effect, downregulation) and the presence of HRE in
 their promoters (levels: present/+ or absent/-). Table \ref{tab:Frequency-of-HRE},
@@ -219,40 +223,39 @@ In summary, categorical data represent the distribution of samples
 into several mutually exclusive categories (also called levels) and
 this usually involves counting how many cases (mice in the first case,
 genes in the second) are in each qualitative category/level.
+\FIXME{something about ordinal values?}
+
 
 \section{Comparing observed and expected frequencies}
 
-Let's focus on the first case which is a typical (and quite boring...)
+Let's focus on the first case which is a typical
 example analysis of categorical data. The question was: does the inactivation
-of this gene affect viability? well, if the gene has no effect on
+of this gene affect viability?
+
+If the gene has no effect on
 embryonic viability, we would expect the typical Mendelian ratio of
 genotypes. So, the question can be rephrased as: are the observed
 genotype frequencies significantly different from the expected Mendelian
 ratio 1:2:1 (0.25:0.5:0.25)? The observed ratios are (40/154):(72/154):(42/152)
 or 0.26:0.47:0.27, which are quite similar to the expected ratios
 but certainly not the same. However, we should not be surprised as
-we would expect some variation due to chance. The question is, how
-far from the expected frequencies are we willing to accept before
-we suspect some effect of the gene knockout on viability? To answer
-this question we could compare observed and expected frequencies and,
-when the difference exceeds a threshold, conclude that the observed
-frequencies depart from expected. This is exactly what the Pearson's\protect\footnote{there are other chi-squared test for categorical data, but this is
+we would expect some variation due to chance.
+
+To answer our original question, we will compare observed and expected frequencies.  This is exactly what the Pearson's\protect\footnote{there are other chi-squared test for categorical data, but this is
 the more popular by far.}\protect\footnote{do not mistake it for the Pearson correlation coefficient, which indicates
 the extend to which two numerical variables are linearly related.} chi-squared test, also known as the chi-squared goodness-of-fit test,
 does.
 
+
 \subsection{Chi-squared statistic}
 
-So, as usual, we start with the hypothesis that there is no effect
+So, as usual, we start with the null hypothesis, \(H_0\) that there is no effect
 of gene deletion on viability and thus the frequencies of genotypes
-are Mendelian so that any departure from the expected is due to chance
-(this is our null hypothesis). Next we want to test whether the data
-supports this hypothesis or disproves it in favor of the alternate
-hypothesis (i. e. there is effect on viability). To this end, we have
-to calculate the difference between the observed and expected values
-to get a measure (an statistic) of how far our data departs from the
-expected. This statistic is the chi-square($\chi^{2}$), that is calculated
+are Mendelian so that any departure from the expected is due to random variation.
+
+The test statistic we will use is chi-square($\chi^{2}$), calculated
 according to the formula: $\chi^{2}=\sum_{category}\frac{\left(observed_{i}-expected_{i}\right)^{2}}{expected_{i}}$.
+
 Note that, the closer the observed and expected frequencies, the smaller
 the value of the chi-square statistic. Thus, increasing values of
 this statistic would support the alternative hypothesis (the observed
@@ -264,8 +267,9 @@ to enable individual residuals to be compared relative to one another.
 Large values of residuals indicate large deviations from what is expected
 and thus also indicate large contribution to the overall association.
 On addition, the sign (+ or \textminus ) of the residual indicates
-whether the frequencies were higher or lower than expected. Pearson's
+whether the frequencies were higher or lower than expected, but note we square the deviations. Pearson's
 residuals are calculated as $\frac{observed-expected}{\sqrt{expected}}$}.
+
 
 \begin{comment}
 Explain how residuals indicate the direction of change.
@@ -274,15 +278,19 @@ Explain how residuals indicate the direction of change.
 
 \subsection{Pearson's Chi-square test}
 
-Once we have an statistic that reflects the agreement between the
-two distributions, we just need to set a threshold of how large this
-value can be before we reject the null hypothesis. Fortunately, the
-distribution of chi-square($\chi^{2}$) values under the null hypothesis
-is known (see figure \ref{fig:Chi-squared-probability-distribu})
-and, from this distribution, we can calculate how likely a chi-square($\chi^{2}$)
-value like the one we got is compatible with the null hypothesis (how
-likely is a chi-squared with that value is observed under the null
-hypothesis).
+Now, all we need to do is assess how likely it is, under \(H_0\), that we find a value of the statistic as large as, or larger than, the value we found.
+
+We do this by using the chi-square($\chi^{2}$) distribution (see figure \ref{fig:Chi-squared-probability-distribu}). Note that, in contrast to what we did with the two-tailed t-test, we only look at the right tail of the distribution. Why do you think this is the case? (This is also what we did with the F-statistic, by the way).
+
+% Once we have an statistic that reflects the agreement between the
+% two distributions, we just need to set a threshold of how large this
+% value can be before we reject the null hypothesis. Fortunately, the
+% distribution of chi-square($\chi^{2}$) values under the null hypothesis
+% is known (see figure \ref{fig:Chi-squared-probability-distribu})
+% and, from this distribution, we can calculate how likely a chi-square($\chi^{2}$)
+% value like the one we got is compatible with the null hypothesis (how
+% likely is a chi-squared with that value is observed under the null
+% hypothesis).
 
 \begin{figure}[h]
 \caption{\protect\label{fig:Chi-squared-probability-distribu}Chi-squared probability
@@ -312,7 +320,7 @@ legend("topright",legend=paste(DF,"df"),fill=color)
 % \end{comment}
 
 
-Note however that shape of the chi-square($\chi^{2}$) distribution
+The shape of the chi-square($\chi^{2}$) distribution
 depends on the degrees of freedom\footnote{Recall that degrees of freedom is a measure of how many values are
 free to vary when determining independent estimates of parameters.
 When calculating frequencies in categorical data, the degrees of freedom
@@ -346,14 +354,12 @@ Thus degrees of freedom= 3 categories -1 = 2.}.
 So, to determine the probability of getting a chi-square value equal
 or higher than ours under the null hypothesis, we have to compare
 it with the appropriate chi-square($\chi^{2}$) distribution according
-to the degrees of freedom in our case. Note that the chi-square distribution
-is bounded by zero (the chi-square value cannot be negative because
-the difference is squared) and infinite and it is not symmetrical.
-Moreover, the peak of the distribution is not at zero as one would
-intuitively expect. In fact, the peak approach to zero for small df
-but departs from zero for increasingly larger df. The reason is that
-the more categories/levels there are (df=\#categories-1), the more
-likely the observed and expected frequencies will differ just by chance.
+to the degrees of freedom in our case.  The chi-square distribution can take values in \([0, +\infty]\)  (why is it bounded below by zero?) and it is not symmetrical.
+% Moreover, the peak of the distribution is not at zero as one would
+% intuitively expect. In fact, the peak approach to zero for small df
+% but departs from zero for increasingly larger df. The reason is that
+% the more categories/levels there are (df=\#categories-1), the more
+% likely the observed and expected frequencies will differ just by chance.
 
 
 % \begin{comment}
@@ -367,26 +373,28 @@ likely the observed and expected frequencies will differ just by chance.
 % values not to the number of categories.
 % \end{comment}
 
-Thus, chi-square values far below the peak of the distribution would
-imply than the agreement between observed and expected is even better
-than what you would expected by chance. For this reason, chi-square
-tests are typically one-tailed test focusing on the right-hand tail
-(the discrepancy is too-large to be observed under the null hypothesis).
-Nevertheless, it is also possible to perform two-tail tests and focus
-on the left-hand tail. Note that, in this case, we are asking whether
-the discrepancy between observed and expected values are smaller that
-you would expect just by chance. If the one-tailed test focusing on
-the left hand of the distribution is significant the interpretation
-is that the data is \textquotedblleft too good to be true\textquotedblright{}
-pointing to dishonesty on the part of the researcher\footnote{Indeed the extraordinary conformity of Gregor Mendel\textquoteright s
-pea experiments have been subjected to such skepticism. Also, it is
-suspected that he looked at many phenotypical characteristics, several
-of which did not follow a typical Mendelian pattern (e.g. genes in
-sex chromosomes, and other) so he just ignored those features and
-focus those that adhere to his law...This debate, known as the \textquotedblleft Mendel-Fisher
-controversy\textquotedbl{} have lasted for over a hundred years and
-it involves Fisher, Pearson and other statisticians and it is still
-alive as shown by the very recent article in science by Radick \citet{Radick2015}.} or some flaw in the data or experimental design.
+
+
+% Thus, chi-square values far below the peak of the distribution would
+% imply than the agreement between observed and expected is even better
+% than what you would expected by chance. For this reason, chi-square
+% tests are typically one-tailed test focusing on the right-hand tail
+% (the discrepancy is too-large to be observed under the null hypothesis).
+% Nevertheless, it is also possible to perform two-tail tests and focus
+% on the left-hand tail. Note that, in this case, we are asking whether
+% the discrepancy between observed and expected values are smaller that
+% you would expect just by chance. If the one-tailed test focusing on
+% the left hand of the distribution is significant the interpretation
+% is that the data is \textquotedblleft too good to be true\textquotedblright{}
+% pointing to dishonesty on the part of the researcher\footnote{Indeed the extraordinary conformity of Gregor Mendel\textquoteright s
+% pea experiments have been subjected to such skepticism. Also, it is
+% suspected that he looked at many phenotypical characteristics, several
+% of which did not follow a typical Mendelian pattern (e.g. genes in
+% sex chromosomes, and other) so he just ignored those features and
+% focus those that adhere to his law...This debate, known as the \textquotedblleft Mendel-Fisher
+% controversy\textquotedbl{} have lasted for over a hundred years and
+% it involves Fisher, Pearson and other statisticians and it is still
+% alive as shown by the very recent article in science by Radick \citet{Radick2015}.} or some flaw in the data or experimental design.
 
 \subsubsection{Pearson's chi-squared test in R}
 
@@ -412,13 +420,20 @@ data set.
 data (I)}
 
 <<GrphCatDataI,fig.width=10,fig.height=4,echo=-1>>=
-mice<-data.frame(ID=paste("id",formatC(1:154,digits=0,width=4,flag=0),sep=""),Genotype=sample(c(rep("wt/wt",40),rep("wt/mut",72),rep("mut/mut",42))))
+mice <- data.frame(ID = paste("id",
+                             formatC(1:154, digits = 0,
+                                    width = 4, flag = 0),
+                            sep = ""),
+                 Genotype = sample(c(rep("wt/wt", 40),
+                                     rep("wt/mut", 72),
+                                     rep("mut/mut", 42))))
 par(mfrow=c(1,2))
 pie(table(mice$Genotype))
 barplot(table(mice$Genotype),xlab="Genotype",ylab="Frequency")
 @
 \end{figure}
 
+Wait!!! Do you think the pie chart is a good type of plot? Why or why not?
 
 We can ask for the frequency counts by selecting \emph{Summaries
 \textendash > Frequency} distributions under the \emph{Statistics}
@@ -448,9 +463,8 @@ as the program calculates it from the number of categories (see output
 from the test). Now, the test returns a p-value of 0.7. Because the
 resulting probability it is not small, we cannot rule out the null
 hypothesis and hence we conclude that we do not have enough evidence
-supporting that the ratios are not mendelian. Note that this is not
-the same as concluding that ratios are Mendelian. In figure, you'll
-find the R code to perform this test.
+supporting that the ratios are not Mendelian. Note that this is not
+the same as concluding that ratios are Mendelian. In the next figure, you'll find the R code to perform this test.
 
 \begin{figure}[h]
 \caption{\protect\label{fig:Code-for-chi-square}Code for chi-square test}
@@ -1076,10 +1090,13 @@ are conditionally independent in each stratum of a third variable.
 % \end{figure}
 % \end{comment}
 
+\item Some categorical variables are actually ordinal, not simply nominal. In this case, it is possible to conduct more powerful tests that account for the ordinal nature of the variable. (One simple case is shown in section 8.3 of \citep{Dalgaard2004}; for a lot more detail, see the excellent books by Alan Agresti, \citep{agresti2012} or the more introductory version as \citep{agresti2018}).
 
 
-\item A particularly problematic subtype of categorical data are ordinal
-variables. See \url{http://jeromyanglim.blogspot.com.es/2009/10/analysing-ordinal-variables.html}.%
+% \item A particularly problematic subtype of categorical data are ordinal
+%   variables. See \url{http://jeromyanglim.blogspot.com.es/2009/10/analysing-ordinal-variables.html}.%
+
+%   \FIXME{why problematic?} And mention prop.trend.test.
 
 
 
