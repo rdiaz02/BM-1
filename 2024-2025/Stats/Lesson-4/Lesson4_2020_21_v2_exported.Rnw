@@ -130,17 +130,18 @@ Sols\textquotedblright{} (UAM-CSIC)}
 
 \newpage{}
 
-\section{Basic analysis of categorical data and contingency tables.}
+\section{Basic analysis of categorical data and contingency tables}
 
 \paragraph{In this chapter we will learn about:}
 \begin{itemize}
-\item the difference between testing goodness of fit and testing independence
-\item contingency tables
-\item statistical test for categorical variables (Chi square test and Fisher's exact test)
-\item graphical visualization of categorical data
+  \item Making inferences about one proportion and comparing two proportions, including obtaining confidence intervals and conducting hypothesis tests
+\item The difference between testing goodness of fit and testing independence
+\item Contingency tables
+\item Statistical test for categorical variables (Chi square test and Fisher's exact test)
+\item Graphical visualization of categorical data
 \end{itemize}
 
-\paragraph{We will also learn how to generate contingency tables and perform relevant test in R commander.}
+We will also learn how to generate contingency tables and perform relevant test in R Commander.
 % \begin{quote}
 % Disclaimer: This document is not, nor does the author pretend it to
 % be, a substitute for the reference books cited in the syllabus. It
@@ -151,16 +152,16 @@ Sols\textquotedblright{} (UAM-CSIC)}
 
 \section{Study Cases}
 
-\paragraph{Study the following two cases. In which way are they different to
-the other cases we have analyzed so far?}
+\paragraph{Study the following two cases. In which way are they different to the other cases we have analyzed so far?}
 \begin{casenv}
-\item To explore the physiological functions of endothelin-2 (EDN2), a research
-group generated gene-targeted mouse models. The offspring of the matting
-between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{}
-, and 42 Et2 \textendash /\textendash{} mice\footnote{data from J Clin Invest. 2013;123(6):2643\textendash 2653.}.
-Does the inactivation of this gene affect viability? In other words,
-are these offspring numbers significantly different from the expected
-Mendelian ratio 1:2:1?
+
+\item This uses a data set described in \citet[section 8.1 of][]{Dalgaard2008}: 39 of 215 randomly chosen patients are observed to have asthma. We want to test the null hypothesis that the probability of asthma is 0.15.
+
+
+
+
+\item To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{data from J Clin Invest. 2013;123(6):2643\textendash 2653.}. Does the inactivation of this gene affect viability? In other words, are these offspring numbers significantly different from the expected Mendelian ratio 1:2:1?
+
 \item Gene expression profiling experiments demonstrate that exposure of
 cells to hypoxia results in changes in the expression of several hundred
 genes (table \ref{tab:Frequency-of-HRE}). The Hypoxia Inducible Factor
@@ -194,11 +195,12 @@ Downregulated & 69 & 121\tabularnewline
 \item mice\_genotypes.csv
 \item Hyp\_effect.csv
 \item RefSeq\_All\_Chr.csv
+  \item \FIXME{asthma data set}
 \end{itemize}
 
 \section{Categorical data}
 
-The two cases described above have in common that they refer to categorical
+The cases described above have in common that they refer to categorical
 attributes (variables) in a nominal scale. That is, they both deal
 with categorical\protect\footnote{recall that a categorical variable, also referred as nominal, is one
 that simply allows you to assign observations to each of the levels
@@ -223,7 +225,111 @@ In summary, categorical data represent the distribution of samples
 into several mutually exclusive categories (also called levels) and
 this usually involves counting how many cases (mice in the first case,
 genes in the second) are in each qualitative category/level.
-\FIXME{something about ordinal values?}
+
+A minor point, though: it could be argued that ``upregulation'', ``no effect'', and ``downregulation'' are really three ordered levels of transcription. In other words, even if they are not numerical values, they are ordered; this would be an example of an ordinal categorical variable. We will not pursue this here (though we mention this again at the end).
+
+
+\section{A single proportion: confidence intervals and hypothesis tests}\label{sec:one-prop-conf}
+
+We will use the data set described in \citet[section 8.1 of][]{Dalgaard2008}: 39 of 215 randomly chosen patients are observed to have asthma. We want to test the null hypothesis that the probability of asthma is 0.15.
+
+We can do the test typing things in R very easily, but to make it available for R Commander, we create a data set as follows (this is just an object that has ``YES'' repeated 39 types and ``NO'' repeated 215 - 39 times).
+
+<<asthma-data>>=
+ashtma <- data.frame(X = c(rep("A", 39), rep("NO", 215 - 39)))
+@
+
+
+Type the above and select the data in R Commander. Now, find the ``Statistics -> Proportions'' and look at the options. Carefully look at what it says about ``Proportion'' (if we had entered the data differently, it might have been comparing the proportion of no asthma with 0.15, and that is not what we want).
+
+\subsection{Normal approximation}
+\label{sec:normal-approximation}
+
+Just use the menu, and select the normal approximation (and select also the continuity correction).
+
+Doing it directly by hand is probably much faster than entering the data and going to the menu:
+
+<<>>=
+prop.test(x = 39, n = 215, p = 0.15)
+@
+
+We are given a p-value and a confidence interval. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 10. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). The test we have used adds also a continuity correction.
+
+
+You should be able to interpret the p-value and the confidence interval.
+
+\subsection{Binomial test}
+\label{sec:exact-binomial-test}
+
+We can also do a test that obtains the exact probability from the binomial distribution. It calculates the probabilities for all the possible values of X that are as extreme as, or more extreme than, the observed 39, and adds up all those values (as you can see, this is just straight from the definition of the p-value).
+
+You can obtain it from the menu or directly as:
+
+<<>>=
+binom.test(x = 39, n = 215, p = 0.15)
+@
+
+Again, you should be able to interpret the p-value and the confidence interval. And the conclusions are the same as from above.
+
+Do not be mislead by the ``exact'': the confidence interval is, actually, not well defined. (We will also see that the ``exact'' adjective can be misleading with Fisher's exact test, but for other reasons).
+
+% This is Dalgaard's 8.5 exercise
+% <<>>=
+% pvt <- function(p) binom.test(x = 3, n = 15, p = p)$p.value
+% ps <- seq(0, 1, by = 0.001)
+% pvs <- sapply(ps, pvt)
+% plot(pvs ~ ps, xlab = "Null p", ylab = "p-value")
+% @
+
+
+
+\section{Two proportions: confidence intervals and hypothesis tests}
+\label{sec:two-prop-conf}
+
+
+We will now use the data in \citealp[Exercise 8.3, p.~154 of][]{Dalgaard2008}.
+
+There are several ways to enter these data (and get the confidence interval and tests output). We could create a data frame, for example this way (this is not something you are supposed to understand!):
+
+
+
+<<>>=
+ex3 <- expand.grid(Drug = c("Piren", "Trithi"),
+                   Outcome = c("Healed", "NotHealed"))
+ex3$cases <- c(23, 18, 7, 13)
+Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
+
+Exercise3 <- data.frame(drug = c("Piren", "Trithi"),
+                        outcome = c("Healed", "NotHealed"))
+@
+
+
+Now, go do a two-sample proportions test using the normal approximation with continuity. We can also quickly do it by entering the successes and total cases (i.e., healed + non haled), in other words, the info in the table, when calling the function \texttt{prop.test}:
+
+<<>>=
+prop.test(x = c(23, 18), n = c(30, 31))
+@
+
+Again, you should be able to interpret all of the output.
+
+
+There is, however, an additional way (well, two additional ways ---there are in fact a few more ways to obtain p-values) to compare those proportions: turning the problem into one of asking whether there is  independence of Outcome from Drug, or of independence of rows and columns.
+
+<<>>=
+tableEx3 <- xtabs( ~ Drug + Outcome, data = Exercise3)
+chisq.test(tableEx3)
+
+## same as
+chisq.test(matrix(c(23, 18, 7, 13), nrow = 2))
+@
+
+
+\subsection{}
+
+
+
+You can enter the tabular data directly in R Commander under ``Statistics -> Contingency tables'', and that would directly give you a contingency table and allow you to perform several tests.
+
 
 
 \section{Comparing observed and expected frequencies}
@@ -395,6 +501,11 @@ to the degrees of freedom in our case.  The chi-square distribution can take val
 % controversy\textquotedbl{} have lasted for over a hundred years and
 % it involves Fisher, Pearson and other statisticians and it is still
 % alive as shown by the very recent article in science by Radick \citet{Radick2015}.} or some flaw in the data or experimental design.
+
+
+
+\FIXME{somewhere around here, bottom comment of page 240, section 6.4 of Open Intro: and ellabortate: goodness of fit/adjustment to expected values}
+
 
 \subsubsection{Pearson's chi-squared test in R}
 
@@ -655,17 +766,17 @@ For example the genotype of a mouse does not affect the genotype of
 other mice or the presence/absence of HRE in a given gene has no effect
 on other genes. In the case they are not independent, the McNemar's
 test should be used instead (see \ref{sec:Other-test-for}).
-\item Simple random sample \textendash{} The sample data is a random sampling
-from a fixed distribution or population where every collection of
-members of the population of the given sample size has an equal probability
-of selection.
+% \item Simple random sample \textendash{} The sample data is a random sampling
+% from a fixed distribution or population where every collection of
+% members of the population of the given sample size has an equal probability
+% of selection.
 \item Sample size (whole table) \textendash{} A sample with a sufficiently
 large size is assumed. If a chi squared test is conducted on a sample
 with a smaller size, then the chi squared test will yield an inaccurate
 inference. The researcher, by using chi squared test on small samples,
 might end up committing a Type II error.
-\item Expected cell count \textendash{} Adequate expected cell counts. No
-more than 20\% of the expected frequencies are less than five\footnote{A common rule is 5 or more in all cells of a 2-by-2 table, and 5 or
+\item Expected cell count \textendash{} Adequate expected cell counts. A typical rule states that no
+more than 20\% of the expected (\textbf{expected, not observed!}) frequencies should be less than five\footnote{A common rule is 5 or more in all cells of a 2-by-2 table, and 5 or
 more in 80\% of cells in larger tables, but no cells with zero expected
 count.}. Because, when expected frequencies are small, the calculated value
 of chi-square tends to be too large and will therefore indicate a
@@ -674,26 +785,43 @@ Type I error\footnote{To visualize this, imagine that you are trying to estimate
 with a single child have the expected ratio of 50\% female:50\%male.
 Regardless the sex of the child, the observed frequencies (100\%:0\%
 or 0\%:100\%) will differ dramatically from the expected ones. The
-small sample size avoids getting an accurate estimation of the frequencies.}.
+small sample size avoids getting an accurate estimation of the frequencies.}. This rule, though, might be too restrictive in some cases, in the sense the chi-square approximation could be OK.
 \end{itemize}
 
 There are several alternatives (other than increasing sample size!),
-when the fourth (and/or third?) condition is not met:
+when the ``large enough'' conditions are not met:
 \begin{enumerate}
-\item Yates\textquoteright{} correction or the continuity correction\footnote{technically it is applicable only in cases with df=1}.
-It simply consists in subtracting 0.5 from the absolute value\footnote{by using the absolute value we ensure that we always decrease the
-value of the difference} of the difference between observed and expected counts: $\chi^{2}=\sum_{category}\frac{\left(|observed_{i}-expected_{i}|-0.5\right)^{2}}{expected_{i}}$
-. Obviously, this result in smaller values of the chi-square($\chi^{2}$)
-statistic\footnote{Note also that it will have much higher relative impact when frequency
-counts are small than when they are large} and thus larger p-values.
-\item Randomization test. This test is unique in that it does not calculates
-an statistic that is then used to compute the probability but instead
-it does calculates the probability empirically by simulating the repeated
-random sampling of an hypothetical population containing the expected
-proportions in each category. Thus, when conducting a good-of-fitness
-test with a sample size and/or expected counts are less than 5 for
-more than 20\% of the cells, the randomization test should be used
-instead.
+% \item Yates\textquoteright{} correction or the continuity correction\footnote{technically it is applicable only in cases with df=1}.
+% It simply consists in subtracting 0.5 from the absolute value\footnote{by using the absolute value we ensure that we always decrease the
+% value of the difference} of the difference between observed and expected counts: $\chi^{2}=\sum_{category}\frac{\left(|observed_{i}-expected_{i}|-0.5\right)^{2}}{expected_{i}}$
+% . Obviously, this result in smaller values of the chi-square($\chi^{2}$)
+% statistic\footnote{Note also that it will have much higher relative impact when frequency
+% counts are small than when they are large} and thus larger p-values.
+\item The probability is not computed by comparing with a distribution such as the $\chi^{2}$ distribution. Instead, we repeatedly simulate outcomes (samples) under the null hypothesis using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
+
+  Permutation tests (and Monte Carlo procedures) \textbf{are not} exact tests, in contrast to what happens with the usual (see below) Fisher's exact test. Permutation tests (Monte Carlo procedures) are a way to approximate the exact p-value we would obtain if we could exhaustively examine all the possible configurations of the data under the null hypothesis% \footnote{This is in fact doable in some small tables. So one can get an exact test by computing the chi-square statistic for all possible assignments under the null. And this is not necessarily Fisher's test, but one that conditions on whatever we want to condition, such as fixed row totals, for example.}
+  . One should use a sufficiently large number of simulations (the error of the estimated p-value is a decreasing function of the number of simulations).
+
+  And Fisher's test if we use the \texttt{simulate.p.value = TRUE} is not ``exact'' in this sense either (the p-value is estimated using a Monte Carlo simulation, not by comparing with the exact distribution nor by exhaustively examining all possible cases).
+
+  But the exactness here is not the relevant factor. The permutation procedure allows us to compute p-values even if the conditions for the use of the $\chi^{2}$ distribution are not met.
+
+
+  % And how is the sampling done for chisq? For
+  % the RxC table it is actually Fisher's test
+  %% See the help or this discussion https://stats.stackexchange.com/questions/159057/alternatives-for-chi-squared-test-for-independence-for-tables-more-than-2-x-2/159063#159063
+
+
+
+
+%   Permutation test. This test is unique in that it does not calculates
+% an statistic that is then used to compute the probability but instead
+% it does calculates the probability empirically by simulating the repeated
+% random sampling of an hypothetical population containing the expected
+% proportions in each category. Thus, when conducting a good-of-fitness
+% test with a sample size and/or expected counts are less than 5 for
+% more than 20\% of the cells, the permutation test should be used
+% instead.
 
 
 
@@ -714,13 +842,14 @@ instead.
 % \end{comment}
 
 
-\item Fisher's Exact test. It can be used for 2x2 contingency tables regardless
-the sample size. It does not calculates any statistic but instead
-calculates the probability of the observed distribution directly.
-However, unlike the randomization tests, it does not relies on random
-sampling, instead it computes the exact probability of getting the
-observed distribution (and any other more extreme) by ``counting''
-all the possible combinations that lead to the observed frequencies.
+\item Fisher's Exact test. It can be used for 2x2 contingency tables regardless the sample size.
+
+However, unlike the permutation tests, it does not relies on random
+sampling (unless you select \texttt{simulate.p.values}). Instead it computes the exact probability of getting the observed statistics (and any other more extreme) by exhaustively examining all the possible distributions of counts in the table\footnote{The test conditions on both the row and column marginals, and for a 2x2 table this yields a hypergeometric distribution, for example for the counts in the first row and column. } observed frequencies under a hypergeometric distribution (not that this matters for this course, but you might here people refer to this test this way'')
+
+Note, though, that Fisher's exact test is a test that conditions on the marginals of both rows and columns. The test is valid even if the marginals row or the colum or none of the marginals are fixed, but other tests are sometimes suggested for small samples.
+
+
 
 
 % \begin{comment}
@@ -797,7 +926,7 @@ sample size is less than say 1000.
 \FIXME{explain controversy around conditioning on marginal totals; also exact under the right conditions; and can be used also for large N and more than 2x2}
 
 
-\section{Randomization test and Fisher's exact test in R}
+\section{Permutation test and Fisher's exact test in R}
 
 To compute the Fisher's exact test in R commander, the only thing
 we have to do is select ``Fisher's test'' instead of ``chi-square''
@@ -806,23 +935,23 @@ Please note that, although the original Fisher's exact test was designed
 for 2x2 contingency tables, in R it has been extended to work with
 larger tables such as the one in our example (3x2).
 
-Unfortunately, the randomization test can not be accessed from R
+Unfortunately, the permutation test can not be accessed from R
 commander file menu. However, it is extremely easy to perform this
 test from the command line. You just need to include the argument
 \emph{simulate.p.value = TRUE} in the chi-square function (see figure
-\ref{fig:Heterogeneity,-randomization-and}).
+\ref{fig:Heterogeneity,-permutation-and}).
 
 \begin{figure}[h]
-\caption{\protect\label{fig:Heterogeneity,-randomization-and}Heterogeneity,
-randomization and Fisher's test in R }
+\caption{\protect\label{fig:Heterogeneity,-permutation-and}Heterogeneity,
+permutation and Fisher's test in R }
 
-<<randomization test,echo=-1,fig.width=4,fig.height=4>>=
+<<permutation test,echo=-1,fig.width=4,fig.height=4>>=
 Hx<-read.table("Hyp_effect.csv",head=T,sep=",")
 with(xtabs(~Effect+HRE),data=Hx)
 contTable<-with(xtabs(~Effect+HRE),data=Hx)
 #Chi-square test
 chisq.test(contTable)
-#Randomization test
+#Permutation test
 chisq.test(contTable,simulate.p.value = TRUE)
 #Fisher's exact test
 fisher.test(contTable)
@@ -1196,6 +1325,15 @@ content. What does the p-value inform about the bias? read references
 \citet{Nuzzo2014} and \citet{Halsey2015} about p-values and effect
 size.
 \end{xca}
+
+
+\section{Recommended reading}
+\label{sec:recommended-reading}
+
+All we have covered here is discussed in \citet{Dalgaard2008} and \citet{diez2019}. The first is available through UAM's electronic library, and the second is available in several formats, from their web page.
+
+But we have only covered a few topics. The first place I always go to for issues related to categorical data analysis is \texttt{agresti2012} (see also \citep{agresti2018} for a shorter intro).
+
 
 %\bibliographystyle{jss2}
 \bibliographystyle{natbib_paren_date_urlbst}
