@@ -467,7 +467,7 @@ You can enter the tabular data directly in R Commander under ``Statistics -> Con
 
 
 
-\section{Comparing observed and expected frequencies}
+\section{Goodness of fit: Comparing observed and expected frequencies}
 
 Let's focus on the first case which is a typical
 example analysis of categorical data. The question was: does the inactivation
@@ -723,28 +723,54 @@ chisq.test(table(mice$Genotype),p=c(0.25,0.5,0.25))
 \end{figure}
 
 
-\section{Chi-square test for heterogeneity}
+\section{Contingency tables: testing independence between rows and columns}
 
-Now, let focus on the second case above in which we wanted to determine
-whether HIF binding was preferentially associated induction/repression
-of gene expression or had no preference. As we mentioned before, we
-are dealing also with categorical data, but there are two important
-differences with the previous case. The first one is that we have
-two categorical variables (presence of HRE and effect of hypoxia on
-gene expression) instead of one. Secondly, in the previous case we
-wanted to compare the observed frequencies to those expected under
-a specific null hypothesis (Mendelian frequencies). How do we calculate
-the expected frequencies in this second case? In other words, what
-is the null hypothesis in this case? The key to the answer is that,
-in this case, we are actually testing whether there is an association
-between the two variables we are measuring (note that we are asking
-whether the presence of an HRE is associated with gene expression).
-In this scenario our null hypothesis is that there is no association
-between these variables. That is, we want to test if the distribution
-of frequencies of each level of the categorical variable X differ
-across the levels of the other categorical variable (Y) or if frequencies
-of X are the same regardless the levels of Y. In fact, this is analogous
-to the interactions in factorial ANOVA.
+\subsection{2x2 contingency tables}
+
+We said above \FIXME{do}
+
+show output 2x2
+
+do the tests
+
+\subsection{\textit{r\ x\ c} or \textit{I\ x \J} contingency tables}\label{sec:rc-tables}
+
+(The \textit{r\ x\ c} and  \textit{I\ x \J} are two common ways of referring to the same thing: 2-dimensional contingency tables with \(r\) or \(I\) rows and \(c\) or \(J\) columns.)
+
+
+<<>>=
+Hx <- read.table("Hyp_effect.csv", head = TRUE, sep = ",")
+## Reorder the factor levels
+Hx$Effect <- factor(Hx$Effect,
+                    levels = c("Upregulated", "Non_regulated", "Downregulated"))
+Hx$HRE <- factor(Hx$HRE,
+                 levels = c("HRE+", "HRE-"))
+
+(Hx_tab <- xtabs(~ Effect + HRE, data = Hx))
+chisq.test(Hx_tab)
+@
+
+
+
+Another, less extreme example. This comes from Table 3.2, p.~179 of \citet{bilder2024} and refers to a study about bloating severity after eating fiber-enriched crackers\footnote{The book provides full references for the origin of these data; the description is achived at \Burl{https://web.archive.org/web/20000620172010/http:
+    //lib.stat.cmu.edu/DASL/Stories/HighFiberDietPlan.html}}. The data are in file \texttt{Fiber.csv}, which I downloaded from the book's website, \Burl{http://www.chrisbilder.com/categorical/programs_and_data.html}.
+
+Note that we have a slightly different format for the data. Using the same code as in p.~180 of \citet{bilder2024}, with minor modifications, we read the data and do a few transformations to the factors, and then create our final table (the code can be downloaded from their web page, \Burl{http://www.chrisbilder.com/categorical/programs_and_data.html})
+<<>>=
+diet <- read.csv(file = "Fiber.csv")
+
+# Match order given in table
+diet$fiber <- factor(x = diet$fiber,
+                     levels = c("none", "bran", "gum", "both"))
+diet$bloat <- factor(x = diet$bloat,
+                     levels = c("none", "low", "medium", "high"))
+
+diet.table <- xtabs(formula = count ~ fiber + bloat, data = diet)
+diet.table
+@
+
+
+
 
 \subsection{Contingency tables}
 
@@ -770,6 +796,32 @@ the different levels of Y if they are independent.
 Although we will only deal with two variables in this class, you
 could construct multi-way contingency tables for more than two categorical
 variables.
+
+
+
+\section{Chi-square test for heterogeneity}
+
+Now, let focus on the second case above in which we wanted to determine
+whether HIF binding was preferentially associated induction/repression
+of gene expression or had no preference. As we mentioned before, we
+are dealing also with categorical data, but there are two important
+differences with the previous case. The first one is that we have
+two categorical variables (presence of HRE and effect of hypoxia on
+gene expression) instead of one. Secondly, in the previous case we
+wanted to compare the observed frequencies to those expected under
+a specific null hypothesis (Mendelian frequencies). How do we calculate
+the expected frequencies in this second case? In other words, what
+is the null hypothesis in this case? The key to the answer is that,
+in this case, we are actually testing whether there is an association
+between the two variables we are measuring (note that we are asking
+whether the presence of an HRE is associated with gene expression).
+In this scenario our null hypothesis is that there is no association
+between these variables. That is, we want to test if the distribution
+of frequencies of each level of the categorical variable X differ
+across the levels of the other categorical variable (Y) or if frequencies
+of X are the same regardless the levels of Y. In fact, this is analogous
+to the interactions in factorial ANOVA.
+
 
 % \begin{comment}
 % to make it easier to understand use the following example. We are
@@ -892,15 +944,104 @@ mosaic(xtabs(~HRE+Effect, data=HRE),shade=T)
 \end{figure}
 
 
-\section{Limitations of the chi-square test}
+\section{Assumptions of the chi-square test, minimal expected counts, Fisher's exact test and all that}
 
-It is important to note that we can apply the chi-square test provided:
-\begin{itemize}
-\item All \emph{observations} are independent\footnote{do not mistake it for independence of \emph{variables}}.
-For example the genotype of a mouse does not affect the genotype of
-other mice or the presence/absence of HRE in a given gene has no effect
-on other genes. In the case they are not independent, the McNemar's
-test should be used instead (see \ref{sec:Other-test-for}).
+This should not come as a surprise: we assume all \emph{observations} are independent\footnote{Do not mistake it for independence of \emph{variables}}. For example the genotype of a mouse does not affect the genotype of other mice or the presence/absence of HRE in a given gene has no effect on other genes. Similarly we do not have the same individual measured multiple times, or sets of related/paired individuals, etc. In case they are not independent, other procedures should be used (for example, the McNemar's test for two related groups; see \ref{sec:Other-test-for}).
+
+
+Much more contentious are these two related issues:
+\begin{enumerate}
+\item What are the sample size and/or expected counts requirements for us to apply the chi-square test? In other words, are there sample sizes or expected counts such that we should consider other procedures, because the chi-square is not a good idea (low power or high type I error or whatever)?
+\item And if we have small sample sizes or expected counts, what should we do?
+\end{enumerate}
+
+There are no simple answers, or at least there are strong disagreements about the answers (simple or otherwise).
+
+
+\subsection{Sample sizes and expected counts for us to trust the chi-square}
+\label{sec:sample-sizes-expect}
+
+Why be concerned about sample sizes and expected counts? Briefly, because the use of the chi-square distribution involves some asymptotic arguments.
+
+A common rule used to be that no more than 20\% of the expected (\textbf{expected, not observed!}) frequencies should be less than five; another is 5 or more in all cells of a 2-by-2 table, and 5 or  more in 80\% of cells in larger tables, but no cells with zero expected  count.
+
+It turns out that these rules might be overly restrictive and the details can depend strongly on the size of the table (numbers of rows and columns) and the total sample size.
+
+
+
+\subsection{What can we do if expected counts are too small or \ldots}
+
+The answer was often ``use Fisher's exact test''. That, however, might not be the best idea.
+
+\subsubsection{Fisher's exact test}
+\label{sec:fishers-exact-test}
+
+It can be used for 2x2 tables and for larger rxc tables.  It computes the exact probability of getting the observed statistics (and any other more extreme) by exhaustively examining all the possible distributions of counts in the table. The test conditions on both the row and column marginals, and for a 2x2 table this yields a hypergeometric distribution, for example for the counts in the first row and column. The test can be extended to rxc tables.
+
+The test can become computationally unfeasible for very large tables (large in terms of dimensions, numbers of rows and columns, and/or sample size). In this case, we can obtain p-values by simulation (in R use argument \texttt{simulate.p.values = TRUE} in larger than 2x2 tables). Instead of examining exhaustively all possibilities, we repeatedly simulate outcomes (samples) under the null hypothesis (null hypothesis and, for Fisher's, fixed row and column margins) using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
+
+
+Let us do this in the 3x2 table. From the menus, you cannot directly use the \texttt{simulate.p.value} options, so I'll do everything without the menus. Just copy the code.
+
+This is the usual Fisher's exact test (and this you can get from R commander menus). I've added also the chisq.test.
+<<>>=
+fisher.test(Hx_tab)
+chisq.test(Hx_tab)
+@
+
+Now, Fisher's with simulation of p-values. We use a small number here, the default of 2000 (for real, I'd use a lot more)\footnote{Incidentally, the p-value you are likely to get is 0.0005, actually 0.00049975, which is \(1/(B + 1)\); this is because the pattern we observe is the most extreme of all, and we compute the p-value in the usual way: how many are as extreme as, or more extreme than, what we find. Since we have used 2000, the denominator is 2001. This is technical material that you can skip.}:
+<<>>=
+fisher.test(Hx_tab, simulate.p.value = TRUE, B = 2000)
+@
+
+Let us use a different data set, where things are not as extreme, so that you can see that the p-value with \texttt{simulate.p.value} will often different from run to run (unless you use an infinite number of simulations, and most likely you won't have the patience to do that). We will use again the diet (bloating) example from section \ref{sec:rc-tables}. Now, we do three different tests, but I run the one with simulated p value a few times, to show its variability (you can decrease the variability by increasing B)
+
+<<>>=
+chisq.test(diet.table, correct = FALSE)
+fisher.test(diet.table)
+fisher.test(diet.table, simulate.p.value = TRUE)
+fisher.test(diet.table, simulate.p.value = TRUE)
+fisher.test(diet.table, simulate.p.value = TRUE)
+@
+
+This is an interesting case, because of the small expected cell counts. \citet{bilder2024} discuss it in detail in pp.~180 and ff.\ (and they use a simulation approach, described in p.~182 and section 6.2.2, but a more sophisticated one, that we won't cover here; regardless, the p-value is obtained with the same procedure as with \texttt{simulate.p.value}\footnote{Or, at least, that is my understanding of what they do, as they seem to condition on the margins: in p.~182 they write: ``(..) we can use one call to rmultinom(), where we set each \(\pi_{ij}\) (prob argument) to \(n_{i+} n_{+j}/n^2\) (the estimated expected count under the null hypothesis divided by the sample size). We chose to use the one multinomial model
+here (...)''}).
+
+
+
+\subsection{Chi square with \texttt{simulate.p.value}?}
+
+This is another alternative. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals, and works only if the marginals are strictly positive. (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}
+
+There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about the sampling model of Fisher's exact test, this simulation procedure carries the same concerns.
+
+More sophisticated simulation schemes are possible, but that is beyond the scope of this class (and might run into other problems, like generating marginals that are 0, etc).
+
+
+
+
+
+
+
+
+
+observed frequencies under a hypergeometric distribution (not that this matters for this course, but you might here people refer to this test this way'')
+
+Note, though, that Fisher's exact test is a test that conditions on the marginals of both rows and columns. The test is valid even if the marginals row or the colum or none of the marginals are fixed, but other tests are sometimes suggested for small samples.
+
+
+However, unlike the permutation tests, it does not relies on random
+sampling (unless you select \texttt{simulate.p.values}). Instead
+
+
+
+
+
+
+
+or when we can use the usual chi-square test
+
+
 % \item Simple random sample \textendash{} The sample data is a random sampling
 % from a fixed distribution or population where every collection of
 % members of the population of the given sample size has an equal probability
