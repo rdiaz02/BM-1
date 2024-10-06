@@ -1341,3 +1341,19 @@ But we have only covered a few topics. The first place I always go to for issues
 \bibliography{refs}
 
 \end{document}
+
+
+
+
+A bunch of great links, to store properly
+https://stats.stackexchange.com/questions/100976/n-1-pearsons-chi-square-in-r/439226#439226
+
+
+https://stats.stackexchange.com/questions/14226/given-the-power-of-computers-these-days-is-there-ever-a-reason-to-do-a-chi-squa
+
+https://stats.stackexchange.com/questions/159057/alternatives-for-chi-squared-test-for-independence-for-tables-more-than-2-x-2/159063#159063
+
+
+https://stats.stackexchange.com/questions/275828/applying-monte-carlo-simulation-for-fisher-test
+
+https://stats.stackexchange.com/questions/441139/what-does-the-assumption-of-the-fisher-test-that-the-row-and-column-totals-shou
