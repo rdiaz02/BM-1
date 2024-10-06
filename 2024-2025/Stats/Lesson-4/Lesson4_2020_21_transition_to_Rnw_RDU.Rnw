@@ -7,6 +7,9 @@
 %%                 and remove original path
 %% - csv files: remove path, leave them in this same directory
 
+%% THIS FILE IS NO LONGER USED. Left here for historical reasons only!!
+
+
 \documentclass[twoside,english]{extarticle}
 \synctex=1
 \usepackage{lmodern}
