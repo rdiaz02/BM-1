@@ -3,12 +3,10 @@
 %% RDU
 %% Material from Luis del Peso Ovalle
 %% Original file was .lyx. Exported as Rnw.
-%% Trying to make it self-contained
-
 %% - .png figures: not having original pngs, I screen capture from the PDF
 %%                 and remove original path
 %% - csv files: remove path, leave them in this same directory
-%% Then, major reformating of structure
+%% Then, major reformating of structure, and major modifications of content.
 
 \synctex=1
 \documentclass[a4paper,11pt]{article}
@@ -119,6 +117,8 @@
 %% Sow revision
 \usepackage{gitinfo}
 
+%% Be generous with interpar. spacing!
+\setlength{\parskip}{0.35em}
 
 %% remove? There is a multirow below.
 \usepackage{multirow}
@@ -127,6 +127,7 @@
 require(knitr)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
+library(Rcmdr)
 @
 
 
@@ -296,7 +297,7 @@ Study the following  cases. In which way are they different to the other cases w
 
 
 
-\item To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{data from J Clin Invest. 2013;123(6):2643\textendash 2653.}. Does the inactivation of this gene affect viability? In other words, are these offspring numbers significantly different from the expected Mendelian ratio 1:2:1?
+\item To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from J Clin Invest. 2013;123(6):2643\textendash 2653.}. Does the inactivation of this gene affect viability? In other words, are these offspring numbers significantly different from the expected Mendelian ratio 1:2:1?
 
 \item Gene expression profiling experiments demonstrate that exposure of
 cells to hypoxia results in changes in the expression of several hundred
@@ -331,6 +332,7 @@ Downregulated & 69 & 121\tabularnewline
 \item mice\_genotypes.csv
 \item Hyp\_effect.csv
 \item RefSeq\_All\_Chr.csv
+\item Fiber.csv.
   \item We will also use a few additional datasets that we will create on the fly (ashtma, peptic ulcer).
 \end{itemize}
 
@@ -340,7 +342,9 @@ The cases described above have in common that they refer to categorical
 attributes (variables) in a nominal scale. That is, they both deal
 with categorical\protect\footnote{recall that a categorical variable, also referred as nominal, is one
 that simply allows you to assign observations to each of the levels
-(categories) of the variable} data. In the first case, we are recording the genotypes of the offspring
+(categories) of the variable} data.
+
+In the mice example concerning viability, we are recording the genotypes of the offspring
 and thus we can only assign each individual to one of the categories
 (+/+, +/- and -/-). Unlike other type of variables we can not calculate
 mean, median or rank of the genotype. In fact, the only thing we can
@@ -352,31 +356,30 @@ of +/+, +/- and -/- mice. Thus, in these cases we would model the
 data on the frequency of cases in each possible level\protect\footnote{For this reason, oftentimes the analysis of categorical data is referred
   to as frequency analysis}.
 
-In the second case, we are measuring two nominal variables
+In the gene expression example, we are measuring two nominal variables
 from a set of genes: effect of hypoxia on their transcripcion (levels:
-upregulation, no effect, downregulation) and the presence of HRE in
+upregulation, no effect, downregulation\footnote{A minor point, though: it could be argued that ``upregulation'', ``no effect'', and ``downregulation'' are really three ordered levels of transcription. In other words, even if they are not numerical values, they are ordered; this would be an example of an ordinal categorical variable. We will not pursue this here (though we mention this again at the end).}) and the presence of HRE in
 their promoters (levels: present/+ or absent/-). Table \ref{tab:Frequency-of-HRE},
 reports the frequency of genes in each of the possible categories.
+
+
 In summary, categorical data represent the distribution of samples
 into several mutually exclusive categories (also called levels) and
-this usually involves counting how many cases (mice in the first case,
-genes in the second) are in each qualitative category/level.
-
-A minor point, though: it could be argued that ``upregulation'', ``no effect'', and ``downregulation'' are really three ordered levels of transcription. In other words, even if they are not numerical values, they are ordered; this would be an example of an ordinal categorical variable. We will not pursue this here (though we mention this again at the end).
+this usually involves counting how many cases are in each qualitative category/level. Sometimes, though, we have categorical data that are even simpler, as in the next section.
 
 
 \section{A single proportion: confidence intervals and hypothesis tests}\label{sec:one-prop-conf}
 
 We will use the data set described in \citet[section 8.1 of][]{Dalgaard2008}: 39 of 215 randomly chosen patients are observed to have asthma. We want to test the null hypothesis that the probability of asthma is 0.15.
 
-We can do the test typing things in R very easily, but to make it available for R Commander, we create a data set as follows (this is just an object that has ``YES'' repeated 39 types and ``NO'' repeated 215 - 39 times).
+We can do the test typing in R very easily, but to make it available for R Commander, we create a data set as follows (this is just an object that has ``YES'' repeated 39 types and ``NO'' repeated 215 - 39 times).
 
 <<asthma-data>>=
 ashtma <- data.frame(X = c(rep("A", 39), rep("NO", 215 - 39)))
 @
 
 
-Type the above and select the data in R Commander. Now, find the ``Statistics -> Proportions'' and look at the options. Carefully look at what it says about ``Proportion'' (if we had entered the data differently, it might have been comparing the proportion of no asthma with 0.15, and that is not what we want).
+Type the above and select the data in R Commander. Now, find the ``Statistics \(\rightarrow\) Proportions'' and look at the options. Carefully look at what it says about ``Proportion'' (if we had entered the data differently, it might have been comparing the proportion of no asthma with 0.15, and that is not what we want).
 
 \subsection{Normal approximation}
 \label{sec:normal-approximation}
@@ -389,9 +392,9 @@ Doing it directly by hand is probably much faster than entering the data and goi
 prop.test(x = 39, n = 215, p = 0.15, correct = FALSE)
 @
 
-We are given a p-value and a confidence interval. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 10. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). The test we have used adds also a continuity correction.
+We are given a p-value and a confidence interval. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 10. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)).
 
-We used the argument \texttt{correct = FALSE} to prevent R from using a continuity correction. The reasons can be found, for example, in \citet[section 1.6.2, p.~18]{agresti2018}, \citet[note 1.5, p.~25]{agresti2012}, or \citet[section 1.2.3, p.~35]{bilder2024}. In what follows, we will always (intend to) avoid the continuity correction. By the way, that is what R commander does by default.
+We used the argument \texttt{correct = FALSE} to prevent R from using a continuity correction. The reasons can be found, for example, in \citet[section 1.6.2, p.~18]{agresti2018}, \citet[note 1.5, p.~25]{agresti2012}, or \citet[section 1.2.3, p.~35]{bilder2024}. In what follows, we will always  avoid the continuity correction. By the way, that is what R Commander does by default.
 
 
 You should be able to interpret the p-value and the confidence interval.
@@ -427,8 +430,7 @@ Do not be mislead by the ``exact'': the confidence interval is, actually, not we
 
 We will now use the data in \citealp[Exercise 8.3, p.~154 of][]{Dalgaard2008}, originally from p.~72 of Campbell and Machin, 1993, \textit{Medical Statistics. A Commonsense Approach, 2nd ed.}, John Wiley \& Sons, Chichester. It examines the effects of two drugs on peptic ulcers.
 
-There are several ways to enter these data (and get the confidence interval and tests output). We could create a data frame, for example this way (this is not something you are supposed to understand!):
-
+There are several ways to enter these data and get the confidence interval and tests output. We could create a data frame, for example this way (it is OK if you do not understand how I am creating the data):
 
 
 <<>>=
@@ -439,8 +441,20 @@ Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
 
 @
 
+Now, select ``Exercise3'' as the active data, and do a two-sample proportions test using the normal approximation using the menus.
 
-Now, go do a two-sample proportions test using the normal approximation. We can also quickly do it by entering the successes and total cases (i.e., healed + non haled), in other words, the info in the table, when calling the function \texttt{prop.test}:
+<<>>=
+local({  .Table <- xtabs(~Drug+Outcome, data=Exercise3)
+  cat("\nPercentage table:\n")
+  print(rowPercents(.Table))
+  prop.test(.Table, alternative='two.sided', conf.level=.95, correct=FALSE)
+})
+
+@
+
+
+
+We can also quickly do it by entering the successes and total cases (i.e., healed + non healed) in the call to the function \texttt{prop.test}:
 
 <<>>=
 prop.test(x = c(23, 18), n = c(30, 31), correct = FALSE)
@@ -449,7 +463,11 @@ prop.test(x = c(23, 18), n = c(30, 31), correct = FALSE)
 Again, you should be able to interpret all of the output.
 
 
-There is, however, an additional way (well, two additional ways ---there are in fact a few more ways to obtain p-values) to compare those proportions: turning the problem into one of asking whether there is  independence of Outcome from Drug, or of independence of rows and columns.
+For these quick tests, instead of typing the command, you can directly enter the data via R Commander; see below (section \ref{sec:enter_tabular}).
+
+
+
+There is an additional way to compare those proportions: turning the problem into one of asking whether there is  independence of Outcome from Drug, or of independence of rows and columns. We leave it here, and will return to it later (section \ref{sec:contingency-tables}):
 
 <<>>=
 
@@ -461,19 +479,10 @@ chisq.test(matrix(c(23, 18, 7, 13), nrow = 2), correct = FALSE)
 @
 
 
-\subsection{}
 
+\section{Goodness of fit: Comparing observed and expected frequencies}\label{sec:goodness-fit}
 
-
-You can enter the tabular data directly in R Commander under ``Statistics -> Contingency tables'', and that would directly give you a contingency table and allow you to perform several tests.
-
-
-
-\section{Goodness of fit: Comparing observed and expected frequencies}
-
-Let's focus on the first case which is a typical
-example analysis of categorical data. The question was: does the inactivation
-of this gene affect viability?
+Let us return to the mouse example:  To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from J Clin Invest. 2013;123(6):2643\textendash 2653.}.  The question was: does the inactivation of this gene affect viability?
 
 If the gene has no effect on
 embryonic viability, we would expect the typical Mendelian ratio of
@@ -484,13 +493,15 @@ or 0.26:0.47:0.27, which are quite similar to the expected ratios
 but certainly not the same. However, we should not be surprised as
 we would expect some variation due to chance.
 
-To answer our original question, we will compare observed and expected frequencies.  This is exactly what the Pearson's\protect\footnote{there are other chi-squared test for categorical data, but this is
-the more popular by far.}\protect\footnote{do not mistake it for the Pearson correlation coefficient, which indicates
-the extend to which two numerical variables are linearly related.} chi-squared test, also known as the chi-squared goodness-of-fit test,
+To answer our original question, we will compare observed and expected frequencies.  This is exactly what the Pearson's% \protect\footnote{there are other chi-squared test for categorical data, but this is
+% the more popular by far.}\protect
+ chi-squared test\footnote{Do not mistake it for the Pearson correlation coefficient, which indicates
+the extent to which two numerical variables are linearly related.}, also known as the chi-squared goodness-of-fit test,
 does.
 
 
-\subsection{Chi-squared statistic}
+
+\subsection{Chi-squared statistic}\label{sec:chi1}
 
 So, as usual, we start with the null hypothesis, \(H_0\) that there is no effect
 of gene deletion on viability and thus the frequencies of genotypes
@@ -641,8 +652,6 @@ to the degrees of freedom in our case.  The chi-square distribution can take val
 
 
 
-\FIXME{somewhere around here, bottom comment of page 240, section 6.4 of Open Intro: and ellabortate: goodness of fit/adjustment to expected values}
-
 
 \subsubsection{Pearson's chi-squared test in R}
 
@@ -655,7 +664,7 @@ to this end, you can generate a pie or bar plot (figure \ref{fig:Representing-ca
 As we mentioned earlier (Lesson 1), these are the typical representations
 for categorical data. In fact, because it only contains categorical
 data, these are the only options available in R commander for this
-data set.
+data set. (More on visualization later: section \ref{sec:visualization}).
 
 % \begin{comment}
 % Note that in this case the bar plot does not contain any error bar
@@ -690,7 +699,7 @@ click \textquotedblleft OK\textquotedblright{} button). In the \textquotedblleft
 window you'll get the absolute and relative number of cases for each
 level of the categorical variable \textquotedblleft Genotype\textquotedblright .
 
-Within this same menu we can perform a chi-square goodness of fit
+Back to testing. Within this same menu we can perform a chi-square goodness of fit
 test by selecting the box for this test (see figure \ref{fig:Chi-square-test-in}
 step 3). Importantly, when we ask for the test, a pop-up window prompt
 us to indicate the expected frequencies (figure \ref{fig:Chi-square-test-in}
@@ -700,9 +709,8 @@ to the expected frequencies under the null hypothesis (i.e. Mendelian
 ratio).
 
 \begin{figure}[h]
-\caption{\protect\label{fig:Chi-square-test-in}Chi-square test in R (I)}
-
 \centering{}\includegraphics[width=10cm]{pasted14-rdu.png}
+\caption{\protect\label{fig:Chi-square-test-in}Chi-square test in R (I)}
 \end{figure}
 
 
@@ -712,32 +720,84 @@ from the test). Now, the test returns a p-value of 0.7. Because the
 resulting probability it is not small, we cannot rule out the null
 hypothesis and hence we conclude that we do not have enough evidence
 supporting that the ratios are not Mendelian. Note that this is not
-the same as concluding that ratios are Mendelian. In the next figure, you'll find the R code to perform this test.
+the same as concluding that ratios are Mendelian. This is the code:
 
-\begin{figure}[h]
-\caption{\protect\label{fig:Code-for-chi-square}Code for chi-square test}
 
 <<Rcode_for_chisquare,tidy=TRUE,echo=-1>>=
 mice<-data.frame(ID=paste("id",formatC(1:154,digits=0,width=4,flag=0),sep=""),Genotype=sample(c(rep("wt/wt",40),rep("wt/mut",72),rep("mut/mut",42))))
 table(mice$Genotype)
 chisq.test(table(mice$Genotype),p=c(0.25,0.5,0.25), correct = FALSE)
 @
-\end{figure}
+
+You should be able to interpret the output.
+
+\section{Contingency tables: testing independence between rows and columns}\label{sec:contingency-tables}
+
+Contingency tables allow us to organize and visualize categorical data.write of a table with
+the levels of one variable in one dimension across the levels of the
+other variable in the second dimension. In fact, table \ref{tab:Frequency-of-HRE}
+is a contingency table that summarizes the observed data. Some of the simplest contingency tables are 2x2 tables: 2 rows and 2 columns. For example, what we had in section \ref{sec:two-prop-conf} and to this we go next.
 
 
-\section{Contingency tables: testing independence between rows and columns}
 
-\subsection{2x2 contingency tables}
+\subsection{2x2 contingency tables}\label{sec:2x2}
 
-We said above \FIXME{do}
+We used these data in  \ref{sec:two-prop-conf}. Let us see it again
 
-show output 2x2
+<<>>=
+xtabs(~ Drug + Outcome, data = Exercise3)
+@
 
-do the tests
+That is a contingency table. Above, we tested for differences in proportions between those treated with different drugs. But that there are no differences in proportions is the same as saying that the probability of healing (or not healing) does not depend on the drug given. In other words, that there is independence between Outcome and Drug. Or put it this way: we want to test whether the frequencies of Healed vs.\ Non-healed change across levels of Drug (i.e., if the frequencies of Healed and non healed are different between the drugs). So we now phrase our null hypothesis as saying that Outcome and Drug are independent.
+
+
+Under \(H_0\), i.e., if there is independence between Outcome and Drug, then, for example, the probability of both being healded and having taken Piren is the product of each. And therefore the expected number of people who took Piren and are Healed should be the product of those two probabilities times the total sample size. In other words, under \(H_0\), the expected number of people who are Healed and took ``Piren'' should be \( P(Piren) P(Healed) n\), where \(n\) is the total sample size (in our case 61). We can write it as: the expected number of people in the ``Healed and Piren'' cell should be \(\bar{\mu}_{Healed,Piren} = n  \bar{\pi}_{Piren} \bar{\pi}_{Healed} \)
+
+We wrote the above for one of the cells, but for any table, where we index rows with \(i\) and columns with \(j\), we can write this more generally as
+
+\(\bar{\mu}_{ij} = n \bar{\pi}_{i+} \bar{\pi}_{+j}\).
+
+
+Now, \(\bar{\pi}_{Piren}\), or \(\bar{\pi}_{i+}\), for \(i = Piren\), is the marginal probability of Piren: the sum of the entries in the row that says Piren divided by the total. So \(\frac{23 + 7}{61}\). And similarly for \(\bar{\pi}_{Healed}\), or \(\bar{\pi}_{+j}\).
+
+Therefore, in our 2x2 table we can compute the four \(\bar{\mu}_{ij}\), the four expected numbers in each cell under \(H_0\).
+
+And we are done. We now compute the \(\chi^{2}\) statistic as \(\sum \frac{(n_{ij} - \bar{\mu}_{ij})^2}{\bar{mu}_{ij}}\).
+
+
+This happens to be the same formula we saw in section \ref{sec:chi1}. In both cases we are computing the squared of the deviations between the observed and the expected, dividing them by the expected, and adding all of them.
+
+In section \ref{sec:chi1} those were deviations with respect to a single variable. Here they are deviations where the expected and observed are cross-classified according to two variables. (And this could be extended to three, four, \ldots).
+
+
+Now, all the terms in here will make sense:
+<<>>=
+
+tableEx3 <- xtabs( ~ Drug + Outcome, data = Exercise3)
+chisq.test(tableEx3, correct = FALSE)
+
+## same as
+chisq.test(matrix(c(23, 18, 7, 13), nrow = 2), correct = FALSE)
+@
+
+
+By the way, notice the similarities between what we have done and examining interactions in a two-way ANOVA.
+
 
 \subsection{\textit{r\ x\ c} or \textit{I\ x \ J} contingency tables}\label{sec:rc-tables}
 
 (The \textit{r\ x\ c} and  \textit{I\ x \ J} are two common ways of referring to the same thing: 2-dimensional contingency tables with \(r\) or \(I\) rows and \(c\) or \(J\) columns.)
+
+These just extends what we saw in the previous section: instead of a 2x2 table, we have a two-dimensional table but rows and/or columns can have more than two categories or types. So we still have \(\chi^{2} = \sum \frac{(n_{ij} - \bar{\mu}_{ij})^2}{\bar{mu}_{ij}}\).
+
+
+In other words,  we want to test if the distribution
+of frequencies of each level of the categorical variable \(I\) differ
+across the levels of the other categorical variable \(J\) or if frequencies
+of \(I\) are the same regardless the levels of \(J\).
+
+
+For example, let us look at the gene gene expression experiment:
 
 
 <<>>=
@@ -751,6 +811,16 @@ Hx$HRE <- factor(Hx$HRE,
 (Hx_tab <- xtabs(~ Effect + HRE, data = Hx))
 chisq.test(Hx_tab, correct = FALSE)
 @
+
+(You can do all, or most, of the above from R Commander:
+\begin{figure}[h]
+\centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
+\caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
+\end{figure}
+)
+
+
+You should be able to interpret the output from above. But ... what about degrees of freedom: \(df = (I - 1) (J - 1)\), where \(I\) is the number of categories in the first variable, and \(J\) in the second. So this example \((2 - 1)\ (3 - 1)\).
 
 
 
@@ -777,57 +847,62 @@ Now, do a chi-square test:
 chisq.test(diet.table, correct = FALSE)
 @
 
+You should be able to interpret it, and understand the number of degrees of freedom.
+
+\subsection{Higher-order tables}
+\label{sec:higher-order-tables}
+
+The same logic applies to tables of more than two dimensions, say Drug x  Outcome x Exercise.  Now, we can have dependencies between pairs of variables, or among the three. For example, each drug might have a different effect on outcome, and exercise might affect this difference. We will not pursue this here. Arguably, though, except for very specific problems (the Mantel-Haenzsel test mentioned below being one of them), it is probably a better idea to directly approach this using models (logistic, logit, and loglinear, for binomial, multinomial, and Poisson response variables, respectively); this is just mentioned in section \ref{sec:glms}.
+
+% \subsection{Contingency tables}
+
+% To analyze the interaction between categorical variables, we use
+% \emph{contingency tables}. This is just a way to organize and visualize
+% this type of data. To construct them we just write of a table with
+% the levels of one variable in one dimension across the levels of the
+% other variable in the second dimension. In fact, table \ref{tab:Frequency-of-HRE}
+% is a contingency table that summarizes the observed data. The organization
+% of data in this way allow us to compute the expected frequencies under
+% the null hypothesis that both variables are independent (i.e. there
+% is no association between the presence of the HRE an the regulation
+% of gene expression by hypoxia). We can compute a table of the expected
+% frequencies by completing each cell according to the formula $expected_{rc}=\frac{margin_{r}margin_{c}}{total}$
+% where \emph{margin\protect\textsubscript{r}} is the sum of frequencies
+% in row \emph{r} (total row \emph{r}), \emph{margin\protect\textsubscript{c}}
+% is the sum of frequencies in column \emph{c} (total column \emph{r}),
+% and \emph{total} is the sum of frequencies in all cells (total number
+% of observations). The only thing this formula does is to compute how
+% the total counts in a given level of variable X would distribute across
+% the different levels of Y if they are independent.
+
+% Although we will only deal with two variables in this class, you
+% could construct multi-way contingency tables for more than two categorical
+% variables.
 
 
-\subsection{Contingency tables}
 
-To analyze the interaction between categorical variables, we use
-\emph{contingency tables}. This is just a way to organize and visualize
-this type of data. To construct them we just write of a table with
-the levels of one variable in one dimension across the levels of the
-other variable in the second dimension. In fact, table \ref{tab:Frequency-of-HRE}
-is a contingency table that summarizes the observed data. The organization
-of data in this way allow us to compute the expected frequencies under
-the null hypothesis that both variables are independent (i.e. there
-is no association between the presence of the HRE an the regulation
-of gene expression by hypoxia). We can compute a table of the expected
-frequencies by completing each cell according to the formula $expected_{rc}=\frac{margin_{r}margin_{c}}{total}$
-where \emph{margin\protect\textsubscript{r}} is the sum of frequencies
-in row \emph{r} (total row \emph{r}), \emph{margin\protect\textsubscript{c}}
-is the sum of frequencies in column \emph{c} (total column \emph{r}),
-and \emph{total} is the sum of frequencies in all cells (total number
-of observations). The only thing this formula does is to compute how
-the total counts in a given level of variable X would distribute across
-the different levels of Y if they are independent.
+% \section{Chi-square test for heterogeneity}
 
-Although we will only deal with two variables in this class, you
-could construct multi-way contingency tables for more than two categorical
-variables.
-
-
-
-\section{Chi-square test for heterogeneity}
-
-Now, let focus on the second case above in which we wanted to determine
-whether HIF binding was preferentially associated induction/repression
-of gene expression or had no preference. As we mentioned before, we
-are dealing also with categorical data, but there are two important
-differences with the previous case. The first one is that we have
-two categorical variables (presence of HRE and effect of hypoxia on
-gene expression) instead of one. Secondly, in the previous case we
-wanted to compare the observed frequencies to those expected under
-a specific null hypothesis (Mendelian frequencies). How do we calculate
-the expected frequencies in this second case? In other words, what
-is the null hypothesis in this case? The key to the answer is that,
-in this case, we are actually testing whether there is an association
-between the two variables we are measuring (note that we are asking
-whether the presence of an HRE is associated with gene expression).
-In this scenario our null hypothesis is that there is no association
-between these variables. That is, we want to test if the distribution
-of frequencies of each level of the categorical variable X differ
-across the levels of the other categorical variable (Y) or if frequencies
-of X are the same regardless the levels of Y. In fact, this is analogous
-to the interactions in factorial ANOVA.
+% Now, let focus on the second case above in which we wanted to determine
+% whether HIF binding was preferentially associated induction/repression
+% of gene expression or had no preference. As we mentioned before, we
+% are dealing also with categorical data, but there are two important
+% differences with the previous case. The first one is that we have
+% two categorical variables (presence of HRE and effect of hypoxia on
+% gene expression) instead of one. Secondly, in the previous case we
+% wanted to compare the observed frequencies to those expected under
+% a specific null hypothesis (Mendelian frequencies). How do we calculate
+% the expected frequencies in this second case? In other words, what
+% is the null hypothesis in this case? The key to the answer is that,
+% in this case, we are actually testing whether there is an association
+% between the two variables we are measuring (note that we are asking
+% whether the presence of an HRE is associated with gene expression).
+% In this scenario our null hypothesis is that there is no association
+% between these variables. That is, we want to test if the distribution
+% of frequencies of each level of the categorical variable X differ
+% across the levels of the other categorical variable (Y) or if frequencies
+% of X are the same regardless the levels of Y. In fact, this is analogous
+% to the interactions in factorial ANOVA.
 
 
 % \begin{comment}
@@ -912,7 +987,15 @@ example, in a case with two variables with 2 and 3 categories respectively
 \section{Looking at residuals}\label{sec:residuals}
 
 
-So we have very strong evidence of deviations from the null in both the diet and the Hx data. We can look at the residuals, the deviations from the expected, to understand what is happening (R commander makes this available under ``Components of chi-square'').
+So we have very strong evidence of deviations from the null in the Hx data and some evidence in the diet data. This might tell us there are deviations from independence, but we would like to examine what is behind these deviations. What cells are deviating from the expected or how strong is the association. Moreover, or large sample sizes it
+is easy to get a very small p-value even when the difference between
+the observed and expected values is small\protect\footnote{Note that this is true for any other statistical test, not just those
+for categorical variables}. As usual, a statistically significant p-value does not necessarily
+indicates a significant difference from the practical (or biological)
+point of view.
+
+
+We can look at the residuals, the deviations from the expected, to understand what is happening (R commander makes this available under ``Components of chi-square'').
 Residuals sum up to the value of the \(\chi^2\) for the test.
 
 \citet[p.~39]{agresti2018}, \citet[p.~81]{agresti2012}, and \citet[p.~183]{bilder2024} use standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}.  Cells with larger expected frequencies tend to have larger deviations, so we want to scale (standardize) to account for this. Standardized residuals
@@ -931,7 +1014,114 @@ chisq.test(diet.table, correct = FALSE)$stdres
 %% the diet one colSums sum to 0 because of the design: all rowSums are the same.
 %% Agresti, Intro, explains this in some detail for the 2xJ table, why over the smaller dimension they sum to 0. See p. 40
 
-For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be apparent and thus might not always help us much.
+For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be discernible and thus might not always help us much. Section \ref{sec:OR} mentions another approach.
+
+
+
+\section{Strength of association: odds ratios and relative risks}\label{sec:OR}
+
+% The statistical test we have seen indicate when there is a statistically
+% significant relationship between two variables, but it does not indicate
+% how strong the association is. Moreover, for large sample sizes it
+% is easy to get a very small p-value even when the difference between
+% the observed and expected values is small\protect\footnote{Note that this is true for any other statistical test, not just those
+% for categorical variables}. In words, a statistically significant p-value does not necessarily
+% indicates a significant difference from the practical (or biological)
+% point of view. For all this reasons, it is not advisable to draw conclusions
+% just based on the p-value and we should also
+
+We continue with the theme above (section \ref{sec:residuals}).  So there are deviations from independence: can we make sense of it? The odds ratio and relative risk are other measures of association.
+
+% Here, we try to look at  the
+% \emph{effect size}, that is the difference between the null and actual
+% value of the parameter of interest. In the case of chi-square test
+% we can use an \emph{odds ratio} or the \emph{risk ratio} to quantify
+% the strength of the association.
+
+Suppose this table shows number of patients with different outcomes (recoverd or non-recovered) under two treatments (drug and control):
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+ &  & \multicolumn{2}{c|}{Outcome}\tabularnewline
+\hline
+\hline
+ &  & Recovered & Non-recovered\tabularnewline
+\hline
+\multirow{2}{*}{Group} & Drug & a & b\tabularnewline
+\cline{2-4}
+ & Control & c & d\tabularnewline
+\hline
+\end{tabular}
+
+
+In 2x2 tables, the relative risk is the ratio or the risk ratio is \(\pi_1 / \pi_2\), where \(\hat{\pi_1} = \frac{a}{a + b}\), \(\hat{\pi_2} = \frac{c}{c + d}\). So we are comparing how much larger the probability of recovery is for the patients in the Drug group relative to those in the control group. This is a sensible thing to do. Can you think why?
+
+
+% Rate = proportion in group with condition present ($Rate_{a}=\frac{a}{a+b}$;$Rate_{b}=\frac{c}{c+d}$)
+
+% Then risk ratio is: $Rr=\frac{Rate_{a}}{Rate_{b}}$
+
+Another statistic is the odds ratio. The odds is defined as \(\frac{\pi}{1 - \pi}\). The odds ratio is then \(\frac{\text{odds}_1}{\text{odds}_2}\). In the table above, the estimate of the odds ratio is thus: \(\hat{\theta} = \frac{a/b}{c/d} = \frac{a d}{b c}\)
+
+
+It is possible to obtain estimates and confidence intervals for the odds ratio (for example, see package \texttt{epitools}). When examining odds ratio, often a relevant null hypothesis is that the odds ratio is 1.
+
+Odds ratios and relative risks are discussed in \citet[pp.~39 and ff]{bilder2024} and \citet[pp.~29 and ff]{agresti2018} (and it is possible to small sample confidence intervals for them; e.g., \citealp[p.~50]{agresti2018}).
+
+
+
+% Odds=probability \emph{of success}/(1-probability \emph{of success}).
+
+% ($Odds_{1}=\frac{P_{a}}{(1-P_{a})}=\frac{a/\left(a+b\right)}{1-(a/\left(a+b\right))}=\frac{a}{b}$;$Odds_{2}=\frac{c}{d}$)
+
+% Then the odds Ratio is: $OR=\frac{Odds_{1}}{Odds_{2}}$ and the log
+% OR is: $LOR=\ln\left(OR\right)$
+
+
+% \subsection{More on entering categorical data in R commander}
+
+% Lets explore the strength of associations in further detail. Imagine
+% that you study the association between the presence of a given SNP
+% and cancer development and, after studying a large number of cases
+% you get the following results:
+
+% \begin{tabular}{|c|c|c|}
+% \hline
+%  & Cancer & Healthy\tabularnewline
+% \hline
+% \hline
+% SNP present & 549 & 49788\tabularnewline
+% \hline
+% SNP absent & 461 & 51898\tabularnewline
+% \hline
+% \end{tabular}
+
+% As we have seen above, R can compute the contingency table from raw
+% data. However, since even very large raw data files can be summarized
+% in a few numbers, sometimes it is just easier to type the contingency
+% table directly into R commander. In addition, in many cases, we will
+% just get the tabulated rather than raw data. For these reasons, R
+% commander includes a specific menu to facilitate this task. In order
+% to get familiar with it, we are going to enter the data corresponding
+% to case \#2 as provided in table \ref{tab:Frequency-of-HRE}.
+
+% To enter these values in a tabular form go to Statistics->Contingency
+% tables->Enter and analyze... select the appropriate number of rows
+% and columns and enter the values. Finally select the test(s) you want
+% to run (see figure \ref{fig:Entering-contingency-tables}).
+
+% \begin{figure}[h!]
+% \caption{\protect\label{fig:Entering-contingency-tables}Entering contingency
+% tables}
+
+% \centering{}\includegraphics[width=12cm]{pasted9.png}
+% \end{figure}
+
+
+% Please take a look at the OR in the output of the Fisher's exact
+% test. Also compute by hand the risk of developing cancer in the population
+% with and without the SNP (compute the risk ratio). How large is the
+% ratio?
 
 
 
@@ -1276,92 +1466,8 @@ fisher.test(contTable)
 
 \FIXME{explain what is the permutation test, and that we can use it for Fisher's too, though then no longer really exact}
 
-\section{Strength of association}
 
-The statistical test we have seen indicate when there is a statistically
-significant relationship between two variables, but it does not indicate
-how strong the association is. Moreover, for large sample sizes it
-is easy to get a very small p-value even when the difference between
-the observed and expected values is small\protect\footnote{Note that this is true for any other statistical test, not just those
-for categorical variables}. In words, a statistically significant p-value does not necessarily
-indicates a significant difference from the practical (or biological)
-point of view. For all this reasons, it is not advisable to draw conclusions
-just based on the p-value and we should also pay attention to the
-\emph{effect size}, that is the difference between the null and actual
-value of the parameter of interest. In the case of chi-square test
-we can use an \emph{odds ratio} or the \emph{risk ratio} to quantify
-the strength of the association. For the table:
-
-\begin{tabular}{|c|c|c|c|}
-\hline
- &  & \multicolumn{2}{c|}{Var1}\tabularnewline
-\hline
-\hline
- &  & Y & N\tabularnewline
-\hline
-\multirow{2}{*}{Var2} & Y & a & b\tabularnewline
-\cline{2-4}
- & N & c & d\tabularnewline
-\hline
-\end{tabular}
-
-Rate = proportion in group with condition present ($Rate_{a}=\frac{a}{a+b}$;$Rate_{b}=\frac{c}{c+d}$)
-
-Then risk ratio is: $Rr=\frac{Rate_{a}}{Rate_{b}}$
-
-Odds=probability \emph{of success}/(1-probability \emph{of success})
-($Odds_{1}=\frac{P_{a}}{(1-P_{a})}=\frac{a/\left(a+b\right)}{1-(a/\left(a+b\right))}=\frac{a}{b}$;$Odds_{2}=\frac{c}{d}$)
-
-Then the odds Ratio is: $OR=\frac{Odds_{1}}{Odds_{2}}$ and the log
-OR is: $LOR=\ln\left(OR\right)$
-
-\subsection{More on entering categorical data in R commander}
-
-Lets explore the strength of associations in further detail. Imagine
-that you study the association between the presence of a given SNP
-and cancer development and, after studying a large number of cases
-you get the following results:
-
-\begin{tabular}{|c|c|c|}
-\hline
- & Cancer & Healthy\tabularnewline
-\hline
-\hline
-SNP present & 549 & 49788\tabularnewline
-\hline
-SNP absent & 461 & 51898\tabularnewline
-\hline
-\end{tabular}
-
-As we have seen above, R can compute the contingency table from raw
-data. However, since even very large raw data files can be summarized
-in a few numbers, sometimes it is just easier to type the contingency
-table directly into R commander. In addition, in many cases, we will
-just get the tabulated rather than raw data. For these reasons, R
-commander includes a specific menu to facilitate this task. In order
-to get familiar with it, we are going to enter the data corresponding
-to case \#2 as provided in table \ref{tab:Frequency-of-HRE}.
-
-To enter these values in a tabular form go to Statistics->Contingency
-tables->Enter and analyze... select the appropriate number of rows
-and columns and enter the values. Finally select the test(s) you want
-to run (see figure \ref{fig:Entering-contingency-tables}).
-
-\begin{figure}[h]
-\caption{\protect\label{fig:Entering-contingency-tables}Entering contingency
-tables}
-
-\centering{}\includegraphics[width=12cm]{pasted9.png}
-\end{figure}
-
-
-Please take a look at the OR in the output of the Fisher's exact
-test. Also compute by hand the risk of developing cancer in the population
-with and without the SNP (compute the risk ratio). How large is the
-ratio?
-
-
-\section{Visualizing multivariate categorical data}
+\section{Visualizing multivariate categorical data}\label{sec:visualization}
 
 We can use stacked bar plots to visualize multivariate categorical
 data. To this end just go to the bar graph under the graph menu (figure
@@ -1617,9 +1723,12 @@ are conditionally independent in each stratum of a third variable.
 
 
 \section{(Generalized) Linear models for categorical and count data}
-\label{sec:line-models-categ}
+\label{sec:glms}
 
-\FIXME{write this.}
+We spent time covering linear models. Generalized linear models extend linear models for responses that are not necessarily numerical, or that can be numerical but are not at all Gaussian. Briefly, generalized linear models allow us to put, on the right of an expression like ``\verb@y ~ x + u + ...@'' \  a \(Y\) that can be a proportion, for example.
+
+A common example is logistic regression, where we model, on the left of the ``~'', the probability of an event. So we can model the probability of response (healed vs.\ non-healed) as a function of a bunch of variables. In the simplest cases, this will reduce to a contingency table, but generalized linear models allow us to model much more complex dependencies. We can have additive effects, interactions, etc. Moreover, they provide estimates of effects and the same principled ways of addressing modeling questions we say for linear models.  Generalized linear models can also be used to model categorical data that fall into more than two categories (multinomial data) or counts (Poisson data). Etc, etc.
+
 
 
 \section{Summary}
@@ -1691,15 +1800,49 @@ size.
 \section{Recommended reading}
 \label{sec:recommended-reading}
 
-All we have covered here is discussed in \citet{Dalgaard2008} and \citet{diez2019}. The first is available through UAM's electronic library, and the second is available in several formats, from their web page.
+Much of what we have covered here is discussed in \citet{Dalgaard2008} and \citet{diez2019}. The first is available through UAM's electronic library, and the second is available in several formats, from their web page.
 
-But we have only covered a few topics. The first place I always go to for issues related to categorical data analysis is \texttt{agresti2012} (see also \citep{agresti2018} for a shorter intro).
+Beyond that, the first place I always go to for issues related to categorical data analysis is \texttt{agresti2012} and \citep{agresti2018}. \citet{bilder2024} is also a great book. For generalized linear models with R, \citet{fox2018} and \citet{faraway_extending_2016} are very good.
 
 
 %\bibliographystyle{jss2}
 \bibliographystyle{natbib_paren_date_urlbst}
 
 \bibliography{refs}
+
+
+
+\section{Appendix: Entering tabular data and doing analyses from here}\label{sec:enter_tabular}
+
+You can enter the tabular data directly in R Commander under ``Statistics \(\rightarrow\) Contingency tables'', and that would directly give you a contingency table and allow you to perform several tests.
+
+Imagine
+that you study the association between the presence of a given SNP
+and cancer development and, after studying a large number of cases
+you get the following results:
+
+\begin{tabular}{|c|c|c|}
+\hline
+ & Cancer & Healthy\tabularnewline
+\hline
+\hline
+SNP present & 549 & 49788\tabularnewline
+\hline
+SNP absent & 461 & 51898\tabularnewline
+\hline
+\end{tabular}
+
+You can enter the tabulated values directly, and do a test. Go to Statistics->Contingency
+tables->Enter and analyze... select the appropriate number of rows
+and columns and enter the values. Finally select the test(s) you want
+to run (see figure \ref{fig:Entering-contingency-tables}).
+
+\begin{figure}[h!]
+\centering{}\includegraphics[width=12cm]{pasted9.png}
+\caption{\protect\label{fig:Entering-contingency-tables}Entering contingency
+tables}
+\end{figure}
+
 
 \end{document}
 
