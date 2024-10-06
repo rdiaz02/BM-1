@@ -381,15 +381,17 @@ Type the above and select the data in R Commander. Now, find the ``Statistics ->
 \subsection{Normal approximation}
 \label{sec:normal-approximation}
 
-Just use the menu, and select the normal approximation (and select also the continuity correction).
+Just use the menu, and select the normal approximation.
 
 Doing it directly by hand is probably much faster than entering the data and going to the menu:
 
 <<>>=
-prop.test(x = 39, n = 215, p = 0.15)
+prop.test(x = 39, n = 215, p = 0.15, correct = FALSE)
 @
 
 We are given a p-value and a confidence interval. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 10. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). The test we have used adds also a continuity correction.
+
+We used the argument \texttt{correct = FALSE} to prevent R from using a continuity correction. The reasons can be found, for example, in \citet[section 1.6.2, p.~18]{agresti2018}, \citet[note 1.5, p.~25]{agresti2012}, or \citet[section 1.2.3, p.~35]{bilder2024}. In what follows, we will always (intend to) avoid the continuity correction. By the way, that is what R commander does by default.
 
 
 You should be able to interpret the p-value and the confidence interval.
@@ -438,10 +440,10 @@ Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
 @
 
 
-Now, go do a two-sample proportions test using the normal approximation with continuity. We can also quickly do it by entering the successes and total cases (i.e., healed + non haled), in other words, the info in the table, when calling the function \texttt{prop.test}:
+Now, go do a two-sample proportions test using the normal approximation. We can also quickly do it by entering the successes and total cases (i.e., healed + non haled), in other words, the info in the table, when calling the function \texttt{prop.test}:
 
 <<>>=
-prop.test(x = c(23, 18), n = c(30, 31))
+prop.test(x = c(23, 18), n = c(30, 31), correct = FALSE)
 @
 
 Again, you should be able to interpret all of the output.
@@ -452,10 +454,10 @@ There is, however, an additional way (well, two additional ways ---there are in 
 <<>>=
 
 tableEx3 <- xtabs( ~ Drug + Outcome, data = Exercise3)
-chisq.test(tableEx3)
+chisq.test(tableEx3, correct = FALSE)
 
 ## same as
-chisq.test(matrix(c(23, 18, 7, 13), nrow = 2))
+chisq.test(matrix(c(23, 18, 7, 13), nrow = 2), correct = FALSE)
 @
 
 
@@ -718,7 +720,7 @@ the same as concluding that ratios are Mendelian. In the next figure, you'll fin
 <<Rcode_for_chisquare,tidy=TRUE,echo=-1>>=
 mice<-data.frame(ID=paste("id",formatC(1:154,digits=0,width=4,flag=0),sep=""),Genotype=sample(c(rep("wt/wt",40),rep("wt/mut",72),rep("mut/mut",42))))
 table(mice$Genotype)
-chisq.test(table(mice$Genotype),p=c(0.25,0.5,0.25))
+chisq.test(table(mice$Genotype),p=c(0.25,0.5,0.25), correct = FALSE)
 @
 \end{figure}
 
@@ -733,9 +735,9 @@ show output 2x2
 
 do the tests
 
-\subsection{\textit{r\ x\ c} or \textit{I\ x \J} contingency tables}\label{sec:rc-tables}
+\subsection{\textit{r\ x\ c} or \textit{I\ x \ J} contingency tables}\label{sec:rc-tables}
 
-(The \textit{r\ x\ c} and  \textit{I\ x \J} are two common ways of referring to the same thing: 2-dimensional contingency tables with \(r\) or \(I\) rows and \(c\) or \(J\) columns.)
+(The \textit{r\ x\ c} and  \textit{I\ x \ J} are two common ways of referring to the same thing: 2-dimensional contingency tables with \(r\) or \(I\) rows and \(c\) or \(J\) columns.)
 
 
 <<>>=
@@ -747,7 +749,7 @@ Hx$HRE <- factor(Hx$HRE,
                  levels = c("HRE+", "HRE-"))
 
 (Hx_tab <- xtabs(~ Effect + HRE, data = Hx))
-chisq.test(Hx_tab)
+chisq.test(Hx_tab, correct = FALSE)
 @
 
 
@@ -769,6 +771,11 @@ diet.table <- xtabs(formula = count ~ fiber + bloat, data = diet)
 diet.table
 @
 
+Now, do a chi-square test:
+
+<<>>=
+chisq.test(diet.table, correct = FALSE)
+@
 
 
 
@@ -901,47 +908,31 @@ example, in a case with two variables with 2 and 3 categories respectively
 % \end{comment}
 
 
-\subsection{Visualizing multivariate categorical data}
 
-We can use stacked bar plots to visualize multivariate categorical
-data. To this end just go to the bar graph under the graph menu (figure
-\ref{fig:Stacked-bar-plot}, step 1). Pick a variable to represent,
-e.g. ``HRE'' (figure \ref{fig:Stacked-bar-plot}, step 2a), and
-then click on plot by groups (step 2b, figure \ref{fig:Stacked-bar-plot})
-to select the ``grouping'' variable. Finally, under options select
-you can set other aesthetic details (step 4, figure \ref{fig:Stacked-bar-plot}).
-
-\begin{figure}[h]
-\caption{\protect\label{fig:Stacked-bar-plot}Stacked bar plot}
-
-\centering{}\includegraphics[width=12cm]{pasted4.png}
-\end{figure}
+\section{Looking at residuals}\label{sec:residuals}
 
 
-Mosaic plots are a very informative two-dimensional representation
-of the categorical data (see figure \ref{fig:Visualization-of-multivariate}).
-Unfortunately it is not implemented in R commander. Finally, an additional
-type of graph to represent categorical data is described in reference
-\citet{xu2010a} (by the way, this reference is a nice review of categorical
-data analysis in experimental biology).
+So we have very strong evidence of deviations from the null in both the diet and the Hx data. We can look at the residuals, the deviations from the expected, to understand what is happening (R commander makes this available under ``Components of chi-square'').
+Residuals sum up to the value of the \(\chi^2\) for the test.
 
-% \begin{comment}
-% By me: I guess that the Pearson residuals represented in mosaic plots
-% by the mosaic function are the difference between the observed and
-% expected values. See footnote above.
-% \end{comment}
+\citet[p.~39]{agresti2018}, \citet[p.~81]{agresti2012}, and \citet[p.~183]{bilder2024} use standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}.  Cells with larger expected frequencies tend to have larger deviations, so we want to scale (standardize) to account for this. Standardized residuals
+are also asymptotically standard normal under \(H_0\); thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
 
-\begin{figure}[h]
+% (so standardized residuals larger than about 2 or 3 in absolute value indicate deviation from \(H_0\) in that cell \citealp[p.~81]{agresti2012}).
 
-\caption{\protect\label{fig:Visualization-of-multivariate}Visualization of
-multivariate categorical data}
+<<res_hx>>=
+chisq.test(Hx_tab, correct = FALSE)$residuals^2
+chisq.test(Hx_tab, correct = FALSE)$stdres
 
-<<label="visualizing-multivariate-categorical-data", tidy=TRUE,fig.width=4,fig.height=4,echo=-2,warning=F,error=F,message=F>>=
-library(vcd)
-HRE<-read.table("Hyp_effect.csv",sep=",",head=T)
-mosaic(xtabs(~HRE+Effect, data=HRE),shade=T)
+chisq.test(diet.table, correct = FALSE)$residuals^2
+chisq.test(diet.table, correct = FALSE)$stdres
 @
-\end{figure}
+
+%% the diet one colSums sum to 0 because of the design: all rowSums are the same.
+%% Agresti, Intro, explains this in some detail for the 2xJ table, why over the smaller dimension they sum to 0. See p. 40
+
+For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be apparent and thus might not always help us much.
+
 
 
 \section{Assumptions of the chi-square test, minimal expected counts, Fisher's exact test and all that}
@@ -971,14 +962,45 @@ It turns out that these rules might be overly restrictive and the details can de
 
 \subsection{What can we do if expected counts are too small or \ldots}
 
-The answer was often ``use Fisher's exact test''. That, however, might not be the best idea.
+The answer is often ``use Fisher's exact test''. That, however, might not be the best idea according to some.
 
 \subsubsection{Fisher's exact test}
 \label{sec:fishers-exact-test}
 
-It can be used for 2x2 tables and for larger rxc tables.  It computes the exact probability of getting the observed statistics (and any other more extreme) by exhaustively examining all the possible distributions of counts in the table. The test conditions on both the row and column marginals, and for a 2x2 table this yields a hypergeometric distribution, for example for the counts in the first row and column. The test can be extended to rxc tables.
+It can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just count how many tables there are with \(n_{11}\) as extreme or more extreme than the one we observed.} For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
 
-The test can become computationally unfeasible for very large tables (large in terms of dimensions, numbers of rows and columns, and/or sample size). In this case, we can obtain p-values by simulation (in R use argument \texttt{simulate.p.values = TRUE} in larger than 2x2 tables). Instead of examining exhaustively all possibilities, we repeatedly simulate outcomes (samples) under the null hypothesis (null hypothesis and, for Fisher's, fixed row and column margins) using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
+
+To take the mystery out of this procedure, this is the classical lady testing tea example. I copy a couple of figures from \citet{agresti2018} (pp.~47 and 48):
+
+
+\begin{figure}[h]
+  \centering{}\includegraphics[width=10cm]{fisher-1-agresti.png}\\
+  \centering{}\includegraphics[width=10cm]{fisher-2-agresti.png}
+    \caption{\label{fig:fisher-agresti} Tables 2.7 and 2.8 from Agresti, 2018, \textit{An introduction to categorical data analysis, 3rd ed}, Wiley.}
+\end{figure}
+
+
+A one-sided P-value, had we observed 3 cases in \(n_{11}\) would be \(0.014 + 0.229\). A two-tailed test would be \(0.014 + 0.229 + 0.229 + 0.014\).
+
+
+
+<<>>=
+## One-sided: alternative is more matches
+fisher.test(matrix(c(3, 1, 1, 3), nrow = 2), alternative = "greater")
+
+## Two-sided
+fisher.test(matrix(c(3, 1, 1, 3), nrow = 2))
+
+@
+
+
+
+% It computes the exact probability of getting the observed statistics (and any other more extreme) by exhaustively examining all the possible distributions of counts in the table. The test conditions on both the row and column marginals, and for a 2x2 table this yields a hypergeometric distribution, for example for the counts in the first row and column. The test can be extended to rxc tables.
+
+%% Recall in the 2x2 we often use, for example, counts in n_{1,1}. See Agresti or Tang et al., p. 41, sect. 2.2.1.3
+
+The test can become computationally unfeasible for very large tables (large in terms of dimensions, numbers of rows and columns, and/or sample size). In this case, we can obtain p-values by simulation (in R use argument \texttt{simulate.p.value = TRUE} in larger than 2x2 tables). Instead of examining exhaustively all possibilities, we repeatedly simulate outcomes (samples) under the null hypothesis (null hypothesis and, for Fisher's, fixed row and column margins) using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
+Monte Carlo simulation allows us to approximate very closely (more closely the larger the number of simulations) the exact p-value.
 
 
 Let us do this in the 3x2 table. From the menus, you cannot directly use the \texttt{simulate.p.value} options, so I'll do everything without the menus. Just copy the code.
@@ -986,7 +1008,7 @@ Let us do this in the 3x2 table. From the menus, you cannot directly use the \te
 This is the usual Fisher's exact test (and this you can get from R commander menus). I've added also the chisq.test.
 <<>>=
 fisher.test(Hx_tab)
-chisq.test(Hx_tab)
+chisq.test(Hx_tab, correct = FALSE)
 @
 
 Now, Fisher's with simulation of p-values. We use a small number here, the default of 2000 (for real, I'd use a lot more)\footnote{Incidentally, the p-value you are likely to get is 0.0005, actually 0.00049975, which is \(1/(B + 1)\); this is because the pattern we observe is the most extreme of all, and we compute the p-value in the usual way: how many are as extreme as, or more extreme than, what we find. Since we have used 2000, the denominator is 2001. This is technical material that you can skip.}:
@@ -1008,14 +1030,30 @@ This is an interesting case, because of the small expected cell counts. \citet{b
 here (...)''}).
 
 
+\subsubsection{Issues with Fisher's test}
+\label{sec:issues-with-fishers}
+
+The main concerns in the literature are:
+\begin{itemize}
+\item conservatism
+\item the conditioning on row and column margins
+\end{itemize}
+
+Conservatism can be diminished using the \texttt{mid P-value}. This is well explained in \citet[section 2.6.3]{agresti2018} and in \citet[pp.~458 and 586 of]{bilder2024}.
+
+
+
+\FIXME{about here}
 
 \subsection{Chi square with \texttt{simulate.p.value}?}
 
-This is another alternative. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals, and works only if the marginals are strictly positive. (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}
+This is another alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals, and works only if the marginals are strictly positive. (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}
+
+  %% See the help or this discussion https://stats.stackexchange.com/questions/159057/alternatives-for-chi-squared-test-for-independence-for-tables-more-than-2-x-2/159063#159063
 
 There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about the sampling model of Fisher's exact test, this simulation procedure carries the same concerns.
 
-More sophisticated simulation schemes are possible, but that is beyond the scope of this class (and might run into other problems, like generating marginals that are 0, etc).
+More sophisticated simulation schemes are possible, but that is beyond the scope of this class (and might run into other problems, like generating marginals that are 0, etc). In R, package \texttt{exact2x2}, \Burl{https://cran.r-project.org/web/packages/exact2x2/index.html} might be of interest. See also
 
 
 
@@ -1041,7 +1079,7 @@ sampling (unless you select \texttt{simulate.p.values}). Instead
 
 or when we can use the usual chi-square test
 
-
+\begin{itemize}
 % \item Simple random sample \textendash{} The sample data is a random sampling
 % from a fixed distribution or population where every collection of
 % members of the population of the given sample size has an equal probability
@@ -1226,9 +1264,9 @@ Hx<-read.table("Hyp_effect.csv",head=T,sep=",")
 with(xtabs(~Effect+HRE),data=Hx)
 contTable<-with(xtabs(~Effect+HRE),data=Hx)
 #Chi-square test
-chisq.test(contTable)
+chisq.test(contTable, correct = FALSE)
 #Permutation test
-chisq.test(contTable,simulate.p.value = TRUE)
+chisq.test(contTable, simulate.p.value = TRUE)
 #Fisher's exact test
 fisher.test(contTable)
 @
@@ -1322,18 +1360,68 @@ test. Also compute by hand the risk of developing cancer in the population
 with and without the SNP (compute the risk ratio). How large is the
 ratio?
 
-\section{Other test for categorical data}\label{sec:Other-test-for}
+
+\section{Visualizing multivariate categorical data}
+
+We can use stacked bar plots to visualize multivariate categorical
+data. To this end just go to the bar graph under the graph menu (figure
+\ref{fig:Stacked-bar-plot}, step 1). Pick a variable to represent,
+e.g. ``HRE'' (figure \ref{fig:Stacked-bar-plot}, step 2a), and
+then click on plot by groups (step 2b, figure \ref{fig:Stacked-bar-plot})
+to select the ``grouping'' variable. Finally, under options select
+you can set other aesthetic details (step 4, figure \ref{fig:Stacked-bar-plot}).
+
+\begin{figure}[h]
+\caption{\protect\label{fig:Stacked-bar-plot}Stacked bar plot}
+
+\centering{}\includegraphics[width=12cm]{pasted4.png}
+\end{figure}
 
 
-Finally, be aware that we have only scratched the surface of categorical
-data analysis. There are many other tests that can be applied to specific
-cases involving categorical data:
+Mosaic plots are a very informative two-dimensional representation
+of the categorical data (see figure \ref{fig:Visualization-of-multivariate}).
+Unfortunately it is not implemented in R commander. Finally, an additional
+type of graph to represent categorical data is described in reference
+\citet{xu2010a} (by the way, this reference is a nice review of categorical
+data analysis in experimental biology).
+
+% \begin{comment}
+% By me: I guess that the Pearson residuals represented in mosaic plots
+% by the mosaic function are the difference between the observed and
+% expected values. See footnote above.
+% \end{comment}
+
+\begin{figure}[h]
+
+\caption{\protect\label{fig:Visualization-of-multivariate}Visualization of
+multivariate categorical data}
+
+<<label="visualizing-multivariate-categorical-data", tidy=TRUE,fig.width=4,fig.height=4,echo=-2,warning=F,error=F,message=F>>=
+library(vcd)
+HRE<-read.table("Hyp_effect.csv",sep=",",head=T)
+mosaic(xtabs(~HRE+Effect, data=HRE),shade=T)
+@
+\end{figure}
+
+\citet{friendly2016} is a book-length treatment of visualization of categorical data using R.
+
+
+
+\section{Categorical data analysis: all we have left out}\label{sec:Other-test-for}
+
+
+Be aware that we have only scratched the surface of categorical
+data analysis. There are many other questions/issues/procedures that can be relevant for categorical data:
 \begin{enumerate}
-\item For simple cases in which the categorical variable has only to possible
-levels (``success'' and ``failure'') and when certain conditions
-are met, the sampling distribution of the estimated proportion is
-nearly normal and inference can be done using parametric test much
-like for numerical data. %
+
+\item Confidence intervals with small-sample procedures (e.g., Fisher's exact 2x2)
+\item
+
+  % \item For simple cases in which the categorical variable has only to possible
+% levels (``success'' and ``failure'') and when certain conditions
+% are met, the sampling distribution of the estimated proportion is
+% nearly normal and inference can be done using parametric test much
+% like for numerical data. %
 
 
 % \begin{comment}
