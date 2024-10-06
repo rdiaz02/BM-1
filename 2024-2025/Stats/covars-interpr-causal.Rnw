@@ -10,6 +10,7 @@
 \usepackage{url}
 \usepackage{nameref}
 \usepackage[english]{babel}
+%% FIXME: I should be using UTF-8. Fix this annoying thing!
 \usepackage[latin1]{inputenc}
 \usepackage{times}
 \usepackage[T1]{fontenc}
