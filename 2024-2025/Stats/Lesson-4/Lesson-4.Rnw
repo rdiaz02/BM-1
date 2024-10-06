@@ -137,8 +137,7 @@ opts_knit$set(stop_on_error = 2L)
   Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\
   Instituto de Investigaciones Biom\'edicas Sols-Morreale, IIBM, (CSIC-UAM)\\
   Madrid \\
-  Spain{\footnote{r.diaz@uam.es}} \\
- {\small \Burl{https://ligarto.org/rdiaz}} \\
+  Spain{\footnote{r.diaz@uam.es, \Burl{https://ligarto.org/rdiaz}  }}
 }
 
 \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
@@ -164,7 +163,7 @@ Please, \textbf{respect the copyright and license}. This material is provided fr
 
 
 
-\section*{History}
+\section*{Document history}
 This document was originally prepared, in 2020, by Luis del Peso Ovalle. Starting September 2024, it was heavily modified by Ramon Diaz-Uriarte.
 
 \clearpage
@@ -288,7 +287,8 @@ We will also learn how to generate contingency tables and perform relevant test 
 
 \section{Study Cases}
 
-\paragraph{Study the following two cases. In which way are they different to the other cases we have analyzed so far?}
+Study the following  cases. In which way are they different to the other cases we have analyzed so far?
+
 \begin{itemize}
 
 \item This uses a data set described in \citet[section 8.1 of][]{Dalgaard2008}: 39 of 215 randomly chosen patients are observed to have asthma. We want to test the null hypothesis that the probability of asthma is 0.15.
@@ -435,8 +435,6 @@ ex3 <- expand.grid(Drug = c("Piren", "Trithi"),
 ex3$cases <- c(23, 18, 7, 13)
 Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
 
-Exercise3 <- data.frame(drug = c("Piren", "Trithi"),
-                        outcome = c("Healed", "NotHealed"))
 @
 
 
@@ -452,6 +450,7 @@ Again, you should be able to interpret all of the output.
 There is, however, an additional way (well, two additional ways ---there are in fact a few more ways to obtain p-values) to compare those proportions: turning the problem into one of asking whether there is  independence of Outcome from Drug, or of independence of rows and columns.
 
 <<>>=
+
 tableEx3 <- xtabs( ~ Drug + Outcome, data = Exercise3)
 chisq.test(tableEx3)
 
