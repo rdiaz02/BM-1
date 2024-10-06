@@ -123,10 +123,31 @@
 %% remove? There is a multirow below.
 \usepackage{multirow}
 
+%% with nobreak below, try to prevent breaks in R output
+\usepackage{fancyvrb}
+
 <<setup,include=FALSE,cache=FALSE>>=
 require(knitr)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
+opts_chunk$set(echo = TRUE, nobreak = TRUE)
+
+## https://stackoverflow.com/a/75546561
+## %% FIXME
+## %% Not quite. Will debug some other time
+
+## default_output_hook <- knit_hooks$get('output')
+## knit_hooks$set(
+##   output = function(x, options) {
+##     if(is.null(options$nobreak)) {
+##       default_output_hook(x, options)
+##     } else {
+##       paste0("\\begin{Verbatim}[samepage=true]\n", x, "\n\\end{Verbatim}"
+##              )
+##     }
+##   }
+## )
+
 library(Rcmdr)
 @
 
@@ -812,12 +833,12 @@ Hx$HRE <- factor(Hx$HRE,
 chisq.test(Hx_tab, correct = FALSE)
 @
 
-(You can do all, or most, of the above from R Commander:
-\begin{figure}[h]
-\centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
-\caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
-\end{figure}
-)
+% (You can do all, or most, of the above from R Commander:
+% \begin{figure}[h]
+% \centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
+% \caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
+% \end{figure}
+% )
 
 
 You should be able to interpret the output from above. But ... what about degrees of freedom: \(df = (I - 1) (J - 1)\), where \(I\) is the number of categories in the first variable, and \(J\) in the second. So this example \((2 - 1)\ (3 - 1)\).
@@ -931,43 +952,43 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 % \end{comment}
 
 
-\subsection{Chi-squared test for heterogeneity\protect\footnote{also known as chi-squared test of independence to differentiate it
-from the goodness of fit describe before} in R}
+% \subsection{Chi-squared test for heterogeneity\protect\footnote{also known as chi-squared test of independence to differentiate it
+% from the goodness of fit describe before} in R}
 
-Read the data in file \textquotedblleft Hyp\_effect.csv\textquotedblright{}
-into R and take a look at the raw data (\textquotedblleft View data
-set\textquotedblright{} button). As you will see there are 11673 genes
-whose response to hypoxia has been determined and categorized as \textquotedblleft UP\textquotedblright{}
-(upregulated or induced), \textquotedblleft DOWN\textquotedblright{}
-(downregulated or repressed) or \textquotedblleft NO\textquotedblright{}
-(expression not altered by hypoxia). You can get these numbers from
-\emph{Statistics->Summaries->Frequency distributions}. Also, the presence
-of the HIF binding site has been determined in the promoter of each
-gene and recorded as \textquotedblleft YES\textquotedblright{} (present)
-or \textquotedblleft NO\textquotedblright{} (not present). We could
-also explore the data using bar and pie graphs as we did above for
-case \#1. Moreover, using R we can represent both variables simultaneously
-(see figure \ref{fig:Chi-square-test-in-1}), but this function is
-not implemented in R commander. Finally, we can generate a contingency
-table from the Statistics menu: Statistics->Contingency tables->Two-way
-table (see figure \ref{fig:Chi-square-test-in-1} and follow it skipping
-step 3a) and also perform a chi-square test on this table (see figure
-\ref{fig:Chi-square-test-in-1}).
+% Read the data in file \textquotedblleft Hyp\_effect.csv\textquotedblright{}
+% into R and take a look at the raw data (\textquotedblleft View data
+% set\textquotedblright{} button). As you will see there are 11673 genes
+% whose response to hypoxia has been determined and categorized as \textquotedblleft UP\textquotedblright{}
+% (upregulated or induced), \textquotedblleft DOWN\textquotedblright{}
+% (downregulated or repressed) or \textquotedblleft NO\textquotedblright{}
+% (expression not altered by hypoxia). You can get these numbers from
+% \emph{Statistics->Summaries->Frequency distributions}. Also, the presence
+% of the HIF binding site has been determined in the promoter of each
+% gene and recorded as \textquotedblleft YES\textquotedblright{} (present)
+% or \textquotedblleft NO\textquotedblright{} (not present). We could
+% also explore the data using bar and pie graphs as we did above for
+% case \#1. Moreover, using R we can represent both variables simultaneously
+% (see figure \ref{fig:Chi-square-test-in-1}), but this function is
+% not implemented in R commander. Finally, we can generate a contingency
+% table from the Statistics menu: Statistics->Contingency tables->Two-way
+% table (see figure \ref{fig:Chi-square-test-in-1} and follow it skipping
+% step 3a) and also perform a chi-square test on this table (see figure
+% \ref{fig:Chi-square-test-in-1}).
 
-\begin{figure}[h]
-\caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
+% \begin{figure}[h]
+% \caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
 
-\centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
-\end{figure}
+% \centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
+% \end{figure}
 
 
-Because the resulting probability is small, you reject the hypothesis
-that presence of HRE and gene expression are independent.
+% Because the resulting probability is small, you reject the hypothesis
+% that presence of HRE and gene expression are independent.
 
-Note that, to calculate the degrees of freedom, for contingency tables
-we multiply the number of categories (minus 1) of each variable. For
-example, in a case with two variables with 2 and 3 categories respectively
-(as in the case \#2), df=(2-1){*}(3-1)=2.
+% Note that, to calculate the degrees of freedom, for contingency tables
+% we multiply the number of categories (minus 1) of each variable. For
+% example, in a case with two variables with 2 and 3 categories respectively
+% (as in the case \#2), df=(2-1){*}(3-1)=2.
 
 % \begin{comment}
 % Finally, it should be noted that the degrees of freedom are not based
@@ -998,8 +1019,7 @@ point of view.
 We can look at the residuals, the deviations from the expected, to understand what is happening (R commander makes this available under ``Components of chi-square'').
 Residuals sum up to the value of the \(\chi^2\) for the test.
 
-\citet[p.~39]{agresti2018}, \citet[p.~81]{agresti2012}, and \citet[p.~183]{bilder2024} use standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}.  Cells with larger expected frequencies tend to have larger deviations, so we want to scale (standardize) to account for this. Standardized residuals
-are also asymptotically standard normal under \(H_0\); thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
+\citet[p.~39]{agresti2018}, \citet[p.~81]{agresti2012}, and \citet[p.~183]{bilder2024} use standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}.  Cells with larger expected frequencies tend to have larger deviations, so we want to scale (standardize) to account for this. Standardized residuals are also asymptotically standard normal under \(H_0\); thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
 
 % (so standardized residuals larger than about 2 or 3 in absolute value indicate deviation from \(H_0\) in that cell \citealp[p.~81]{agresti2012}).
 
@@ -1054,14 +1074,14 @@ Suppose this table shows number of patients with different outcomes (recoverd or
 \end{tabular}
 
 
-In 2x2 tables, the relative risk is the ratio or the risk ratio is \(\pi_1 / \pi_2\), where \(\hat{\pi_1} = \frac{a}{a + b}\), \(\hat{\pi_2} = \frac{c}{c + d}\). So we are comparing how much larger the probability of recovery is for the patients in the Drug group relative to those in the control group. This is a sensible thing to do. Can you think why?
+In 2x2 tables, the relative risk is the ratio or the risk ratio is \(\pi_1 / \pi_2\), where \(\hat{\pi}_1 = \frac{a}{a + b}\), \(\hat{\pi}_2 = \frac{c}{c + d}\). So we are comparing how much larger the probability of recovery is for the patients in the Drug group relative to those in the control group. This is a sensible thing to do. Can you think why?
 
 
 % Rate = proportion in group with condition present ($Rate_{a}=\frac{a}{a+b}$;$Rate_{b}=\frac{c}{c+d}$)
 
 % Then risk ratio is: $Rr=\frac{Rate_{a}}{Rate_{b}}$
 
-Another statistic is the odds ratio. The odds is defined as \(\frac{\pi}{1 - \pi}\). The odds ratio is then \(\frac{\text{odds}_1}{\text{odds}_2}\). In the table above, the estimate of the odds ratio is thus: \(\hat{\theta} = \frac{a/b}{c/d} = \frac{a d}{b c}\)
+Another statistic is the odds ratio. The odds is defined as \(\frac{\pi}{1 - \pi}\). The odds ratio is then \(\frac{\text{odds}_1}{\text{odds}_2}\). In the table above, the estimate of the odds ratio is thus: \(\hat{\theta} = \frac{a/b}{c/d} = \frac{a\ d}{b\ c}\)
 
 
 It is possible to obtain estimates and confidence intervals for the odds ratio (for example, see package \texttt{epitools}). When examining odds ratio, often a relevant null hypothesis is that the odds ratio is 1.
@@ -1253,62 +1273,62 @@ More sophisticated simulation schemes are possible, but that is beyond the scope
 
 
 
-observed frequencies under a hypergeometric distribution (not that this matters for this course, but you might here people refer to this test this way'')
+% observed frequencies under a hypergeometric distribution (not that this matters for this course, but you might here people refer to this test this way'')
 
-Note, though, that Fisher's exact test is a test that conditions on the marginals of both rows and columns. The test is valid even if the marginals row or the colum or none of the marginals are fixed, but other tests are sometimes suggested for small samples.
-
-
-However, unlike the permutation tests, it does not relies on random
-sampling (unless you select \texttt{simulate.p.values}). Instead
+% Note, though, that Fisher's exact test is a test that conditions on the marginals of both rows and columns. The test is valid even if the marginals row or the colum or none of the marginals are fixed, but other tests are sometimes suggested for small samples.
 
 
+% However, unlike the permutation tests, it does not relies on random
+% sampling (unless you select \texttt{simulate.p.values}). Instead
 
 
 
 
 
-or when we can use the usual chi-square test
 
-\begin{itemize}
-% \item Simple random sample \textendash{} The sample data is a random sampling
-% from a fixed distribution or population where every collection of
-% members of the population of the given sample size has an equal probability
-% of selection.
-\item Sample size (whole table) \textendash{} A sample with a sufficiently
-large size is assumed. If a chi squared test is conducted on a sample
-with a smaller size, then the chi squared test will yield an inaccurate
-inference. The researcher, by using chi squared test on small samples,
-might end up committing a Type II error.
-\item Expected cell count \textendash{} Adequate expected cell counts. A typical rule states that no
-  more than 20\% of the expected (\textbf{expected, not observed!}) frequencies should be less than five\footnote{A common rule is 5 or more in all cells of a 2-by-2 table, and 5 or
-    more in 80\% of cells in larger tables, but no cells with zero expected
-    count.}. Because, when expected frequencies are small, the calculated value
-  of chi-square tends to be too large and will therefore indicate a
-  lower than appropriate probability, thereby increasing the risk of
-  Type I error\footnote{To visualize this, imagine that you are trying to estimate if a couple
-    with a single child have the expected ratio of 50\% female:50\%male.
-    Regardless the sex of the child, the observed frequencies (100\%:0\%
-    or 0\%:100\%) will differ dramatically from the expected ones. The
-    small sample size avoids getting an accurate estimation of the frequencies.}. This rule, though, might be too restrictive in some cases, in the sense the chi-square approximation could be OK.
-\end{itemize}
 
-There are several alternatives (other than increasing sample size!),
-when the ``large enough'' conditions are not met:
-\begin{enumerate}
-% \item Yates\textquoteright{} correction or the continuity correction\footnote{technically it is applicable only in cases with df=1}.
-% It simply consists in subtracting 0.5 from the absolute value\footnote{by using the absolute value we ensure that we always decrease the
-% value of the difference} of the difference between observed and expected counts: $\chi^{2}=\sum_{category}\frac{\left(|observed_{i}-expected_{i}|-0.5\right)^{2}}{expected_{i}}$
-% . Obviously, this result in smaller values of the chi-square($\chi^{2}$)
-% statistic\footnote{Note also that it will have much higher relative impact when frequency
-% counts are small than when they are large} and thus larger p-values.
-\item The probability is not computed by comparing with a distribution such as the $\chi^{2}$ distribution. Instead, we repeatedly simulate outcomes (samples) under the null hypothesis using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
+% or when we can use the usual chi-square test
 
-  Permutation tests (and Monte Carlo procedures) \textbf{are not} exact tests, in contrast to what happens with the usual (see below) Fisher's exact test. Permutation tests (Monte Carlo procedures) are a way to approximate the exact p-value we would obtain if we could exhaustively examine all the possible configurations of the data under the null hypothesis% \footnote{This is in fact doable in some small tables. So one can get an exact test by computing the chi-square statistic for all possible assignments under the null. And this is not necessarily Fisher's test, but one that conditions on whatever we want to condition, such as fixed row totals, for example.}
-  . One should use a sufficiently large number of simulations (the error of the estimated p-value is a decreasing function of the number of simulations).
+% \begin{itemize}
+% % \item Simple random sample \textendash{} The sample data is a random sampling
+% % from a fixed distribution or population where every collection of
+% % members of the population of the given sample size has an equal probability
+% % of selection.
+% \item Sample size (whole table) \textendash{} A sample with a sufficiently
+% large size is assumed. If a chi squared test is conducted on a sample
+% with a smaller size, then the chi squared test will yield an inaccurate
+% inference. The researcher, by using chi squared test on small samples,
+% might end up committing a Type II error.
+% \item Expected cell count \textendash{} Adequate expected cell counts. A typical rule states that no
+%   more than 20\% of the expected (\textbf{expected, not observed!}) frequencies should be less than five\footnote{A common rule is 5 or more in all cells of a 2-by-2 table, and 5 or
+%     more in 80\% of cells in larger tables, but no cells with zero expected
+%     count.}. Because, when expected frequencies are small, the calculated value
+%   of chi-square tends to be too large and will therefore indicate a
+%   lower than appropriate probability, thereby increasing the risk of
+%   Type I error\footnote{To visualize this, imagine that you are trying to estimate if a couple
+%     with a single child have the expected ratio of 50\% female:50\%male.
+%     Regardless the sex of the child, the observed frequencies (100\%:0\%
+%     or 0\%:100\%) will differ dramatically from the expected ones. The
+%     small sample size avoids getting an accurate estimation of the frequencies.}. This rule, though, might be too restrictive in some cases, in the sense the chi-square approximation could be OK.
+% \end{itemize}
 
-  And Fisher's test if we use the \texttt{simulate.p.value = TRUE} is not ``exact'' in this sense either (the p-value is estimated using a Monte Carlo simulation, not by comparing with the exact distribution nor by exhaustively examining all possible cases).
+% There are several alternatives (other than increasing sample size!),
+% when the ``large enough'' conditions are not met:
+% \begin{enumerate}
+% % \item Yates\textquoteright{} correction or the continuity correction\footnote{technically it is applicable only in cases with df=1}.
+% % It simply consists in subtracting 0.5 from the absolute value\footnote{by using the absolute value we ensure that we always decrease the
+% % value of the difference} of the difference between observed and expected counts: $\chi^{2}=\sum_{category}\frac{\left(|observed_{i}-expected_{i}|-0.5\right)^{2}}{expected_{i}}$
+% % . Obviously, this result in smaller values of the chi-square($\chi^{2}$)
+% % statistic\footnote{Note also that it will have much higher relative impact when frequency
+% % counts are small than when they are large} and thus larger p-values.
+% \item The probability is not computed by comparing with a distribution such as the $\chi^{2}$ distribution. Instead, we repeatedly simulate outcomes (samples) under the null hypothesis using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
 
-  But the exactness here is not the relevant factor. The permutation procedure allows us to compute p-values even if the conditions for the use of the $\chi^{2}$ distribution are not met.
+%   Permutation tests (and Monte Carlo procedures) \textbf{are not} exact tests, in contrast to what happens with the usual (see below) Fisher's exact test. Permutation tests (Monte Carlo procedures) are a way to approximate the exact p-value we would obtain if we could exhaustively examine all the possible configurations of the data under the null hypothesis% \footnote{This is in fact doable in some small tables. So one can get an exact test by computing the chi-square statistic for all possible assignments under the null. And this is not necessarily Fisher's test, but one that conditions on whatever we want to condition, such as fixed row totals, for example.}
+%   . One should use a sufficiently large number of simulations (the error of the estimated p-value is a decreasing function of the number of simulations).
+
+%   And Fisher's test if we use the \texttt{simulate.p.value = TRUE} is not ``exact'' in this sense either (the p-value is estimated using a Monte Carlo simulation, not by comparing with the exact distribution nor by exhaustively examining all possible cases).
+
+%   But the exactness here is not the relevant factor. The permutation procedure allows us to compute p-values even if the conditions for the use of the $\chi^{2}$ distribution are not met.
 
 
   % And how is the sampling done for chisq? For
@@ -1346,12 +1366,12 @@ when the ``large enough'' conditions are not met:
 % \end{comment}
 
 
-\item Fisher's Exact test. It can be used for 2x2 contingency tables regardless the sample size.
+% \item Fisher's Exact test. It can be used for 2x2 contingency tables regardless the sample size.
 
-However, unlike the permutation tests, it does not relies on random
-sampling (unless you select \texttt{simulate.p.values}). Instead it computes the exact probability of getting the observed statistics (and any other more extreme) by exhaustively examining all the possible distributions of counts in the table\footnote{The test conditions on both the row and column marginals, and for a 2x2 table this yields a hypergeometric distribution, for example for the counts in the first row and column. } observed frequencies under a hypergeometric distribution (not that this matters for this course, but you might here people refer to this test this way'')
+% However, unlike the permutation tests, it does not relies on random
+% sampling (unless you select \texttt{simulate.p.values}). Instead it computes the exact probability of getting the observed statistics (and any other more extreme) by exhaustively examining all the possible distributions of counts in the table\footnote{The test conditions on both the row and column marginals, and for a 2x2 table this yields a hypergeometric distribution, for example for the counts in the first row and column. } observed frequencies under a hypergeometric distribution (not that this matters for this course, but you might here people refer to this test this way'')
 
-Note, though, that Fisher's exact test is a test that conditions on the marginals of both rows and columns. The test is valid even if the marginals row or the colum or none of the marginals are fixed, but other tests are sometimes suggested for small samples.
+% Note, though, that Fisher's exact test is a test that conditions on the marginals of both rows and columns. The test is valid even if the marginals row or the colum or none of the marginals are fixed, but other tests are sometimes suggested for small samples.
 
 
 
@@ -1421,50 +1441,50 @@ Note, though, that Fisher's exact test is a test that conditions on the marginal
 % \end{comment}
 
 
-Fisher's exact test is more accurate than the chi-square test when
-the expected numbers are small, thus it is advisable to use Fisher's
-exact test rather than chi-square test of independence when the total
-sample size is less than say 1000.
-\end{enumerate}
+% Fisher's exact test is more accurate than the chi-square test when
+% the expected numbers are small, thus it is advisable to use Fisher's
+% exact test rather than chi-square test of independence when the total
+% sample size is less than say 1000.
+% \end{enumerate}
 
-\FIXME{explain controversy around conditioning on marginal totals; also exact under the right conditions; and can be used also for large N and more than 2x2}
-
-
-\section{Permutation test and Fisher's exact test in R}
-
-To compute the Fisher's exact test in R commander, the only thing
-we have to do is select ``Fisher's test'' instead of ``chi-square''
-under the ``contingency tables'' menu (see step 3a in figure \ref{fig:Chi-square-test-in-1}).
-Please note that, although the original Fisher's exact test was designed
-for 2x2 contingency tables, in R it has been extended to work with
-larger tables such as the one in our example (3x2).
-
-Unfortunately, the permutation test can not be accessed from R
-commander file menu. However, it is extremely easy to perform this
-test from the command line. You just need to include the argument
-\emph{simulate.p.value = TRUE} in the chi-square function (see figure
-\ref{fig:Heterogeneity,-permutation-and}).
-
-\begin{figure}[h]
-\caption{\protect\label{fig:Heterogeneity,-permutation-and}Heterogeneity,
-permutation and Fisher's test in R }
-
-<<permutation test,echo=-1,fig.width=4,fig.height=4>>=
-Hx<-read.table("Hyp_effect.csv",head=T,sep=",")
-with(xtabs(~Effect+HRE),data=Hx)
-contTable<-with(xtabs(~Effect+HRE),data=Hx)
-#Chi-square test
-chisq.test(contTable, correct = FALSE)
-#Permutation test
-chisq.test(contTable, simulate.p.value = TRUE)
-#Fisher's exact test
-fisher.test(contTable)
-@
-\end{figure}
+% \FIXME{explain controversy around conditioning on marginal totals; also exact under the right conditions; and can be used also for large N and more than 2x2}
 
 
+% \section{Permutation test and Fisher's exact test in R}
 
-\FIXME{explain what is the permutation test, and that we can use it for Fisher's too, though then no longer really exact}
+% To compute the Fisher's exact test in R commander, the only thing
+% we have to do is select ``Fisher's test'' instead of ``chi-square''
+% under the ``contingency tables'' menu (see step 3a in figure \ref{fig:Chi-square-test-in-1}).
+% Please note that, although the original Fisher's exact test was designed
+% for 2x2 contingency tables, in R it has been extended to work with
+% larger tables such as the one in our example (3x2).
+
+% Unfortunately, the permutation test can not be accessed from R
+% commander file menu. However, it is extremely easy to perform this
+% test from the command line. You just need to include the argument
+% \emph{simulate.p.value = TRUE} in the chi-square function (see figure
+% \ref{fig:Heterogeneity,-permutation-and}).
+
+% \begin{figure}[h]
+% \caption{\protect\label{fig:Heterogeneity,-permutation-and}Heterogeneity,
+% permutation and Fisher's test in R }
+
+% <<permutation test,echo=-1,fig.width=4,fig.height=4>>=
+% Hx<-read.table("Hyp_effect.csv",head=T,sep=",")
+% with(xtabs(~Effect+HRE),data=Hx)
+% contTable<-with(xtabs(~Effect+HRE),data=Hx)
+% #Chi-square test
+% chisq.test(contTable, correct = FALSE)
+% #Permutation test
+% chisq.test(contTable, simulate.p.value = TRUE)
+% #Fisher's exact test
+% fisher.test(contTable)
+% @
+% \end{figure}
+
+
+
+% \FIXME{explain what is the permutation test, and that we can use it for Fisher's too, though then no longer really exact}
 
 
 \section{Visualizing multivariate categorical data}\label{sec:visualization}
@@ -1477,19 +1497,51 @@ then click on plot by groups (step 2b, figure \ref{fig:Stacked-bar-plot})
 to select the ``grouping'' variable. Finally, under options select
 you can set other aesthetic details (step 4, figure \ref{fig:Stacked-bar-plot}).
 
-\begin{figure}[h]
-\caption{\protect\label{fig:Stacked-bar-plot}Stacked bar plot}
-
+\begin{figure}[h!]
 \centering{}\includegraphics[width=12cm]{pasted4.png}
+\caption{\protect\label{fig:Stacked-bar-plot}Stacked bar plot}
 \end{figure}
 
+<<>>=
+with(Exercise3,
+     Barplot(Outcome, by = Drug, style="divided",
+             legend.pos="above", xlab="Outcome",
+             ylab="Frequency", label.bars=TRUE))
+
+@
+
+<<>>=
+with(Hx,
+     Barplot(HRE, by=Effect, style="divided",
+             legend.pos="above", xlab="HRE",
+             ylab="Frequency",
+             label.bars=TRUE))
+@
+
+Interestingly, however, the last plot does not seem to indicate the very strong differences we find. Notice this one, and make sure to think about which one makes most sense to you:
+
+<<>>=
+with(Hx,
+     Barplot(Effect, by=HRE, style="divided",
+             legend.pos="above", xlab="Effect",
+             ylab="Frequency", label.bars=TRUE))
+@
+
+
+This uses percentage instead of counts, and maybe it tells the story more clearly? You might want to look at the residuals we discussed in section \ref{sec:residuals} and see if you can relate them to the plots. Moreover, what is the size of the difference that is being detected?
+
+
+
+<<>>=
+with(Hx, Barplot(HRE, by=Effect, style="divided",
+                 legend.pos="above", xlab="HRE",
+                 ylab="Percent",
+                 scale="percent", label.bars=TRUE))
+@
 
 Mosaic plots are a very informative two-dimensional representation
-of the categorical data (see figure \ref{fig:Visualization-of-multivariate}).
-Unfortunately it is not implemented in R commander. Finally, an additional
-type of graph to represent categorical data is described in reference
-\citet{xu2010a} (by the way, this reference is a nice review of categorical
-data analysis in experimental biology).
+of the categorical data. % (see figure \ref{fig:Visualization-of-multivariate})
+ Unfortunately it is not implemented in R commander.
 
 % \begin{comment}
 % By me: I guess that the Pearson residuals represented in mosaic plots
@@ -1497,20 +1549,49 @@ data analysis in experimental biology).
 % expected values. See footnote above.
 % \end{comment}
 
-\begin{figure}[h]
+% \begin{figure}[h!]
+% <<label="visualizing-multivariate-categorical-data", tidy=TRUE,fig.width=4,fig.height=4,echo=-2,warning=F,error=F,message=F>>=
+% library(vcd)
+% mosaic(xtabs(~ Effect + HRE, data = Hx), shade = TRUE)
+% @
+% \caption{\protect\label{fig:Visualization-of-multivariate}Visualization of
+% multivariate categorical data}
 
-\caption{\protect\label{fig:Visualization-of-multivariate}Visualization of
-multivariate categorical data}
+% \end{figure}
 
-<<label="visualizing-multivariate-categorical-data", tidy=TRUE,fig.width=4,fig.height=4,echo=-2,warning=F,error=F,message=F>>=
+
+
+<<>>=
 library(vcd)
-HRE<-read.table("Hyp_effect.csv",sep=",",head=T)
-mosaic(xtabs(~HRE+Effect, data=HRE),shade=T)
+mosaic(xtabs(~ Effect + HRE, data = Hx), shade = TRUE)
 @
-\end{figure}
 
-\citet{friendly2016} is a book-length treatment of visualization of categorical data using R.
 
+Does this help more? What are the values being represented? The residuals are NOT the standardized residuals but, rather, the \(\chi^2\) residuals.
+
+<<>>=
+chisq.test(Hx_tab, correct = FALSE)$residuals
+@
+
+
+We can use the standardized residuls with the code below (this is the same procedure as used by \citealp{agresti2018} in p.~41).
+
+<<>>=
+hx_res <- chisq.test(Hx_tab, correct = FALSE)$stdres
+mosaic(Hx_tab, residuals = hx_res,
+       shade = TRUE,
+       residuals_type = "Std\nresiduals",
+       labeling = labeling_residuals)
+@
+
+
+
+
+
+\citet{friendly2016} is a book-length treatment of visualization of categorical data using R, and their chapter 5 describes function \texttt{vcd}, that we just used. \citet{xu2010a} also discusses some plots and is, by the way, a nice review of categorical
+data analysis in experimental biology.
+
+%% FIXME: check Xu.
 
 
 \section{Categorical data analysis: all we have left out}\label{sec:Other-test-for}
