@@ -352,7 +352,7 @@ Study the following  cases. In which way are they different to the other cases w
 \begin{itemize}
 \item mice\_genotypes.csv
 \item Hyp\_effect.csv
-\item RefSeq\_All\_Chr.csv
+%% \item RefSeq\_All\_Chr.csv
 \item Fiber.csv.
 \item We will also use a few additional datasets that we will create on the fly (ashtma, peptic ulcer).
 \end{itemize}
@@ -508,7 +508,7 @@ And, before leaving this section, it is arguable that for many problems, odds ra
 
 \section{Goodness of fit: Comparing observed and expected frequencies}\label{sec:goodness-fit}
 
-Let us return to the mouse example:  To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from J Clin Invest. 2013;123(6):2643\textendash 2653.}.  The question was: does the inactivation of this gene affect viability?
+Let us return to the mouse example:  To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from Chang et al. J Clin Invest. 2013;123(6):2643--2653. \Burl{https://www.jci.org/articles/view/66735}}.  The question was: does the inactivation of this gene affect viability?
 
 If the gene has no effect on
 embryonic viability, we would expect the typical Mendelian ratio of
