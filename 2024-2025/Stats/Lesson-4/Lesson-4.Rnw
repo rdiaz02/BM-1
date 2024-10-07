@@ -4,7 +4,7 @@
 %% Material from Luis del Peso Ovalle
 %% Original file was .lyx. Exported as Rnw.
 %% - .png figures: not having original pngs, I screen capture from the PDF
-%%                 and remove original path
+%% and remove original path
 %% - csv files: remove path, leave them in this same directory
 %% Then, major reformating of structure, and major modifications of content.
 
@@ -73,7 +73,7 @@
 \makeatother
 
 \usepackage[dvipsnames,table]{xcolor}
-%\usepackage{color}
+% \usepackage{color}
 \newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
 \newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
 \newcommand{\Burl}[1]{\blu{\url{#1}}}
@@ -300,10 +300,10 @@ In this chapter we will learn about:
 
 We will also learn how to generate contingency tables and perform relevant test in R Commander.
 % \begin{quote}
-% Disclaimer: This document is not, nor does the author pretend it to
-% be, a substitute for the reference books cited in the syllabus. It
-% is intended as a mere guide for the course contents. Moreover, it
-% may (and surely does) contain errors.
+%   Disclaimer: This document is not, nor does the author pretend it to
+%   be, a substitute for the reference books cited in the syllabus. It
+%   is intended as a mere guide for the course contents. Moreover, it
+%   may (and surely does) contain errors.
 % \end{quote}
 
 
@@ -321,31 +321,31 @@ Study the following  cases. In which way are they different to the other cases w
 \item To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from J Clin Invest. 2013;123(6):2643\textendash 2653.}. Does the inactivation of this gene affect viability? In other words, are these offspring numbers significantly different from the expected Mendelian ratio 1:2:1?
 
 \item Gene expression profiling experiments demonstrate that exposure of
-cells to hypoxia results in changes in the expression of several hundred
-genes (table \ref{tab:Frequency-of-HRE}). The Hypoxia Inducible Factor
-(HIF) is a transcription factor that binds the motif RCGTG (Hypoxia
-Response Element, HRE) and plays a key role in the transcriptional
-effects of hypoxia. Table \ref{tab:Frequency-of-HRE}, shows the number
-of hypoxia-responsive genes that have HRE motifs in their promoter
-regions. Does HIF/HRE show any preference for up- or downregulation?
-\begin{table}[h]
-\caption{\protect\label{tab:Frequency-of-HRE}Frequency of HRE in the promoters
-of hypoxia-responsive genes}
+  cells to hypoxia results in changes in the expression of several hundred
+  genes (table \ref{tab:Frequency-of-HRE}). The Hypoxia Inducible Factor
+  (HIF) is a transcription factor that binds the motif RCGTG (Hypoxia
+  Response Element, HRE) and plays a key role in the transcriptional
+  effects of hypoxia. Table \ref{tab:Frequency-of-HRE}, shows the number
+  of hypoxia-responsive genes that have HRE motifs in their promoter
+  regions. Does HIF/HRE show any preference for up- or downregulation?
+  \begin{table}[h]
+    \caption{\protect\label{tab:Frequency-of-HRE}Frequency of HRE in the promoters
+      of hypoxia-responsive genes}
 
-\centering{}%
-\begin{tabular}{|c|c|c|}
-\hline
- & HRE+ & HRE-\tabularnewline
-\hline
-\hline
-Upregulated & 145 & 113\tabularnewline
-\hline
-Non regulated & 3766 & 7459\tabularnewline
-\hline
-Downregulated & 69 & 121\tabularnewline
-\hline
-\end{tabular}
-\end{table}
+    \centering{}%
+    \begin{tabular}{|c|c|c|}
+      \hline
+      & HRE+ & HRE-\tabularnewline
+               \hline
+               \hline
+               Upregulated & 145 & 113\tabularnewline
+                                   \hline
+                                   Non regulated & 3766 & 7459\tabularnewline
+                                                          \hline
+                                                          Downregulated & 69 & 121\tabularnewline
+                                                                               \hline
+    \end{tabular}
+  \end{table}
 \end{itemize}
 
 \section{Files we will use}
@@ -354,7 +354,7 @@ Downregulated & 69 & 121\tabularnewline
 \item Hyp\_effect.csv
 \item RefSeq\_All\_Chr.csv
 \item Fiber.csv.
-  \item We will also use a few additional datasets that we will create on the fly (ashtma, peptic ulcer).
+\item We will also use a few additional datasets that we will create on the fly (ashtma, peptic ulcer).
 \end{itemize}
 
 \section{Categorical data}
@@ -362,8 +362,8 @@ Downregulated & 69 & 121\tabularnewline
 The cases described above have in common that they refer to categorical
 attributes (variables) in a nominal scale. That is, they both deal
 with categorical\protect\footnote{Recall that a categorical variable, also referred as nominal, is one
-that simply allows you to assign observations to each of the levels
-(categories) of the variable.} data.
+  that simply allows you to assign observations to each of the levels
+  (categories) of the variable.} data.
 
 In the mice example concerning viability, we are recording the genotypes of the offspring
 and thus we can only assign each individual to one of the categories
@@ -521,8 +521,8 @@ we would expect some variation due to chance.
 
 To answer our original question, we will compare observed and expected frequencies.  This is exactly what the Pearson's% \protect\footnote{there are other chi-squared test for categorical data, but this is
 % the more popular by far.}\protect
- chi-squared test\footnote{Do not mistake it for the Pearson correlation coefficient, which indicates
-the extent to which two numerical variables are linearly related.}, also known as the chi-squared goodness-of-fit test,
+chi-squared test\footnote{Do not mistake it for the Pearson correlation coefficient, which indicates
+  the extent to which two numerical variables are linearly related.}, also known as the chi-squared goodness-of-fit test,
 does.
 
 
@@ -540,19 +540,19 @@ Note that, the closer the observed and expected frequencies, the smaller
 the value of the chi-square statistic. Thus, increasing values of
 this statistic would support the alternative hypothesis (the observed
 ratios do not fit the expected values)\protect\footnote{Residuals are the difference between the observed and expected values.
-The magnitude of each residual indicates how much each of the observed
-frequencies differs from what is expected. The residuals are typically
-standardized (by dividing by the square of the expected frequencies)
-to enable individual residuals to be compared relative to one another.
-Large values of residuals indicate large deviations from what is expected
-and thus also indicate large contribution to the overall association.
-On addition, the sign (+ or \textminus ) of the residual indicates
-whether the frequencies were higher or lower than expected, but note we square the deviations. Pearson's
-residuals are calculated as $\frac{observed-expected}{\sqrt{expected}}$. These are the residuals, \textbf{not} the standardized residuals we will see in section \ref{sec:residuals}.}.
+  The magnitude of each residual indicates how much each of the observed
+  frequencies differs from what is expected. The residuals are typically
+  standardized (by dividing by the square of the expected frequencies)
+  to enable individual residuals to be compared relative to one another.
+  Large values of residuals indicate large deviations from what is expected
+  and thus also indicate large contribution to the overall association.
+  On addition, the sign (+ or \textminus ) of the residual indicates
+  whether the frequencies were higher or lower than expected, but note we square the deviations. Pearson's
+  residuals are calculated as $\frac{observed-expected}{\sqrt{expected}}$. These are the residuals, \textbf{not} the standardized residuals we will see in section \ref{sec:residuals}.}.
 
 
 % \begin{comment}
-% Explain how residuals indicate the direction of change.
+%   Explain how residuals indicate the direction of change.
 % \end{comment}
 
 
@@ -573,62 +573,62 @@ We do this by using the chi-square($\chi^{2}$) distribution (see figure \ref{fig
 % hypothesis).
 
 \begin{figure}[h]
-\caption{\protect\label{fig:Chi-squared-probability-distribu}Chi-squared probability
-distribution}
+  \caption{\protect\label{fig:Chi-squared-probability-distribu}Chi-squared probability
+    distribution}
 
-<<chi_square_prob_distr,echo=F,fig.width=4, fig.height=4, fig.show='hold'>>=
-x<-seq(from=0,to=50,by=0.1)
-color=c("black","red","blue","green","magenta")
-DF=c(1,2,3,5,10)
-plot(x,dchisq(x,df=DF[1]),col=color[1],type="l",lwd=2,frame.plot=F,xlab="chi-square value",xlim=c(0,25),ylim=c(0,0.5),ylab="Probability")
-for (idx in 2:5) {
-  points(x,dchisq(x,df=DF[idx]),col=color[idx],type="l",lwd=2)
-}
-legend("topright",legend=paste(DF,"df"),fill=color)
-@
+  <<chi_square_prob_distr,echo=F,fig.width=4, fig.height=4, fig.show='hold'>>=
+  x<-seq(from=0,to=50,by=0.1)
+  color=c("black","red","blue","green","magenta")
+  DF=c(1,2,3,5,10)
+  plot(x,dchisq(x,df=DF[1]),col=color[1],type="l",lwd=2,frame.plot=F,xlab="chi-square value",xlim=c(0,25),ylim=c(0,0.5),ylab="Probability")
+  for (idx in 2:5) {
+    points(x,dchisq(x,df=DF[idx]),col=color[idx],type="l",lwd=2)
+  }
+  legend("topright",legend=paste(DF,"df"),fill=color)
+  @
 \end{figure}
 
 % \begin{comment}
-% Although the chi-square distribution could be calculated empirically
-% by a manual or computer simulation (e.g. fill a bag with balls labelled
-% ``+/+'', ``+/-'' or ``-/-'' so that their proportions are 1:2:1.
-% Then, take a random sample and compute the $\chi^{2}$ value. Repeat
-% many times and plot the $\chi^{2}$ values obtained in each iteration),
-% the distributions of statistics such as the chi-square distribution
-% are derived analytically, that is the formula (function) that it follows
-% is derived from first principles.
+%   Although the chi-square distribution could be calculated empirically
+%   by a manual or computer simulation (e.g. fill a bag with balls labelled
+%   ``+/+'', ``+/-'' or ``-/-'' so that their proportions are 1:2:1.
+%   Then, take a random sample and compute the $\chi^{2}$ value. Repeat
+%   many times and plot the $\chi^{2}$ values obtained in each iteration),
+%   the distributions of statistics such as the chi-square distribution
+%   are derived analytically, that is the formula (function) that it follows
+%   is derived from first principles.
 % \end{comment}
 
 
 The shape of the chi-square($\chi^{2}$) distribution
 depends on the degrees of freedom\footnote{Recall that degrees of freedom is a measure of how many values are
-free to vary when determining independent estimates of parameters.
-When calculating frequencies in categorical data, the degrees of freedom
-correspond to the total number of categories minus one. For example
-in case 1, once we know the frequencies of two genotypes the value
-of the third is calculated from these two, i.e. only two categories
-out of three are \textquotedblleft free to vary\textquotedblright .
-Thus degrees of freedom= 3 categories -1 = 2.}.
+  free to vary when determining independent estimates of parameters.
+  When calculating frequencies in categorical data, the degrees of freedom
+  correspond to the total number of categories minus one. For example
+  in case 1, once we know the frequencies of two genotypes the value
+  of the third is calculated from these two, i.e. only two categories
+  out of three are \textquotedblleft free to vary\textquotedblright .
+  Thus degrees of freedom= 3 categories -1 = 2.}.
 
 % \begin{comment}
-% Note that as the degrees of freedom increase the distribution of expected
-% chi-square values under the null hypothesis contain increasingly large
-% values. My interpretation is that, since the chi-squares statistics
-% is a sum across levels and for each level we always expect some deviation
-% due to chance, the larger the number of levels the higher the value
-% of chi-square expected by chance.
+%   Note that as the degrees of freedom increase the distribution of expected
+%   chi-square values under the null hypothesis contain increasingly large
+%   values. My interpretation is that, since the chi-squares statistics
+%   is a sum across levels and for each level we always expect some deviation
+%   due to chance, the larger the number of levels the higher the value
+%   of chi-square expected by chance.
 % \end{comment}
 % \begin{comment}
-% From wikipedia: In statistics, the number of degrees of freedom is
-% the number of values in the final calculation of a statistic that
-% are free to vary. The number of independent ways by which a dynamic
-% system can move without violating any constraint imposed on it, is
-% called degree of freedom. In other words, the degree of freedom can
-% be defined as the minimum number of independent coordinates that can
-% specify the position of the system completely. Mathematically, degrees
-% of freedom is the number of dimensions of the domain of a random vector,
-% or essentially the number of 'free' components (how many components
-% need to be known before the vector is fully determined).
+%   From wikipedia: In statistics, the number of degrees of freedom is
+%   the number of values in the final calculation of a statistic that
+%   are free to vary. The number of independent ways by which a dynamic
+%   system can move without violating any constraint imposed on it, is
+%   called degree of freedom. In other words, the degree of freedom can
+%   be defined as the minimum number of independent coordinates that can
+%   specify the position of the system completely. Mathematically, degrees
+%   of freedom is the number of dimensions of the domain of a random vector,
+%   or essentially the number of 'free' components (how many components
+%   need to be known before the vector is fully determined).
 % \end{comment}
 
 So, to determine the probability of getting a chi-square value equal
@@ -643,14 +643,14 @@ to the degrees of freedom in our case.  The chi-square distribution can take val
 
 
 % \begin{comment}
-% As the chi-square statistic is a sum of residuals across categories,
-% the larger the number of categories the larger the value of chi-square.
-% In each category there is a random chance to have higher/lower number
-% than expected, since they are squared, in each category there is a
-% random chance of having a number larger than expected. As the number
-% of categories increases the sum of these deviations increases. Note
-% that residuals (observed-expected) are normalized to the expected
-% values not to the number of categories.
+%   As the chi-square statistic is a sum of residuals across categories,
+%   the larger the number of categories the larger the value of chi-square.
+%   In each category there is a random chance to have higher/lower number
+%   than expected, since they are squared, in each category there is a
+%   random chance of having a number larger than expected. As the number
+%   of categories increases the sum of these deviations increases. Note
+%   that residuals (observed-expected) are normalized to the expected
+%   values not to the number of categories.
 % \end{comment}
 
 
@@ -693,27 +693,27 @@ data, these are the only options available in R commander for this
 data set. (More on visualization later: section \ref{sec:visualization}).
 
 % \begin{comment}
-% Note that in this case the bar plot does not contain any error bar
-% because it represent the absolute (or relative) numbers of cases in
-% each level, there is no uncertainty about its value.
+%   Note that in this case the bar plot does not contain any error bar
+%   because it represent the absolute (or relative) numbers of cases in
+%   each level, there is no uncertainty about its value.
 % \end{comment}
 
 \begin{figure}[h]
-\caption{\protect\label{fig:Representing-categorical-data}Representing categorical
-data (I)}
+  \caption{\protect\label{fig:Representing-categorical-data}Representing categorical
+    data (I)}
 
-<<GrphCatDataI,fig.width=10,fig.height=4,echo=-1>>=
-mice <- data.frame(ID = paste("id",
-                             formatC(1:154, digits = 0,
-                                    width = 4, flag = 0),
-                            sep = ""),
-                 Genotype = sample(c(rep("wt/wt", 40),
-                                     rep("wt/mut", 72),
-                                     rep("mut/mut", 42))))
-par(mfrow=c(1,2))
-pie(table(mice$Genotype))
-barplot(table(mice$Genotype),xlab="Genotype",ylab="Frequency")
-@
+  <<GrphCatDataI,fig.width=10,fig.height=4,echo=-1>>=
+  mice <- data.frame(ID = paste("id",
+                                formatC(1:154, digits = 0,
+                                        width = 4, flag = 0),
+                                sep = ""),
+                     Genotype = sample(c(rep("wt/wt", 40),
+                                         rep("wt/mut", 72),
+                                         rep("mut/mut", 42))))
+  par(mfrow=c(1,2))
+  pie(table(mice$Genotype))
+  barplot(table(mice$Genotype),xlab="Genotype",ylab="Frequency")
+  @
 \end{figure}
 
 
@@ -735,8 +735,8 @@ to the expected frequencies under the null hypothesis (i.e. Mendelian
 ratio).
 
 \begin{figure}[h]
-\centering{}\includegraphics[width=10cm]{pasted14-rdu.png}
-\caption{\protect\label{fig:Chi-square-test-in}Chi-square test in R (I)}
+  \centering{}\includegraphics[width=10cm]{pasted14-rdu.png}
+  \caption{\protect\label{fig:Chi-square-test-in}Chi-square test in R (I)}
 \end{figure}
 
 
@@ -839,8 +839,8 @@ chisq.test(Hx_tab, correct = FALSE)
 
 % (You can do all, or most, of the above from R Commander:
 % \begin{figure}[h]
-% \centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
-% \caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
+%   \centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
+%   \caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
 % \end{figure}
 % )
 
@@ -934,28 +934,28 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 
 
 % \begin{comment}
-% to make it easier to understand use the following example. We are
-% interested in studying weather the color of the clothes a person wears
-% depend on their gender. We sample a group of 100 people (the class)
-% in which are 60 women and 40 men. And found that 20 of women wear
-% colorful (yellow, pink, red,...) raincoats whereas 40 wear dark (black,
-% grey, blue) raincoats. Among men, the numbers are 5 (colorful) and
-% 35 (dark). What numbers would we expect if the two variables were
-% independent (null hypothesis)? One way to think about it is: everyone
-% in the class leave their raincoats in the hangers, then randomly assign
-% raincoats to each person. What would be the distribution of colors
-% among men and women in the class? use a contingency table with gender
-% in the rows and colors in the columns to compute the expected write
-% down the marginals and distribute colors (column marginals) between
-% male and female according to the proportion between the row marginals.
-% The expected numbers under the null hypothesis (variables are independent)
-% could be obtained using a thought experiment: All people in the class
-% leave their raincoat in the hangers, then a randomly picked raincoat
-% is assigned to each person in the class, then count the number of
-% males/females wearing colorful/dark rainbows. Repeat the experiment
-% n times. Since 1/4 of the raincoats are colorful, a quarter of the
-% women and a quarter of men will receive a colorful coat on average,
-% that is 15 women and 10 men.
+%   to make it easier to understand use the following example. We are
+%   interested in studying weather the color of the clothes a person wears
+%   depend on their gender. We sample a group of 100 people (the class)
+%   in which are 60 women and 40 men. And found that 20 of women wear
+%   colorful (yellow, pink, red,...) raincoats whereas 40 wear dark (black,
+%   grey, blue) raincoats. Among men, the numbers are 5 (colorful) and
+%   35 (dark). What numbers would we expect if the two variables were
+%   independent (null hypothesis)? One way to think about it is: everyone
+%   in the class leave their raincoats in the hangers, then randomly assign
+%   raincoats to each person. What would be the distribution of colors
+%   among men and women in the class? use a contingency table with gender
+%   in the rows and colors in the columns to compute the expected write
+%   down the marginals and distribute colors (column marginals) between
+%   male and female according to the proportion between the row marginals.
+%   The expected numbers under the null hypothesis (variables are independent)
+%   could be obtained using a thought experiment: All people in the class
+%   leave their raincoat in the hangers, then a randomly picked raincoat
+%   is assigned to each person in the class, then count the number of
+%   males/females wearing colorful/dark rainbows. Repeat the experiment
+%   n times. Since 1/4 of the raincoats are colorful, a quarter of the
+%   women and a quarter of men will receive a colorful coat on average,
+%   that is 15 women and 10 men.
 % \end{comment}
 
 
@@ -983,9 +983,9 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 % \ref{fig:Chi-square-test-in-1}).
 
 % \begin{figure}[h]
-% \caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
+%   \caption{\protect\label{fig:Chi-square-test-in-1}Chi-square test in R (II)}
 
-% \centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
+%   \centering{}\includegraphics[width=12cm]{pasted15-rdu.png}
 % \end{figure}
 
 
@@ -998,16 +998,16 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 % (as in the case \#2), df=(2-1){*}(3-1)=2.
 
 % \begin{comment}
-% Finally, it should be noted that the degrees of freedom are not based
-% on the number of observations as with a Student's t or F-distribution.
-% For example, if testing for a fair, six-sided die, there would be
-% five degrees of freedom because there are six categories/parameters
-% (each number). The number of times the die is rolled will have absolutely
-% no effect on the number of degrees of freedom.
+%   Finally, it should be noted that the degrees of freedom are not based
+%   on the number of observations as with a Student's t or F-distribution.
+%   For example, if testing for a fair, six-sided die, there would be
+%   five degrees of freedom because there are six categories/parameters
+%   (each number). The number of times the die is rolled will have absolutely
+%   no effect on the number of degrees of freedom.
 
-% The degrees of freedom in the case of contingency tables can be visualized
-% as the marginal occupying the calls in the contingency adjacent to
-% them, the remaining empty cells are the df.
+%   The degrees of freedom in the case of contingency tables can be visualized
+%   as the marginal occupying the calls in the contingency adjacent to
+%   them, the remaining empty cells are the df.
 % \end{comment}
 
 
@@ -1018,7 +1018,7 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 So we have very strong evidence of deviations from the null in the Hx data and some evidence in the diet data. This might tell us there are deviations from independence, but we would like to examine what is behind these deviations. What cells are deviating from the expected or how strong is the association. Moreover, or large sample sizes it
 is easy to get a very small p-value even when the difference between
 the observed and expected values is small\protect\footnote{Note that this is true for any other statistical test, not just those
-for categorical variables}. As usual, a statistically significant p-value does not necessarily
+  for categorical variables}. As usual, a statistically significant p-value does not necessarily
 indicates a significant difference from the practical (or biological)
 point of view.
 
@@ -1046,7 +1046,7 @@ chisq.test(diet.table, correct = FALSE)$stdres
 %% the diet one colSums sum to 0 because of the design: all rowSums are the same.
 %% Agresti, Intro, explains this in some detail for the 2xJ table, why over the smaller dimension they sum to 0. See p. 40
 
-For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be discernible and thus might not always help us much. Section \ref{sec:OR} mentions another approach.
+For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be discernible and thus might not always help us much. Section \ref{sec:odds} mentions another approach.
 
 
 
@@ -1073,16 +1073,16 @@ We continue with the theme above (section \ref{sec:residuals}).  So there are de
 Suppose this table shows number of patients with different outcomes (recoverd or non-recovered) under two treatments (drug and control):
 
 \begin{tabular}{|c|c|c|c|}
-\hline
- &  & \multicolumn{2}{c|}{Outcome}\tabularnewline
-\hline
-\hline
- &  & Recovered & Non-recovered\tabularnewline
-\hline
-\multirow{2}{*}{Group} & Drug & a & b\tabularnewline
-\cline{2-4}
- & Control & c & d\tabularnewline
-\hline
+  \hline
+  &  & \multicolumn{2}{c|}{Outcome}\tabularnewline
+       \hline
+       \hline
+  &  & Recovered & Non-recovered\tabularnewline
+                   \hline
+                   \multirow{2}{*}{Group} & Drug & a & b\tabularnewline
+                                                       \cline{2-4}
+  & Control & c & d\tabularnewline
+                  \hline
 \end{tabular}
 
 
@@ -1118,8 +1118,8 @@ Odds ratios and relative risks are discussed in \citet[sections 2.1.5 adnd 2.2.5
 % you get the following results:
 
 % \begin{tabular}{|c|c|c|}
-% \hline
-%  & Cancer & Healthy\tabularnewline
+    %     \hline
+    %     & Cancer & Healthy\tabularnewline
 % \hline
 % \hline
 % SNP present & 549 & 49788\tabularnewline
@@ -1217,7 +1217,7 @@ fisher.test(matrix(c(3, 1, 1, 3), nrow = 2))
 
 %% Recall in the 2x2 we often use, for example, counts in n_{1,1}. See Agresti or Tang et al., p. 41, sect. 2.2.1.3
 
-The test can become computationally unfeasible for very large tables (large in terms of dimensions, numbers of rows and columns, and/or sample size). In this case, we can obtain p-values by simulation (in R use argument \texttt{simulate.p.value = TRUE} in larger than 2x2 tables). Instead of examining exhaustively all possibilities, we repeatedly simulate outcomes (samples) under the null hypothesis (null hypothesis and, for Fisher's, fixed row and column margins) using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
+The test can become computationally unfeasible for very large tables (large in terms of dimensions, numbers of rows and columns, and/or sample size). In this case, we can obtain p-values by simulation (in R use argument \texttt{simulate.p.value = TRUE} in larger than 2x2 tables). Instead of examining exhaustively all possibilities, we repeatedly simulate outcomes (samples) under the null hypothesis and sampling model (fixed row and column margins) using a Monte Carlo procedure; for each such simulation we compute the statistic and then count how often the simulated statistics are larger than the observed one.
 Monte Carlo simulation allows us to approximate very closely (more closely the larger the number of simulations) the exact p-value.
 
 
@@ -1522,13 +1522,6 @@ you can set other aesthetic details (step 4, figure \ref{fig:Stacked-bar-plot}).
 \caption{\protect\label{fig:Stacked-bar-plot}Stacked bar plot}
 \end{figure}
 
-<<>>=
-with(Exercise3,
-     Barplot(Outcome, by = Drug, style="divided",
-             legend.pos="above", xlab="Outcome",
-             ylab="Frequency", label.bars=TRUE))
-
-@
 
 <<>>=
 with(Hx,
@@ -1538,26 +1531,36 @@ with(Hx,
              label.bars=TRUE))
 @
 
-Interestingly, however, the last plot does not seem to indicate the very strong differences we find. Notice this one, and make sure to think about which one makes most sense to you:
+
+These two could be better plots, though:
 
 <<>>=
+
 with(Hx,
-     Barplot(Effect, by=HRE, style="divided",
-             legend.pos="above", xlab="Effect",
-             ylab="Frequency", label.bars=TRUE))
+     Barplot(HRE, by=Effect, style="divided",
+             legend.pos="above", xlab="HRE",
+             conditional = FALSE,
+             ylab="Proportions",
+             label.bars=TRUE,
+             scale = "percent"))
+
+
+with(Hx,
+     Barplot(HRE, by=Effect, style="divided",
+             legend.pos="above", xlab="HRE",
+             ylab = "Conditional proportions",
+             label.bars=TRUE,
+             conditional = TRUE,
+             scale = "percent"))
+
+
 @
 
 
-This uses percentage instead of counts, and maybe it tells the story more clearly? You might want to look at the residuals we discussed in section \ref{sec:residuals} and see if you can relate them to the plots. Moreover, what is the size of the difference that is being detected?
+Interestingly, however, the last plot does not seem to indicate the very strong differences we find.  You might want to look at the residuals we discussed in section \ref{sec:residuals} and see if you can relate them to the plots. Moreover, what is the size of the difference that is being detected?
 
 
 
-<<>>=
-with(Hx, Barplot(HRE, by=Effect, style="divided",
-                 legend.pos="above", xlab="HRE",
-                 ylab="Percent",
-                 scale="percent", label.bars=TRUE))
-@
 
 Mosaic plots are a very informative two-dimensional representation
 of the categorical data. % (see figure \ref{fig:Visualization-of-multivariate})
@@ -1583,18 +1586,19 @@ of the categorical data. % (see figure \ref{fig:Visualization-of-multivariate})
 
 <<>>=
 library(vcd)
-mosaic(xtabs(~ Effect + HRE, data = Hx), shade = TRUE)
+mosaic(xtabs(~ Effect + HRE, data = Hx),
+       shade = TRUE)
 @
 
 
-Does this help more? What are the values being represented? The residuals are NOT the standardized residuals but, rather, the \(\chi^2\) residuals.
+% Does this help more? What are the values being represented? The residuals are NOT the standardized residuals but, rather, the \(\chi^2\) residuals.
 
-<<>>=
-chisq.test(Hx_tab, correct = FALSE)$residuals
-@
+% <<>>=
+% chisq.test(Hx_tab, correct = FALSE)$residuals
+% @
 
 
-We can use the standardized residuls with the code below (this is the same procedure as used by \citealp{agresti2018} in p.~41).
+We can use the standardized residuls with the code below (this is the same procedure as used by \citealp{agresti2018} in p.~41 and 138 of \citet{kateri2014} in p.~56).
 
 <<>>=
 hx_res <- chisq.test(Hx_tab, correct = FALSE)$stdres
@@ -1605,6 +1609,16 @@ mosaic(Hx_tab, residuals = hx_res,
 @
 
 
+% Fourfold plots are very useful to represent 2x2 (or collections of 2x2, such as )
+
+% In fourfold plots, the cell
+
+
+% the pattern of association, a visual indication of whether the test is significant or not
+% <<>>=
+% ex_tab <- xtabs(~Drug+Outcome, data=Exercise3)
+% fourfold(ex_tab)
+% @
 
 
 \citet[in section 2.4]{kateri2014} provides a great overview of plots for categorical data; this book is available from UAM's library.
@@ -1614,15 +1628,12 @@ data analysis in experimental biology.
 %% FIXME: check Xu.
 
 
-\section{Categorical data analysis: all we have left out}\label{sec:Other-test-for}
+\section{Analysis of two-way tables: some salient things we have left out}\label{sec:Other-test-for}
 
 
 Be aware that we have only scratched the surface of categorical
-data analysis. There are many other questions/issues/procedures that can be relevant for categorical data:
+data analysis and of the analysis of two-way tables. There are many other questions/issues/procedures that can be relevant for categorical data:
 \begin{enumerate}
-
-\item Confidence intervals with small-sample procedures (e.g., Fisher's exact 2x2)
-\item
 
   % \item For simple cases in which the categorical variable has only to possible
 % levels (``success'' and ``failure'') and when certain conditions
@@ -1826,9 +1837,9 @@ are conditionally independent in each stratum of a third variable.
 \section{(Generalized) Linear models for categorical and count data}
 \label{sec:glms}
 
-We spent time covering linear models. Generalized linear models extend linear models for responses that are not necessarily numerical, or that can be numerical but are not at all Gaussian. Briefly, generalized linear models allow us to put, on the right of an expression like ``\verb@y ~ x + u + ...@'' \  a \(Y\) that can be a proportion, for example.
+We spent time covering linear models. Generalized linear models extend linear models for responses that are not necessarily numerical, or that can be numerical but are not at all Gaussian. Briefly, generalized linear models allow us to put, on the right of an expression like ``\verb@y ~ x + u + ...@'' \  a random variable \(Y\) that can be a proportion, for example.
 
-A common example is logistic regression, where we model, on the left of the ``~'', the probability of an event. So we can model the probability of response (healed vs.\ non-healed) as a function of a bunch of variables. In the simplest cases, this will reduce to a contingency table, but generalized linear models allow us to model much more complex dependencies. We can have additive effects, interactions, etc. Moreover, they provide estimates of effects and the same principled ways of addressing modeling questions we say for linear models.  Generalized linear models can also be used to model categorical data that fall into more than two categories (multinomial data) or counts (Poisson data). Etc, etc. These topics are covered by \citet{kateri2014}, \texttt{agresti2012} \citep{agresti2018}, \citet{bilder2024}, and \citet{fox2018} and \citet{faraway_extending_2016} (even if the last two do not explicitly have ``categorical'' in their title).
+A common example is logistic regression, where we model, on the left of the ``~'', the probability of an event. So we can model the probability of response (healed vs.\ non-healed) as a function of a bunch of variables. The simplest generalized linear models reduce to a contingency table, but generalized linear models allow us to model much more complex dependencies. We can have additive effects, interactions, etc. Moreover, they provide estimates of effects and the same principled ways of addressing modeling questions we say for linear models.  Generalized linear models can also be used to model categorical data that fall into more than two categories (multinomial data) or counts (Poisson data). Etc, etc. These topics are covered by \citet{kateri2014}, \texttt{agresti2012} \citep{agresti2018}, \citet{bilder2024}, and \citet{fox2018} and \citet{faraway_extending_2016} (even if the last two do not explicitly have ``categorical'' in their title).
 
 
 
@@ -1845,9 +1856,8 @@ of fit)
 provided certain restrictions are met.
 \item For small sample sizes Fisher's exact test is an alternative to the
 chi-square test for independence.
-\item Pie and bar graphs are appropriate to represent a single categorical
-variable, whereas stacked bar plots and mosaic plots are used to represent
-multivariate categorical data.
+\item  Bar graphs are appropriate to represent a single categorical
+variable, whereas stacked bar plots and mosaic plots are used to represent multivariate categorical data.
 \end{enumerate}
 
 \section{Exercises}
@@ -1884,16 +1894,17 @@ associated to the disease? compute the chi-square statistic by hand.
 \end{tabular}
 
 
-\item You want to know if there is a bias in the gene content for the +
-and - DNA strands of mammals. Since the human genome is well characterized,
-you decide to use it as a representative sample of the mammalian genomes
-to address this question. The file RefSeq\_All\_Chr.csv contains information
-about all reference transcripts in the human genome . Import this
-table into R commander (note that it is a tab-separated text file)
-and process it to investigate if there is evidence for a bias in gene
-content. What does the p-value inform about the bias? read references
-\citet{Nuzzo2014} and \citet{Halsey2015} about p-values and effect
-size.
+%% I don't understand: this sounds more like compariing if the number of genes in each strand differs.
+% \item You want to know if there is a bias in the gene content for the +
+% and - DNA strands of mammals. Since the human genome is well characterized,
+% you decide to use it as a representative sample of the mammalian genomes
+% to address this question. The file RefSeq\_All\_Chr.csv contains information
+% about all reference transcripts in the human genome . Import this
+% table into R commander (note that it is a tab-separated text file)
+% and process it to investigate if there is evidence for a bias in gene
+% content. What does the p-value inform about the bias? read references
+% \citet{Nuzzo2014} and \citet{Halsey2015} about p-values and effect
+% size.
 
 \end{enumerate}
 
