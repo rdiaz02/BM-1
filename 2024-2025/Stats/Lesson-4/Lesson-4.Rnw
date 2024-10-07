@@ -459,7 +459,7 @@ There are several ways to enter these data and get the confidence interval and t
 
 
 <<>>=
-ex3 <- expand.grid(Drug = c("Piren", "Trithi"),
+ex3 <- expand.grid(Drug = c("Pirenzepine", "Trithiozine"),
                    Outcome = c("Healed", "NotHealed"))
 ex3$cases <- c(23, 18, 7, 13)
 Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
@@ -681,7 +681,7 @@ to the degrees of freedom in our case.  The chi-square distribution can take val
 
 \subsubsection{Pearson's chi-squared test in R}
 
-Getting back to our problem (case \#1), to determine if the offspring
+Getting back to our problem to determine if the offspring
 of the mating between EDN2+/- animals is significantly different from
 expected values, we just have to perform a (goodness-of-fit) chi-squared
 test. Firstly, we import data in file \textquotedblleft mice\_genotypes.csv\textquotedblright{}
@@ -719,7 +719,7 @@ data set. (More on visualization later: section \ref{sec:visualization}).
 
 Wait!!! Do you think the pie chart is a good type of plot? Why or why not?
 
-We can ask for the\(\rightarrow\) frequency counts by selecting ``Summaries \(\rightarrow\) Frequency'' distributions under the \emph{Statistics}
+We can ask for the frequency counts by selecting ``Summaries \(\rightarrow\) Frequency'' distributions under the \emph{Statistics}
 menu (figure \ref{fig:Chi-square-test-in}, follow up to step 2 and
 click \textquotedblleft OK\textquotedblright{} button). In the \textquotedblleft Output\textquotedblright{}
 window you'll get the absolute and relative number of cases for each
@@ -759,11 +759,7 @@ You should be able to interpret the output.
 
 \section{Contingency tables: testing independence between rows and columns}\label{sec:contingency-tables}
 
-Contingency tables allow us to organize and visualize categorical data.write of a table with
-the levels of one variable in one dimension across the levels of the
-other variable in the second dimension. In fact, table \ref{tab:Frequency-of-HRE}
-is a contingency table that summarizes the observed data. Some of the simplest contingency tables are 2x2 tables: 2 rows and 2 columns. For example, what we had in section \ref{sec:two-prop-conf} and to this we go next.
-
+Contingency tables allow us to organize and visualize categorical data. These are tables with the levels of one variable in one dimension across the levels of the other variable in the second dimension. Table \ref{tab:Frequency-of-HRE} is a contingency table that summarizes the observed data. Some of the simplest contingency tables are 2x2 tables: 2 rows and 2 columns. For example, what we had in section \ref{sec:two-prop-conf} and to this we go next.
 
 
 \subsection{2x2 contingency tables}\label{sec:2x2}
@@ -774,10 +770,10 @@ We used these data in  section \ref{sec:two-prop-conf}. Let us see it again
 xtabs(~ Drug + Outcome, data = Exercise3)
 @
 
-That is a contingency table. Above, we tested for differences in proportions between those treated with different drugs. But that there are no differences in proportions is the same thing as saying that the probability of healing (or not healing) does not depend on the drug given. In other words, that there is independence between Outcome and Drug. Or put it this way: we want to test whether the frequencies of Healed vs.\ Non-healed change across levels of Drug (i.e., if the frequencies of Healed and non healed are different between the drugs). So we now phrase our null hypothesis as saying that Outcome and Drug are independent\footnote{We are ignoring here the different statistical models that give rise to 2x2 tables, but these explain the different emphasis in one question or another. It is customary to differentiate between three research designs \citep{richardson2011, campbell2007}. In one design, both margins are fixed, such as the one in the tea tasting experiment behind Fisher's exact test; in another, only one of the margins is fixed, sometimes called ``comparative''; finally, in some designs no margin is fixed, and only the total sample is fixed or ``cross-sectional''.  The ``comparative'' is often associated with questions about differences in proportions and the ``cross-sectional'' with questions about association.}.
+That is a contingency table. Above, we tested for differences in proportions between those treated with different drugs. But that there are no differences in proportions is the same thing as saying that the probability of healing (or not healing) does not depend on the drug given. In other words, that there is independence between Outcome and Drug. Or put it this way: we want to test whether the frequencies of Healed vs.\ Non-healed change across levels of Drug (i.e., if the frequencies of Healed and non healed are different between the drugs). So we now phrase our null hypothesis as saying that Outcome and Drug are independent.
 
 
-Under \(H_0\), i.e., if there is independence between Outcome and Drug, then, for example, the probability of both being healded and having taken Piren is the product of each. And therefore the expected number of people who took Piren and are Healed should be the product of those two probabilities times the total sample size. In other words, under \(H_0\), the expected number of people who are Healed and took ``Piren'' should be \( P(Piren)\ P(Healed)\ n\), where \(n\) is the total sample size (in our case 61). We can write it as: the expected number of people in the ``Healed and Piren'' cell should be \(\hat{\mu}_{Healed,Piren} =    \hat{\pi}_{Piren} \ \hat{\pi}_{Healed}\ n\).
+Under \(H_0\), i.e., if there is independence between Outcome and Drug, then, for example, the probability of both being healded and having taken Pirenzepine (shortened to ``Piren'' in the next expressions) is the product of each. And therefore the expected number of people who took Piren and are Healed should be the product of those two probabilities times the total sample size. In other words, under \(H_0\), the expected number of people who are Healed and took ``Piren'' should be \( P(Piren)\ P(Healed)\ n\), where \(n\) is the total sample size (in our case 61). We can write it as: the expected number of people in the ``Healed and Piren'' cell should be \(\hat{\mu}_{Healed,Piren} =    \hat{\pi}_{Piren} \ \hat{\pi}_{Healed}\ n\).
 
 We wrote the above for one of the cells, but for any table, where we index rows with \(i\) and columns with \(j\), we can write this more generally as \(\hat{\mu}_{ij} = n\ \hat{\pi}_{i+}\ \hat{\pi}_{+j}\).
 
@@ -812,7 +808,7 @@ By the way, notice the similarities between what we have done and examining inte
 
 (The \textit{r\ x\ c} and  \textit{I\ x\ J} are two common ways of referring to the same thing: 2-dimensional contingency tables with \(r\) or \(I\) rows and \(c\) or \(J\) columns.)
 
-These just extends what we saw in the previous section: instead of a 2x2 table, we have a two-dimensional table but rows and/or columns can have more than two categories or types. So we still have \(\chi^{2} = \sum \frac{(n_{ij} - \hat{\mu}_{ij})^2}{\hat{mu}_{ij}}\).
+These just extends what we saw in the previous section: instead of a 2x2 table, we have a two-dimensional table but rows and/or columns can have more than two categories or types. So we still have \(\chi^{2} = \sum \frac{(n_{ij} - \hat{\mu}_{ij})^2}{\hat{\mu}_{ij}}\).
 
 
 In other words,  we want to test if the distribution
@@ -852,7 +848,7 @@ You should be able to interpret the output from above. We did not talk about deg
 Another, less extreme example. This comes from Table 3.2, p.~179 of \citet{bilder2024} and refers to a study about bloating severity after eating fiber-enriched crackers\footnote{The book provides full references for the origin of these data; the description is achived at \Burl{https://web.archive.org/web/20000620172010/http:
     //lib.stat.cmu.edu/DASL/Stories/HighFiberDietPlan.html}}. The data are in file \texttt{Fiber.csv}, which I downloaded from the book's website, \Burl{http://www.chrisbilder.com/categorical/programs_and_data.html}.
 
-Note that we have a slightly different format for the data (the column that says ``counts''). Using the same code as in p.~180 of \citet{bilder2024}, with minor modifications, we read the data and do a few transformations to the factors, and then create our final table (the code can be downloaded from their web page, \Burl{http://www.chrisbilder.com/categorical/programs_and_data.html})
+Note that we have a slightly different format for the data (the column that says ``counts''). Using the same code as in p.~180 of \citet{bilder2024}, with minor modifications, we read the data and do a few transformations to the factors, and then create our final table (the code can be downloaded from their web page, \Burl{http://www.chrisbilder.com/categorical/programs_and_data.html}).
 
 (As far as I can tell, with data structured this way, you cannot run the chi-square test from R Commander).
 
@@ -881,6 +877,28 @@ You should be able to interpret it, and understand the number of degrees of free
 \label{sec:higher-order-tables}
 
 The same logic applies to tables of more than two dimensions, say Drug x  Outcome x Exercise.  Now, we can have dependencies between pairs of variables, or among the three. For example, each drug might have a different effect on outcome, and exercise might affect this difference. We will not pursue this here. Arguably, though, except for very specific problems (the Mantel-Haenzsel test mentioned below being one of them), it is probably a better idea to directly approach this using models (logistic, logit, and loglinear, for binomial, multinomial, and Poisson response variables, respectively); this is also  mentioned in section \ref{sec:glms}.
+
+
+
+\subsection{Sampling models: details}
+\label{sec:sampl-models:-deta}
+
+I originally had this as a footnote. But I think it is important enough that it deserves to be here. In our discussion above we are ignoring the different statistical models that give rise to contingency tables, but these explain the different emphasis in one question or another. It is customary to differentiate between three research designs (for example, \citealp{richardson2011, campbell2007} and common textbooks about categorical data analysis, including \citealp[section 2.1.4]{agresti2018}, \citealp[section 2.1]{agresti2012} ---a very detailed explanation that includes discussion of sampling models, observational vs.\ experimental studies, and case-control, retrospective, prospective, and cohort studies---, \citealp[section 1.2]{kateri2014}, \citealp[section 2.2]{tang2023a} ).
+
+In one design, both margins are fixed, such as the one in the tea tasting experiment (or lady tasting tea) behind Fisher's exact test (and it is the design that naturally leads to the hypergeometric distribution). We discuss this in section \ref{sec:fishers-exact-test}\footnote{This comes from the Wikipedia, \Burl{https://en.wikipedia.org/wiki/Lady_tasting_tea}:
+``The experiment provides a subject with eight randomly ordered cups of tea – four prepared by pouring milk and then tea, four by pouring tea and then milk. The subject attempts to select the four cups prepared by one method or the other, and may compare cups directly against each other as desired. The method employed in the experiment is fully disclosed to the subject. '' We now cross-classify each of the 8 cups as ``tea was truly served first (yes or no)'' with ``lady said tea was truly served first (yes or no)''. Since the lady knows about the design, she will say four had tea poured first: so the margins are fixed, in this case each row has a margin of 4 and each column of 4.}.
+
+
+
+In another design, only one of the margins is fixed, sometimes called ``comparative''. For example, we treat 30 patients with Pirenzepine and 31 with Trithiozine, as in section \ref{sec:2x2}. For each row of the table we have a binominal distribution. But we would have had a multinomial distribution for each row if the response had had more than two categories, instead of the two of ``Healed'' and ``NotHealed''.
+
+
+In a third design, no margin is fixed, and only the total sample is fixed; this is sometimes called the ``cross-sectional'' design. For example, we stop at the door of the cafeteria and decide to look at the first 60 students; we cross-classify each according to two categories, Gender (woman, man, non-binary) and Coffee (regular, decaff, no), which gives us a 3x3 table. Arguably, the gene expression/HRE study is of this kind (with a 3x2 table). Of course, this type of sampling can also lead to 2x2 tables: we go back to the cafeteria and now we cross-classify the first 60 customers according to two binary categories: Student (yes or not) and Payment (credit card or cash).
+
+% In some studies, the sample size is not fixed at all. For example, we could be interested in the mutagenic effects of certain drugs, and we count the number of mutations in a stretch of DNA under the different combinations of those drugs. Or we are interested in the number of bacteria cells in foods with different treatments. These lead naturally to a Poisson model.
+
+The ``comparative'' design is often associated with questions about differences in proportions (differences in the binomial or multinomial distributions) and the ``cross-sectional'' with questions about association. These differences sometimes affect how we analyze the data, but for the contingency tables we discuss here they will have no effect.
+
 
 % \subsection{Contingency tables}
 
@@ -1015,10 +1033,10 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 \section{Looking at residuals}\label{sec:residuals}
 
 
-So we have very strong evidence of deviations from the null in the Hx data and some evidence in the diet data. This might tell us there are deviations from independence, but we would like to examine what is behind these deviations. What cells are deviating from the expected or how strong is the association. Moreover, or large sample sizes it
+So we have very strong evidence of deviations from the null in the Hx data and some evidence in the diet data. This might tell us there are deviations from independence, but we would like to examine what is behind these deviations. What cells are deviating from the expected or how strong is the association. Moreover, with large sample sizes it
 is easy to get a very small p-value even when the difference between
 the observed and expected values is small\protect\footnote{Note that this is true for any other statistical test, not just those
-  for categorical variables}. As usual, a statistically significant p-value does not necessarily
+  for categorical variables.}. As usual, a statistically significant p-value does not necessarily
 indicates a significant difference from the practical (or biological)
 point of view.
 
@@ -1026,17 +1044,21 @@ point of view.
 We can look at the residuals, the deviations from the expected, to understand what is happening (R commander makes this available under ``Components of chi-square'').
 
 
-\citet[p.~39]{agresti2018}, \citet[p.~81]{agresti2012}, and \citet[p.~183]{bilder2024} use standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}.  Standardized residuals are asymptotically standard normal under \(H_0\); thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
+
+
+Standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}, are often much more useful; this is very clearly explained in  \citet[section 2.2.4]{kateri2014} (this is also discussed in \citealp[p.~39]{agresti2018}, \citealp[p.~81]{agresti2012}, and \citealp[p.~183]{bilder2024}). Standardized residuals are asymptotically standard normal under \(H_0\)\footnote{And this holds for both multinomial and independent Poisson sampling: \citet[section 2.2.4]{kateri2014}}; thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
 
 % (so standardized residuals larger than about 2 or 3 in absolute value indicate deviation from \(H_0\) in that cell \citealp[p.~81]{agresti2012}).
 
 <<res_hx>>=
+## Squared residuals, as obtained from R Commander
+
 chisq.test(Hx_tab, correct = FALSE)$residuals^2
 ## Note that their sum is the chi-square statistic
 sum(chisq.test(Hx_tab, correct = FALSE)$residuals^2)
 chisq.test(Hx_tab, correct = FALSE)
 
-## Now, the standardized
+## Now, the standardized residuals
 chisq.test(Hx_tab, correct = FALSE)$stdres
 
 chisq.test(diet.table, correct = FALSE)$residuals^2
@@ -1046,7 +1068,7 @@ chisq.test(diet.table, correct = FALSE)$stdres
 %% the diet one colSums sum to 0 because of the design: all rowSums are the same.
 %% Agresti, Intro, explains this in some detail for the 2xJ table, why over the smaller dimension they sum to 0. See p. 40
 
-For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be discernible and thus might not always help us much. Section \ref{sec:odds} mentions another approach.
+For large (meaning large numbers of rows and/or columns) patterns in residuals might not always be discernible and thus might not always help us much. Section \ref{sec:odds} briefly mentions another approach.
 
 
 
@@ -1093,7 +1115,7 @@ In 2x2 tables, the relative risk or the risk ratio is \(\pi_1 / \pi_2\), where \
 
 % Then risk ratio is: $Rr=\frac{Rate_{a}}{Rate_{b}}$
 
-Another statistic is the odds ratio. The odds is defined as \(\frac{\pi}{1 - \pi}\). The odds ratio is then \(\frac{\text{odds}_1}{\text{odds}_2}\). In the table above, the estimate of the odds ratio is thus: \(\hat{\theta} = \frac{a/b}{c/d} = \frac{a\ d}{b\ c}\)
+Another very common and statistic, widely used, for example, in epidemiology, is the odds ratio. The odds is defined as \(\frac{\pi}{1 - \pi}\). The odds ratio is then \(\frac{\text{odds}_1}{\text{odds}_2}\). In the table above, the estimate of the odds ratio is thus: \(\hat{\theta} = \frac{a/b}{c/d} = \frac{a\ d}{b\ c}\)
 
 
 It is possible to obtain estimates and confidence intervals for the odds ratio (for example, see package \texttt{epitools}). When examining odds ratio, often a relevant null hypothesis is that the odds ratio is 1.
@@ -1162,13 +1184,12 @@ Odds ratios and relative risks are discussed in \citet[sections 2.1.5 adnd 2.2.5
 This should not come as a surprise: we assume all \emph{observations} are independent\footnote{Do not mistake it for independence of \emph{variables.}}. For example the genotype of a mouse does not affect the genotype of other mice or the presence/absence of HRE in a given gene has no effect on other genes. Similarly we do not have the same individual measured multiple times, or sets of related/paired individuals, etc. In case they are not independent, other procedures should be used (for example, the McNemar's test for two related groups; see \ref{sec:Other-test-for}).
 
 
-Slightly more complicated are these two related issues:
+ More controversial are these two related issues:
 \begin{enumerate}
 \item What are the sample size and/or expected counts requirements for us to apply the chi-square test? In other words, are there sample sizes or expected counts such that we should consider other procedures, because the chi-square is not a good idea (low power or high type I error or whatever)?
 \item And if we have small sample sizes or expected counts, what should we do?
 \end{enumerate}
 
-There are no simple answers, but we will follow standard textbook recommendations here.
 
 
 \subsection{Sample sizes and expected counts for us to trust the chi-square}
@@ -1185,7 +1206,7 @@ And \textbf{what can we do if expected counts are too small?} The standard answe
 \subsection{Fisher's exact test}
 \label{sec:fishers-exact-test}
 
-Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just count how many tables there are with \(n_{11}\) as extreme or more extreme than the one we observed.} For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
+Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just count how many tables there are with \(n_{11}\) as extreme or more extreme than the one we observed.}. For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
 
 
 To take the mystery out of this procedure, this is the classical tea testing example. I copy a couple of tables from \citet{agresti2018} (pp.~47 and 48):
@@ -1221,15 +1242,17 @@ The test can become computationally unfeasible for very large tables (large in t
 Monte Carlo simulation allows us to approximate very closely (more closely the larger the number of simulations) the exact p-value.
 
 
+%% In R, r2dtable does that random generation.
+
 Let us do this in the 3x2 table. From the menus, you cannot directly use the \texttt{simulate.p.value} options, so I'll do everything without the menus. Just copy the code.
 
-This is the usual Fisher's exact test (and this you can get from R commander menus). I've added also the chisq.test.
+First, this is the usual Fisher's exact test (and this you can get from R commander menus). I've added also the chisq.test.
 <<>>=
 fisher.test(Hx_tab)
 chisq.test(Hx_tab, correct = FALSE)
 @
 
-Now, Fisher's with simulation of p-values. We use a small number here, the default of 2000 (for real, I'd use a lot more)\footnote{Incidentally, the p-value you are likely to get is 0.0005, actually 0.00049975, which is \(1/(B + 1)\); this is because the pattern we observe is the most extreme of all the simulated ones, and we compute the p-value in the usual way: how many are as extreme as, or more extreme than, what we find. Since we have used 2000, the denominator is 2001. This is just a footnote, and you can skip it.}:
+Now, Fisher's with simulation of p-values. We use a small number here, the default of 2000 (for real, I'd use a lot more)\footnote{Incidentally, the p-value you are likely to get for this example is 0.0005, actually 0.00049975, which is \(1/(B + 1)\); this is because the pattern we observe is the most extreme of all the simulated ones, and we compute the p-value in the usual way: how many are as extreme as, or more extreme than, what we find. Since we have used 2000, the denominator is 2001. This is just a footnote, and you can skip it.}:
 
 <<>>=
 fisher.test(Hx_tab, simulate.p.value = TRUE, B = 2000)
@@ -1270,14 +1293,13 @@ Why mention this? Some papers, most notably the widely cited  \citet{campbell200
 
 \paragraph{Any practical suggestion?}\label{sec:any-pract-sugg}
 
-If you do not want to read the primary statistical literature or consult with a statistician (a statistician  that knows about this stuff) then the path of least resistance is probably to stick to the ``usual rules'' and use Fisher's test if your data do not fulfill the ``usual reals''.  This is not a cynical recommendation, but is based on fairly standard and recent textbooks making these kinds of recommendations. Moreover, many people deal with tables larger than 2x2. But then, maybe 10 years from now  we will be teaching something different because Campbell's suggestion will have become
-the standard approach for 2x2 tables.  % Myself \ldots I might give Campbell's procedure a try, but then I am often more concerned about p-values that are smaller than they should be than
+If you do not want to read the primary statistical literature or consult with a statistician (a statistician  that knows about this stuff) then the path of least resistance is probably to stick to the ``usual rules'' and use Fisher's test if your data do not fulfill the ``usual rules''.  This is not a cynical recommendation, but is based on fairly standard and recent textbooks making these kinds of recommendations. Moreover, many people deal with tables larger than 2x2. But then, maybe a years from now  we will be teaching something different because Campbell's suggestion will have become the standard approach for 2x2 tables.  % Myself \ldots I might give Campbell's procedure a try, but then I am often more concerned about p-values that are smaller than they should be than
 
 
 
 \subsubsection{Chi square with \texttt{simulate.p.value}?}
 
-This is another apparent alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals, and works only if the marginals are strictly positive. (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''} There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about Fisher's test % sampling model and its possible effects on power
+This is another apparent alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about Fisher's test % sampling model and its possible effects on power
 , this simulation procedure carries the same concerns.
 
 
@@ -1564,7 +1586,7 @@ Interestingly, however, the last plot does not seem to indicate the very strong 
 
 Mosaic plots are a very informative two-dimensional representation
 of the categorical data. % (see figure \ref{fig:Visualization-of-multivariate})
- Unfortunately it is not implemented in R commander.
+ Unfortunately they are  not implemented in R commander.
 
 % \begin{comment}
 % By me: I guess that the Pearson residuals represented in mosaic plots
@@ -1590,6 +1612,7 @@ mosaic(xtabs(~ Effect + HRE, data = Hx),
        shade = TRUE)
 @
 
+Wait!!! What residuals are those??
 
 % Does this help more? What are the values being represented? The residuals are NOT the standardized residuals but, rather, the \(\chi^2\) residuals.
 
@@ -1598,7 +1621,7 @@ mosaic(xtabs(~ Effect + HRE, data = Hx),
 % @
 
 
-We can use the standardized residuls with the code below (this is the same procedure as used by \citealp{agresti2018} in p.~41 and 138 of \citet{kateri2014} in p.~56).
+We can use the standardized residuls with the code below (this is the same procedure as used by \citealp{agresti2018} in p.~41 and by \citet{kateri2014} in pp.~56 and 138).
 
 <<>>=
 hx_res <- chisq.test(Hx_tab, correct = FALSE)$stdres
@@ -1621,7 +1644,7 @@ mosaic(Hx_tab, residuals = hx_res,
 % @
 
 
-\citet[in section 2.4]{kateri2014} provides a great overview of plots for categorical data; this book is available from UAM's library.
+\citet[in section 2.4]{kateri2014} provides a great and brief overview of plots for categorical data, including several ones we have not discussed (most notably the fourfold plots and sieve diagrams); this book is available from UAM's library.
 \citet{friendly2016} is a book-length treatment of visualization of categorical data using R, and their chapter 5 describes function \texttt{vcd}, that we just used. \citet{xu2010a} also discusses some plots and is, by the way, a nice review of categorical
 data analysis in experimental biology.
 
@@ -1710,6 +1733,8 @@ to a drug using their siblings as matched controls. The exposure to
 the drug is recorded for the diseased individual and the healthy sibling.
 Again the data are not independent (matched data).
 
+%% FIXME: for future years, see how we do with time, and maybe uncomment this code?
+
 
 % %
 % \begin{comment}
@@ -1775,6 +1800,9 @@ Again the data are not independent (matched data).
 computes the probability of the null hypothesis that two nominal variables
 are conditionally independent in each stratum of a third variable.
 
+
+%% FIXME: this might be uncommented too? And discuss Simpson's paradox?
+
 % \begin{comment}
 % It can be performed in R using the mantelhaen.test() function. For
 % example, in the dataset \textquotedblleft Arthritis\textquotedblright{}
@@ -1801,7 +1829,7 @@ are conditionally independent in each stratum of a third variable.
 % \end{figure}
 % \end{comment}
 
-\item Some categorical variables are actually ordinal, not simply nominal. In this case, it is possible to conduct more powerful tests that account for the ordinal nature of the variable. (One simple case is shown in section 8.3 of \citep{Dalgaard2004}; for a lot more detail, see the excellent books by Alan Agresti, \citep{agresti2012} or the more introductory version as \citep{agresti2018}).
+\item Some categorical variables are actually ordinal, not simply nominal. In this case, it is possible to conduct more powerful tests that account for the ordinal nature of the variable. (One simple case is shown in section 8.3 of \citealp{Dalgaard2008}; for a lot more detail, see the excellent books by Agresti, \citealp{agresti2012},  \citealp{agresti2018}, Kateri, \citealp{kateri2014}, or Bilder and Loughin \citealp{bilder2024}).
 
 
 % \item A particularly problematic subtype of categorical data are ordinal
@@ -1912,9 +1940,9 @@ associated to the disease? compute the chi-square statistic by hand.
 \section{Recommended reading}
 \label{sec:recommended-reading}
 
-Much of what we have covered here is discussed in \citet{Dalgaard2008} and \citet{diez2019}. The first is available through UAM's electronic library, and the second is available in several formats, from their web page. \citet{kateri2014} covers (in the first two chapters) all we have discussed here (and a lot more); it is also available from UAM's electronic library.
+Much of what we have covered here is discussed in \citet{Dalgaard2008} and \citet{diez2019}. The first is available through UAM's electronic library, and the second is available in several formats, from their web page. \citet{kateri2014} covers (in just the first two chapters) all we have discussed here (and a lot more); it is also available from UAM's electronic library.
 
-Beyond that, the first place I always go to for issues related to categorical data analysis is \texttt{agresti2012} and \citep{agresti2018}. \citet{bilder2024} is also a great book. For generalized linear models with R, \citet{fox2018} and \citet{faraway_extending_2016} are very good.
+Beyond that, the first place I always go to for issues related to categorical data analysis is \citet{agresti2012} and \citet{agresti2018}. \citet{bilder2024} is also a great book. For generalized linear models with R, \citet{fox2018} and \citet{faraway_extending_2016} are very good.
 
 
 %\bibliographystyle{jss2}
@@ -1944,8 +1972,8 @@ SNP absent & 461 & 51898\tabularnewline
 \hline
 \end{tabular}
 
-You can enter the tabulated values directly, and do a test. Go to Statistics->Contingency
-tables->Enter and analyze... select the appropriate number of rows
+You can enter the tabulated values directly, and do a test. Go to Statistics \(\rightarrow\) Contingency
+tables \(\rightarrow\) Enter and analyze... select the appropriate number of rows
 and columns and enter the values. Finally select the test(s) you want
 to run (see figure \ref{fig:Entering-contingency-tables}).
 
