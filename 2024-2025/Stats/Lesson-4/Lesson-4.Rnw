@@ -1645,10 +1645,10 @@ mosaic(Hx_tab, residuals = hx_res,
 
 
 \citet[in section 2.4]{kateri2014} provides a great and brief overview of plots for categorical data, including several ones we have not discussed (most notably the fourfold plots and sieve diagrams); this book is available from UAM's library.
-\citet{friendly2016} is a book-length treatment of visualization of categorical data using R, and their chapter 5 describes function \texttt{vcd}, that we just used. \citet{xu2010a} also discusses some plots and is, by the way, a nice review of categorical
-data analysis in experimental biology.
+\citet{friendly2016} is a book-length treatment of visualization of categorical data using R, and their chapter 5 describes function \texttt{vcd}, that we just used. % \citet{xu2010a} also discusses some plots and is, by the way, a nice review of categorical
+% data analysis in experimental biology.
 
-%% FIXME: check Xu.
+%% Xu is OK, but Kateri or Friendly and Meyer a lot better.
 
 
 \section{Analysis of two-way tables: some salient things we have left out}\label{sec:Other-test-for}
