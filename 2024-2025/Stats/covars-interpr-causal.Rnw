@@ -353,8 +353,7 @@ The process above generate data that look like this:
 
 
 \clearpage
-Let's analyze the data with and without adjusting for Age
-consumption.
+Let's analyze the data with and without adjusting for Age.
 
 
 <<code_1, results='show', echo = TRUE>>=
@@ -606,7 +605,7 @@ course ``Causal Diagrams: Draw Your Assumptions Before Your Conclusions''\\
 \Burl{https://www.edx.org/course/causal-diagrams-draw-your-assumptions-before-your},
 you can see animations of this process).  Both a mediator and a common cause, if
 conditioned upon, block the flow of information because they close the pipe; in
-contrast, a collider, if conditioned upon, opens the pipe.
+contrast, a collider, if conditioned upon, opens the pipe. Make sure to play with the analogy of the pipe, and apply it to the figures, thinking about the effect of closing an imaginary tap in Z.
 
 Let us reword the above. In the chain example in Figure \ref{fig:plot_dag_struct} a),
 if we do not condition in Z, the pipe is open, so X and Y are
@@ -645,7 +644,7 @@ More systematically:
 \end{enumerate}
 
 
-More about \textbf{confounding}: we must adjust for Z, or condition on Z, to
+More about \textbf{confounding}. In Figure \ref{fig:plot_dag_struct} b) we must adjust for Z, or condition on Z, to
 avoid confounding the estimate of the relationship between X and Y. It is the
 presence of confounding that leads to the ``correlation is not necessarily
 causation'' \citep[][p.\ 58]{westreich2019}.  (For more details about confounding
@@ -654,7 +653,7 @@ see chapter 7 in \citealp{hernan2020}; a brief discussion in section 3.5.1, pp.\
 
 
 %% ZZ FIXME : give the example of Y must compensate whatever X has
-And more about \textbf{colliders}. The consequences of the last structure, where
+And more about \textbf{colliders}. The consequences of the last structure, Figure \ref{fig:plot_dag_struct} c), where
 we have a collider, sometimes seem counterintuitive. This structure is behind
 ``Berkson's paradox''\footnote{
   \url{https://en.wikipedia.org/wiki/Berkson\%27s_paradox}, and it might explain
@@ -883,7 +882,7 @@ These are the consequences:
   in c)) or \textbf{a descendant of a collider will make the ancestors
     associated}. Why? Think about the hospital, broken bones and pneoumonia;
   instead of looking at people at the door of the hospital you look at people
-  downstream (e.g., people who have been admitted to the hospital).
+  downstream (e.g., people who have been admitted to the hospital). Or think again about the pipes: put a tap on W, and close it.
 
   In addition (but this is not new):
   \begin{enumerate}[label=\arabic*.]
@@ -989,7 +988,7 @@ U_2 -> X
 }")
 @
 
-<<plot_dag_ptr, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider',out.width='9cm', fig.pos= "!h">>=
+<<plot_dag_ptr, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider.',out.width='9cm', fig.pos= "!h">>=
 coordinates(ptr) <- list(x = c(L = 1, X = 2, Y = 3, U_1 = 0.8, U_2 = 0.8),
                          y = c(L = 0, X = 0, Y = 0, U_1 = -.5, U_2 = .5))
 
@@ -997,13 +996,53 @@ drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
 ## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
 @
 
-You know the answer. No, do not adjust for L: it is a collider ($U_1$ and $U_2$
+
+(To turn the above into a specific example:
+
+<<dag_ptr22, results='hide', echo=FALSE>>=
+ptr22 <- dagitty("dag {
+Diet -> Outcome
+U_g -> Exercise
+U_c  -> Exercise
+U_g -> Outcome
+U_c  -> Diet
+}")
+@
+
+<<plot_dag_ptr22, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider; Uc: country, Ug: genetics.',out.width='9cm', fig.pos= "!h">>=
+coordinates(ptr22) <- list(x = c(Exercise = 1, Diet = 2,
+                                 Outcome = 3,
+                                 U_g = 0.8,
+                                 U_c = 0.8),
+                           y = c(Exercise = 0,
+                                 Diet = 0,
+                                 Outcome = 0,
+                                 U_c = .5,
+                                 U_g = -.5))
+
+drawdag(ptr22, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@
+
+)
+
+
+You know the answer. No, do not adjust for L (Exercise): it is a collider ($U_1$ and $U_2$
 are its parents) on the backdoor path between X and Y. If we adjust for L, it
 will induce a non-causal association between X and Y\footnote{The bias induced is
   sometimes called \textit{M-bias}.}.
 
+
 Main moral of this story: \textbf{adjusting for all possible pre-treatment
   variables is not always a good idea}. More on that below.
+
+
+Another moral of the story: \(U_c\) might not be an unmeasured variable. Maybe it is there, in the dataset, but you have not used it. If you were to include it in your model, then we would have blocked the backdoor path.
+
+Still, the main moral of this story remains: \textbf{adjusting for all possible pre-treatment
+  variables is not always a good idea}.
+
+
 
 
 \subsection{Should we adjust for the cause of the cause?}\label{cause-of-cause}
@@ -1019,7 +1058,7 @@ X -> Y
 }")
 @
 
-<<plot_dag_zxy, fig.width = 4, fig.height=.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause',out.width='8cm', fig.pos= "!h">>=
+<<plot_dag_zxy, fig.width = 4, fig.height=.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause.',out.width='8cm', fig.pos= "!h">>=
 coordinates(ccc) <- list(x = c(Z = 1, X = 2, Y = 3),
                          y = c(Z = 0, X = 0, Y = 0))
 
@@ -1059,7 +1098,7 @@ U -> Y
 }")
 @
 
-<<plot_dag_bias_amp, fig.width = 4, fig.height=1.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause and bias amplification',out.width='8cm', fig.pos= "!h">>=
+<<plot_dag_bias_amp, fig.width = 4, fig.height=1.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause and bias amplification.',out.width='8cm', fig.pos= "!h">>=
 coordinates(bamp) <- list(x = c(Z = 1, X = 2, Y = 3, U = 1),
                          y = c(Z = 0, X = 0, Y = 0, U = -.5))
 
@@ -1099,6 +1138,9 @@ I copy from p.\ 1115 of \citet{hernandez-diaz2006}:
   suggested that the effect of maternal smoking is modified by birth weight in
   such a way that smoking is beneficial for LBW babies.
 \end{quoting}
+
+(Does the above sound confusing? It was for me. Write, with your own words and your own pencil, a simple scheme of what is being described.)
+
 
 This is another case of collider bias, in this case stratifying on a common
 effect. In Figure \ref{fig:bw-paradox} there are two possible causal DAGs that
@@ -1166,7 +1208,7 @@ making stronger assumptions.
 the causes of an effect and finding \textbf{sufficient causes}, nor on trying to
 find the causal DAGs from a set of data. We have focused ``just'' on measuring
 the effects of causes. For more on those topics, go to \citealp{hernan2020};
-\citealp{morgan_counterfactuals_2015}; \citealp{neal_causality_2020}).
+\citealp{morgan_counterfactuals_2015}; \citealp{neal_causality_2020}, \citealp{peters_causal_2017}).
 
 %% ZZ FIXME  what variables to add to a DAG
 
@@ -1183,7 +1225,7 @@ As it says: what follows gives additional details on some issues above. This is 
 \subsection{Estimating direct effects}\label{direct-eff}
 Look at the following DAG (this is from section 3.7, pp.\ 75 and ff.\
 \citealp{pearl_causal_2016}; a similar example is shown in section 6.3.2, p.\
-180--182
+180--182 of
 \citealp{rethinking_2020}\footnote{Though in \citealp{rethinking_2020}, the
   explanation of the problem I find possibly misleading, since the difference
   between the direct and indirect effects is not emphasized enough.}) in Figure \ref{fig:dag_direct}:
@@ -1589,7 +1631,7 @@ paradox\footnote{This same paradox has been presented in many different places b
   other authors, and also by Pearl in other work; but the presentation in
   \citealp{pearl2016} I find much, much, clearer and insightful than the one in
   p.\ 85 of \citealp{pearl_causal_2016} or pp.\ 212-215 ---chapter 6--- of
-  \citealp{pearl2018}}. As Pearl explains, his paper ``address(es) the general
+  \citealp{pearl2018}.}. As Pearl explains, his paper ``address(es) the general
 methodological issue of whether adjustments for preexisting conditions is
 justified in group comparison applications''. A nice feature of this paper is
 that Pearl presents both the original paradox as written by Lord as well as some
@@ -1604,6 +1646,8 @@ adjust for the covariate.
 
 
 \section{References}
+
+(Note: some of the books below are ---legally and freely--- available from UAM's library and/or from the author's pages).
 
 %% FIXME: in the future, use \bibliographystyle{jss2}
 {\small
@@ -1722,6 +1766,17 @@ Pearl, J., Glymour, M., and Jewell, N.~P.
 \newblock \emph{Causal Inference in Statistics: A Primer}.
 \newblock {John Wiley \& Sons}, {Chichester, UK}, 2016.
 \newblock ISBN 978-1-119-18684-7.
+
+
+\bibitem[Peters et~al.(2017)Peters, Janzing, Scholkopf]{peters_causal_2017}
+Peters, J., Janzing, D., and Sch{\"o}lkopf, B.
+\newblock \emph{Elements of Causal Inference}.
+\newblock {MIT Press}
+\newblock ISBN 978-0-262-03731-0.
+\newblock URL
+  \url{https://library.oapen.org/bitstream/id/056a11be-ce3a-44b9-8987-a6c68fce8d9b/11283.pdf}
+
+
 
 \bibitem[Rosenbaum(2017)]{rosenbaum2017}
 Rosenbaum, P.
