@@ -1,0 +1,11 @@
+* Break after 1 hour
+* Diagram of the type of tests
+* Exercises at the end of each lesson
+- in addition
+- not necessarily graded
+- por ejemplo, en Lesson 3, cuando cambiamos de anova a regression
+- mandarlos para casa y discutir
+- qué tipo de tests/procedimientos para distintos tipos de daos
+- los de "think about this": thjink and ask in class
+  - problema de falta de confirmaciń sobre lo que es la respuesta correcta
+    - pensar cómo hacer más sencillo que o se discuta porque lo saco o se saque
