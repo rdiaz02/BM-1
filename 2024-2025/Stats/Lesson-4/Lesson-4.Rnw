@@ -149,6 +149,7 @@ opts_chunk$set(echo = TRUE, nobreak = TRUE)
 ## )
 
 library(Rcmdr)
+library(formatR) ##  required by the chunk option tidy = TRUE
 @
 
 

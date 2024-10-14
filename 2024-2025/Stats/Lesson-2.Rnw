@@ -18,6 +18,8 @@ suppressMessages(require(BiocStyle, quietly = TRUE))
 suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
 suppressMessages(library(RcmdrPlugin.HH, quietly = TRUE, warn.conflicts = FALSE))
 suppressMessages(library(RcmdrPlugin.KMggplot2, quietly = TRUE, warn.conflicts = FALSE))
+suppressMessages(require(ggplot2, quietly = TRUE))
+
 
 ## suppressMessages(require(doBy, quietly = TRUE))
 ## suppressMessages(require(RcmdrPlugin.plotByGroup, quietly = TRUE))
