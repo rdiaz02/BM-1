@@ -11,3 +11,8 @@
     - pensar cómo hacer más sencillo que o se discuta porque lo saco o se saque
 * CALCULADORA en el examen
 - pero decir con antelación (al empezar el curso!!!)
+
+
+
+* En las notas, probablemente tanto en Lesson 2 como en 3 como en 4: si tenemos datos numéricos, discretizar bad
+- si cholesterol is a number, do not discretize into high/low or similar
