@@ -1540,6 +1540,7 @@ Is this a balanced design? If we were to fit a model without interactions, would
 
 <<echo=FALSE,results='hide'>>=
 with(coking, tapply(time, list(temp, width), length))
+aggregate(time ~ width + temp, FUN = length, data = coking)
 mcok1 <- lm(time ~ width + temp, data = coking)
 mcok2 <- lm(time ~ temp + width, data = coking)
 anova(mcok1)
@@ -1547,6 +1548,18 @@ anova(mcok2)
 Anova(mcok2)
 @
 
+%% Explain, or not, what is the denominator, how the interaction is using up dfs and consuming/giving up RSS?
+
+% A few additional details and answers:
+% \begin{itemize}
+% \item Why are the main effects entries the same with \texttt{anova} and \texttt{Anova}? Because the design is fully balanced.
+% <<cokingN>>=
+% aggregate(time ~ width + temp, FUN = length, data = coking)
+% @
+
+% \item
+
+% \end{itemize}
 
 
 
