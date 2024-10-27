@@ -16,3 +16,8 @@
 
 * En las notas, probablemente tanto en Lesson 2 como en 3 como en 4: si tenemos datos numéricos, discretizar bad
 - si cholesterol is a number, do not discretize into high/low or similar
+
+
+
+* Pensar de cara al examen: si no tienes portátil o tablet, habla con nosotros?
+- insisistirlo en la presentación inicial y varias semanas antes?
