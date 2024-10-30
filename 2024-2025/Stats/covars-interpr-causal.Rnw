@@ -512,8 +512,9 @@ In Figure \ref{fig:fungus_collider}, Fungus is a descendant of both U and
 Treatment. This is called a \textbf{collider}. Conditioning on Fungus will lead
 to Treatment and moisture (U) being associated, even when they are really
 independent of each other. And that would lead to our mistakenly estimating that
-Treatment has an effect on Size, when Treatment really does not have an
-effect on Size; to put it differently,  U affects Size and U is associated with Treatment when we condition on Fungus.
+Treatment has an effect on Size (U affects Size and U is associated with
+Treatment when we condition on Fungus), when Treatment really does not have an
+effect on Size.
 
 OK, this is getting complicated. Let us see the three basic DAG structures,
 and a few derived ones.
@@ -1644,6 +1645,15 @@ effect (this is what we would get if we adjust for the covariate) or the total
 effect (what we get when we don't). In the confounding case, of course, we must
 adjust for the covariate.
 
+
+
+% {\small
+%   \bibliography{covars-causal}
+%   \bibliographystyle{jss2}
+%   %% \bibliography{refs}
+%   %% \bibliographystyle{myplainnat}
+%   %% \bibliographystyle{mybibwithurl} %% not compatible with author-year
+% }
 
 \section{References}
 
