@@ -142,7 +142,7 @@ International License:
 All the original files for the document are available (again, under a Creative
 Commons license) from \Burl{https://github.com/rdiaz02/BM-1}. (Note that in the
 github repo you will not see the PDF, or R files, nor many of the data files,
-since those are derived from the Rnw file). This file is called \texttt{covars-interpr-causal.Rnw}.
+since those are derived from the Rnw file). This file is called \texttt{CI-p-value-examples.Rnw}.
 
 \vspace*{10pt}
 
@@ -273,7 +273,7 @@ Now, please take a piece of paper and draw a figure like this:
  \end{center}
  \end{figure}
 
-As it says: fill up the question marks.
+As it says: fill up the question marks. \textbf{Really, do it NOW.}
 
 
 \end{document}
