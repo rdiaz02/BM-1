@@ -1473,6 +1473,10 @@ wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
 
 
 % Contrary to Conover, not really testing F(x)= G(x)
+%% Wikipedia entry much clearer: is a nonparametric test of the null
+%% hypothesis that it is equally likely that a randomly selected value
+%% from one sample will be less than or greater than a randomly selected
+%% value from a second sample.
 
 % <<>>=
 % ## Will not reject
