@@ -2668,9 +2668,9 @@ Anova(mah)
 Anova(mahi, type = "II")
 
 ## SS of height same as for type II of mah and mahi
-anova(lm(lm(pemax ~ age + height, data = cystfibr2)))
+anova(lm(pemax ~ age + height, data = cystfibr2))
 ## SS of age same as for type II of mah and mahi
-anova(lm(lm(pemax ~ height + age, data = cystfibr2)))
+anova(lm(pemax ~ height + age, data = cystfibr2))
 
 ## But the coefficients in mahi are from a model that includes the
 ## interaction.
