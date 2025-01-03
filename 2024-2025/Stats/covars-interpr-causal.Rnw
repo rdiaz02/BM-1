@@ -161,7 +161,8 @@ Please, \textbf{respect the copyright and license}. This material is
 \label{sec:what-this-about}
 
 The aim of these notes is to try to clarify  questions about ``what
-variables should we add to our models when our aim is interpretation''.
+variables should we add to our models when our aim is interpretation''\footnote{The paper by \cite{keele2020} has a very similar objective: ``(...) we ask when we can justify interpreting two or more coefficients in a regression model as causal parameters. We demonstrate that analysts must appeal to causal identification assumptions to give estimates causal interpretations.''  After going through these notes, reading that paper should be easy.}.
+
 
 As discussed in class, if our purpose when fitting statistical models is only
 prediction, reversal of regression coefficients when a covariate is in the model
