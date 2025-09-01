@@ -1,0 +1,312 @@
+%% ;;; -*- mode: Rnw; -*-
+\synctex=1
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphics}
+\usepackage{amssymb,amsfonts,amsmath,amsbsy}
+\usepackage{geometry}
+\geometry{verbose,a4paper,tmargin=28mm,bmargin=28mm,lmargin=30mm,rmargin=30mm}
+\usepackage{setspace}
+\singlespacing
+\usepackage{url}
+\usepackage{nameref}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{cancel}
+\usepackage{MnSymbol} %% for upmodels, cond, indep.
+\usepackage{wasysym} %% smileys
+%% see
+%% https://tex.stackexchange.com/questions/3631/is-there-a-standard-symbol-for-conditional-independence
+%% https://tex.stackexchange.com/questions/3631/is-there-a-standard-symbol-for-conditional-independence
+%% for alternatives
+\usepackage{enumitem}
+\usepackage[small]{caption}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks = true,
+  citecolor=  black,
+  linkcolor = {blue},
+  filecolor = cyan %% controls color of external ref, if used
+}
+%% I do not understand why I keep using Burl. Oh well.
+\usepackage{color}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{#1}} %From B. Bolker
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+\usepackage[begintext=\textquotedblleft,endtext=\textquotedblright]{quoting}
+\newcommand{\activities}{{\vspace*{10pt}\LARGE \textcolor {red} {Activities:\ }}}
+
+\newcommand{\R}{R}
+
+\newcommand{\flspecific}[1]{{\textit{#1}}}
+
+\newcommand*{\qref}[1]{\hyperref[{#1}]{\textit{``\nameref*{#1}'' (section \ref*{#1})}}}
+
+
+\newcounter{exercise}
+\numberwithin{exercise}{section}
+\newcommand{\exnumber}{\addtocounter{exercise}{1} \theexercise \thinspace}
+
+\usepackage[copyright]{ccicons}
+
+%% color of links, so it is pink or whatever, and not the kind
+%% of boxed with lilght blue, is given by hypersetup
+\usepackage[authoryear, round, sort]{natbib}
+%% \usepackage[square,numbers,sort&compress]{natbib}
+
+\usepackage{gitinfo}
+
+
+\setlength{\parskip}{0.35em}
+
+%% For using listings, so as to later produce HTML
+%% uncommented by the make-knitr-hmtl.sh script
+%% listings-knitr-html%%\usepackage{listings}
+%% listings-knitr-html%%\lstset{language=R}
+
+<<setup,include=FALSE,cache=FALSE>>=
+require(knitr)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+## next are for listings, to produce HTML
+##listings-knitr-html%%options(formatR.arrow = TRUE)
+##listings-knitr-html%%render_listings()
+@
+
+<<rcmdrsetup,echo=FALSE,results='hide',message=FALSE>>=
+suppressMessages(library(Rcmdr, quietly = TRUE, warn.conflicts = FALSE))
+suppressMessages(library(RcmdrPlugin.HH, quietly = TRUE, warn.conflicts = FALSE))
+suppressMessages(library(RcmdrPlugin.KMggplot2, quietly = TRUE, warn.conflicts = FALSE))
+
+@
+
+% %% BiocStyle needs to be 1.2.0 or above
+% <<packages,echo=FALSE,results='hide',message=FALSE>>=
+% require(BiocStyle, quietly = TRUE)
+% @
+% <<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+% BiocStyle::latex()
+% ## or latex(use.unsrturl = FALSE)
+% ## to use arbitrary biblio styles
+% @
+
+
+
+\begin{document}
+
+% \bioctytle
+\title{Confidence intervals and p-values in the two-sample t-test: some examples}
+
+
+\author{Ramon Diaz-Uriarte\\
+  Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\
+  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Madrid, Spain{\footnote{r.diaz@uam.es, rdiaz02@gmail.com}} \\
+  %% {\footnote{rdiaz02@gmail.com}} \\
+  {\small \Burl{https://ligarto.org/rdiaz}} \\
+}
+
+
+\date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+
+
+
+\maketitle
+
+% \tableofcontents
+
+% \clearpage
+
+
+
+\section*{License and copyright}\label{license}
+This work is Copyright, \copyright, 2024, Ramon Diaz-Uriarte, and is
+licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
+International License:
+\Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+
+\centerline \ccbysa
+
+
+
+All the original files for the document are available (again, under a Creative
+Commons license) from \Burl{https://github.com/rdiaz02/BM-1}. (Note that in the
+github repo you will not see the PDF, or R files, nor many of the data files,
+since those are derived from the Rnw file). This file is called \texttt{CI-p-value-examples.Rnw}.
+
+\vspace*{10pt}
+
+Please, \textbf{respect the copyright and license}. This material is
+  provided freely. If you use it, I only ask that you use it according to the
+  (very permissive) terms of the license: acknowledging the author and
+  redistributing copies and derivatives under the same license. If you have any
+  doubts, ask me.
+
+\clearpage
+
+%% \part{The main stuff}
+
+
+\section{What is this about}
+\label{sec:what-this-about}
+
+
+Clarify the relationship between confidence intervals and p-values, using examples from the two-sample t-test.
+
+
+First, we read the data as in Lesson 2:
+
+<<>>=
+dp53 <- read.table("P53.txt", header = TRUE, stringsAsFactors = TRUE)
+@
+
+
+Now, we do the same two-sample t-test we did there. Because I will reuse some output, I will store the object.
+
+<<>>=
+(tt1 <- t.test(p53 ~ cond, data = dp53))
+@
+
+Before doing some numerical explorations, let us plot the t-distribution. You can do this easily from R Commander, using ``Distributions -> Continuous distributions -> t distribution'' or the KMggplot2 menu: ``KMggplot2 -> plot distribution -> t distribution''. I will use something like the first route, but modify it because I want to add some lines for what comes next. I will draw a t distribution with 17.402 degrees of freedom, the same degrees of freedom as in our test above\footnote{It might have been simpler to use the ``non-Welch'' test, the one that assumes variances are the same, so as to not to have to use non-integer degrees of freedom. But our original example uses Welch, so we will stick to that.}.
+
+
+
+<<qs,echo=FALSE, results='hide'>>=
+q10 <- qt(p = 0.050, df = 17.402)
+q05 <- qt(p = 0.025, df = 17.402)
+q001 <- qt(p = 0.0005, df = 17.402)
+@
+
+
+<<tdist>>=
+.x <- seq(-4.1, 4.1, length.out=1000)
+
+plotDistr(.x, dt(.x, df=17.402), cdf=FALSE, xlab="x", ylab="Density",
+          main=paste("t Distribution:  Degrees of freedom=17.402"))
+abline(v = -2.34019, lty = 2)
+abline(v = 2.34019, lty = 2)
+
+abline(v = q10, lty = 5, col = "orange")
+abline(v = -q10, lty = 5, col = "orange")
+
+
+abline(v = q05, lty = 3, col = "blue")
+abline(v = -q05, lty = 3, col = "blue")
+
+abline(v = q001, lty = 4, col = "red")
+abline(v = -q001, lty = 4, col = "red")
+
+legend(x = -1, y = 0.15,
+       legend = c(
+         "p = 0.0342; t = 2.34",
+         paste0("p = 0.10; t = ", round(-q10, 2)),
+         paste0("p = 0.05; t = ", round(-q05, 2)),
+         paste0("p = 0.001; t = ", round(-q001, 2))
+       ),
+       lty = c(2, 5, 3, 4),
+       col = c("black", "orange", "blue", "red"))
+
+@
+
+The figure shows lines that delimit four regions:
+
+\begin{itemize}
+
+\item \textbf{0.10}: the blue lines denote rejection regions for tests at the \(\alpha = 0.10\): the area to right of the right blue line + the area to the left of the left blue line adds to 0.10. So any value of the t-statistic larger than 1.74, or smaller than -1.74 will lead to rejection at \(\alpha = 0.10\).  A test with a test statistic of exactly 1.74 will have a p-value of exactly 0.10.
+
+
+\item \textbf{0.05}: the blue lines denote rejection regions for tests at the \(\alpha = 0.05\): the area to right of the right blue line + the area to the left of the left blue line adds to 0.05. So any value of the t-statistic larger than 2.11, or smaller than -2.11 will lead to rejection at \(\alpha = 0.05\).  A test with a test statistic of exactly 2.11 will have a p-value of exactly 0.05.
+
+
+\item \textbf{0.0342}. This is ``our test''.  The black lines denote rejection regions for tests at the \(\alpha = 0.0342\): the area to right of the right black line + the area to the left of the left black line add to 0.0342. So any value of the t-statistic larger than 2.34, or smaller than -2.34 (hey! our test statistic) will lead to rejection at \(\alpha = 0.0342\).  A test with a test statistic of exactly -2.34 will have a p-value of exactly 0.0342; just like our test.
+
+
+\item \textbf{0.001}. The red line. At test with a test statistic of exactly 3.95 will have a p-value of 0.001.
+
+\end{itemize}
+
+Now, I am going to get confidence intervals. I am going to use a  brute-force approach: I am going to run t-tests with our data, and modify the argument that asks for the size of the confidence interval (yes, you can modify this via R Commander). There are other ways to get confidence intervals, but I want to use output/methods that are familiar to us.
+
+
+First, I will use a confidence region of exactly 1 - p.value, the p-value we actually get from the t-test. (I specify the confidence level by passing the value of the p.value, instead of typing it).
+
+<<>>=
+t.test(p53 ~ cond, data = dp53, conf.level = 1 - tt1$p.value)
+@
+Notice that right limit of the confidence interval is basically 0.
+
+
+Now, obtain another three confidence intervals, of 90\%, 95\%, and 999\%:
+
+
+<<>>=
+t.test(p53 ~ cond, data = dp53, conf.level = 0.9)
+@
+
+
+<<>>=
+t.test(p53 ~ cond, data = dp53, conf.level = 0.95)
+@
+
+
+<<>>=
+t.test(p53 ~ cond, data = dp53, conf.level = 0.999)
+@
+
+
+Now, please take a piece of paper and draw a figure like this:
+
+\begin{figure}[h!]
+ \begin{center}
+ \includegraphics[width=0.80\paperwidth,keepaspectratio]{cittest.pdf}
+ \caption{\label{cittest} Fill up the question marks. (Figure not necessarily at scale, but overlaps or not with the 0 line are correct).}
+ \end{center}
+ \end{figure}
+
+As it says: fill up the question marks. \textbf{Really, do it NOW.}
+
+
+\end{document}
+
+
+
+
+
+
+
+% <<sewidth,echo=FALSE,results='hide',message=FALSE>>=
+% mdiff <- -diff(tt1$estimate)
+
+% ci95 <- t.test(p53 ~ cond, data = dp53, conf.level = 0.95)$conf.int
+% ci999 <- t.test(p53 ~ cond, data = dp53, conf.level = 0.999)$conf.int
+% ci97 <- t.test(p53 ~ cond, data = dp53, conf.level = 1 - tt1$p.value)$conf.int
+
+% s97 <- (ci97[1] - mdiff)/tt1$statistic
+% s95 <- (ci95[1] - mdiff)/q05
+% s999 <- (ci999[1] - mdiff)/q001
+% @
+
+
+% And you can check that the width of the confidence intervals is (minor differences are expected from rounding errors et al):
+
+  % <<>>=
+
+% ## 95%
+% 2.11 * 0.3838
+
+% ## 97% (i.e., 1 - p.value)
+% 2.34 * 0.3838
+
+% ## 999%
+% 3.95 * 0.3838
+% @

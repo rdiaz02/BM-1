@@ -1,0 +1,70 @@
+Note however that shape of the chi-square($\chi^{2}$) distribution
+depends on the degrees of freedom\protect\footnote{Recall that degrees of freedom is a measure of how many values are
+free to vary when determining independent estimates of parameters.
+When calculating frequencies in categorical data, the degrees of freedom
+correspond to the total number of categories minus one. For example
+in case 1, once we know the frequencies of two genotypes the value
+of the third is calculated from these two, i.e. only two categories
+out of three are \textquotedblleft free to vary\textquotedblright .
+Thus degrees of freedom= 3 categories -1 = 2.}%
+\begin{comment}
+Note that as the degrees of freedom increase the distribution of expected
+chi-square values under the null hypothesis contain increasingly large
+values. My interpretation is that, since the chi-squares statistics
+is a sum across levels and for each level we always expect some deviation
+due to chance, the larger the number of levels the higher the value
+of chi-square expected by chance.
+\end{comment}
+\begin{comment}
+From wikipedia: In statistics, the number of degrees of freedom is
+the number of values in the final calculation of a statistic that
+are free to vary. The number of independent ways by which a dynamic
+system can move without violating any constraint imposed on it, is
+called degree of freedom. In other words, the degree of freedom can
+be defined as the minimum number of independent coordinates that can
+specify the position of the system completely. Mathematically, degrees
+of freedom is the number of dimensions of the domain of a random vector,
+or essentially the number of 'free' components (how many components
+need to be known before the vector is fully determined).
+\end{comment}
+. So, to determine the probability of getting a chi-square value equal
+or higher than ours under the null hypothesis, we have to compare
+it with the appropriate chi-square($\chi^{2}$) distribution according
+to the degrees of freedom in our case. Note that the chi-square distribution
+is bounded by zero (the chi-square value cannot be negative because
+the difference is squared) and infinite and it is not symmetrical.
+Moreover, the peak of the distribution is not at zero as one would
+intuitively expect. In fact, the peak approach to zero for small df
+but departs from zero for increasingly larger df. The reason is that
+the more categories/levels there are (df=\#categories-1), the more
+likely the observed and expected frequencies will differ just by chance%
+\begin{comment}
+As the chi-square statistic is a sum of residuals across categories,
+the larger the number of categories the larger the value of chi-square.
+In each category there is a random chance to have higher/lower number
+than expected, since they are squared, in each category there is a
+random chance of having a number larger than expected. As the number
+of categories increases the sum of these deviations increases. Note
+that residuals (observed-expected) are normalized to the expected
+values not to the number of categories.
+\end{comment}
+. Thus, chi-square values far below the peak of the distribution would
+imply than the agreement between observed and expected is even better
+than what you would expected by chance. For this reason, chi-square
+tests are typically one-tailed test focusing on the right-hand tail
+(the discrepancy is too-large to be observed under the null hypothesis).
+Nevertheless, it is also possible to perform two-tail tests and focus
+on the left-hand tail. Note that, in this case, we are asking whether
+the discrepancy between observed and expected values are smaller that
+you would expect just by chance. If the one-tailed test focusing on
+the left hand of the distribution is significant the interpretation
+is that the data is \textquotedblleft too good to be true\textquotedblright{}
+pointing to dishonesty on the part of the researcher\protect\footnote{Indeed the extraordinary conformity of Gregor Mendel\textquoteright s
+pea experiments have been subjected to such skepticism. Also, it is
+suspected that he looked at many phenotypical characteristics, several
+of which did not follow a typical Mendelian pattern (e.g. genes in
+sex chromosomes, and other) so he just ignored those features and
+focus those that adhere to his law...This debate, known as the \textquotedblleft Mendel-Fisher
+controversy\textquotedbl{} have lasted for over a hundred years and
+it involves Fisher, Pearson and other statisticians and it is still
+alive as shown by the very recent article in science by Radick \citet{Radick2015}.} or some flaw in the data or experimental design.^^E^^L 
