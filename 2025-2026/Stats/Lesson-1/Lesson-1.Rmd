@@ -1,9 +1,10 @@
 ---
-title: "**Applied statistics 2024-2025: Lesson 1**"
+title: "**Applied statistics 2025-2026: Lesson 1**"
 subtitle: "Data handling, plots and descriptive statistics"
 author:
   - Blanca Lizarbe, Department of Biochemistry (UAM), blanca.lizarbe@uam.es;
   - some additions by Ramon Diaz-Uriarte
+date: "`r system('git log -1 --format=%ad --date=short', intern = TRUE)` (Rev: `r system('git rev-parse --short HEAD', intern = TRUE)`)"
 output:
    bookdown::pdf_document2: default
 
@@ -42,18 +43,18 @@ library(RcmdrMisc)
 
 # **Data and graphs**
 
-In this lesson, we are going to use R codes to arrange experimental data and perform some qualitative assessments, such as plots, and **descriptive statistics**, using real experimental data. In descriptive statistics, the data is summarized in different ways that try to exhibit its main features, such as its minimum and maximum, distribution, measures of center. Descriptive statistics is distinguished from **inferential statistics** (or inductive statistics), frequently used in experimental research, by its aim to **summarize a sample**. In inductive statistic, the data set of a specific sample (probably such as the type of data you obtained in your "TFG"), is used to learn about the population that the sample of data is thought to represent.
+In this lesson, we are going to use R to arrange experimental data and perform some qualitative assessments, such as plots, and **descriptive statistics**, using real experimental data. In descriptive statistics, the data is summarized in different ways that try to display, or shown, it main features, such as its minimum and maximum, distribution, measures of location (mean, median, ...) and spread (variance, IQR ---interquartile range---, etc). Descriptive statistics is distinguished from **inferential statistics** (or inductive statistics), frequently used in experimental research, by the aim of descriptive statistics of **summarizing a sample**. In inferential  statistics, the data set of a specific sample (probably such as the type of data you obtained in your "TFG"), is used to learn about the population that the sample of data is thought to represent, conduct hypothesis testing, etc.
 
 > Notice the difference between **sample** and **population**. Do you understand it? As an example, think of all the adult human population in Europe. A potential sociological research group might want to answer the following question: are people born during first six months of the year  more intelligent that those born on the second half of the year?. We can not perform IQ tests to **all** the adult European population, but we can take a smaller sample (for example, those of you attending to this class), and perform IQ tests. Once we have the results, we could obtain descriptive statistics values of our **sample**, such as the mean value, the maximum, minimum, median, etc, on each subgroup of you (by subgroup I mean here either born during the first six months, or the second half). Such results would give us information regarding the characteristics of the IQ tests of those of you here, **the sample** or descriptive statistics, but we would not be inferring the results to the European **population**. If we (hypothetically) performed a statistical t-test between the IQ values of the two subgroups of this sample, however, we would be relaying on a probability distribution theory, and entering in the world of inferential statistics (we will see it in Lessons 2,3,4).
 
 **We will go to through following concepts**
 
-+ Understand experimental designs
++ Understanding experimental designs
 + Types of variables and how to represent them
-+ Measures of center, spread and error
++ Measures of center or location, spread and error
 + Difference between biological and technical replicates
 
-**Regarding the R usage, we will specifically learn to:**
+**Regarding R usage, we will specifically learn to:**
 
 + Read data
 + Subset and rearrange data sets
@@ -63,7 +64,7 @@ In this lesson, we are going to use R codes to arrange experimental data and per
 Remember that R is used here to facilitate your learning process of applied statistics, you will not be examined of your R skills.
 
 # Case 1: qPCR (from Prof. Luis del Peso's lab)
-You investigate the effect of drug X on EFNA3 mRNA levels using human vascular endothelial cells (HUVEC) as a model. To this end, you seed two culture plates with HUVEC from the same donor and treat one plate with the drug and the other with vehicle alone. Then, following the standard procedures in your lab, you extract total RNA from both culture plates and determine transcript abundance by RT-qPCR in three aliquots from each RNA sample (see Figure \@ref(fig:exp-design-luis)). The experiment shows a clear effect of drug on EFNA3 mRNA level, but your supervisor is unconvinced claiming that you must validate this result in additional independent experiments. Why? you already have three replicates, aren’t they enough? Taking the advise you repeat the whole experiment three more times in different dates and using each time a new set of reagents and independent batches of cells from different donors. So you end up having 4 experiments x 3 qRT/PCR replicates =12 determinations for EFNA3 transcript in each condition (control and drug). A lot of data, good job, time to show your results to your supervisor...wait! How are you going to process this data? should you plot all 12 data points? what is the “n” of your experiment?
+You investigate the effect of drug X on EFNA3 mRNA levels using human vascular endothelial cells (HUVEC) as a model. To this end, you seed two culture plates with HUVEC from the same donor and treat one plate with the drug and the other with vehicle alone. Then, following the standard procedures in your lab, you extract total RNA from both culture plates and determine transcript abundance by RT-qPCR in three aliquots from each RNA sample (see Figure \@ref(fig:exp-design-luis)). The experiment shows a clear effect of drug on EFNA3 mRNA level, but your supervisor is unconvinced claiming that you must validate this result in additional independent experiments. Why? you already have three replicates, aren’t they enough? Taking their advice you repeat the whole experiment three more times in different dates and using each time a new set of reagents and independent batches of cells from different donors. So you end up having 4 experiments x 3 qRT/PCR replicates =12 determinations for EFNA3 transcript in each condition (control and drug). A lot of data, good job, time to show your results to your supervisor...wait! How are you going to process this data? should you plot all 12 data points? What is the “n” (sample size) of your experiment?
 
 Does it really matter? If so, why?
 
@@ -78,7 +79,7 @@ A simple scheme of the experimental design, that one of us (Ramon) draw to make 
 knitr::include_graphics("design_one_donor.pdf")
 ```
 
-The above is for one donor. The scheme with the four donors is shown in Figure \@ref(fig:exp-design-luis-four-donors-mean); the rightmost columns shows one possible way of indexing the observations and the average of the three replicates; that is not relevant now, but will be handy later.
+The above is for one donor. The scheme with the four donors is shown in Figure \@ref(fig:exp-design-luis-four-donors-mean); the rightmost columns show one possible way of indexing the observations and the average of the three replicates; that is not relevant now, but will be handy later.
 
 ```{r exp-design-luis-four-donors-mean, fig.cap =  "Experimental design of Case 1, four donors.", fig.align= "center", out.width="80%", echo=FALSE}
 knitr::include_graphics("design_four_donors_mean.pdf")
@@ -88,7 +89,7 @@ knitr::include_graphics("design_four_donors_mean.pdf")
 
 **Wait a minute: Variables**: How many variables do we have in this experiment? Can you detect any differences betweem them?
 
-There are two main types of variables: **numerical**, (what we record is a number that represent a measurable quantity, e.g. height of an individual, the pg of mRNA per cell, the value of a magnetic resonance image on a pixel) and **categorical**, (what we record is a qualitative characteristic, e.g. the color of eyes, gender, brain region). The different values that a categorical variable can take are referred to as levels (e.g. the categorical variable brain region in our example has only two levels, hippocampus or cortex). The levels can show a natural order (e.g. level of education: elementary school, high school, college graduate, PhD), in this case they are termed ordinal categorical, or be unordered (our example of brain region) and then we call them nominal categorical variables (or just categorical). Numerical variables can be continuous (e.g. temperature) or discrete (e.g. number of siblings). Note that the label for some categorical variables are numbers (e.g. zip codes), which can mislead us to classify them as numerical. As a rule of thumb, with numerical variables it is sensible to add, subtract, or take averages with their values. In contrast, it does not make sense to apply arithmetic operations to categorical variables (what would be the meaning of adding of two zip codes?)
+There are two main types of variables: **numerical**, (what we record is a number that represent a measurable quantity, e.g. height of an individual, the pg of mRNA per cell, the value of a magnetic resonance image on a pixel) and **categorical**, (what we record is a qualitative characteristic, e.g. the color of eyes, gender, brain region). The different values that a categorical variable can take are referred to as levels (e.g. the categorical variable brain region in our example has only two levels, hippocampus or cortex). The levels can show a natural order (e.g. level of education: elementary school, high school, college graduate, PhD); in this case they are termed ordinal categorical. Categorical variables can also be unordered (our example of brain region) and then we call them nominal categorical variables (or just categorical). Numerical variables can be continuous (e.g. temperature) or discrete (e.g. number of siblings). Note that the label for some categorical variables are numbers (e.g. zip codes), which can mislead us to classify them as numerical. As a rule of thumb, with numerical variables it is sensible to add, subtract, or take averages with their values. In contrast, it does not make sense to apply arithmetic operations to categorical variables (what would be the meaning of adding or computing the average of two zip codes?).
 
 
 
@@ -96,7 +97,7 @@ There are two main types of variables: **numerical**, (what we record is a numbe
 
 We will now load the dataset corresponding to **case 1**.
 
-Many researchers use spreadsheet software such as MS office Excel to process data and generate graphs. Thus, chances are you’ll receive results in some of the file types generated by these software packages, such as “.xls” or “.xlsx” or "ods" files. However, these kind of files are not universally readable by other software packages. For example, R cannot directly read them. Fortunately, almost all spreadsheet software packages can also save data in a plain text format in which individual data values in columns are separated by commas, hence is name “comma separated value” and extension name “.csv”. The main advantage of this format is that it can be read by almost any software package. Here are the steps you have to follow to save data in csv format (in other software packages will be very similar):
+Many researchers use spreadsheet software such as MS office Excel to process data and generate graphs. Thus, chances are you’ll receive results in some of the file types generated by these software packages, such as “.xls” or “.xlsx” or "ods" files. However, these kind of files are not universally readable by other software packages. For example, R cannot directly read them (but it can if we use one of the several pacakges for readin xls files into R). Fortunately, almost all spreadsheet software packages can also save data in a plain text format in which individual data values in columns are separated by commas, hence is name “comma separated value” and extension name “.csv”. The main advantage of this format is that it can be read by almost any software package. Here are the steps you have to follow to save data in csv format (in other software packages will be very similar):
 
 1. Open the file in Excel or LibreOffice or Gnumeric or whatever you use as your spreadsheet program.
 2. Save it as .csv
@@ -121,17 +122,16 @@ knitr::include_graphics("Rcmdr.png")
 
 
 ### Using R commander
-• Open an R session through the Rgui interface. In the console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like Figure \@ref(fig:Rfigures).
+1. Open an R session through the Rgui interface. In the console, type: library(Rcmdr). If is correctly installed, a new window should open that looks like Figure \@ref(fig:Rfigures).
+2. In the menu bar choose **Data–>Import data–>from text file**: Make sure you choose “Import data” and not use the “Load dataset” instead (see number 1 in 1). Before selecting the file, a window appears in which we need to specify several characteristics of the file, including the field separator (comma, white space...) and the decimal-point (comma or dots) (pay attention to selecting the appropriate ones). Finally, we select file “qPCR_data.csv” from the directory were you downloaded it to.
 
-
-
-• In the menu bar choose **Data–>Import data–>from text file**: Make sure you choose “Import data” and not use the “Load dataset” instead (see number 1 in 1). Before selecting the file, a window appears in which we need to specify several characteristics of the file, including the field separator (comma, white space...) and the decimal-point (comma or dots) (pay attention to selecting the appropriate ones). Finally, we select file “qPCR_data.csv” from the directory were you downloaded it to.
-
-• Give a descriptive name to your data (e.g. qPCRdata) and make sure you indicate the appropriate delimiter (comma, tabs, white space,...). Finally, **indicate whether the decimal point character is a dot or a comma**.
+3. Give a descriptive name to your data (e.g. qPCRdata) and make sure you indicate the appropriate delimiter (comma, tabs, white space,...). Finally, **indicate whether the decimal point character is a dot or a comma**.
 
 <!-- Note: it is ; as separator and , as decimal -->
 
-• You can visualize your data by typing "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
+4. You can visualize your data by typing "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
+
+
 
 If you have a look at the console, you will see that the command line looks like:
 
@@ -146,11 +146,12 @@ qPCRdata <- read.table("qPCR_data.csv",  header=TRUE,
 
 
 ## Subsetting data
-Let's start by exploring the results obtained in the first experiment “qpcr2506”. To that end we could just extract the corresponding rows (cases) from the data matrix (i.e. subsetting). In R commander go to **Data–>Active dataset–>Subset active dataset**. In the pop-up window you have to indicate the subsetting criteria (it is set by default to “<all cases>”), in this case you want to select those rows whose value for the “Experiment” variable is “qpcr2506”. The expression that encapsulates this criteria is: Experiment==’qpcr2506’. Note that in R we use two equal symbols (“==”) as the equality operator and enclose the experiment name in quotation marks (either single or double). Finally, make sure you check “include all variables” (so that the resulting dataset contains all three columns) and give a new name to the resulting dataset, for example “FirstExp”.
+Let's start by exploring the results obtained in the first experiment “qpcr2506”. To that end we could just extract the corresponding rows (cases) from the data matrix (i.e. subsetting). In R commander go to **Data–>Active dataset–>Subset active dataset**. In the pop-up window you have to indicate the subsetting criteria (it is set by default to “<all cases>”); in this case you want to select those rows whose value for the “Experiment” variable is “qpcr2506”. The expression that encapsulates this criteria is: Experiment==’qpcr2506’. Note that in R we use two equal symbols (“==”) as the logical equality operator and enclose the experiment name in quotation marks (either single or double). Finally, make sure you check “include all variables” (so that the resulting dataset contains all three columns) and give a new name to the resulting dataset, for example “FirstExp”.
 
 Note that the active data set is now “FirstExp”. The original data matrix is still available to you, except now the active one used by R changed. You can switch between the different data sets by clicking on the active “Data set” button. You can now represent the data (you already know how to do it!). What kind of graphical representation will you use?
 
-The R code to produce this graph is shown below. This data looks nice: tightly packed replicates and large (much larger than the difference between values within each group) difference between the two groups. The difference between groups will definitely be significant (well see how to calculate it on the next lesson).
+The R code to produce this graph is shown below. This data looks nice: tightly packed replicates and large difference between the two groups,
+thar are much larger than the difference between values within each group . The difference between groups will definitely "be significant" (well see how to calculate it on the next lesson).
 
 ```{r case2plot, fig.cap = "Plot of Case 1",out.width = "60%", fig.align='center'}
 
@@ -165,9 +166,8 @@ xlab = "Treatment"))
 Before we continue: did you see the jittering? Did your figures have jittering? What is this jittering thing, why is it useful, how do we get it?
 
 
-
-Now, what is the meaning of these replicates? is this result generalizable (i.e would you expect a
-similar result when choosing any other sample from the population?) The replicates in this case are just independent measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...) but it does not captures the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (sensible to culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also Figure \@ref(fig:fig-vaux) extracted from it. See also Figure \@ref(fig:exp-design-luis-four-donors-mean) to make sure this is all clear.
+Now, what is the meaning of these replicates? Is this result generalizable (i.e would you expect a
+similar result when choosing any other sample from the population?) The replicates in this case are just independent measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...). But this variance does not capture the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (affected by culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also Figure \@ref(fig:fig-vaux) extracted from it. See also Figure \@ref(fig:exp-design-luis-four-donors-mean) to make sure this is all clear.
 
 
 ```{r fig-vaux, out.width = "65%", fig.cap =  "Biological replicates", fig.align = "center", echo=FALSE}
@@ -176,9 +176,9 @@ knitr::include_graphics("Biological_replicates.png")
 
 
 ## Aggregating  data
-Thus, we must represent **all experiments**, but how? Should we represent all 4x3 individual data points for each condition? Well you have to ask, what is the “n” of your experiment? Since we want to make inferences about the biological population, our **“n” is the number of independent biological experiments**, in this case n = 4. Thus, we have to calculate the average of the technical replicates for each experiment and represent them. If we represent all 12 data points we are implying n = 12, which is not the case. We can easily **aggregate** (i.e. summarize) the data on the table according to a given factor.
+Thus, we must represent **all experiments**, but how? Should we represent all 4x3 individual data points for each condition? You have to ask, what is the “n” (sample size) of your experiment? Since we want to make inferences about the biological population, our **“n” is the number of independent biological experiments**, in this case n = 4. Thus, we have to calculate the average of the technical replicates for each experiment and represent them. If we represent all 12 data points we are implying n = 12, which is not the case. In our case, thus, we must **aggregate** (i.e. summarize) the data on the table according to a given factor, which is easily done in R.
 
-In this case, we want to aggregate data by **calculating the mean of each group according to experiment date**. On the bar menu select **Data–>Active data set–>Aggregate variables in active data set**. Then, in the pop-up window, indicate the name for the aggregated data set (by default “AggregatedData”), select the variable you want to aggregate (in this case EFNA3_level_AU), the factors you’ll use to aggregate it (in this case both “Experiment” and “Treatment”) and finally select the function to aggregate data (in this case we’re interested in the calculating the mean). (See below for the R-code). Note that, all we have done is to calculate the mean of instances (rows) that had the same value for the “Experiment” and “Treatment” variables (the ones we used to aggregate data).
+In this case, we want to aggregate data by **calculating the mean of each group according to experiment date**. On the bar menu select **Data–>Active data set–>Aggregate variables in active data set**. Then, in the pop-up window, indicate the name for the aggregated data set (by default “AggregatedData”), select the variable you want to aggregate (in this case EFNA3_level_AU), the factors you’ll use to aggregate it (in this case both “Experiment” and “Treatment”) and finally select the function to aggregate data (in this case we’re interested in the calculating the mean). (See below for the R-code). Note that all we have done is to calculate the mean of instances (rows) that had the same value for the “Experiment” and “Treatment” variables (the ones we used to aggregate data).
 
 ```{r figurex, fig.cap = "Plot of Case 1",out.width = "60%", fig.align='center'}
 
@@ -199,7 +199,7 @@ But ... would comparing the values from that figure be correct? Look again at Fi
 
 
 What is crucial to notice here is that $\bar{Y}_{11\cdot}$ and $\bar{Y}_{12\cdot}$ are from the same donor (donor number 1);
-likewise, $\bar{Y}_{21\cdot}$ and $\bar{Y}_{22\cdot}$ are from donor 2, ..., and $\bar{Y}_{41\cdot}$ and $\bar{Y}_{42\cdot}$ are from the fourth donor. Thus, the observations are paired: $\bar{Y}_{11\cdot}$ with $\bar{Y}_{12\cdot}$, $\bar{Y}_{21\cdot}$ with $\bar{Y}_{22\cdot}$, $\bar{Y}_{31\cdot}$ with $\bar{Y}_{32\cdot}$, and $\bar{Y}_{41\cdot}$ with $\bar{Y}_{42\cdot}$. The proper statistical (and graphical!) procedure ought to compare not all $\bar{Y}_{i1\cdot}$ with all the $\bar{Y}_{i2\cdot}$ but, rather, the four within-subject differences. We will cover this in detail in Lesson 2. But this should be clear from the design.
+likewise, $\bar{Y}_{21\cdot}$ and $\bar{Y}_{22\cdot}$ are from donor 2, ..., and $\bar{Y}_{41\cdot}$ and $\bar{Y}_{42\cdot}$ are from the fourth donor. Thus, the observations are paired: $\bar{Y}_{11\cdot}$ with $\bar{Y}_{12\cdot}$, $\bar{Y}_{21\cdot}$ with $\bar{Y}_{22\cdot}$, $\bar{Y}_{31\cdot}$ with $\bar{Y}_{32\cdot}$, and $\bar{Y}_{41\cdot}$ with $\bar{Y}_{42\cdot}$. The proper statistical and graphical! procedures ought to compare not all $\bar{Y}_{i1\cdot}$ with all the $\bar{Y}_{i2\cdot}$ but, rather, the four within-subject differences. We will cover this in detail in Lesson 2. But this should be clear from the design.
 
 
 
@@ -207,9 +207,9 @@ likewise, $\bar{Y}_{21\cdot}$ and $\bar{Y}_{22\cdot}$ are from donor 2, ..., and
 
 ## Summarizing data
 
-In descriptive statistics, there are several ways of summarizing the data in order to provide the information regarding its distribution. Typically, this information is intended to be shown as summarized as possible. You must have heard about the **mean** and standard error of the mean **SEM**, these are all different **summary statistics** parameters. The mean and SEM are commonly used to summarize a large amount of data, but there are other ways to convey this information. Another common measure of the center of the distribution is the **median** (the value such that 50\% of the observations are above and 50\% are below it; this is the same as sorting all the values and selecting the one in the middle --if there is odd number of values; if there is an even number of observations, one definition of the median takes the average of the two middle values); it is important to notice that median is a much more robust measure of center than the mean, that is, outliers (isolated values showing extreme values) have a more profound impact in the value of the mean. As for the measures of spread of data, the standard deviation (roughly the mean deviation of each data value from the mean) and the interquartile range (**IQR**) are commonly used in descriptive statistics.
+In descriptive statistics, there are several ways of summarizing the data in order to provide the information regarding its distribution. Typically, this information is intended to be shown as summarized as possible. You must have heard about the **mean**. Another common measure of the center of the distribution is the **median** (the value such that 50\% of the observations are above and 50\% are below it; this is the same as sorting all the values and selecting the one in the middle --if there is odd number of values; if there is an even number of observations, one definition of the median takes the average of the two middle values); it is important to notice that the median is a much more robust measure of central location than the mean because outliers (isolated values showing extreme values) have a more profound impact in the value of the mean than the median (make sure you understand this! \footnote{Suppose I have values 1, 2, 3, 4, 5; what are the mean and the median? Now, replace the 5 by 500000: what are the mean and the median?}). As for the measures of spread of data, the standard deviation (roughly the mean deviation of each data value from the mean) and the interquartile range (**IQR**) are commonly used in descriptive statistics.
 
-Other summary statistic commonly used as error bars are SEM and confidence intervals (**CI**). It should be noted however, that SEM and CI are measures of the **confidence of our estimates of the mean** rather than a mere description of the data spread. Thus, they are used in inferential statistics (make inferences about populations using data drawn from the population). We will see much more about SEM and CI during the course. Table 1provides a summary of measures of center and spread and reference Cumming et al. [2007] provides and excellent review about the use of error bars in experimental biology.
+It is also common to display confidence intervals (**CI**) using error bars; these CI used the standard error of the mean (sometimes called SEM). It should be noted however, that SEM and CI are measures of the **confidence of our estimates of the mean** rather than a mere description of the data spread. Thus, they are used in inferential statistics (make inferences about populations using data drawn from the population). We will see much more about SEM and CI during the course. Table 1provides a summary of measures of center and spread and reference Cumming et al. [2007] provides and excellent review about the use of error bars in experimental biology.
 
 > Take a look at the tables below. Are you familiar with the different terms?
 
@@ -230,7 +230,7 @@ Other summary statistic commonly used as error bars are SEM and confidence inter
 <!-- We can obtain, for each experimental subgroup of the MRI experiment, the descriptive values of each time point. In **Rcommander** go to “Summaries” under the “Statistics” in the main menu and then select “Active data set”. -->
 
 ### Tables of summary statistics {#table-sum-stats}
-We can obtain many of these easily for the different groups. One options is: **Statistics -> Summaries -> Tables of statistics**.  Here you can choose the variable, the factors to use (you can either summarize by experiment name, or by treatment, or by both) and the statistic to use. For example, to obtain the median for all 8 subgroups we see this code:
+We can obtain many of these statistics easily for the different groups. One options is: **Statistics -> Summaries -> Tables of statistics**.  Here you can choose the variable, the factors to use (you can either summarize by experiment name, or by treatment, or by both) and the statistic to use. For example, to obtain the median for all 8 subgroups we see this code:
 
 ```{r }
 Tapply(EFNA3_level_AU ~ Experiment + Treatment, median,
@@ -243,23 +243,25 @@ Tapply(EFNA3_level_AU ~ Experiment + Treatment, median,
 \clearpage
 # Case 2: Brain MRI (from Prof. Blanca Lizarbe's lab)
 
-We will work with experimental data from a **magnetic resonance imaging (MRI)** studies. The experiments are performed to investigate *the role of Aquaporin-4 (water-channel protein) in brain glucose uptake*. Briefly, we know from previous works that, in mice, systemic glucose administration alters some brain MRI parameters. Now, we want to understand whether this glucose-induced changes are mediated by AQP-4, and designed a quite complete experimental setup to test that.
+We will work with experimental data from a **magnetic resonance imaging (MRI)** studies. The experiments are performed to investigate *the role of Aquaporin-4 (water-channel protein) in brain glucose uptake*. Briefly, we know from previous work that, in mice, systemic glucose administration alters some brain MRI parameters. Now, we want to understand whether this glucose-induced changes are mediated by AQP-4, and designed a quite complete experimental setup to test that.
 
 *Experimental setup*
 
-We acquired a set of MRI of the brains of 40 animals, in different experimental conditions (Figure \@ref(fig:exp-design-blanca)). The experiment went as follows: mice were anesthetized and placed inside an MRI scanner. We acquired an MRI of their brains, and obtained two coefficients (numerical values) the **ADC** (the Apparent Diffusion Coefficient of water molecules) and the **T2**, **for every pixel**. Afterwards, we administrated (via i.p.) a AQP-4 inhibitor solution (called TGN-20) to half of the animals (20), and a saline solution to the other half. Immediately after this administration, we acquired a second set of ADC and T2 sequences and registered the corresponding ADC and T2 values for every pixel. 20 minutes after, we administered to half of the animals a glucose solution, to the rest of animals a saline solution. Thus, we ended up having **4 experimental groups**, depending on the substances administered:
+We acquired a set of MRI of the brains of 40 animals, in different experimental conditions (Figure \@ref(fig:exp-design-blanca)). The experiments went as follows: mice were anesthetized and placed inside an MRI scanner. We acquired an MRI of their brains, and obtained two coefficients (numerical values) the **ADC** (the Apparent Diffusion Coefficient of water molecules) and the **T2**, **for every pixel**. Afterwards, we administrated (via i.p.) a AQP-4 inhibitor solution (called TGN-20) to half of the animals (20), and a saline solution to the other half. Immediately after this administration, we acquired a second set of ADC and T2 sequences and registered the corresponding ADC and T2 values for every pixel. 20 minutes later, we administered to half of the animals a glucose solution, to the rest of animals (the other half) a saline solution. Thus, we ended up having **4 experimental groups**, depending on the substances administered:
 
 1. saline + saline ="Saline"  (10 animals)
 2. saline + glucose = "Glucose"  (10 animals)
 3. TGN + saline ="TGN saline"   (10 animals)
 4. TGN + glucose ="TGN Glucose"  (10 animals)
 
-Plus,for each animal, we have three time-point measurements:
+And for each animal, we have three time-point measurements:
+
 1. "t0"
 2. "t1"
 3. "t2"
 
-Besides, we group our pixel values depending on the brain region they belong to:
+In addition, we group our pixel values depending on the brain region they belong to:
+
 1. Hippocampus
 2. Cortex
 
@@ -272,15 +274,17 @@ knitr::include_graphics("Experimental_design_Blanca.png")
 You can find the data of this study in the files "Brain MRI". We start by loading the data from the csv file.
 
 ### Using R commander
-• Open an R session through the Rgui interface.
+1. Open an R session through the Rgui interface.
 
-• In the menu bar choose **Data–>Import data–>from text file**: Make sure you choose “Import data” and not use the “Load dataset” instead (see number 1 in 1). Before selecting the file, a window appears in which we need to specify several characteristics of the file, including the field separator (comma, white space...) and the decimal-point (comma or dots) (pay attention to selecting the appropriate ones). Finally, we select file “Brain_MR_data.csv” from the directory were you downloaded it to.
+2. In the menu bar choose **Data–>Import data–>from text file**: Make sure you choose “Import data” and not use the “Load dataset” instead (see number 1 in 1). Before selecting the file, a window appears in which we need to specify several characteristics of the file, including the field separator (comma, white space...) and the decimal-point (comma or dots) (pay attention to selecting the appropriate ones). Finally, we select file “Brain_MR_data.csv” from the directory were you downloaded it to.
 
-• Give a descriptive name to your data (e.g. Brain_MR) and make sure you indicate the appropriate delimiter (comma, tabs, white space,...). Finally, **indicate whether the decimal point character is a dot or a comma**.
+3. Give a descriptive name to your data (e.g. Brain_MR) and make sure you indicate the appropriate delimiter (comma, tabs, white space,...). Finally, **indicate whether the decimal point character is a dot or a comma**.
 
 <!-- Note: it is ; as separator and , as decimal -->
 
-• You can visualize your data by typing "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
+4. You can visualize your data by typing "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
+
+
 
 If you have a look at the console, you will see that the command line looks like:
 
@@ -288,11 +292,9 @@ If you have a look at the console, you will see that the command line looks like
 Brain_MR <- read.table("Brain_MRI_data.csv", header=TRUE,
   stringsAsFactors=TRUE, sep=";", na.strings="NA", dec=",", strip.white=TRUE)
 ```
-The dataset should contain a 240-rows and 6-column document with the ADC and T2 values, our **numerical continuous variables** (columns 5 and 6), and the following **categorical variables**: animal identifier (numbers from 1 to 40 in column 1), time-point of the measurement (column 2, labelled as T0, T1 or T2), experimental group in which the animal is classified (column 3),  and region of interest (column 4, with either "Hippocampus" or "Cortex"). This type of data configuration is known as *stacked* (apilada, in Spanish), and is the optimal for R programming purposes. We could have had the data in many different configurations (which only means organizing the table differently). Note that the animal ID, although being a number, is not a numerical variable (we could have given names to them). Please also note that we are not providing each ADC or T2 pixel value.
+The dataset should contain a 240-rows and 6-column document with the ADC and T2 values, our **numerical continuous variables** (columns 5 and 6), and the following **categorical variables**: animal identifier (numbers from 1 to 40 in column 1), time-point of the measurement (column 2, labelled as T0, T1 or T2), experimental group in which the animal is classified (column 3),  and region of interest (column 4, with either "Hippocampus" or "Cortex"). This type of data configuration is known as *stacked* (apilada, in Spanish), and is the optimal for R programming purposes. We could have had the data in many different configurations (which only means organizing the table differently). Note that the animal ID, although being a number, is not a numerical variable (we could have given names to them). Please also note that we are not providing each ADC or T2 pixel value: *An MRI gives numerical information at a pixel (or voxel) level. In the experimental setup that we are currently investigating, each brain region studied (hippocampus or cortex) is composed by several pixels. On each individual animal, those pixels corresponding to the same region are considered as technical replicates representative of the region. To obtain the Brain_MR dataset that you just opened, we calculated, for every animal, a mean regional value.*
 
-> *An MRI gives numerical information at a pixel (or voxel) level. In the experimental setup that we are currently investigating, each brain region studied (hippocampus or cortex) is composed by several pixels. On each individual animal, those pixels corresponding to the same region are considered as technical replicates representative of the region. To obtain the Brain_MR dataset that you just opened, we calculated, for every animal, a mean regional value.*
-
-It is important to distinguish, for every experimental setup, between technical replicates, biological replicates and sample size. Take a look again at Figure \@ref(fig:fig-vaux).
+We cannot emphasize this enough: **It is essential to distinguish, for every experimental setup, between technical replicates, biological replicates, and sample size**. Take a look again at Figure \@ref(fig:fig-vaux).
 
 
 
@@ -305,7 +307,7 @@ When R reads numbers it understands them as plane numbers. However, **in our dat
 class(Brain_MR$Animal)
 ```
 
-(Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this order, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (Figure \@ref(fig:fig8)):
+(Note that "Brain_MR" is the name of the file, so in case you named it differently you should write: NameYouGave$Animal). To execute this instruction, select with the cursor what you just typed and click "Execute". In the "Output" window you will see that the answer to this request is "integer" (Figure \@ref(fig:fig8)):
 
 
 
@@ -319,7 +321,7 @@ Then, in the Rscript console write:
 Brain_MR$Animal <- factor(Brain_MR$Animal)
 ```
 
-Execute this order by, like before, selecting the sentence with cursor and the clicking "Execute". Now the variable should be a factor. You can check it by typing again: "class(Dataset$Animal)" (here we show the input and the output you should see)
+Execute this instruction by, like before, selecting the sentence with cursor and the clicking "Execute". Now the variable should be a factor. You can check it by typing again: "class(Dataset$Animal)" (here we show the input and the output you should see)
 
 ```{r}
 class(Brain_MR$Animal)
@@ -367,9 +369,10 @@ Select “Graphs” in the menu bar and look at all the graph options. To start 
 + Now, try representing a plot of the **means**. Go to Graphs –> StripChart.
 + Can you imagine other ways of representing means? Explore the Rcommander options.
 
->> Whenever you display graphs using the "buttons" of Rcommader, you can use the opportuninty to have a look at the console, where the code that is used to generate the graphs that you just obatined is pasted. If you learn the codes, you will be able to reproduce them yourself and start programming your own graphs (by coding you tipically have more options to costumize your work)
 
-This however, is rather limited in this case as it does not reflect the key features of the experimental design. For instance, we cannot directly show histograms of ADC by Area, Time, and Treatment (it is possible to do this from the command line, but we will not pursue it here).
+(Whenever you display graphs using the "buttons" of Rcommader, you can use the opportunity to have a look at the console, where the code that is used to generate the graphs that you just obatined is pasted. If you learn the R code, you will be able to reproduce them yourself and start programming your own graphs ---if you write the R code directly you tipically have more options to costumize your work).
+
+This, however, is rather limited in this case as it does not reflect the key features of the experimental design. For instance, we cannot directly show histograms of ADC by Area, Time, and Treatment (it is possible to do this from the command line, but we will not pursue it here).
 
 
 #### Bar graphs and boxplots
@@ -405,7 +408,7 @@ To read a graph, we need to go through all the details. We can start by looking 
 
 <!-- Outliers, scales -->
 
-This plot, however, as it is displayed, lacks of something crucial: **the figure caption**. By only looking at the graphs, we can not know for sure what are the bars representing (is a mean values, what is the "n"?), nor what measure of dispersion it is plotted (standard error, standard deviation, confident intervals?)
+This plot, however, as it is displayed, is missing something crucial: **the figure caption**. By only looking at the graphs, we can not know for sure what are the bars representing (are they mean values? what is the "n"?), nor what measure of dispersion it is plotted (standard error, standard deviation, confidence intervals?)
 
 
 Moreover, is it sensible to use bars for these type of data?
@@ -432,7 +435,8 @@ Now, observe the boxplot below, in Figure \@ref(fig:figure6), and try to see if 
         strip.background = element_blank(),
         strip.placement = "outside")
 ```
-> Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look at Figure \@ref(fig:fig7).
+
+Do you understand what a boxplot is representing? What do the limits of the boxes represent?And whiskers and dots? Have look at Figure \@ref(fig:fig7).
 
 ```{r fig7, out.width = "50%", fig.cap =  "Box plot elements.", fig.align = "center", echo = FALSE}
 knitr::include_graphics("BoxPlot_def.png")
@@ -451,7 +455,7 @@ We can use R Commander to obtain complex conditioning plots as above. The first 
 library(HH)
 ```
 
-Now, you will see that there are more entries under some menus. Go to **Graphs** and click, there **Lattice plots**. We can produce a plot that, except for the error bars, is equivalent to the former graph barchart by selecting these options (Figure \@ref(fig:hh-bar-1)):
+Now, you will see that there are more entries under some menus. Go to **Graphs** and click **Lattice plots**. We can produce a plot that, except for the error bars, is equivalent to the former graph barchart by selecting these options (Figure \@ref(fig:hh-bar-1)):
 
 ```{r hh-bar-1, fig.show = 'hold', fig.cap =  "HH: options for the bar graph.", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("hh-bar-1.png")
@@ -479,7 +483,7 @@ knitr::include_graphics("hh-bp-1.png")
 
 \clearpage
 
-and those gave this plot, Figure \@ref(fig:hh-bp-1-out) (actually, I added the "rot = 0" option on the last line, to have all tick labels horizontal)
+and those gave this plot, Figure \@ref(fig:hh-bp-1-out) (actually, I added the "rot = 0" option on the last line, to have all tick labels horizontal):
 
 ```{r hh-bp-1-out, fig.show = 'hold', fig.cap =  "Lattice boxplot, rotated y-axis tick labels."}
 bwplot(ADC ~ Time | Area + Group, outer=TRUE, layout=c(4, 2),
@@ -510,10 +514,11 @@ scales=list(x=list(relation='same', log=FALSE),
 y=list(relation='same', log=FALSE)))
 ```
 
-<!-- FIXME: uncomment this for 2025-26 -->
-<!-- **Repeated observations of the same subjects**  Does the same animal provide more than one data point? If unsure, check the data themselves.  Is the answer clear from the data file? -->
+#### Repeated observations of the same subjects
 
-<!-- Now, do you think the plots in this file make that obvious? How/what could you modify? Would it make sense/would this be worth it? How could you provide this information (e.g., figure legend) to alert the reader that analyses incorporate a subject effect that is not shown in the figures? -->
+Does the same animal provide more than one data point? If unsure, check the data themselves.  Is the answer clear from the data file?
+
+Now, do you think the plots in this file make that obvious? How/what could you modify? Would it make sense/would this be worth it? How could you provide this information (e.g., figure legend) to alert the reader that analyses incorporate a subject effect that is not shown in the figures?
 
 
 
@@ -521,7 +526,7 @@ y=list(relation='same', log=FALSE)))
 
 #### Boxplots and violin plots from R Commander with KMggplot2 and ggplot2
 
-It is also possible to create plots using ggplot2 with R Commander (again, ggplot2 is the package used to create Figure \@ref(fig:figure6)). To do this we need to install package \texttt{RcmdrPlugin.KMggplot2} (yes, we did not ask you to do this initially because ... we only realized this now). To install the package, from the R console do this
+It is also possible to create plots using ggplot2 with R Commander (again, ggplot2 is the package used to create Figure \@ref(fig:figure6)). To do this we need to install package \texttt{RcmdrPlugin.KMggplot2} if it is not installed. You can check if the package is available from the list of plugins of R commander (go to  **Tools -> Load Rcmdr plug-in(s)** ). If it is not, to install the package, from the R console do this
 
 ```{r install-kmggplot2, eval=FALSE}
 install.packages("RcmdrPlugin.KMggplot2")
@@ -560,7 +565,7 @@ rm(.df, .plot)
 
 \clearpage
 
-To show some additional options, like coloring of each box plot and a different kind of plot, we will now plot the T2 variable (you can use ADC, but that color is being displayed is hard to see here because of the size of the boxes, and the violin plots are hard to see).
+To show some additional options, like coloring of each box plot and a different kind of plot, we will now plot the T2 variable (you can use ADC, but that color is hard to see here because of the size of the boxes, and the violin plots are hard to see).
 
 
 I selected the options shown in Figure \@ref(fig:km1-settings):
@@ -648,14 +653,14 @@ knitr::kable(DatasetWide,
                            "ADC T2 cortex",
                            "T2  cortex"))
 ```
+
 The data can be organized in several ways. Our file "Brain_MR" was presented in the stacked or "long format", in which the "dependent variables" ADC and T2 are in a single column (each), and the conditions (Group, Time...), or independent variables, were indicated on separate columns. This format was very well fitted for statistical analysis.
 
 The table above is another type of representation called "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go to **Data–>Active dataset–>Reorganize from long to wide"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
 
 
-<!-- Uncoment for 2025-26 -->
-<!-- ### Wide to long -->
-<!-- What about the opposite transformation? This can be more complex, but try it. To get an idea, do it with the PCR data. Use the data where we already have means, and turn it into a wide format. Now, turn it back into a long format. Note that you might want, before the final step, to make sure that there is a column (not just rownames) with the Experiment information (i.e., with the name of the experiment). -->
+### Wide to long
+What about the opposite transformation? This can be more complex, but try it. To get an idea, do it with the PCR data. Use the data where we already have means, and turn it into a wide format. Now, turn it back into a long format. Note that you might want, before the final step, to make sure that there is a column (not just rownames) with the Experiment information (i.e., with the name of the experiment).
 
 
 
@@ -665,36 +670,45 @@ The table above is another type of representation called "wide format", more sim
 # Summary
 
 1. When analyzing experimental data it is good practice to:
-(a) order data into a data matrix
-(b) perform a basic descriptive analysis of the raw data including summaries and graphs.
+
+	(a) order data into a data matrix
+	(b) perform a basic descriptive analysis of the raw data including summaries and graphs.
 
 2. There are two main types of variables: numerical and categorical. This is an important distinction as, among other things, it will determine the type of statistical tests than can be applied to them. It also affect the kind of graphs that are more appropriate to represent them as shown below.
 
 3. It is important to use an appropriate type of graphical representation. Quit using bar plots as an all purpose graphical representation. Below is a non-comprehensive list of the most common type of graphical representation of data according to their type:
 
-(a) Numerical variables
-i. Representation of a single numerical variable:
-A. Histogram. Commonly used to represent the shape of the distribution of a numerical variable.
-B. Box plots (box-and-whisker plot). Useful and efficient way of representing the center and
-spread of a set of values and to compare between different subsets of numerical values corresponding to different groups.
-C. Strip chart (dot plot). Same as box plots. It is preferred over box plots for the representation of a reduced number of data values.
-ii. Representation of two numerical variables:
-A. Scatter plot (see lesson 2 and 3)
+	(a) Numerical variables
 
-(b) Categorical variables
-i. Representation of a single categorical variable:
-A. Bar plots. Note that, although bar plots are frequently used in bioscience publications to
-represent numerical data, this kind of graph is intended for the representation of the number
-of cases in each level of a categorical variable. We’ll see much more about representation of
-categorical variables in lesson 4.
-B. pie chart (see lesson 4)
-ii. Representation of more than one categorical variable:
-A. Segmented bar plots (see lesson 4)
-B. Mosaic plots (see lesson 4)
+		i. Representation of a single numerical variable:
+
+			A. Histogram. Commonly used to represent the shape of the distribution of a numerical variable.
+
+			B. Box plots (box-and-whisker plot). Useful and efficient way of representing the center and spread of a set of values and to compare between different subsets of numerical values corresponding to different groups.
+
+			C. Strip chart (dot plot). Same as box plots. It is preferred over box plots for the representation of a reduced number of data values.
+
+		ii. Representation of two numerical variables:
+
+			A. Scatter plot (see lesson 2 and 3)
+
+	(b) Categorical variables
+
+		i. Representation of a single categorical variable:
+
+			A. Bar plots. Note that, although bar plots are frequently used in bioscience publications to represent numerical data, this kind of graph is intended for the representation of the number of cases in each level of a categorical variable. We’ll see much more about representation of categorical variables in lesson 4.
+
+			B. pie chart (see lesson 4)
+
+		ii. Representation of more than one categorical variable:
+
+			A. Segmented bar plots (see lesson 4)
+
+			B. Mosaic plots (see lesson 4)
 
 4. Make sure that you correctly identify the number of independent repeated experiments (biological replicates) you are dealing with. It is not acceptable to use technical replicates (or a mix of technical and biological replicates) to calculate statistics, error bars and make inferences.
 
-5. Figure legends must always indicate what statistics are represented. In particular, when present, it should be clearly stated the kind of central and spread/error measure is represented. In addition, the number of independent biological replicates (the “n”) should be included in the figure legend.
+5. Figure legends must always indicate what statistics are represented. In particular, when present, it should be clearly stated what measure of location and spread is represented. In addition, the number of independent biological replicates (the “n”) should be included in the figure legend.
 
 
 <!-- # Exercises -->
