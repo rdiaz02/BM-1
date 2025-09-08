@@ -50,6 +50,8 @@ labelsep=endash]{caption}
 %\usetikzlibrary{arrows,shapes,positioning}
 
 \newcommand*{\myhref}[1]{\href{#1}{#1}}
+\newcommand*{\qref}[1]{\hyperref[{#1}]{\textit{``\nameref*{#1}'' (section \ref*{#1})}}}
+
 
 \usepackage{wasysym} %% smileys
 \usepackage[latin1]{inputenc}
@@ -111,7 +113,7 @@ than the page numbers.
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014-2024 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
+This work is Copyright, \copyright, 2014-2025 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
 } Attribution-ShareAlike 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
 
@@ -135,7 +137,7 @@ are derived from the Rnw file).
 
 Someone in your lab has measured the expression of several genes from a
 set of patients with and without cancer. Since you are the only one who
-took BM-1, you are in charge of looking at the data and answering the
+took BM-2, you are in charge of looking at the data and answering the
 question ``Does the expression of the genes differ between patients with
 and without cancer?''.
 
@@ -618,10 +620,65 @@ contains a great discussion of assumptions, consequences of deviations
 from them, what to do, etc.
 
 
-\section{One vs two-tailed tests}
-\red{To be written. We will explain in class what the difference is. And why will discuss why, except for exceptional circumstances, using one-tailed tests with the t-test for comparing two groups is a bad idea.}
+\section{One vs two-tailed (or two-sided) tests}
 
-%% FIXME: one vs two-tailed tests
+When comparing means between two groups, A and B, we can think of three scenarios:
+
+\begin{enumerate}
+\item We are asking if the means are different. \(H_0: \mu_A = \mu_B\).
+\item We are asking if the mean of A is larger than the mean of B. \(H_0: \mu_A \le \mu_B\).
+\item We are asking if the mean of A is smaller than the mean of A. \(H_0: \mu_A \ge \mu_B\).
+\end{enumerate}
+
+
+The first scenario, the most common one, is called a two-tailed test. We look (and sum) both tails of the distribution. Deviations from \(H_0\) in both directions (A being larger than B, and A being smaller than B) count against the null.
+
+Now, suppose you find \(\bar{X}_A > \bar{X}_B\) (i.e., the sample mean of group A is larger than the sample mean of group B). You do a two-tailed t-test and find a t-statistic \(t_1\) with a p-value of 0.06. This means that the area under the curve that is larger than \(t_1\) is 0.03, and the area under the curve that is smaller than \(-t_1\) is 0.03. \red{Make sure you understand this!!! Draw a picture of the t-distribution right now and place, in that figure, \(t_1\)! }
+
+
+(In a culture of p-value worshiping) it could be tempting to reason as follows: ``I got a barely significant p-value. Hummmm... But ... hey, let us do this. I will write that my \(H_0\) is \(\mu_A \le \mu_B\). The p-value will then be 0.03''. Well, this is both \textbf{a technical mistake and a case of scientific misconduct}: you have changed your original question just to achieve a smaller p-value. That renders the p-value meaningless.
+
+Now, what about this case? My true, original \(H_0: \mu_A \ge \mu_B\). The p-value will be \(1 - 0.03 = 0.97\). And you can think: ``Had I done a two-tailed test, I'd have a p-value of 0.06. Now I have one of 0.97!''.
+
+
+The following code shows the above issues (with very similar p-values to the ones of the example):
+<<one-two>>=
+set.seed(2)
+xA <- rnorm(20, 1)
+xB <- rnorm(20, 0.5)
+
+mean(xA)
+mean(xB)
+
+## Two-tailed or two-sided
+t.test(xA, xB, alternative = "two.sided")
+
+## One-tailed: Ho: mu_A <= mu_B
+t.test(xA, xB, alternative = "greater")
+
+## One-tailed: Ho: mu_A >= mu_B
+t.test(xA, xB, alternative = "less")
+
+## Note the p-value: 1 - 0.0286
+## or 1 - (0.0572/2)
+@
+
+
+
+This emphasizes:
+\begin{itemize}
+\item One vs. two-tailed tests are testing different scientific hypothesis. Use the one that is relevant for your scientific question.
+\item If your null hypothesis is that  \(H_0: \mu_A \ge \mu_B\) this is what you are saying: very large differences, where \(\bar{X}_A > \bar{X}_B\) are not scientifically relevant. (In other words, the ``Had I done a two-tailed test, I'd have a p-value of 0.06. Now I have one of 0.97!'' should not be seen as a lament or regret; this is just fine, as the difference in means is in the direction that your \(H_0\) predict.)
+\end{itemize}
+
+In most cases, when comparing means, the two-sided test is often the scientifically most relevant. But not always. (But in many other cases, the tests are naturally one-sided; for example, in ANOVA, the F-ratio is a one-sided test ---though the null being tested regarding means is one of mean equality: remember to ask this in Lesson 3).
+
+
+
+
+
+We will say more about ideas related to the sides of tests in section \qref{bioequiv}.
+
 
 \section{Power of a test}
 
@@ -781,7 +838,7 @@ Here is a interesting and recent example where the winner's curse can be
 %% @
 
 
-\section{(Bio)equivalence testing and turning things around}
+\section{(Bio)equivalence testing and turning things around}\label{bioequiv}
 We have set things up so that we \textbf{need strong enough evidence to reject the null} and we \textbf{use p-values of measures of strength of evidence AGAINST the null}. This is often what we want in science (why? think about how many papers with claims that are trivially generated under the null you want to read). But not always. And in many cases, in particular in issues related to public health, we might want to follow a precautionary principle (\Burl{https://en.wikipedia.org/wiki/Precautionary_principle}).
 
 For example, we might want to say ``We will only allow you to dump chlorine in the river if there is strong enough evidence that such action will not cause harm, for instance, will not increase fish mortality''. This is not something you can settle with p-values as we have used them. \red{Why??}
