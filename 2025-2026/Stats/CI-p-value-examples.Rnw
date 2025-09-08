@@ -130,7 +130,7 @@ suppressMessages(library(RcmdrPlugin.KMggplot2, quietly = TRUE, warn.conflicts =
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2024, Ramon Diaz-Uriarte, and is
+This work is Copyright, \copyright, 2025, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -161,9 +161,11 @@ Please, \textbf{respect the copyright and license}. This material is
 \label{sec:what-this-about}
 
 
-Clarify the relationship between confidence intervals and p-values, using examples from the two-sample t-test.
+A document to clarify the relationship between confidence intervals and p-values, using examples from the two-sample t-test.
 
 
+
+\section{CI and p-value relationships in the t-text}
 First, we read the data as in Lesson 2:
 
 <<>>=

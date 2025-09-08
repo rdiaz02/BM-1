@@ -566,6 +566,9 @@ In class we will very briefly cover how the confidence interval is constructed. 
 \externalf Please look at file \myhref{Lesson\_2\_Confidence\_intervals\_with\_Rcmdr.pdf}.
 
 
+\externalf Now, look at file \myhref{CI-p-value-examples.pdf}.
+
+
 
 \subsection{Assumptions of the t-test}
 
