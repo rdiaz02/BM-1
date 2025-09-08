@@ -174,6 +174,7 @@ similar result when choosing any other sample from the population?) The replicat
 knitr::include_graphics("Biological_replicates.png")
 ```
 
+\clearpage
 
 ## Aggregating  data
 Thus, we must represent **all experiments**, but how? Should we represent all 4x3 individual data points for each condition? You have to ask, what is the “n” (sample size) of your experiment? Since we want to make inferences about the biological population, our **“n” is the number of independent biological experiments**, in this case n = 4. Thus, we have to calculate the average of the technical replicates for each experiment and represent them. If we represent all 12 data points we are implying n = 12, which is not the case. In our case, thus, we must **aggregate** (i.e. summarize) the data on the table according to a given factor, which is easily done in R.
