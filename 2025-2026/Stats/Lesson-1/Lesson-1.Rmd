@@ -129,7 +129,7 @@ knitr::include_graphics("Rcmdr.png")
 
 <!-- Note: it is ; as separator and , as decimal -->
 
-4. You can visualize your data by typing "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
+4. You can visualize your data by clicking on "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
 
 
 
@@ -148,10 +148,11 @@ qPCRdata <- read.table("qPCR_data.csv",  header=TRUE,
 ## Subsetting data
 Let's start by exploring the results obtained in the first experiment “qpcr2506”. To that end we could just extract the corresponding rows (cases) from the data matrix (i.e. subsetting). In R commander go to **Data–>Active dataset–>Subset active dataset**. In the pop-up window you have to indicate the subsetting criteria (it is set by default to “<all cases>”); in this case you want to select those rows whose value for the “Experiment” variable is “qpcr2506”. The expression that encapsulates this criteria is: Experiment==’qpcr2506’. Note that in R we use two equal symbols (“==”) as the logical equality operator and enclose the experiment name in quotation marks (either single or double). Finally, make sure you check “include all variables” (so that the resulting dataset contains all three columns) and give a new name to the resulting dataset, for example “FirstExp”.
 
-Note that the active data set is now “FirstExp”. The original data matrix is still available to you, except now the active one used by R changed. You can switch between the different data sets by clicking on the active “Data set” button. You can now represent the data (you already know how to do it!). What kind of graphical representation will you use?
+Note that the active data set is now “FirstExp”. The original data matrix is still available to you, except now the active one used by R changed. You can switch between the different data sets by clicking on the active “Data set” button. You can now represent the data. What kind of graphical representation will you use?
 
-The R code to produce this graph is shown below. This data looks nice: tightly packed replicates and large difference between the two groups,
-thar are much larger than the difference between values within each group . The difference between groups will definitely "be significant" (well see how to calculate it on the next lesson).
+Let us use a strip chart, where the response variable is "EFNA3_level_AU" and we want to see how it changes with changes in Treatment (the factor, in the R Commander options for the plot). The R code to produce this graph is shown below.
+
+This data looks nice: tightly packed replicates and large difference between the two groups, that are much larger than the difference between values within each group . The difference between groups will definitely "be significant" (well see how to calculate it on the next lesson).
 
 ```{r case2plot, fig.cap = "Plot of Case 1",out.width = "60%", fig.align='center'}
 
@@ -167,7 +168,7 @@ Before we continue: did you see the jittering? Did your figures have jittering? 
 
 
 Now, what is the meaning of these replicates? Is this result generalizable (i.e would you expect a
-similar result when choosing any other sample from the population?) The replicates in this case are just independent measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...). But this variance does not capture the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (affected by culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also Figure \@ref(fig:fig-vaux) extracted from it. See also Figure \@ref(fig:exp-design-luis-four-donors-mean) to make sure this is all clear.
+similar result when choosing any other sample from the population?) The replicates in this case are replicate measures of the same RNA samples (those coming from experiment 2506), thus **they their variance represents technical variability** in our RT-qPCR procedure (pippeting errors, non-uniform measurement of PCR plate by the optical device,...). But this variance does not capture the biological variability because we measured RNA coming from a single sample. For example, if the basal level of the EFNA3 mRNA were variable (affected by culture conditions, culture age, cell confluence,...), this variability could explain the observed difference rather than the treatment. It could also happen that response to treatment is non-uniform between individuals (remember HUVEC cells are primary cells from a human donor) and, just by chance, we could have bumped into a donor whose endothelial cells show an extreme response to the drug. For all these reasons, **we need several independent biological replicates** (in addition to technical replicates) of the experiment. It is important to randomize all possible sources of variability in the set of independent experiments. Importance of replication is clearly and concisely explained in reference Vaux et al. [2012], see also Figure \@ref(fig:fig-vaux) extracted from it. See also Figure \@ref(fig:exp-design-luis-four-donors-mean) to make sure this is all clear.
 
 
 ```{r fig-vaux, out.width = "65%", fig.cap =  "Biological replicates", fig.align = "center", echo=FALSE}
@@ -179,20 +180,31 @@ knitr::include_graphics("Biological_replicates.png")
 ## Aggregating  data
 Thus, we must represent **all experiments**, but how? Should we represent all 4x3 individual data points for each condition? You have to ask, what is the “n” (sample size) of your experiment? Since we want to make inferences about the biological population, our **“n” is the number of independent biological experiments**, in this case n = 4. Thus, we have to calculate the average of the technical replicates for each experiment and represent them. If we represent all 12 data points we are implying n = 12, which is not the case. In our case, thus, we must **aggregate** (i.e. summarize) the data on the table according to a given factor, which is easily done in R.
 
-In this case, we want to aggregate data by **calculating the mean of each group according to experiment date**. On the bar menu select **Data–>Active data set–>Aggregate variables in active data set**. Then, in the pop-up window, indicate the name for the aggregated data set (by default “AggregatedData”), select the variable you want to aggregate (in this case EFNA3_level_AU), the factors you’ll use to aggregate it (in this case both “Experiment” and “Treatment”) and finally select the function to aggregate data (in this case we’re interested in the calculating the mean). (See below for the R-code). Note that all we have done is to calculate the mean of instances (rows) that had the same value for the “Experiment” and “Treatment” variables (the ones we used to aggregate data).
+In this case, we want to aggregate data by **calculating the mean of each group according to experiment date**. Make qPCR (the complete data) the active data set. Now, on the menu select **Data–>Active data set–>Aggregate variables in active data set**. Then, in the pop-up window, indicate the name for the aggregated data set (by default “AggregatedData”), select the variable you want to aggregate (in this case EFNA3_level_AU), the factors you’ll use to aggregate it (in this case both “Experiment” and “Treatment”) and finally select the function to aggregate data (in this case we’re interested in the calculating the mean). (See below for the R-code). Note that all we have done is to calculate the mean of instances (rows) that had the same value for the “Experiment” and “Treatment” variables (the ones we used to aggregate data).
 
 ```{r figurex, fig.cap = "Plot of Case 1",out.width = "60%", fig.align='center'}
 
+#### Aggregating the data
 qPCRmeans <- aggregate(qPCRdata[, c("EFNA3_level_AU"), drop = FALSE],
    by = list(Experiment = qPCRdata$Experiment,
    Treatment = qPCRdata$Treatment),
    mean)
+## or, equivalently
+qPCRmeans <-  aggregate(EFNA3_level_AU ~ Experiment + Treatment,
+                        data=qPCRdata, FUN=mean)
 
+
+#### Plotting the individual means (i.e., the aggregated data)
 with(qPCRmeans,
       stripchart(EFNA3_level_AU ~ Treatment,
 	  method = "jitter",
       vertical = TRUE,
 	  ylab = "EFNA3 mRNA level (AU)", xlab = "Treatment"))
+
+## or, equivalently
+stripchart(EFNA3_level_AU ~ Treatment, vertical=TRUE,
+           method="jitter",
+           ylab="EFNA3_level_AU", data=qPCRmeans)
 ```
 
 
@@ -283,7 +295,7 @@ You can find the data of this study in the files "Brain MRI". We start by loadin
 
 <!-- Note: it is ; as separator and , as decimal -->
 
-4. You can visualize your data by typing "View data set" or "Edit data set". Make sure the data is correctly loaded. If incidentally you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
+4. You can visualize your data by clicking on "View data set" or "Edit data set". Make sure the data is correctly loaded. If you provided a wrong field separator, your data set will not look like it should (probably wrong number of columns).
 
 
 
@@ -293,7 +305,7 @@ If you have a look at the console, you will see that the command line looks like
 Brain_MR <- read.table("Brain_MRI_data.csv", header=TRUE,
   stringsAsFactors=TRUE, sep=";", na.strings="NA", dec=",", strip.white=TRUE)
 ```
-The dataset should contain a 240-rows and 6-column document with the ADC and T2 values, our **numerical continuous variables** (columns 5 and 6), and the following **categorical variables**: animal identifier (numbers from 1 to 40 in column 1), time-point of the measurement (column 2, labelled as T0, T1 or T2), experimental group in which the animal is classified (column 3),  and region of interest (column 4, with either "Hippocampus" or "Cortex"). This type of data configuration is known as *stacked* (apilada, in Spanish), and is the optimal for R programming purposes. We could have had the data in many different configurations (which only means organizing the table differently). Note that the animal ID, although being a number, is not a numerical variable (we could have given names to them). Please also note that we are not providing each ADC or T2 pixel value: *An MRI gives numerical information at a pixel (or voxel) level. In the experimental setup that we are currently investigating, each brain region studied (hippocampus or cortex) is composed by several pixels. On each individual animal, those pixels corresponding to the same region are considered as technical replicates representative of the region. To obtain the Brain_MR dataset that you just opened, we calculated, for every animal, a mean regional value.*
+The dataset should have 240 rows and 6 columns, with the ADC and T2 values, our **numerical continuous variables** (columns 5 and 6), and the following **categorical variables**: animal identifier (numbers from 1 to 40 in column 1), time-point of the measurement (column 2, labelled as T0, T1 or T2), experimental group in which the animal is classified (column 3),  and region of interest (column 4, with either "Hippocampus" or "Cortex"). This type of data configuration is known as *stacked* (apilada, in Spanish), and is the optimal for R programming purposes. We could have had the data in many different configurations (which only means organizing the table differently). Note that the animal ID, although being a number, is not a numerical variable (we could have given names to them). Please also note that we are not providing each ADC or T2 pixel value: An MRI gives numerical information at a pixel (or voxel) level. In the experimental setup that we are currently investigating, each brain region studied (hippocampus or cortex) is composed by several pixels. On each individual animal, those pixels corresponding to the same region are considered as technical replicates representative of the region. To obtain the Brain_MR dataset that you just opened, we calculated, for every animal, a mean regional value.
 
 We cannot emphasize this enough: **It is essential to distinguish, for every experimental setup, between technical replicates, biological replicates, and sample size**. Take a look again at Figure \@ref(fig:fig-vaux).
 
@@ -476,13 +488,37 @@ barchart(ADC ~ Group | Area, layout=c(1, 2), groups=Time, data= Brain_MR,
 ```
 
 
-What about boxplots? We can obtain similar plots. For example, I first selected the following options (Figure \@ref(fig:hh-bp-1))
+**Wait!!** What is being plotted? Did you notice the horizontal segments in some of the bars? They are visible in, for example, Saline, but not TGN.Glucose. What is this? This plot is *not* identical to the former one: here, we use one bar per subject, and collapse over subjects; if the last subject has the highest value, you don't see bars. To get a bar chart that shows averages, we would need to first compute the average, as we did before, aggregating, and then show a bar (a bar that displays that average). Here is the code I obtained from R Commander.
+
+
+```{r hh-bar-1b-out, fig.show = 'hold', fig.cap = "Barchart + lattice using HH. Correct one."}
+
+## Aggregate
+brain_aggreg<- aggregate(ADC ~ Area + Group + Time, data=Brain_MR,
+                         FUN=mean)
+
+## Plot
+barchart(ADC ~ Group | Area, layout=c(1, 2), groups=Time,
+         data= brain_aggreg, type="p",
+         par.settings=simpleTheme(pch=16), origin=0,
+         auto.key=list(border=TRUE),
+         scales=list(x=list(relation='same', log=FALSE),
+                     y=list(relation='same', log=FALSE)))
+
+
+```
+
+
+
+\clearpage
+
+What about boxplots? We can obtain similar plots as the ones before. For example, I first selected the following options (Figure \@ref(fig:hh-bp-1)), again using the complete dataset.
 
 ```{r hh-bp-1, fig.show = 'hold', fig.cap =  "HH: options for the box plot.", fig.align= "center", out.width="50%", echo=FALSE}
 knitr::include_graphics("hh-bp-1.png")
 ```
 
-\clearpage
+
 
 and those gave this plot, Figure \@ref(fig:hh-bp-1-out) (actually, I added the "rot = 0" option on the last line, to have all tick labels horizontal):
 
@@ -628,7 +664,7 @@ rm(.df, .plot)
 \clearpage
 
 ## Complex layouts
-We have used different plotting systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting. Using different systems with different syntax is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations as we saw in sections \@ref(table-sum-stats) and \@ref(table-sum-stats-2).
+We have used different plotting systems for moderately complex layouts. **Always verify** you are plotting what you think you are plotting (see how easily we were mislead by the apparent similarities between the barcharts using ggplot and lattice). Using different systems with different syntax is one way to accomplish that. Another one is checking at least some of the figures with some of the numerical tabular summaries (means, for example) for the different combinations as we saw in sections \@ref(table-sum-stats) and \@ref(table-sum-stats-2).
 
 
 ## Unstacking: long and wide formats
@@ -657,7 +693,7 @@ knitr::kable(DatasetWide,
 
 The data can be organized in several ways. Our file "Brain_MR" was presented in the stacked or "long format", in which the "dependent variables" ADC and T2 are in a single column (each), and the conditions (Group, Time...), or independent variables, were indicated on separate columns. This format was very well fitted for statistical analysis.
 
-The table above is another type of representation called "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go to **Data–>Active dataset–>Reorganize from long to wide"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
+The table above is another type of representation called "wide format", more similar to what we might write down by hand when we are doing some types of experiments.  In Rcommander, go to **Data–>Active dataset–>Reshape data set from long to wide format"** and try to obtain, from our previous "Brain MRI" dataset, the same "wide format" table we just saw.
 
 
 ### Wide to long
