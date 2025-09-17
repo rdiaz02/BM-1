@@ -844,20 +844,16 @@ Here is a interesting and recent example where the winner's curse can be
 \section{(Bio)equivalence testing and turning things around}\label{bioequiv}
 We have set things up so that we \textbf{need strong enough evidence to reject the null} and we \textbf{use p-values of measures of strength of evidence AGAINST the null}. This is often what we want in science (why? think about how many papers with claims that are trivially generated under the null you want to read). But not always. And in many cases, in particular in issues related to public health, we might want to follow a precautionary principle (\Burl{https://en.wikipedia.org/wiki/Precautionary_principle}).
 
-For example, we might want to say ``We will only allow you to dump chlorine in the river if there is strong enough evidence that such action will not cause harm, for instance, will not increase fish mortality''. This is not something you can settle with p-values as we have used them. \red{Why??}
 
-What can we do? We want to turn the process around. You would want a procedure for answering the following question: ``Is there strong enough evidence that, if chlorine has an effect, the effect is no larger than an increase in fish mortality of 1\%?''. This is like inverting the burden of proof: it is as if now we want evidence in favor of a hypothesis that says that things do not differ by more than a given, small, value (i.e., it seems we now want evidence in favor of what is often the null). In other words, we want strong evidence that the true value is inside the equivalence bounds, the bounds that say that ``things are similar, or equivalent'' (we have simplified things here, by just worrying about increases in fish mortality, but often we worry about deviations both up and down).
+On typical example involves comparing two drugs. Suppose the standard, widely used drug, to control for cholesterol is drug A (produced by ACME labs). Now, we want to assess if a given generic, drug B, is equivalent to the established drug A. For example, suppose we would allow pharmacies to sell drug B if drug B has effects that are within 1\% of the effects of A.
+How can we do this?
 
-We can approach this problem as one of finding evidence against the (new null) hypothesis that things differ by more of the specified tolerance, in our case that 1\% increase in fish mortality; in other words, that the true value falls outside the equivalence bounds. If we can reject our new null that the groups differ by more than a given threshold (that the true difference falls outside the equivalence bounds), we have established that they are equivalent.  In some cases it is relatively straightforward to do this (such as with the TOST procedure), in many others it is not.
+We can approach this problem as one of finding evidence against a (new null) hypothesis that things differ by more of the specified tolerance, in our case that 1\% difference in effects; in other words, we set up a new null that says that the true value falls outside the equivalence bounds. If we can reject our new null that the groups differ by more than a given threshold (that the true difference falls outside the equivalence bounds), we have established that they are equivalent.  In some cases it is relatively straightforward to do this (such as with the TOST ---two one-sided tests --- procedure), in many others it is not.
 
-We will not pursue this any further. But, please, think of other examples of similar cases. Examples involving, for example, human disease and certain environmental changes, or secondary effects of drugs, or that two drugs (say, brand and generic) are for all practical purposes identical.
+In a sense, this is like inverting the burden of proof: it is as if now we want evidence in favor of a hypothesis that says that things do not differ by more than a given, small, value (i.e., it seems we now want evidence in favor of what is often the null). In other words, we want strong evidence that the true value is inside the equivalence bounds, the bounds that say that ``things are similar, or equivalent''.
 
-Oh, and, of course, this section emphasizes another idea: a large p-value is not evidence in favor of the null!!!
-
-
-
-
-Figure \ref{fig-equiv}, from Lakens et al. 2018\footnote{Lakens et al.(2018). Equivalence Testing for Psychological Research: A Tutorial. \textit{Advances in Methods and Practices in Psychological Science}, 1(2): 259--269. \Burl{https://doi.org/10.1177/2515245918770963}}, shows equivalence testing alongside the usual null hypothesis significance testing, as well as other tests. Which of the four cases represented corresponds to the chlorine example in the notes? What case would represent examining if the effects of the brand name drug and a generic are similar?
+Figure \ref{fig-equiv}, from Lakens et al. 2018\footnote{Lakens et al.(2018). Equivalence Testing for Psychological Research: A Tutorial. \textit{Advances in Methods and Practices in Psychological Science}, 1(2): 259--269. \Burl{https://doi.org/10.1177/2515245918770963}}, shows equivalence testing alongside the usual null hypothesis significance testing, as well as other tests. % Which of the four cases represented corresponds to the chlorine example in the notes?
+What case would represent examining if the effects of the brand name drug and a generic are similar?
 
 
 \begin{figure}[h!]
@@ -867,6 +863,28 @@ Figure \ref{fig-equiv}, from Lakens et al. 2018\footnote{Lakens et al.(2018). Eq
 }
  \end{center}
  \end{figure}
+
+
+This also emphasizes that which is the null, even in non-bioequivalence testing cases, can make a whole lot of difference. For example, suppose an industry wants to dump chlorine in a river. Is it enough if they say ``I tested the null that mortality of fish does not change when I dump chlorine''? Well, probably not. The precautionary principle would suggest that we want strong evidence that mortality does not increase.
+For example, we might want to say ``We will only allow you to dump chlorine in the river if there is strong enough evidence that such action will not cause harm, for instance, will not increase fish mortality by more than a given amount''.
+Likewise, with drugs, it is not uncommon to want to examine if a new drug, B, is not inferior to an established drug, A. Drug B might be a good choice if it is not worse than A by some pre-specified threshold.  These are examples of (non-)inferiority testing. % (see also \cite{walker2019, schumi2011}).
+
+We will not pursue these issues further. Just be aware that ``the usual hypthesis testing approach'' does not cover all cases you might be interested in.
+
+
+% We can approach this problem as one of finding evidence against the (new null) hypothesis that things differ by more of the specified tolerance, in our case that 1\% increase in fish mortality.
+
+% This is not something you can settle with p-values as we have used them. \red{Why??}
+
+% What can we do? We want to turn the process around. You would want a procedure for answering the following question: ``Is there strong enough evidence that, if chlorine has an effect, the effect is no larger than an increase in fish mortality of 1\%?''. This is like inverting the burden of proof: it is as if now we want evidence in favor of a hypothesis that says that things do not differ by more than a given, small, value (i.e., it seems we now want evidence in favor of what is often the null). In other words, we want strong evidence that the true value is inside the equivalence bounds, the bounds that say that ``things are similar, or equivalent'' (we have simplified things here, by just worrying about increases in fish mortality, but often we worry about deviations both up and down).
+
+% We can approach this problem as one of finding evidence against the (new null) hypothesis that things differ by more of the specified tolerance, in our case that 1\% increase in fish mortality; in other words, that the true value falls outside the equivalence bounds. If we can reject our new null that the groups differ by more than a given threshold (that the true difference falls outside the equivalence bounds), we have established that they are equivalent.  In some cases it is relatively straightforward to do this (such as with the TOST procedure), in many others it is not.
+
+% We will not pursue this any further. But, please, think of other examples of similar cases. Examples involving, for example, human disease and certain environmental changes, or secondary effects of drugs, or that two drugs (say, brand and generic) are for all practical purposes identical.
+
+% Oh, and, of course, this section emphasizes another idea: a large p-value is not evidence in favor of the null!!!
+
+
 
 
 

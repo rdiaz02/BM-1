@@ -232,7 +232,7 @@ It is also common to display confidence intervals (**CI**) using error bars; the
 |inter quartile range      |    IQR = Q3-Q1                                       |
 |range                     |    min, max                                          |
 |mean                      |$\overline{x}=\sum_{i=1}^{n}x_{i}$                    |
-|variance                  |$s^2=\frac{\sum_{i=1}^{n}(x_{i}-\overline{x})}{n-1}$  |
+|variance                  |$s^2=\frac{\sum_{i=1}^{n}(x_{i}-\overline{x})^2}{n-1}$  |
 |standard deviation        |$s=\sqrt{s^{2}}$                                      |
 |standard error of the mean|$SE_{\overline{x}}=\frac{s}{\sqrt{n}}$                |
 |confidence interval        |$\overline{x}\pm  CI width$                       |
