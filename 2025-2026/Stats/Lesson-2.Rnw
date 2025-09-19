@@ -840,7 +840,7 @@ Here is a interesting and recent example where the winner's curse can be
 %% t.test(logpten ~ cond, data = dp53)
 %% @
 
-
+%% FIXME: start again as in 2024-25, the flip around a single one-sided hypot. and then move to the 2 tests
 \section{(Bio)equivalence testing and turning things around}\label{bioequiv}
 We have set things up so that we \textbf{need strong enough evidence to reject the null} and we \textbf{use p-values of measures of strength of evidence AGAINST the null}. This is often what we want in science (why? think about how many papers with claims that are trivially generated under the null you want to read). But not always. And in many cases, in particular in issues related to public health, we might want to follow a precautionary principle (\Burl{https://en.wikipedia.org/wiki/Precautionary_principle}).
 
