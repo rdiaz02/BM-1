@@ -101,7 +101,7 @@ BiocStyle::latex()
 
 \author{Ramon Diaz-Uriarte\\
   Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\
-  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Instituto de Investigaciones Biom\'edicas Sols-Morreale, IIBM (UAM-CSIC)\\
   Madrid, Spain{\footnote{ramon.diaz@iib.uam.es, rdiaz02@gmail.com}} \\
   %% {\footnote{rdiaz02@gmail.com}} \\
   {\small \Burl{http://ligarto.org/rdiaz}} \\

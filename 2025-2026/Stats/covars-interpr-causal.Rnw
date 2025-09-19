@@ -103,7 +103,7 @@ opts_knit$set(stop_on_error = 2L)
 
 \author{Ramon Diaz-Uriarte\\
   Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\
-  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Instituto de Investigaciones Biom\'edicas Sols-Morreale, IIBM (UAM-CSIC)\\
   Madrid, Spain{\footnote{r.diaz@uam.es, rdiaz02@gmail.com}} \\
   %% {\footnote{rdiaz02@gmail.com}} \\
   {\small \Burl{https://ligarto.org/rdiaz}} \\
