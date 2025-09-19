@@ -129,7 +129,7 @@ opts_knit$set(stop_on_error = 2L)
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2024, Ramon Diaz-Uriarte, and is
+This work is Copyright, \copyright, 2025, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -654,7 +654,7 @@ see chapter 7 in \citealp{hernan2020}; a brief discussion in section 3.5.1, pp.\
 58 and ff.\ in \citealp{westreich2019})
 
 
-%% ZZ FIXME : give the example of Y must compensate whatever X has
+
 And more about \textbf{colliders}. The consequences of the last structure, Figure \ref{fig:plot_dag_struct} c), where
 we have a collider, sometimes seem counterintuitive. This structure is behind
 ``Berkson's paradox''\footnote{
