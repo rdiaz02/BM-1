@@ -173,7 +173,7 @@ library(formatR) ##  required by the chunk option tidy = TRUE
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2020, Luis del Peso Ovalle, \copyright, 2024, Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0 International License: \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+This work is Copyright, \copyright, 2020, Luis del Peso Ovalle, \copyright, 2024, 2025, Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0 International License: \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
 
 \centerline \ccbysa
 
@@ -310,7 +310,7 @@ We will also learn how to generate contingency tables and perform relevant test 
 
 \section{Study Cases}
 
-Study the following  cases. In which way are they different to the other cases we have analyzed so far?
+Study the following  cases. In what way are they different to the other cases we have analyzed so far?
 
 \begin{itemize}
 
@@ -456,7 +456,7 @@ Again, you should be able to interpret the p-value and the confidence interval. 
 
 We will now use the data in \citealp[Exercise 8.3, p.~154 of][]{Dalgaard2008}, originally from p.~72 of Campbell and Machin, 1993, \textit{Medical Statistics. A Commonsense Approach, 2nd ed.}, John Wiley \& Sons, Chichester. It examines the effects of two drugs on peptic ulcers.
 
-There are several ways to enter these data and get the confidence interval and tests output. We could create a data frame, for example this way (it is OK if you do not understand how I am creating the data):
+There are several ways to enter these data and get the confidence interval and tests output. We could create a data frame, for example this way (it is OK if you do not understand how I am creating the data ---these are just R syntax details):
 
 
 <<>>=
@@ -470,10 +470,11 @@ Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
 Now, select ``Exercise3'' as the active data, and do a two-sample proportions test using the normal approximation using the menus.
 
 <<>>=
-local({  .Table <- xtabs(~Drug+Outcome, data=Exercise3)
-  cat("\nPercentage table:\n")
-  print(rowPercents(.Table))
-  prop.test(.Table, alternative='two.sided', conf.level=.95, correct=FALSE)
+local({
+    .Table <- xtabs(~Drug+Outcome, data=Exercise3)
+    cat("\nPercentage table:\n")
+    print(rowPercents(.Table))
+    prop.test(.Table, alternative='two.sided', conf.level=.95, correct=FALSE)
 })
 
 @
@@ -534,10 +535,13 @@ So, as usual, we start with the null hypothesis, \(H_0\) that there is no effect
 of gene deletion on viability and thus the frequencies of genotypes
 are Mendelian so that any departure from the expected is due to random variation.
 
-The test statistic we will use is chi-square($\chi^{2}$), calculated
-according to the formula: $\chi^{2}=\sum_{category}\frac{\left(observed_{i}-expected_{i}\right)^{2}}{expected_{i}}$.
+The test statistic we will use is the chi-square ($\chi^{2}$) statistic, calculated
+according to the formula:
 
-Note that, the closer the observed and expected frequencies, the smaller
+\[\chi^{2}=\sum_{i}\frac{\left(observed_{i}-expected_{i}\right)^{2}}{expected_{i}}\]
+where \(i\) refers to the different categories.
+
+Note that the closer the observed and expected frequencies, the smaller
 the value of the chi-square statistic. Thus, increasing values of
 this statistic would support the alternative hypothesis (the observed
 ratios do not fit the expected values)\protect\footnote{Residuals are the difference between the observed and expected values.
@@ -559,9 +563,7 @@ ratios do not fit the expected values)\protect\footnote{Residuals are the differ
 
 \subsection{Pearson's Chi-square test}
 
-Now, all we need to do is assess how likely it is, under \(H_0\), that we find a value of the statistic as large as, or larger than, the value we found.
-
-We do this by using the chi-square($\chi^{2}$) distribution (see figure \ref{fig:Chi-squared-probability-distribu}). Note that, in contrast to what we did with the two-tailed t-test, we only look at the right tail of the distribution. Why do you think this is the case? (This is also what we did with the F-statistic, by the way).
+Now, all we need to do is assess how likely it is, under \(H_0\), that we find a value of the statistic as large as, or larger than, the value we found. We do this by using the chi-square($\chi^{2}$) distribution (see figure \ref{fig:Chi-squared-probability-distribu}). In contrast to what we did with the two-tailed t-test, we only look at the right tail of the distribution. Why do you think this is the case? (This is also what we did with the F-statistic, by the way).
 
 % Once we have an statistic that reflects the agreement between the
 % two distributions, we just need to set a threshold of how large this
@@ -610,7 +612,6 @@ depends on the degrees of freedom\footnote{Recall that degrees of freedom is a m
   of the third is calculated from these two, i.e. only two categories
   out of three are \textquotedblleft free to vary\textquotedblright .
   Thus degrees of freedom= 3 categories -1 = 2.}.
-
 % \begin{comment}
 %   Note that as the degrees of freedom increase the distribution of expected
 %   chi-square values under the null hypothesis contain increasingly large
@@ -631,7 +632,6 @@ depends on the degrees of freedom\footnote{Recall that degrees of freedom is a m
 %   or essentially the number of 'free' components (how many components
 %   need to be known before the vector is fully determined).
 % \end{comment}
-
 So, to determine the probability of getting a chi-square value equal
 or higher than ours under the null hypothesis, we have to compare
 it with the appropriate chi-square($\chi^{2}$) distribution according
@@ -809,7 +809,7 @@ By the way, notice the similarities between what we have done and examining inte
 
 (The \textit{r\ x\ c} and  \textit{I\ x\ J} are two common ways of referring to the same thing: 2-dimensional contingency tables with \(r\) or \(I\) rows and \(c\) or \(J\) columns.)
 
-These just extends what we saw in the previous section: instead of a 2x2 table, we have a two-dimensional table but rows and/or columns can have more than two categories or types. So we still have \(\chi^{2} = \sum \frac{(n_{ij} - \hat{\mu}_{ij})^2}{\hat{\mu}_{ij}}\).
+This just extends what we saw in the previous section: instead of a 2x2 table, we have a two-dimensional table but rows and/or columns can have more than two categories or types. So we still have \(\chi^{2} = \sum \frac{(n_{ij} - \hat{\mu}_{ij})^2}{\hat{\mu}_{ij}}\).
 
 
 In other words,  we want to test if the distribution
@@ -1276,7 +1276,7 @@ here (...)''}).
 \subsubsection{Issues with Fisher's exact test}
 \label{sec:issues-with-fishers}
 
-The main concerns with the use of Fisher's exact test in the literature  (when maybe you chi-square approximation is not that bad after all) are:
+The main concerns with the use of Fisher's exact test in the literature  (when maybe your chi-square approximation is not that bad after all) are:
 \begin{itemize}
 \item Conservatism.
 \item The conditioning on row and column margins, which is not relevant for most designs (where only one, or no margins, are fixed).
@@ -1294,13 +1294,13 @@ Why mention this? Some papers, most notably the widely cited  \citet{campbell200
 
 \paragraph{Any practical suggestion?}\label{sec:any-pract-sugg}
 
-If you do not want to read the primary statistical literature or consult with a statistician (a statistician  that knows about this stuff) then the path of least resistance is probably to stick to the ``usual rules'' and use Fisher's test if your data do not fulfill the ``usual rules''.  This is not a cynical recommendation, but is based on fairly standard and recent textbooks making these kinds of recommendations. Moreover, many people deal with tables larger than 2x2. But then, maybe a years from now  we will be teaching something different because Campbell's suggestion will have become the standard approach for 2x2 tables.  % Myself \ldots I might give Campbell's procedure a try, but then I am often more concerned about p-values that are smaller than they should be than
+If you do not want to read the primary statistical literature or consult with a statistician (a statistician  that knows about this stuff) then the path of least resistance is probably to stick to the ``usual rules'' and use Fisher's test if your data do not fulfill the ``usual rules''.  This is not a cynical recommendation, but is based on fairly standard and recent textbooks making these kinds of recommendations. Moreover, many people deal with tables larger than 2x2. But then, maybe a few years from now  we will be teaching something different because Campbell's suggestion will have become the standard approach for 2x2 tables.  % Myself \ldots I might give Campbell's procedure a try, but then I am often more concerned about p-values that are smaller than they should be than
 
 
 
 \subsubsection{Chi square with \texttt{simulate.p.value}?}
 
-This is another apparent alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about Fisher's test % sampling model and its possible effects on power
+This is another apparent alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about Fisher's test% sampling model and its possible effects on power
 , this simulation procedure carries the same concerns.
 
 
