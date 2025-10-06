@@ -3948,9 +3948,10 @@ Anova(mcystL_r2)
 anova(mcystL_r2, mcystL_r)
 @
 
-
-A final one, with another type of data (but make sure to read section
-\nameref{wrong}, as this is probably not a sensible model)
+\subsection{AIC was not the issue: this model should not be fitted this way}
+A final example, with another type of data.
+In fact, the moral of this example is not really AIC, but the problems of the fit:  make sure to read section
+\nameref{wrong}, as this is not a sensible model as fitted.
 
 <<>>=
 data(Prestige)
@@ -5067,6 +5068,99 @@ Anova(m_int)
 \Burl{http://md.psych.bio.uni-goettingen.de/mv/unit/lm_cat/lm_cat_unbal_ss_explained.html}:
 that uses a slightly different notation.
 )
+
+\clearpage
+
+\section{Side issue: a interesting case where some things went wrong
+  without us noticing}\label{wrong}
+
+This once happened in a class. This seems innocuous if we just quickly
+throw together a model:
+
+<<>>=
+mI2 <- lm(prestige ~ income * women * education * type, data = Prestige)
+@
+
+Look at the degrees of freedom: aren't you surprised? (look at, for
+example, the women and type terms):
+
+<<>>=
+Anova(mI2)
+@
+
+The dfs seem to be wrong, and yet there are no warnings. In addition, the
+Sums of Squares do not match what we would get by hand:
+<<>>=
+m_1 <- lm(prestige ~ type * income * education, data = Prestige)
+m_2 <- lm(prestige ~ type * income * education + women, data = Prestige)
+## does not match women SS
+## See, e.g.  here for a long example of doing this by hand
+## http://www.dwoll.de/r/ssTypes.php#codeII
+sum(residuals(m_1)^2) - sum(residuals(m_2)^2)
+
+@
+
+
+As explained by John Fox
+(\Burl{https://stat.ethz.ch/pipermail/r-help/2018-December/460705.html})
+to a question I asked, we are ``(...) in the small region between where
+lm() detects a singularity and the projections used by Anova() break
+down.''
+
+
+So the first thing to do is not to try to fit such a model in this
+ill-conditioned problem. We could see some signs of trouble by doing
+
+<<>>=
+e <- eigen(vcov(mI2))$values
+max(e)/min(e)
+@
+
+That is very close to a singular matrix.
+
+Another warning sign, if you look for it, are the VIFs:
+
+<<>>=
+vif(mI2)
+@
+
+In this case, if we center the data, as suggested by John Fox in the above
+email, we no longer see the above problems:
+
+
+
+<<>>=
+
+Prestige.c <- within(Prestige, {
+  income <- income - mean(income)
+  education <- education - mean(education)
+  women <- women - mean(women)
+})
+
+mI2.c <- lm(prestige ~ income * women * education * type, data = Prestige.c)
+
+## Now dfs are OK
+Anova(mI2.c)
+
+## Still huge
+e <- eigen(vcov(mI2.c))$values
+max(e)/min(e)
+
+m_1.c <- lm(prestige ~ type * income * education, data = Prestige.c)
+m_2.c <- lm(prestige ~ type * income * education + women, data = Prestige.c)
+## These do match women SS
+sum(residuals(m_1.c)^2) - sum(residuals(m_2.c)^2)
+
+## And how do the VIFs look?
+vif(mI2.c)
+@
+
+
+The message here: you can fit large models if you need to, but you need to
+be careful of what you do. R provides many warnings of things probably
+going wrong, but you still need to do your work. This includes, among
+other things, checking diagnostics, possible ill-conditioning problems and
+VIFs, etc.
 
 
 
