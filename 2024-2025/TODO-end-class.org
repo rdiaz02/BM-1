@@ -1,0 +1,1 @@
+add minor fixes, after classes done to avoid confusion
