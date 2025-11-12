@@ -165,7 +165,7 @@ A document to clarify the relationship between confidence intervals and p-values
 
 
 
-\section{CI and p-value relationships in the t-text}
+\section{CI and p-value relationships in the t-test}
 First, we read the data as in Lesson 2:
 
 <<>>=
