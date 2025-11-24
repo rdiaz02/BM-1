@@ -373,7 +373,14 @@ parameterization (see details in section \nameref{anovaaslm}, or just take it on
 faith). So, often, we will want to explicitly ask ``Which means are different'',
 and that is what we do next.
 
+%% See notes in PRSTR
+%% ~R-basic-stats/R-basic-stats.Rnw
 
+%% FIXME: reorganize this material. Follow more the structure in
+%% https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html
+%% So maybe FDR vs FWER first, and then the rest. Or not. But as of now this is slightly disorganized.
+
+%% Add at least this
 
 \subsection{So which means are different? Multiple comparisons}
 \label{multcomp1}
@@ -520,6 +527,9 @@ interval around it. The plot title says ``95\% family-wise confidence
 interval'', and that indicates that multiple testing correction has been
 used. (You might want to make that even more explicit by using a title
 such as ``95\% family-wise confidence interval using Tukey contrasts'').
+Again, notice the output says ``simultaneous'': as emphasized in Lukas Meier's ``ANOVA and Mixed Models'' (2025, CRC Press; HTML from \Burl{https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html#sec-tukey-hsd}), ``these confidence intervals are simultaneous, meaning that the probability that they all cover the corresponding true difference at the same time is 95%.''.
+
+
 
 Given how far two of the contrasts are from 0.0, it seems those are highly
 significant differences.
