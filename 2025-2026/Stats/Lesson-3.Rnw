@@ -1668,6 +1668,8 @@ Let us repeat what we just did to make sure we understand what is going on. Writ
 
 Finally, repeat once more on your own. An experiment with four factors, the first with 2 levels, the second with 7 levels, the third with 4 levels, the fourth with 5 levels. Write the table, degrees of freedom, and think about hypotheses you can test depending on what interactions are or not significant.
 
+
+%% FIXME: this is kinda confusing. Copy this section from PRSTR.
 \subsection{Multiple comparisons of means in two-way ANOVA}\label{multcomp-two-way}
 % Can they be done? Yes. You can use the \Rfunction{glht} or the TukeyHDS
 % functions directly. Or you fit the model using \Rfunction{aov} (not
