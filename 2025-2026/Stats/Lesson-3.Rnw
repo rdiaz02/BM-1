@@ -3772,7 +3772,7 @@ For you to read and play around further:
 \item Various diagnostics related to dfbetas allow us to identify
   influential observations in specific terms of the model.
 \item Variance inflation factors help us detect possible problems caused
-  by collinearity (correlations between independent variables).
+  by collinearity (correlations between independent variables). We saw them in \qref{sec:vari-infl-fact}.
 \item Added variable plots are particularly useful in multiple regression
   problems with multiple independent variables; they can help to identify
   influential points (which are easily masked with multiple variables) and
