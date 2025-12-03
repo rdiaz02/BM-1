@@ -2626,15 +2626,40 @@ length(resid(mcyst))
 There is also an additional document in Moodle about \(R^2\), ``Residuals, R-squared and adjusted R-squared''; again, it is there just in case you want to look at it, but you do not need to read it.
 
 
+\subsection{Variance inflation factors}
+\label{sec:vari-infl-fact}
+
+In our pemax example we saw several problems (e.g., the large standard errors in the estimated regression coefficients and the flip in signs) caused by the strong linear relationships between predictors. In the simplest cases, these can be detected by plots, as we did. But that  will not always show the source of the problem, specially when the linear relationship involves groups of variables, where pairwise plots can fail to show a clear pattern.
+
+The variance inflation factor, that we can compute with function \texttt{vif} estimates, ``the harm produced by collinearity'' (Fox \& Weisberg, ``An R companion to applied regresssion, 3rd ed'', section 8.8):
+
+<<vif1>>=
+vif(mcyst)
+@
+
+We can see that the standard error for age is about \(\sqrt{(8} = 2.8\), so almost three times larger than it would have been without collinearity.
+
+Compare this with a very different model, where we only have age and sex:
+
+<<vif2>>=
+mcystas <- lm(pemax ~ age + sex, data = cystfibr2)
+vif(mcystas)
+@
+which is not surprising, since the data collection is fairly balanced regarding age and sex of the subjects.
+
+Variance inflation factors should be part of your standard tools. There are no hard cutoffs. First, any VIF larger than 1 indicates that, well, there is harm being doing by collinearity. Values larger than 10 are often regarded as very serious collinearity problems. But values larger than 4 already signal a problem: the standard error is twice as large as it would be without collinearity.
+
+For terms with multiple degrees of freedom (factors with more than two levels, polynomials, splines, etc), a modified VIF needs to be used, That is provided by the \texttt{vif} function in \texttt{car}, too. See details in the help and in Fox \& Weisberg's book.
+
+
+
+(Note: VIF is accessible from the R commander menus too, from ``Models'' -> ``Numerical diagnostics'')
 
 
 
 
 
-
-
-
-\subsection{Interactions between continuous variables}\label{regr-int}
+\subsection{Interactions between predictor  variables in multiple regression}\label{regr-int}
 Can we add interactions? Yes, of course. Interactions between continuous
 variables, however, are harder to visualize: they represent curved
 surfaces, because the slope of one of the variable changes as the other
@@ -2773,7 +2798,7 @@ bootstrap instead of \Rfunction{confint}. See section 5.1.3 in Fox and Weisberg'
 \section{Continuous and discrete independent variables
   and ANCOVA}\label{ancova}
 
-
+%% FIXME: compare with PRSTR
 \subsection{The general scenario for ANCOVA}
 Right now, nothing should stop us from thinking about models where the
 right hand side contains both continuous and discrete variables. ANCOVA refers to this mixture of
@@ -2786,15 +2811,40 @@ covariance''\footnote{But this does not mean that we are comparing
 are especial types of linear models.
 
 
+% Suppose you have a response variable, Y. And two predictor variables; variable A, which is discrete, and has, say, two levels (a1, a2). And variable X, which is continuous. Now, get a piece of paper and draw the following cases, in turn. Really, \textbf{do draw this}.
+% \begin{itemize}
+% \item The relationship between Y and X increases faster in a1 than in a2. Thus, the regression lines for a1 and a2 are not parallel (and will eventually cross each other).
+% \item The relationships between Y and X change at the same rate for a1 and a2. Thus, they are parallel lines. But individuals of group a1 with value X = x have a larger value of Y than individual of group a2 for that value of X. So, as we said, lines are parallel, but they are separate. They have different intercepts.
+% \item As the previous case, but now the intercept is the same. So you only see one line.
+% \item There is not relationship between Y and X in any of the groups. (Or, if you insisted on putting a line, it would be of slope 0).
+% \end{itemize}
+
+% ANCOVA is a procedure for differentiating the above scenarios, starting from the first and moving down. It also works when the discrete group has more than two levels. And, for that matter, we can deal with more than one discrete variable and more than one continuous one, etc, etc: these are just linear models. As said several times already, we will use the name ANCOVA as this might be familiar. But once you understand the process, these are just linear models that allow to flexibly model scientific problems even if they no longer fit in the simple ANCOVA framework.
+
+
 Suppose you have a response variable, Y. And two predictor variables; variable A, which is discrete, and has, say, two levels (a1, a2). And variable X, which is continuous. Now, get a piece of paper and draw the following cases, in turn. Really, \textbf{do draw this}.
 \begin{itemize}
 \item The relationship between Y and X increases faster in a1 than in a2. Thus, the regression lines for a1 and a2 are not parallel (and will eventually cross each other).
 \item The relationships between Y and X change at the same rate for a1 and a2. Thus, they are parallel lines. But individuals of group a1 with value X = x have a larger value of Y than individual of group a2 for that value of X. So, as we said, lines are parallel, but they are separate. They have different intercepts.
 \item As the previous case, but now the intercept is the same. So you only see one line.
+\item There is not relationship between Y and X, but the means differ.
 \item There is not relationship between Y and X in any of the groups. (Or, if you insisted on putting a line, it would be of slope 0).
 \end{itemize}
 
-ANCOVA is a procedure for differentiating the above scenarios, starting from the first and moving down. It also works when the discrete group has more than two levels. And, for that matter, we can deal with more than one discrete variable and more than one continuous one, etc, etc: these are just linear models. As said several times already, we will use the name ANCOVA as this might be familiar. But once you understand the process, these are just linear models that allow to flexibly model scientific problems even if they no longer fit in the simple ANCOVA framework.
+ANCOVA is a procedure for differentiating the above scenarios. It also works when the discrete group has more than two levels. And, for that matter, we can deal with more than one discrete variable and more than one continuous one, etc, etc: these are just linear models. As said several times already, we will use the name ANCOVA as this might be familiar. But once you understand the process, these are just linear models that allow to flexibly model scientific problems even if they no longer fit in the simple ANCOVA framework.
+
+To put it differently, these are the steps:
+\begin{enumerate}
+\item \verb@ Y ~ X * Z@. Look at the interaction first (as we \textbf{always do})
+\item If there is no interaction (no different slopes): fit \verb@ Y ~ X + Z@:
+  \begin{enumerate}
+  \item If X is "not-significant": we are left with \verb@ Y ~ Z @ (different means)
+  \item If Z is "not-significant": we are left with \verb@ Y ~ X @ (same slope, single intercept, so same mean conditioned on X)
+  \item Neither X nor Z are significant: single mean for Y.
+  \end{enumerate}
+\end{enumerate}
+
+(I wrote ``not-significant'': use sensible criteria, not just blindly focus on p-values).
 
 
 Oh, and if you want some specific names for variables to draw the above figures, you can do as follows:
@@ -3119,6 +3169,49 @@ anova(longev_b_r_2, longev_b_r)
 
 
 
+
+\subsection{Another path in the fork: different means}
+\label{sec:another-path-fork:}
+
+
+<<anco3gen,echo=FALSE, results='hide'>>=
+
+set.seed(1)
+X <- runif(n = 40, min = 5, max = 20)
+Z <- sample(c("a", "b", "c"), size = 40, replace = TRUE, prob = c(1, 1, 1))
+Y <- ifelse(Z == "a", 1, ifelse(Z == "b", 2, 3))
+Y <- Y + rnorm(40)
+anco3 <- data.frame(Y = round(Y, 2), X = round(X, 2), Z = Z)
+rm(X, Y, Z)
+write.table(file = "anco3.txt", anco3, row.names = FALSE, quote = FALSE,
+            sep = "\t")
+@
+
+
+<<anco3>>=
+anco3 <- read.table("anco3.txt", header = TRUE, sep = "\t")
+anco3$Z <- factor(anco3$Z)
+
+mfull <- lm(Y ~ X * Z, data = anco3)
+Anova(mfull)
+
+madd <- lm(Y ~ X + Z, data = anco3)
+Anova(madd)
+
+summary(madd)
+
+scatterplot(Y ~ X | Z, data = anco3, smooth = FALSE, by.groups = TRUE)
+
+## or use ancova from HH,  but note these are sequential (not Type II)
+## SS
+ancova(Y ~ X * Z, data = anco3)
+@
+
+
+Note, though, that in some cases, when X is a pre-specified covariate, it might be sensible to keep it in the model regardless of p-value. This would be the case if the purpose is ``compare Z, adjusting for X''.
+
+
+
 \subsection{More examples}
 
 Section 12.7 of Dalgaard's ``Introductory statistics with R'' contains a
@@ -3137,6 +3230,15 @@ variables, using the \Robject{hellung} dataset included in \CRANpkg{ISwR}.
 We can extend the models to incorporate more variables, add interactions,
 etc. Interactions can involve more than two variables, can involve
 continuous and discrete variables, etc, etc.
+
+
+
+\subsection{More paths in the fork}
+\label{sec:more-paths-fork}
+
+Of course, things can get more complicated: say there are four groups. Two of them could have the same slope, and the other two groups different slopes. Etc.
+
+
 
 \subsection{Parameters, coefficients}
 There is nothing conceptually new here. If you want the details, go to section \nameref{anovaaslm}
