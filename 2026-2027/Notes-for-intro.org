@@ -1,0 +1,22 @@
+* Why not many examples about specific mol biol examples
+- Queremos ejemplos sencillos de entender, no ejemplos en los que haya que entender los detalles de una técnica para entender qué estamos midiendo y la pregunta.
+  - Arguably, something like "number of mutations in the genome as a function of exposure to X rays" or "Grade in an exam as a function of number of coffees" are simple, immediate to understand, without getting bogged in the details. (And if anyone asks "how did you measure mutations?", we'd answer "any way you want, that is irrelevant for this example; assume you get an integer count").
+
+  - Suppose I said "We have cancer cells and healthy cells. Which genes are more active in the cancer cells?"
+    - Sounds simple, and it isn't, and I do not want to get bogged down in things like what is gene activity? How is it measured? Etc
+
+
+- It is good to be exposed to examples that use data types that (though understandable) are not what we work with everyday: this will allow us to recognize patterns ("this is a two-way comparison", "this is a linear model") when we face new data analysis problems (we change labs? we help a colleague?)
+
+- You might need to read textbooks that have been written for a very specific audience. E.g., one fantastic book on causal inference is filled of social science (sociology and political science) examples. They are all understandable, but there ain't a single biology example. If you cannot get past that, then you cannot access some fantastic literature out there.
+
+
+
+
+
+
+
+* Look at slides for BIBMS,
+- better slide witgh full reference to books
+- clearer arguments
+- clearer how to do it

@@ -1,0 +1,8 @@
+* In general, add more biological examples or say "think other"(both PRSTR and BM-1)
+
+- Students: think about examples that interest you from your own research and maye come to class to discuss them
+
+* Some biol examples, and ask LLMs for more
+- # mutations in genome
+- genome length (size)
+- cell cycle duration as a function of volume, treatment, species (psss)
