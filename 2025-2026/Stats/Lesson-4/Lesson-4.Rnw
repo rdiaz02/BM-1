@@ -326,9 +326,12 @@ Study the following  cases. In what way are they different to the other cases we
   genes (table \ref{tab:Frequency-of-HRE}). The Hypoxia Inducible Factor
   (HIF) is a transcription factor that binds the motif RCGTG (Hypoxia
   Response Element, HRE) and plays a key role in the transcriptional
-  effects of hypoxia. Table \ref{tab:Frequency-of-HRE}, shows the number
+  effects of hypoxia. Table \ref{tab:Frequency-of-HRE} shows the number
   of hypoxia-responsive genes that have HRE motifs in their promoter
-  regions. Does HIF/HRE show any preference for up- or downregulation?
+  regions. Does HIF/HRE show any preference for up- or downregulation? (See section \ref{categ_data} for a higher-level description of this experiment.)
+
+  %% RDU: I think this is the thing: you do an experiment and subject cells to hypoxia. You divide the genes between those that are upregulated, downregulated or non-regulated. In each group, you examine if they are HRE+ or HRE-, whatever that means (if a gene has HRE). Yes, see next: "In the gene expression example ..."
+
   \begin{table}[h]
     \caption{\protect\label{tab:Frequency-of-HRE}Frequency of HRE in the promoters
       of hypoxia-responsive genes}
@@ -358,7 +361,7 @@ Study the following  cases. In what way are they different to the other cases we
 \item We will also use a few additional datasets that we will create on the fly (ashtma, peptic ulcer).
 \end{itemize}
 
-\section{Categorical data}
+\section{Categorical data}\label{categ_data}
 
 The cases described above have in common that they refer to categorical
 attributes (variables) in a nominal scale. That is, they both deal
@@ -381,7 +384,7 @@ data on the frequency of cases in each possible level\protect\footnote{For this 
 In the gene expression example, we are measuring two nominal variables
 from a set of genes: effect of hypoxia on their transcripcion (levels:
 upregulation, no effect, downregulation\footnote{A minor point, though: it could be argued that ``upregulation'', ``no effect'', and ``downregulation'' are really three ordered levels of transcription. In other words, even if they are not numerical values, they are ordered; this would be an example of an ordinal categorical variable. We will not pursue this here (though we mention this again at the end).}) and the presence of HRE in
-their promoters (levels: present/+ or absent/-). Table \ref{tab:Frequency-of-HRE},
+their promoters (levels: present/+ or absent/-). Table \ref{tab:Frequency-of-HRE}
 reports the frequency of genes in each of the possible categories.
 
 
@@ -403,7 +406,7 @@ ashtma <- data.frame(X = c(rep("A", 39), rep("NO", 215 - 39)))
 
 Type the above and select the data in R Commander. Now, find the ``Statistics \(\rightarrow\) Proportions'' and look at the options. Carefully look at what it says about ``Proportion'' (if we had entered the data differently, it might have been comparing the proportion of no asthma with 0.15, and that is not what we want).
 
-\subsection{Normal approximation}
+\subsection{Normal approximation (score test)}
 \label{sec:normal-approximation}
 
 Just use the menu, and select the normal approximation.
@@ -413,8 +416,11 @@ Doing it directly by hand is probably much faster than entering the data and goi
 <<>>=
 prop.test(x = 39, n = 215, p = 0.15, correct = FALSE)
 @
+%% From Agresti, p. 18: "The X-squared value in the R output is the score test statistic, having a chi-squared null distribution with df = 1."
 
-We are given a p-value and a confidence interval. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 10. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). Note, though, that this interval is often not symmetrical, and this (not being symmetrical) is a good thing\footnote{See \citet[p.~18 and section 1.3.5]{agresti2018}. You can verify that it is not symmetrical using, for example, \texttt{x = 6, n = 7} in the arguments to \texttt{prop.test}. But more generally, there are several different ways to obtain CIs for binomial proportions and using the binomial distribution itself, as we do in section \ref{sec:exact-binomial-test}, does not guarantee ``the best'' CI either;  in fact, finding two-sided CIs is not a well defined problem. Choosing the right procedure might be important for small sample sizes or estimates very close to 0 or 1. See \citet{agresti2018}, \citet[sections 1.1.2 and 1.1.3]{bilder2024}, exercise 8.5 in \citet{Dalgaard2008}, and R packages \texttt{binom}, \texttt{exactci} and \texttt{PropCIs}.}.
+
+
+We are given a p-value and a confidence interval\footnote{This is using the score statistic; when comparing two proportions, \texttt{prop.test} uses a Wald confidence interval; see, e.g., \citet[p.~25, section 2.5]{kateri2014} or \citet[pp.~18 and 31]{agresti2018}}. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 5. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). Note, though, that this interval is often not symmetrical, and this (not being symmetrical) is a good thing\footnote{See \citet[p.~18 and section 1.3.5]{agresti2018}. You can verify that it is not symmetrical using, for example, \texttt{x = 6, n = 7} in the arguments to \texttt{prop.test}. But more generally, there are several different ways to obtain CIs for binomial proportions, and using the binomial distribution itself, as we do in section \ref{sec:exact-binomial-test}, does not guarantee ``the best'' CI either;  in fact, finding two-sided CIs is not a well defined problem. Choosing the right procedure might be important for small sample sizes or estimates very close to 0 or 1. See \citet[sections 1.3.4 and 1.3.5]{agresti2018}, \citet[sections 1.1.2 and 1.1.3]{bilder2024}, exercise 8.5 in \citet{Dalgaard2008}, and R packages \texttt{binom}, \texttt{exactci} and \texttt{PropCIs}.}.
 
 
 We used the argument \texttt{correct = FALSE} to prevent R from using a continuity correction. The reasons can be found, for example, in \citet[section 1.6.2, p.~18]{agresti2018}, \citet[note 1.5, p.~25]{agresti2012}, \citet[section 2.5]{kateri2014} or \citet[section 1.2.3, p.~35]{bilder2024}; basically, it is a very conservative procedure. In what follows, we will always  avoid the continuity correction. By the way, that is what R Commander does by default.
@@ -435,7 +441,8 @@ binom.test(x = 39, n = 215, p = 0.15)
 
 Again, you should be able to interpret the p-value and the confidence interval. And the conclusions are the same as from above.
 
-
+%% The CI of the binomial is done by summing two tail areas of 0.025, from the binomial.
+%% The CI of the prop.test is done by finding the critical regions of each of the 0.25 regions, using the score statistic.
 
 
 % Do not be mislead by the ``exact'': the confidence interval is, actually, not well defined. % (We will also see that the ``exact'' adjective can be misleading with Fisher's exact test, but for other reasons).
@@ -467,7 +474,7 @@ Exercise3 <- ex3[rep(1:4, ex3$cases), c("Drug", "Outcome")]
 
 @
 
-Now, select ``Exercise3'' as the active data, and do a two-sample proportions test using the normal approximation using the menus.
+Now, select ``Exercise3'' as the active data, and do a two-sample proportions test and obtain a confidence interval using the normal approximation via the menus.
 
 <<>>=
 local({
@@ -486,6 +493,8 @@ We can also quickly do it by entering the successes and total cases (i.e., heale
 <<>>=
 prop.test(x = c(23, 18), n = c(30, 31), correct = FALSE)
 @
+
+%% " We can use the prop.test() function to perform the equivalent score and Pearson chi-square tests.  ", from  Bilder and Laughin, p. 37.
 
 Again, you should be able to interpret all of the output.
 
@@ -548,12 +557,7 @@ ratios do not fit the expected values)\protect\footnote{Residuals are the differ
   The magnitude of each residual indicates how much each of the observed
   frequencies differs from what is expected. The residuals are typically
   standardized (by dividing by the square of the expected frequencies)
-  to enable individual residuals to be compared relative to one another.
-  Large values of residuals indicate large deviations from what is expected
-  and thus also indicate large contribution to the overall association.
-  On addition, the sign (+ or \textminus ) of the residual indicates
-  whether the frequencies were higher or lower than expected, but note we square the deviations. Pearson's
-  residuals are calculated as $\frac{observed-expected}{\sqrt{expected}}$. These are the residuals, \textbf{not} the standardized residuals we will see in section \ref{sec:residuals}.}.
+  to enable individual residuals to be compared relative to one another. We return to residuals in section \ref{sec:residuals}.}.
 
 
 % \begin{comment}
@@ -898,7 +902,7 @@ In a third design, no margin is fixed, and only the total sample is fixed; this 
 
 % In some studies, the sample size is not fixed at all. For example, we could be interested in the mutagenic effects of certain drugs, and we count the number of mutations in a stretch of DNA under the different combinations of those drugs. Or we are interested in the number of bacteria cells in foods with different treatments. These lead naturally to a Poisson model.
 
-The ``comparative'' design is often associated with questions about differences in proportions (differences in the binomial or multinomial distributions) and the ``cross-sectional'' with questions about association. These differences sometimes affect how we analyze the data, but for the contingency tables we discuss here they will have no effect.
+The ``comparative'' design is often associated with questions about differences in proportions (differences in the binomial or multinomial distributions) and the ``cross-sectional'' with questions about association. The differences between the ``comparative'' and ``cross-sectional'' designs sometimes affect how we analyze the data, but for the contingency tables we discuss here they will have no effect. (The ``both margins fixed'', above, we will discuss later again).
 
 
 % \subsection{Contingency tables}
@@ -1046,8 +1050,7 @@ We can look at the residuals, the deviations from the expected, to understand wh
 
 
 
-
-Standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres} instead of \texttt{residuals}, are often much more useful; this is very clearly explained in  \citet[section 2.2.4]{kateri2014} (this is also discussed in \citealp[p.~39]{agresti2018}, \citealp[p.~81]{agresti2012}, and \citealp[p.~183]{bilder2024}). Standardized residuals are asymptotically standard normal under \(H_0\)\footnote{And this holds for both multinomial and independent Poisson sampling: \citet[section 2.2.4]{kateri2014}}; thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
+We can obtain the Pearson residuals using \texttt{residuals}; the sum of their squared values is equal to the value of the $\chi^{2}$ statistic. But standardized residuals (or standardized Pearson residuals), that we can obtain using \texttt{stdres}, are often much more useful. The different residuals, and why to prefer the standardized Pearson residuals is very clearly explained in  \citet[section 2.2.4]{kateri2014} (also discussed in \citealp[p.~39]{agresti2018}, \citealp[p.~81]{agresti2012}, and \citealp[p.~183]{bilder2024}). Standardized residuals are asymptotically standard normal under \(H_0\)\footnote{And this holds for both multinomial and independent Poisson sampling: \citet[section 2.2.4]{kateri2014}}; thus, a cell with a standardized residual with an absolute value larger than around 2 (when few cells in the table) or 3 (when the table has many cells) indicates lack of fit of \(H_0\) in the given cell\footnote{Why do we require larger deviations for more cells? To prevent from finding one large residual just by chance.}.
 
 % (so standardized residuals larger than about 2 or 3 in absolute value indicate deviation from \(H_0\) in that cell \citealp[p.~81]{agresti2012}).
 
@@ -1219,8 +1222,15 @@ To take the mystery out of this procedure, this is the classical tea testing exa
     \caption{\label{fig:fisher-agresti} Tables 2.7 and 2.8 from Agresti, 2018, \textit{An introduction to categorical data analysis, 3rd ed}, Wiley.}
 \end{figure}
 
+In each row, the probability is coming from a hypergeometric distribution. This is just a detail (i.e., not in the exam) to show these numbers (look at the help for \texttt{dhyper})
+<<hgex1>>=
+n11 <- 0:4
+sapply(n11, dhyper, m = 4, n = 4, k = 4)
+@
 
-A one-sided P-value, had we observed 3 cases in \(n_{11}\) would be \(0.014 + 0.229\). A two-tailed test would be \(0.014 + 0.229 + 0.229 + 0.014\).
+
+A one-sided P-value, had we observed 3 cases in \(n_{11}\) would be \(0.229 + 0.014\) (i.e., the entries with \(n_{11}\) equal to 3 and 4, as those are the ones as extreme as the observe, because they have a probability \(\le 0.229\)). A two-tailed test would be \(0.014 + 0.229 + 0.229 + 0.014\) (all entries with probabilities \(\le 0.229\) in both directions, so \(n_{11}\) with value 0, 1, 3, 4).
+
 
 
 
@@ -1612,6 +1622,20 @@ library(vcd)
 mosaic(xtabs(~ Effect + HRE, data = Hx),
        shade = TRUE)
 @
+
+% %%% We split along the Effect axis, then
+% %% in each row. We can change it doing
+% <<>>=
+% ## transposes, as HRE now on y-axis
+% ## but split is vertical
+% mosaic(xtabs(~ Effect + HRE, data = Hx),
+%        shade = TRUE, direction = "v")
+% ## or transpose: HRE on y axis, but horizontal
+% mosaic(xtabs(~ HRE + Effect, data = Hx),
+%        shade = TRUE)
+
+% @
+
 
 Wait!!! What residuals are those??
 
