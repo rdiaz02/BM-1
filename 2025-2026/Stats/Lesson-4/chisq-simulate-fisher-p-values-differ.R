@@ -1,6 +1,7 @@
 ## Are p-values from fisher.test and chisq.test with simulate.p.value
 ## the same? Answer is not always.
 
+### Are p-values the same; a boring, overkill, simulation. Probably skip to "Simulate until we get something interesting"
 
 simchif <- function(nr = 2, nc = 3, B = 3e6, N = 100, outm = FALSE) {
     while (TRUE) {
@@ -89,7 +90,6 @@ sep <- function(p) return(sqrt(p * (1 - p) / 3e6))
 sapply(c(2e-6, 1e-6, 3e-6, 5e-5, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.15), sep)
 ## But for 1e-6 enough with 3. For 1e-5, we need 30.
 
-
 controlplotsim <- function(thedata, lims = c(1e-6, 0.15), log = "") {
     title <- deparse(substitute(thedata))
     plot(chi_sim ~ chi_sim2, data = thedata,
@@ -153,7 +153,7 @@ controlplotsim(p_5_5_Nx4, log = "xy")
 
 
 
-
+## The plots of the output. And yes, differences in the 2x2 case too.
 par(mfrow = c(2, 4))
 plotsim(p_2_2)
 plotsim(p_2_3)
@@ -196,7 +196,7 @@ p_2_2b[(p_2_2b[, 1] < 0.5) & (p_2_2b[, 7] > 1.5), ]
 ### Simulate until we get something interesting
 
 
-## Generate data and get p-values.
+## Generate data and get p-values. The main workhorse.
 ft_ct_seed <- function(seed,
                        nr = 2, nc = 2, N = 100,
                        B = 1e7,
@@ -234,7 +234,7 @@ ft_ct_seed <- function(seed,
 }
 
 
-## Loop until interesting
+## Loop until interesting stuff.
 simchif2 <- function(nr = 2, nc = 2, seed = 100,
                      B = 1e7, N = 100,
                      min_ratio_ps = 1.8,
@@ -272,10 +272,10 @@ simchif2 <- function(nr = 2, nc = 2, seed = 100,
 
 
 
-## One run searching
+## Examples of runs searching
 simchif2(seed = 29005)
-
-simchif2(seed = 100, N = 15) ## 112
+simchif2(seed = 110, N = 15)
+simchif2(seed = 200, N = 25, nr = 2, nc = 3)
 
 ## Some located examples
 ft_ct_seed(109)
