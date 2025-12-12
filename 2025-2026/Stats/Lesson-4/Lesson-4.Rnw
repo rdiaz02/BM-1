@@ -1279,8 +1279,7 @@ fisher.test(diet.table, simulate.p.value = TRUE)
 fisher.test(diet.table, simulate.p.value = TRUE)
 @
 
-This is an interesting case, because of the small expected cell counts. \citet{bilder2024} discuss it in detail in pp.~180 and ff.\ (and they use a simulation approach, described in p.~182 and section 6.2.2, but a more sophisticated one, that we won't cover here; regardless, the p-value is obtained with the same procedure as with \texttt{simulate.p.value}\footnote{Or, at least, that is my understanding of what they do, as they seem to condition on the margins: in p.~182 they write: ``(..) we can use one call to rmultinom(), where we set each \(\pi_{ij}\) (prob argument) to \(n_{i+} n_{+j}/n^2\) (the estimated expected count under the null hypothesis divided by the sample size). We chose to use the one multinomial model
-here (...)''}).
+This is an interesting case, because of the small expected cell counts. \citet{bilder2024} discuss it in detail in pp.~180 and ff.\ (and they use a simulation approach, described in p.~182 and section 6.2.2, but a more sophisticated one, that we won't cover here; regardless, the p-value is obtained with a sampling model similar to the one in  \texttt{simulate.p.value}\footnote{Or, at least, that is my understanding of what they do, as they seem to condition on the margins: in p.~182 they write: ``(..) we can use one call to rmultinom(), where we set each \(\pi_{ij}\) (prob argument) to \(n_{i+} n_{+j}/n^2\) (the estimated expected count under the null hypothesis divided by the sample size). We chose to use the one multinomial model  here (...)''}).
 
 
 \subsubsection{Issues with Fisher's exact test}
@@ -1308,20 +1307,19 @@ If you do not want to read the primary statistical literature or consult with a 
 
 
 
-\subsubsection{Chi square with \texttt{simulate.p.value}?}
+\subsubsection{Chi square with \texttt{simulate.p.value}}
 
-This is another apparent alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but this is just Fisher's test, so if you have concerns about Fisher's test% sampling model and its possible effects on power
-, this simulation procedure carries the same concerns.
+This is another alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but if you have concerns about Fisher's test, this simulation procedure carries the same concerns. But this might be a sensible alternative to using Fisher's test anyway. See a detailed example in \citet[sections 6.2.1 and 6.2.2 and p.~182]{bilder2024}: they show (in the diet example) how Fisher's might be conservative relative to \texttt{chisq}, including \texttt{chisq.test} with \texttt{simulate.p.value = TRUE}, and they explain in detail how to carry out the permutations, and discuss (p.~182) choosing the sampling model.
 
 
-  %% See the help or this discussion https://stats.stackexchange.com/questions/159057/alternatives-for-chi-squared-test-for-independence-for-tables-more-than-2-x-2/159063#159063
+%% See the help or this discussion https://stats.stackexchange.com/questions/159057/alternatives-for-chi-squared-test-for-independence-for-tables-more-than-2-x-2/159063#159063
 
 
 More sophisticated simulation schemes are possible, but that is beyond the scope of this class (and might run into other problems, like generating marginals that are 0, etc). In R, package \texttt{exact2x2}, \Burl{https://cran.r-project.org/web/packages/exact2x2/index.html} might be of interest.
 
 
 
-
+(And, if you are curious, file \texttt{chisq-simulate-fisher-p-values-differ.R} contains a long exploration of differences in p-values from Fisher's and \texttt{chisq.simulate} with examples. This is, of course, supplemental material that you can ---and probably should--- ignore.)
 
 
 
