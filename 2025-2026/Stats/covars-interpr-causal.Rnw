@@ -65,6 +65,9 @@
 \usepackage[authoryear, round, sort]{natbib}
 %% \usepackage[square,numbers,sort&compress]{natbib}
 
+%% Could I just use either one? Nope. For BM-1/2 I am using gitinfo
+%% in R-basic-stats gitinfo2. Will move to gitinfo2 everywhere
+% \usepackage{gitinfo2}
 \usepackage{gitinfo}
 
 
@@ -163,7 +166,6 @@ Please, \textbf{respect the copyright and license}. This material is
 The aim of these notes is to try to clarify  questions about ``what
 variables should we add to our models when our aim is interpretation''\footnote{The paper by \cite{keele2020} has a very similar objective: ``(...) we ask when we can justify interpreting two or more coefficients in a regression model as causal parameters. We demonstrate that analysts must appeal to causal identification assumptions to give estimates causal interpretations.''  After going through these notes, reading that paper should be easy.}.
 
-
 As discussed in class, if our purpose when fitting statistical models is only
 prediction, reversal of regression coefficients when a covariate is in the model
 with or without other covariates, and other similar counterintuitive phenomena,
@@ -177,7 +179,7 @@ understand if consuming red wine affects (i.e., has an effect on) cardiovascular
 health. We might want to do this so that we can make public health
 recommendations or take personal action (should I start drinking a little bit of
 wine?).  Intuitively, if a variable, X, has a causal effect on a variable, Y,
-manipulating X will change the value of Y\footnote{The philosopher James Woodward, in \citet{woodward2003}, defends a manipulationist or interventionist account of causality; the informal ideas introduced in these notes fall under that umbrella.}.
+manipulating X will change the value of Y\footnote{The philosopher James Woodward, in \citet{woodward_making_2003}, defends a manipulationist or interventionist account of causality; the informal ideas introduced in these notes fall under that umbrella.}.
 
 And what do we mean by \textbf{causal effects}? ``(...) causal effects in
 populations, that is, \textbf{numerical quantities} that measure changes in the
@@ -376,7 +378,10 @@ confounded by Age having effects on both Exercise and
 Cholesterol\footnote{When dealing with categorical variables, this pattern,
   where the association of two variables changes, or even reverts its sign, when
   we account for another, is also called Simpson's paradox.}. Age is a
-\textbf{confounder}.% : there is \textbf{confounding} due to Age in the estimate of
+\textbf{confounder}. And notice that ``confounder'' is something we define with respect to measuring causal effects, so the causal perspective is essential for identifying (and correcting for) confounders\footnote{Pearl elaborates on this at length, when he discusses the so-called ``Simpson's paradox'': it only seems paradoxical when viewed purely as a statistical phenomenon, without causal reasoning.}.
+
+
+% : there is \textbf{confounding} due to Age in the estimate of
 % the effect of Exercise on Cholesterol.
 
 % Or, unless we adjust for Age, there will be \textbf{confounding}: the
@@ -625,13 +630,13 @@ More systematically:
 \item Chain: X and Y are associated. But conditioning on Z will render X and Y
   independent (there will be no association). The conditional and unconditional
   dependencies are (you can ignore this if it does not help you):
-  $X \upmodels Y | Z$, \quad $X \cancel{\upmodels} Y$.
+  $X \upmodels Y \ | \ Z$, \quad $X \nupmodels Y$.
 
 
 
 \item Fork: X and Y are associated. But conditioning on Z will render X and Y
-  independent (there will be no association). $X \upmodels Y | Z$, \quad
-  $X \cancel{\upmodels} Y$.
+  independent (there will be no association). $X \upmodels Y\ | \ Z$, \quad
+  $X \nupmodels Y$. %%$X \cancel{\upmodels} Y$
 
   This is the usual example of \textbf{confounding}, where we see association
   because of a common cause.
@@ -639,8 +644,8 @@ More systematically:
 \item Inverted fork with collider: X and Y are independent. But conditioning on Z
   will make X and Y associated\footnote{If these were numerical variables and we
     assume a linear model, they would be correlated. Association and
-    non-independence are more general concepts than correlation.}
-  $X \cancel{\upmodels} Y | Z$, \quad $X \upmodels Y$.
+    non-independence are more general concepts than correlation.}:
+  $X \nupmodels Y\ | \ Z$, \quad $X \upmodels Y$.
 
 
 \end{enumerate}
@@ -651,10 +656,10 @@ avoid confounding the estimate of the relationship between X and Y. It is the
 presence of confounding that leads to the ``correlation is not necessarily
 causation'' \citep[][p.\ 58]{westreich2019}.  (For more details about confounding
 see chapter 7 in \citealp{hernan2020}; a brief discussion in section 3.5.1, pp.\
-58 and ff.\ in \citealp{westreich2019})
+58 and ff., in \citealp{westreich2019})
 
 
-
+%% ZZ FIXME : give the example of Y must compensate whatever X has
 And more about \textbf{colliders}. The consequences of the last structure, Figure \ref{fig:plot_dag_struct} c), where
 we have a collider, sometimes seem counterintuitive. This structure is behind
 ``Berkson's paradox''\footnote{
@@ -662,7 +667,7 @@ we have a collider, sometimes seem counterintuitive. This structure is behind
   ``Why are handsome men such jerks?'' ---and, I guess, a similar phenomenon with
   women:
   \url{http://www.slate.com/blogs/how_not_to_be_wrong/2014/06/03/berkson_s_fallacy_why_are_handsome_men_such_jerks.html}
-  .}  . A simple example: suppose there is no association between bone fracture
+  .}. A simple example: suppose there is no association between bone fracture
 and pneumonia in the general population. But if you only look at people who go to
 the emergency room in a hospital, you are likely to find a negative association
 between pneumonia and bone fracture (think about why people go to hospitals
@@ -865,7 +870,7 @@ These are the consequences:
   \item X and W are independent if we condition on  Z.
   \item Y and W are independent if we condition on Z.
   \end{enumerate}
-  % $X \cancel{\upmodels} Y | W$.
+  % $X \nupmodels Y | W$.
 
 \item As above: conditioning on W does not make X and Y independent.
 
@@ -877,7 +882,7 @@ These are the consequences:
   \item Y and W are independent if we condition on Z.
   \end{enumerate}
   % $X
-  % \cancel{\upmodels} Y | W$.
+  % \nupmodels Y | W$.
 
 \item \textbf{Pay attention here}: conditioning on W will make X and Y
   associated. This is the general rule: \textbf{conditioning on a collider} (as
@@ -894,8 +899,8 @@ These are the consequences:
   \item Y and W are independent if we condition on Z.
   \end{enumerate}
   % $X
-  % \cancel{\upmodels} Y | W$ (and $X
-  % \cancel{\upmodels} Y | Z$,  \quad $X \upmodels
+  % \nupmodels Y | W$ (and $X
+  % \nupmodels Y | Z$,  \quad $X \upmodels
   % Y$).
 
 \item Conditioning on W will not render X and Y independent. Notice also that \textbf{now Z is
@@ -921,9 +926,9 @@ In addition:
   \end{enumerate}
 
 
-\item Now Z is a collider with respect to all three pairs of variables X, Y, W.
+\item Now Z is a collider with respect to all three variables X, Y, W.
   \begin{enumerate}[label=\arabic*.]
-    \item X and Y are independent (we saw this before).
+  \item X and Y are independent (we saw this before).
   \item X and W are independent.
   \item Y and W are independent.
   \item X and W are associated if we condition on Z (Z is a collider).
@@ -1002,25 +1007,44 @@ drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
 (To turn the above into a specific example:
 
 <<dag_ptr22, results='hide', echo=FALSE>>=
+## ptr22 <- dagitty("dag {
+## Diet -> Outcome
+## U_g -> Exercise
+## U_c  -> Exercise
+## U_g -> Outcome
+## U_c  -> Diet
+## }")
 ptr22 <- dagitty("dag {
-Diet -> Outcome
-U_g -> Exercise
-U_c  -> Exercise
+Exercise -> Outcome
+U_g -> ChildhoodBMI
+U_c  -> ChildhoodBMI
 U_g -> Outcome
-U_c  -> Diet
+U_c  -> Exercise
 }")
 @
 
 <<plot_dag_ptr22, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider; Uc: country, Ug: genetics.',out.width='9cm', fig.pos= "!h">>=
-coordinates(ptr22) <- list(x = c(Exercise = 1, Diet = 2,
+## coordinates(ptr22) <- list(x = c(Exercise = 1, Diet = 2,
+##                                  Outcome = 3,
+##                                  U_g = 0.8,
+##                                  U_c = 0.8),
+##                            y = c(Exercise = 0,
+##                                  Diet = 0,
+##                                  Outcome = 0,
+##                                  U_c = .5,
+##                                  U_g = -.5))
+
+coordinates(ptr22) <- list(x = c(ChildhoodBMI = 1,
+                                 Exercise = 2,
                                  Outcome = 3,
                                  U_g = 0.8,
                                  U_c = 0.8),
-                           y = c(Exercise = 0,
-                                 Diet = 0,
+                           y = c(ChildhoodBMI = 0,
+                                 Exercise = 0,
                                  Outcome = 0,
                                  U_c = .5,
                                  U_g = -.5))
+
 
 drawdag(ptr22, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
 ## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
@@ -1029,7 +1053,7 @@ drawdag(ptr22, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
 )
 
 
-You know the answer. No, do not adjust for L (Exercise): it is a collider ($U_1$ and $U_2$
+You know the answer. No, do not adjust for L (Childhood BMI): it is a collider ($U_1$ and $U_2$
 are its parents) on the backdoor path between X and Y. If we adjust for L, it
 will induce a non-causal association between X and Y\footnote{The bias induced is
   sometimes called \textit{M-bias}.}.
@@ -1195,6 +1219,8 @@ to correctly interpret the effects from your experimental manipulations. Moreove
 causal inference from experimental data arguably makes use of counterfactuals
 (see \qref{counterf}).
 
+And regardless of whether you work with observational or experimental data, the causal framework is the appropriate framework to think about confounding, as we have seen above. This cannot be emphasized strongly enough, and if you have doubts, look at the example in \qref{pretreat-no}.
+
 
 \subsection{But I need to know at least something about the phenomenon I am
   dealing with to do any of this!!!!}\label{need-know}
@@ -1210,7 +1236,7 @@ making stronger assumptions.
 the causes of an effect and finding \textbf{sufficient causes}, nor on trying to
 find the causal DAGs from a set of data. We have focused ``just'' on measuring
 the effects of causes. For more on those topics, go to \citealp{hernan2020};
-\citealp{morgan_counterfactuals_2015}; \citealp{neal_causality_2020}, \citealp{peters_causal_2017}).
+\citealp{morgan_counterfactuals_2015}; \citealp{neal_causality_2020}, \citealp{peters2017}).
 
 %% ZZ FIXME  what variables to add to a DAG
 
@@ -1273,7 +1299,7 @@ are what we have been mostly concerned with here.
 
 But suppose the way things really are is the one shown in Figure
 \ref{fig:dag_direct_conf}, where ``SocioecStatus'' is the socioeconomic status of
-the family of the persons being hired.
+the family of the persons being hired (this is from \citealp{pearl_causal_2016}, Fig.~312, p.~77, ---but  I have substituted ``Income'' byt ``SocioecStatus'').
 
 <<dag_direct_conf, results='hide', echo=FALSE,fig.width = 3.5, fig.height=2, fig.lp='fig:', fig.align = 'center', fig.cap='Direct effects and confounding',out.width='8.2cm', fig.pos= "!h">>=
 dire3 <- dagitty("dag {
@@ -1292,7 +1318,7 @@ drawdag(dire3, xlim = c(0.5, 5), ylim = c(-.1, 1.6))
 @
 
 If you only adjust by Qualification, your estimates of direct effect will be
-biased because Qualification is a collider (a descendant of both Income and
+biased because Qualification is a collider (a descendant of both SocioecStatus and
 Gender). If you wanted an unbiased estimate of the direct effect, you would need
 to measure and condition on both Qualification and SocioecStatus.
 
@@ -1309,6 +1335,19 @@ adjustment of the mediator in the presence of confounding are also given in
 \citet{cole2002}, using hypothetical examples from the Physicians' Health
 Study. Estimating direct and indirect effects is related to the study of
 mediation, and a book-length treatment is \citet{vanderweele2015}.
+Finally, for figure \ref{fig:dag_direct_conf}, \citealp{pearl_causal_2016} discuss the difference between conditioning on ``Qualification'' and \textit{fixing it constant} by \textit{intervening} on it, which allows us to compute the \textit{Controlled Direct Effect (CDE)} (the change in Hiring by intervening on both Gender and Qualification, where the presence of SocioecStatus no longer bothers us, since we are manipulation Qualification); we will not discuss this further; \citet{morgan_counterfactuals_2015} explain them in ch.~11, and \citet{hernan2020} on Technical point 22.1 and sections 23.2 and ff.
+
+
+Of course, you can turn the examples above into a completely different example that could be easier to relate to. For example, with scarce display of imagination on my side:
+\begin{itemize}
+\item Gender is Gene A, whose expression you can manipulate.
+\item Qualification is Gene B
+\item SocioecStatus is Gene C
+\item Hiring is some desired outcome
+\end{itemize}
+
+Please, make this more elaborate (e.g., think about some of the variables above being, say, a particular therapy, etc).
+
 
 
 \subsection{Revisiting the fungus example}\label{revisit-fungus}
@@ -1393,12 +1432,12 @@ model without confounders).
 
 Using the backdoor criterion is very well explained in, for example:
 \begin{itemize}
-\item Section 4.2, pp.\ 109 and ff.\ of \citet{morgan_counterfactuals_2015} (I
+\item Section 4.2, pp.\ 109 and ff., of \citet{morgan_counterfactuals_2015} (I
   particularly like how their explanation combines the original Pearl's criterion
   with further generalizations).
-\item Section 7.2 and 7.3, pp.\ 85 and ff.\ of \citet{hernan2020}.
-\item Section 3.3, pp.\ 61 and ff.\ of \citet{pearl_causal_2016}.
-\item Section 3.5.1, pp.\ 59 and ff.\ of \citet{westreich2019}.
+\item Section 7.2 and 7.3, pp.\ 85 and ff., of \citet{hernan2020}.
+\item Section 3.3, pp.\ 61 and ff., of \citet{pearl_causal_2016}.
+\item Section 3.5.1, pp.\ 59 and ff., of \citet{westreich2019}.
 \end{itemize}
 
 They are all saying the same thing: how to look for sets of variables that block
@@ -1433,7 +1472,7 @@ In a causal DAG, a
 
 % But we might prefer a less terse explanation.
 
-In section 4.2, pp.\ 109 and ff.\
+In section 4.2, pp.\ 109 and ff.,
 of \citet{morgan_counterfactuals_2015} the following two-step process is given:
 
 \begin{quoting}
@@ -1526,7 +1565,7 @@ have seen above (for example, \citealp{morgan_counterfactuals_2015} only use the
 term d-separation in one footnote, though their procedure, which we have copied
 above, actually implicitly uses the definition of d-separation). Anyway,
 d-separation is well explained in Definition 2.4.1, p.\ 46 of
-\citet{pearl_causal_2016} or in section ``Fine point 6.1'', p. 76 of
+\citet{pearl_causal_2016} or in section ``Fine point 6.1'' of
 \citet{hernan2020} and is very useful if you want to find all the
 independencies and conditional independencies implied by a DAG.
 
@@ -1617,13 +1656,13 @@ inferences from randomized experiments, and to understand what we are trying to
 do when we try to eliminate confounding to try to do causal inference from
 observational data. See further details in \citet{rosenbaum2017},
 \citet{hernan2020}, \citet{morgan_counterfactuals_2015},
-\citet{pearl2016} (and \citealp{woodward2003} and \citealp[][ch.~5]{otsuka2023} for philosophical discussion). (\citealp{rosenbaum2017}, does not use DAGs at all; the others
+\citet{pearl2016} (and \citealp{woodward_making_2003} and \citealp[][ch.~5]{otsuka2023} for philosophical discussion). (\citealp{rosenbaum2017}, does not use DAGs at all; the others
 do, and draw ---pun intended--- connections between counterfactuals and
 DAGs).
 
 Key message: even if you don't care about DAGs or making causal inferences
 from observational data, counterfactuals are key for your inferences from
-experimental data. In fact, you most likely thing counterfactually (pun intended) a lot of the time: would you have had so much fun for the last hour or so had you not been reading these notes? \smiley{}
+experimental data. In fact, you most likely think counterfactually (pun intended) a lot of the time: would you have had so much fun for the last hour or so had you not been reading these notes? \smiley{}
 
 
 \section{Lord's paradox}
@@ -1662,185 +1701,185 @@ adjust for the covariate.
 
 %% FIXME: in the future, use \bibliographystyle{jss2}
 {\small
-  % \bibliography{refs}
-  % \bibliographystyle{myplainnat}
+  \bibliography{refs-causal}
+  \bibliographystyle{jss2}
 
-  \begin{thebibliography}{16}
-\providecommand{\natexlab}[1]{#1}
-\providecommand{\url}[1]{\texttt{#1}}
-\expandafter\ifx\csname urlstyle\endcsname\relax
-  \providecommand{\doi}[1]{doi: #1}\else
-  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+  % \begin{thebibliography}{16}
+  %   \providecommand{\natexlab}[1]{#1}
+  %   \providecommand{\url}[1]{\texttt{#1}}
+  %   \expandafter\ifx\csname urlstyle\endcsname\relax
+  %     \providecommand{\doi}[1]{doi: #1}\else
+  %     \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Cole and Hern{\'a}n(2002)]{cole2002}
-Cole, S.~R. and Hern{\'a}n, M.~A.
-\newblock Fallibility in estimating direct effects.
-\newblock \emph{International Journal of Epidemiology}, 31\penalty0
-  (1):\penalty0 163--165, February 2002.
-\newblock ISSN 0300-5771.
-\newblock \doi{10.1093/ije/31.1.163}.
-\newblock URL \url{https://doi.org/10.1093/ije/31.1.163}.
+  % \bibitem[Cole and Hern{\'a}n(2002)]{cole2002}
+  %   Cole, S.~R. and Hern{\'a}n, M.~A.
+  %   \newblock Fallibility in estimating direct effects.
+  %   \newblock \emph{International Journal of Epidemiology}, 31\penalty0
+  %   (1):\penalty0 163--165, February 2002.
+  %   \newblock ISSN 0300-5771.
+  %   \newblock \doi{10.1093/ije/31.1.163}.
+  %   \newblock URL \url{https://doi.org/10.1093/ije/31.1.163}.
 
-\bibitem[Hernan and Robins(2020)]{hernan2020}
-Hernan, M.~A. and Robins, J.~M.
-\newblock \emph{What If. {{Causal Inference}}}.
-\newblock {CRC Press}, 2020.
-\newblock ISBN 978-1-4200-7616-5.
-\newblock URL
-  \url{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
+  % \bibitem[Hernan and Robins(2020)]{hernan2020}
+  %   Hernan, M.~A. and Robins, J.~M.
+  %   \newblock \emph{What If. {{Causal Inference}}}.
+  %   \newblock {CRC Press}, 2020.
+  %   \newblock ISBN 978-1-4200-7616-5.
+  %   \newblock URL
+  %   \url{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}.
 
-\bibitem[{Hernandez-Diaz} et~al.(2006){Hernandez-Diaz}, Schisterman, and
-  Hernan]{hernandez-diaz2006}
-{Hernandez-Diaz}, S., Schisterman, E.~F., and Hernan, M.~A.
-\newblock The {{Birth Weight}} "{{Paradox}}" {{Uncovered}}?
-\newblock \emph{American Journal of Epidemiology}, 164\penalty0 (11):\penalty0
-  1115--1120, September 2006.
-\newblock ISSN 0002-9262, 1476-6256.
-\newblock \doi{10.1093/aje/kwj275}.
-\newblock URL
-  \url{https://academic.oup.com/aje/article-lookup/doi/10.1093/aje/kwj275}.
+  % \bibitem[{Hernandez-Diaz} et~al.(2006){Hernandez-Diaz}, Schisterman, and
+  %   Hernan]{hernandez-diaz2006}
+  %   {Hernandez-Diaz}, S., Schisterman, E.~F., and Hernan, M.~A.
+  %   \newblock The {{Birth Weight}} "{{Paradox}}" {{Uncovered}}?
+  %   \newblock \emph{American Journal of Epidemiology}, 164\penalty0 (11):\penalty0
+  %   1115--1120, September 2006.
+  %   \newblock ISSN 0002-9262, 1476-6256.
+  %   \newblock \doi{10.1093/aje/kwj275}.
+  %   \newblock URL
+  %   \url{https://academic.oup.com/aje/article-lookup/doi/10.1093/aje/kwj275}.
 
-\bibitem[{Hern{\'a}ndez-D{\'i}az} et~al.(2006){Hern{\'a}ndez-D{\'i}az},
-  Schisterman, and Hern{\'a}n]{hernandez-diaz2006a}
-{Hern{\'a}ndez-D{\'i}az}, S., Schisterman, E.~F., and Hern{\'a}n, M.~A.
-\newblock Hern\'andez-{{D\'iaz}} et al. {{Respond}} to ``{{The Perils}} of
-  {{Birth Weight}}''.
-\newblock \emph{American Journal of Epidemiology}, 164\penalty0 (11):\penalty0
-  1124--1125, December 2006.
-\newblock ISSN 0002-9262.
-\newblock \doi{10.1093/aje/kwj277}.
-\newblock URL \url{https://doi.org/10.1093/aje/kwj277}.
+  % \bibitem[{Hern{\'a}ndez-D{\'i}az} et~al.(2006){Hern{\'a}ndez-D{\'i}az},
+  %   Schisterman, and Hern{\'a}n]{hernandez-diaz2006a}
+  %   {Hern{\'a}ndez-D{\'i}az}, S., Schisterman, E.~F., and Hern{\'a}n, M.~A.
+  %   \newblock Hern\'andez-{{D\'iaz}} et al. {{Respond}} to ``{{The Perils}} of
+  %   {{Birth Weight}}''.
+  %   \newblock \emph{American Journal of Epidemiology}, 164\penalty0 (11):\penalty0
+  %   1124--1125, December 2006.
+  %   \newblock ISSN 0002-9262.
+  %   \newblock \doi{10.1093/aje/kwj277}.
+  %   \newblock URL \url{https://doi.org/10.1093/aje/kwj277}.
 
-\bibitem[Kline(2015)]{kline2015}
-Kline, R.~B.
-\newblock \emph{Principles and {{Practice}} of {{Structural Equation
-  Modeling}}, {{Fourth Edition}}}.
-\newblock {The Guilford Press}, {New York}, 2015.
-\newblock ISBN 978-1-4625-2334-4.
+  % \bibitem[Kline(2015)]{kline2015}
+  %   Kline, R.~B.
+  %   \newblock \emph{Principles and {{Practice}} of {{Structural Equation
+  %   Modeling}}, {{Fourth Edition}}}.
+  %   \newblock {The Guilford Press}, {New York}, 2015.
+  %   \newblock ISBN 978-1-4625-2334-4.
 
-\bibitem[McElreath(2020)]{rethinking_2020}
-McElreath, R.
-\newblock \emph{Statistical Rethinking: A {{Bayesian}} Course with Examples in
-  {{R}} and {{Stan}}, 2nd Ed.}
-\newblock {CRC Press}, 2020.
-\newblock ISBN 978-0-367-13991-9.
+  % \bibitem[McElreath(2020)]{rethinking_2020}
+  %   McElreath, R.
+  %   \newblock \emph{Statistical Rethinking: A {{Bayesian}} Course with Examples in
+  %   {{R}} and {{Stan}}, 2nd Ed.}
+  %   \newblock {CRC Press}, 2020.
+  %   \newblock ISBN 978-0-367-13991-9.
 
-\bibitem[Morgan and Winship(2015)]{morgan_counterfactuals_2015}
-Morgan, S.~L. and Winship, C.
-\newblock \emph{Counterfactuals and Causal Inference: Methods and Principles
-  for Social Research, 2nd Ed}.
-\newblock {Cambridge University Press}, {New York, NY}, 2015.
-\newblock ISBN 978-1-107-58799-1 978-1-107-06507-9 978-1-107-69416-3.
-\newblock URL \url{http://dx.doi.org/10.1017/CBO9781107587991}.
+  % \bibitem[Morgan and Winship(2015)]{morgan_counterfactuals_2015}
+  %   Morgan, S.~L. and Winship, C.
+  %   \newblock \emph{Counterfactuals and Causal Inference: Methods and Principles
+  %   for Social Research, 2nd Ed}.
+  %   \newblock {Cambridge University Press}, {New York, NY}, 2015.
+  %   \newblock ISBN 978-1-107-58799-1 978-1-107-06507-9 978-1-107-69416-3.
+  %   \newblock URL \url{http://dx.doi.org/10.1017/CBO9781107587991}.
 
-\bibitem[Neal(2020)]{neal_causality_2020}
-Neal, B.
-\newblock \emph{Introduction to {{Causal Inference}}}.
-\newblock 2020.
-\newblock URL
-  \url{https://www.bradyneal.com/Introduction_to_Causal_Inference-Dec17_2020-Neal.pdf}.
-
-
-\bibitem[Otsuka(2023)]{otsuka2023}
-Otsuka, J.
-\newblock \emph{Thinking about Statistics: The Philosophical Foundations}.
-\newblock {Routledge}, {New York, NY}, 2023.
-\newblock ISBN 978-1-03-232610-8
+  % \bibitem[Neal(2020)]{neal_causality_2020}
+  %   Neal, B.
+  %   \newblock \emph{Introduction to {{Causal Inference}}}.
+  %   \newblock 2020.
+  %   \newblock URL
+  %   \url{https://www.bradyneal.com/Introduction_to_Causal_Inference-Dec17_2020-Neal.pdf}.
 
 
+  % \bibitem[Otsuka(2023)]{otsuka2023}
+  %   Otsuka, J.
+  %   \newblock \emph{Thinking about Statistics: The Philosophical Foundations}.
+  %   \newblock {Routledge}, {New York, NY}, 2023.
+  %   \newblock ISBN 978-1-03-232610-8
 
 
 
-\bibitem[Pearl(2009)]{pearl_causality_2009}
-Pearl, J.
-\newblock \emph{Causality: Models, Reasoning, and Inference, 2nd Ed}.
-\newblock {Cambridge Univ. Press}, {New York, NY}, 2009.
-\newblock ISBN 978-0-521-89560-6.
-
-\bibitem[Pearl(2016)]{pearl2016}
-Pearl, J.
-\newblock Lord's {{Paradox Revisited}} \textendash{} ({{Oh Lord}}!
-  {{Kumbaya}}!).
-\newblock \emph{Journal of Causal Inference}, 4\penalty0 (2), 2016.
-\newblock ISSN 2193-3677.
-\newblock \doi{10.1515/jci-2016-0021}.
-\newblock URL
-  \url{https://www.degruyter.com/view/j/jci.2016.4.issue-2/jci-2016-0021/jci-2016-0021.xml}.
-
-\bibitem[Pearl and Mackenzie(2018)]{pearl2018}
-Pearl, J. and Mackenzie, D.
-\newblock \emph{The Book of Why: The New Science of Cause and Effect.}
-\newblock {Basic Books}, {New York, N.Y.}, 2018.
-
-\bibitem[Pearl et~al.(2016)Pearl, Glymour, and Jewell]{pearl_causal_2016}
-Pearl, J., Glymour, M., and Jewell, N.~P.
-\newblock \emph{Causal Inference in Statistics: A Primer}.
-\newblock {John Wiley \& Sons}, {Chichester, UK}, 2016.
-\newblock ISBN 978-1-119-18684-7.
 
 
-\bibitem[Peters et~al.(2017)Peters, Janzing, Scholkopf]{peters_causal_2017}
-Peters, J., Janzing, D., and Sch{\"o}lkopf, B.
-\newblock \emph{Elements of Causal Inference}.
-\newblock {MIT Press}
-\newblock ISBN 978-0-262-03731-0.
-\newblock URL
-  \url{https://library.oapen.org/bitstream/id/056a11be-ce3a-44b9-8987-a6c68fce8d9b/11283.pdf}
+% \bibitem[Pearl(2009)]{pearl_causality_2009}
+% Pearl, J.
+% \newblock \emph{Causality: Models, Reasoning, and Inference, 2nd Ed}.
+% \newblock {Cambridge Univ. Press}, {New York, NY}, 2009.
+% \newblock ISBN 978-0-521-89560-6.
+
+% \bibitem[Pearl(2016)]{pearl2016}
+% Pearl, J.
+% \newblock Lord's {{Paradox Revisited}} \textendash{} ({{Oh Lord}}!
+%   {{Kumbaya}}!).
+% \newblock \emph{Journal of Causal Inference}, 4\penalty0 (2), 2016.
+% \newblock ISSN 2193-3677.
+% \newblock \doi{10.1515/jci-2016-0021}.
+% \newblock URL
+%   \url{https://www.degruyter.com/view/j/jci.2016.4.issue-2/jci-2016-0021/jci-2016-0021.xml}.
+
+% \bibitem[Pearl and Mackenzie(2018)]{pearl2018}
+% Pearl, J. and Mackenzie, D.
+% \newblock \emph{The Book of Why: The New Science of Cause and Effect.}
+% \newblock {Basic Books}, {New York, N.Y.}, 2018.
+
+% \bibitem[Pearl et~al.(2016)Pearl, Glymour, and Jewell]{pearl_causal_2016}
+% Pearl, J., Glymour, M., and Jewell, N.~P.
+% \newblock \emph{Causal Inference in Statistics: A Primer}.
+% \newblock {John Wiley \& Sons}, {Chichester, UK}, 2016.
+% \newblock ISBN 978-1-119-18684-7.
+
+
+% \bibitem[Peters et~al.(2017)Peters, Janzing, Scholkopf]{peters_causal_2017}
+% Peters, J., Janzing, D., and Sch{\"o}lkopf, B.
+% \newblock \emph{Elements of Causal Inference}.
+% \newblock {MIT Press}
+% \newblock ISBN 978-0-262-03731-0.
+% \newblock URL
+%   \url{https://library.oapen.org/bitstream/id/056a11be-ce3a-44b9-8987-a6c68fce8d9b/11283.pdf}
 
 
 
-\bibitem[Rosenbaum(2017)]{rosenbaum2017}
-Rosenbaum, P.
-\newblock \emph{Observation and {{Experiment}}: An {{Introduction}} to {{Causal
-  Inference}}}.
-\newblock {Harvard University Press}, {Cambridge, Massachusetts}, August 2017.
-\newblock ISBN 978-0-674-97557-6.
+% \bibitem[Rosenbaum(2017)]{rosenbaum2017}
+% Rosenbaum, P.
+% \newblock \emph{Observation and {{Experiment}}: An {{Introduction}} to {{Causal
+%   Inference}}}.
+% \newblock {Harvard University Press}, {Cambridge, Massachusetts}, August 2017.
+% \newblock ISBN 978-0-674-97557-6.
 
-\bibitem[Sober(2024)]{sober2024}
-Sober, E.
-\newblock Thoughts on {{Jun Otsuka}}'s {{Thinking}} about {{Statistics}} -- the {{Philosphical Foundations}}.
-\newblock \emph{Asian Journal of Philosophy}, 3\penalty0 (1), 2024.
-\newblock ISSN 2731-4642
-\newblock \doi{10.1007/s44204-024-00173-8}.
-\newblock URL
+% \bibitem[Sober(2024)]{sober2024}
+% Sober, E.
+% \newblock Thoughts on {{Jun Otsuka}}'s {{Thinking}} about {{Statistics}} -- the {{Philosphical Foundations}}.
+% \newblock \emph{Asian Journal of Philosophy}, 3\penalty0 (1), 2024.
+% \newblock ISSN 2731-4642
+% \newblock \doi{10.1007/s44204-024-00173-8}.
+% \newblock URL
 
- \url{https://link.springer.com/10.1007/s44204-024-00173-8}
-
-
-\bibitem[VanderWeele(2015)]{vanderweele2015}
-VanderWeele, T.
-\newblock \emph{Explanation in {{Causal Inference}}: Methods for {{Mediation}}
-  and {{Interaction}}}.
-\newblock {Oxford University Press}, {New York}, 2015.
-\newblock ISBN 978-0-19-932587-0.
-
-\bibitem[VanderWeele and Shpitser(2011)]{vanderweele2011}
-VanderWeele, T.~J. and Shpitser, I.
-\newblock A {{New Criterion}} for {{Confounder Selection}}.
-\newblock \emph{Biometrics}, 67\penalty0 (4):\penalty0 1406--1413, 2011.
-\newblock ISSN 1541-0420.
-\newblock \doi{10.1111/j.1541-0420.2011.01619.x}.
-\newblock URL
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1541-0420.2011.01619.x}.
-
-\bibitem[Westreich(2019)]{westreich2019}
-Westreich, D.
-\newblock \emph{Epidemiology by {{Design}}: A {{Causal Approach}} to the
-  {{Health Sciences}}}.
-\newblock {Oxford University Press}, {New York, NY}, 2019.
-\newblock ISBN 978-0-19-066576-0.
+%  \url{https://link.springer.com/10.1007/s44204-024-00173-8}
 
 
-\bibitem[Woodward(2003)]{woodward2003}
-Woodward, J.
-\newblock \emph{Making Things Happen: A Theory of Causal Explanation}.
-\newblock {Oxford University Press}, {New York, NY}, 2003.
-\newblock ISBN 978-0-19-803533-6.
+% \bibitem[VanderWeele(2015)]{vanderweele2015}
+% VanderWeele, T.
+% \newblock \emph{Explanation in {{Causal Inference}}: Methods for {{Mediation}}
+%   and {{Interaction}}}.
+% \newblock {Oxford University Press}, {New York}, 2015.
+% \newblock ISBN 978-0-19-932587-0.
 
-\end{thebibliography}
+% \bibitem[VanderWeele and Shpitser(2011)]{vanderweele2011}
+% VanderWeele, T.~J. and Shpitser, I.
+% \newblock A {{New Criterion}} for {{Confounder Selection}}.
+% \newblock \emph{Biometrics}, 67\penalty0 (4):\penalty0 1406--1413, 2011.
+% \newblock ISSN 1541-0420.
+% \newblock \doi{10.1111/j.1541-0420.2011.01619.x}.
+% \newblock URL
+%   \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1541-0420.2011.01619.x}.
+
+% \bibitem[Westreich(2019)]{westreich2019}
+% Westreich, D.
+% \newblock \emph{Epidemiology by {{Design}}: A {{Causal Approach}} to the
+%   {{Health Sciences}}}.
+% \newblock {Oxford University Press}, {New York, NY}, 2019.
+% \newblock ISBN 978-0-19-066576-0.
 
 
-}
+% \bibitem[Woodward(2003)]{woodward2003}
+% Woodward, J.
+% \newblock \emph{Making Things Happen: A Theory of Causal Explanation}.
+% \newblock {Oxford University Press}, {New York, NY}, 2003.
+% \newblock ISBN 978-0-19-803533-6.
+
+% \end{thebibliography}
+
+
+% }
 
 
 
