@@ -1,1 +1,3 @@
 Recall I made a bunch of changes to what would be Lesson 3 in PRSTR.
+
+- That includes de Bioequivalence stuff, that is to be finished.
