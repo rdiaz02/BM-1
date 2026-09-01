@@ -284,7 +284,7 @@ What are we leaving out? Almost everything.
 
 \begin{frame}
   \frametitle{Why R?}
-  \begin{itemize}
+  \begin{itemize}\addtolength{\itemsep}{-2ex}
   \item Free (as in ``free beer'' and as in ``free speech''): free software
   \item Available for all major operating systems
   \item High quality
@@ -294,9 +294,9 @@ What are we leaving out? Almost everything.
     ``omics'' research
   \item Available in popular ``scientific workflows''
     (\Burl{http://en.wikipedia.org/wiki/Scientific_workflow_system}) such
-    as Kepler, Taverna, Galaxy or Knime.
-  \item A key piece in reproducible research
-  \item They even started to mention it in \textit{Nature} editorials.
+    as Kepler, Taverna, Galaxy. % or Knime.
+  \item A key piece in reproducible research.
+  % \item They even started to mention it in \textit{Nature} editorials.
     % (\textit{The digital toolbox}, 4-September-2014) and \textit{Nature}
     % toolboxes articles (Tippman, 2015, \textit{Programming tools:
     %   adventurs with R}, January 2015) :-) This is now common nowadays.
@@ -384,11 +384,11 @@ What are we leaving out? Almost everything.
 \vspace*{15pt}
 %%\item Computers in class will have software installed
   \item You \textbf{\red{MUST}} install several things on your own computer
-    \begin{itemize}
-    \item for the course %if you bring your computer to class
-    % \item for out-of-class work
-    \item for the rest of your life
-    \end{itemize}
+    % \begin{itemize}
+    % \item for the course %if you bring your computer to class
+    % % \item for out-of-class work
+    % \item for the rest of your life
+    % \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -535,22 +535,22 @@ notes \textbf{before} class.
 
 
 \begin{frame}
-   \frametitle{But the objective of this course is not to teach you R}
-   \begin{itemize}\addtolength{\itemsep}{3.1ex}
+   \frametitle{The objective of this course is not to teach you R}
+   %\begin{itemize}\addtolength{\itemsep}{-1ex}
    %% \item \ldots that would be too ambitious
-   \item \ldots the material in the notes will allow you to learn quite
-     a bit of R.
-   \item Aren't the last slides inconsistent?
-   \item Nope:
-     \begin{itemize}
+   % \item \ldots the material in the notes will allow you to learn quite
+   %   a bit of R.
+   % \item Aren't the last slides inconsistent?
+   % \item Nope:
+     \begin{itemize}%\addtolength{\itemsep}{-1ex}
      \item Course objective: learn basic stats.
      \item We need a common system (``communicate in a shared language when
        using the computer'') to do stats: that will be R. This is the
        vehicle.
-     \item (Other analogies come to mind, like teaching the class in
+     \item (Like teaching the class in
        Spanish, English, Portuguese, French, German, Esperanto, \ldots)
      \end{itemize}
-   \end{itemize}
+   % \end{itemize}
 \end{frame}
 
 
@@ -558,10 +558,11 @@ notes \textbf{before} class.
 
 \begin{frame}
   \frametitle{R Commander, R Studio, and R are NOT the objective of the class}
-  R Commander, R Studio, and R will NOT be things we ask about in the exam!!
-  \begin{itemize}
-  \item We need a common language, a common vehicle to teach stats
-  \item The purposes of the course is to learn stats, not R or R Studio or R Commnader
+
+  \begin{itemize}\addtolength{\itemsep}{-1.1ex}
+  % \item We need a common language, a common vehicle to teach stats
+  \item The purposes of the course is to learn stats, not R or R Studio or R Commander
+    \item R Commander, R Studio, and R will NOT be things we ask about in the exam!!
   \item In the exam you will NOT use a computer
   \item In the exam you will NOT be asked questions about R or R Commander or R Studio. But you must be able to interpret output, including graphics and output from statistical analyses.
   \item \textbf{Any questions about this?}
@@ -571,14 +572,15 @@ notes \textbf{before} class.
 
 
 \begin{frame}
-  \frametitle{The examples are too simple and not all are about biology}
-  \begin{itemize}
-  \item We want simple examples where we do not need to understand the details of a technique; we want to focus on the mapping between the (biological?) question and the stats and the interpretation.
+  \frametitle{Examples are too simple/not all are about biology}
+  \begin{itemize}\addtolength{\itemsep}{-2.1ex}
+  \item We want simple examples where we do not need to understand the details of a technique.
+  \item Focus on the mapping between the question and the stats and the interpretation.
   \item E.g., ``Grade in an exam as a function of number of coffees'' is  simple, immediate to understand, without getting bogged in the details.
-  \item Good to be exposed to examples that use data types that are not what we work with everyday. Allows us to:
-    \begin{itemize}
+  \item Exposition to examples that use data types that are not what we work with everyday allows us to:
+    \begin{itemize}\addtolength{\itemsep}{-2.1ex}
     \item recognize patterns ("this is a two-way comparison", "this is a linear model") when we face new data analysis problems (we change labs? we help a colleague?)
-    \item read very excellent stats textbooks with no biological examples
+    \item read excellent stats textbooks with no biological examples.
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -628,7 +630,7 @@ notes \textbf{before} class.
 
 \begin{frame}
   \frametitle{Class mechanics}
-  \begin{itemize}\addtolength{\itemsep}{3.1ex}
+  \begin{itemize}%\addtolength{\itemsep}{3.1ex}
   \item Do NOT expect too much hand holding in terms of  ``where is the
     pull down menu for importing a file'', etc
   \item We (teachers) will:
@@ -653,8 +655,7 @@ notes \textbf{before} class.
   \frametitle{Working through the notes before class}
   Why?
 
-
-\begin{itemize}\addtolength{\itemsep}{3.1ex}
+\begin{itemize}%\addtolength{\itemsep}{3.1ex}
 \item You will learn the material a lot better (\textbf{Active
   learning})
 \item There is a lot of material to cover (really: A LOT ---look at the
@@ -663,7 +664,7 @@ number of pages and topics in the notes)
 
 \vspace*{15pt}
 
-\begin{itemize}\addtolength{\itemsep}{3.1ex}
+\begin{itemize}%\addtolength{\itemsep}{3.1ex}
 \item try it on your own
 \item find out what you don't know/understand (or makes no sense in the notes)
 \item get it answered (you get a need fulfilled)
@@ -675,17 +676,16 @@ number of pages and topics in the notes)
   \frametitle{Working through the notes before class}
 
 
-\begin{itemize}\addtolength{\itemsep}{3.1ex}
+\begin{itemize}\addtolength{\itemsep}{-1.1ex}
 \item No time to cover every single thing in the notes
-  \item All of you should have taken at least one statistics class so you can look at your old stats class notes (and
-for specific things you need to remember, there is always Wikipedia).
+  \item All of you should have taken at least one statistics class%  (and
+% for specific things you need to remember, there is always Wikipedia).
 \item If we get the trivial stuff out of the way, we can deal with more
-  interesting stuff
-\item We can focus on what is really challenging
-\item We focus on connecting ideas
+  interesting stuff:
+\item focus on what is really challenging and connecting ideas
 \item Working on the material before class will at times be slightly frustrating: it is a deliberate part of the plan
 \item This material might be new to you: passive attendance to class will rarely be enough. We need several passes, with discussion, over it
-  \item (For a given reasonably good grade) The total amount of time you devote to studying is \textbf{less} if you work on the material before coming to class. Yes, this is true (give it a try)
+
 %% \item And again: on-line teaching.
 \end{itemize}
 
@@ -717,49 +717,55 @@ for specific things you need to remember, there is always Wikipedia).
 \begin{frame}
   \frametitle{Working through the notes before class}
 
-How? Up to you.
+
+(For a given reasonably good grade) The total amount of time you devote to studying is \textbf{less} if you work on the material before coming to class. Yes, this is true (give it a try)
 
 \vspace*{15pt}
 
-Working in groups a good idea
-
-\begin{itemize}
-\item Your peers are likely to be the ones who best understand what it is you do not   understand
-\end{itemize}
-
-\end{frame}
+How? Up to you. Working in groups might be a good idea: Your peers are likely to be the ones who best understand what it is you do not   understand.
 
 
-
-
-% \begin{frame}
-%   \frametitle{Working through the notes before class}
-%   Please, please: do it
-% \vspace*{15pt}
-%   \begin{itemize}
-%   \item
-%   \end{itemize}
 % \end{frame}
 
 
+
+
+% % \begin{frame}
+% %   \frametitle{Working through the notes before class}
+% %   Please, please: do it
+% % \vspace*{15pt}
+% %   \begin{itemize}
+% %   \item
+% %   \end{itemize}
+% % \end{frame}
+
+
+% % \begin{frame}
+% %   \frametitle{Working through the notes before class}
+% % %  Please, please: do it
+% %   \begin{itemize}\addtolength{\itemsep}{3.1ex}
+% %   \item If none of you work on this on your own \ldots
+% %     \begin{itemize}
+% %     \item classes will go painfully slow
+% %     \item we will all end up frustrated
+% %     \end{itemize}
+% %   \item If some of you work through it and some won't \ldots most
+% %     likely those who don't will be left way behind ---and ``tutorías'' are
+% %     not the way to fix not working through the notes before class
+% %   \end{itemize}
+% % \end{frame}
+
+
 % \begin{frame}
-%   \frametitle{Working through the notes before class}
-% %  Please, please: do it
-%   \begin{itemize}\addtolength{\itemsep}{3.1ex}
-%   \item If none of you work on this on your own \ldots
-%     \begin{itemize}
-%     \item classes will go painfully slow
-%     \item we will all end up frustrated
-%     \end{itemize}
-%   \item If some of you work through it and some won't \ldots most
-%     likely those who don't will be left way behind ---and ``tutorías'' are
-%     not the way to fix not working through the notes before class
-%   \end{itemize}
-% \end{frame}
+%   \frametitle{In case it was not clear}
+
+\vspace*{10pt}
 
 
-\begin{frame}
-  \frametitle{In case it was not clear}
+\hrulefill
+
+\vspace*{5pt}
+
   Please,  work on the notes on your own before coming to class. We \textbf{really} expect you to look at the notes before coming to class.
 
 \vspace*{15pt}
@@ -777,7 +783,7 @@ What you get out of this class depends a lot on what you put into
   \vspace*{-5pt}
 
 
-  \begin{itemize}\addtolength{\itemsep}{-1.5ex}
+  \begin{itemize}\addtolength{\itemsep}{-1.95ex}
   \item Oakley, B. \& Schewe, O. (2021). \textit{Learn like a pro: science-based tools to become better at anything.} St.\ Martin's Essentials. \url{https://www.worldcat.org/title/1184237709} \\
     {[\textbf{I highly recommend this book!}]}
 
@@ -810,7 +816,7 @@ What you get out of this class depends a lot on what you put into
 
 \begin{frame}
   \frametitle{Class notes and following the order}
-  \begin{itemize}\addtolength{\itemsep}{3.1ex}
+  \begin{itemize}%\addtolength{\itemsep}{3.1ex}
   \item There might be slight deviations from the sequential order of pages in the notes. % Do not expect as to follow the notes being faithful to every single comma or period.
 
   \item There are topics in the notes that we will not cover. This is on purpose, and the notes anticipate it (e.g., ``This is advanced material and we will not cover it in class'').
@@ -825,8 +831,8 @@ What you get out of this class depends a lot on what you put into
 \begin{frame}
   \frametitle{Tutorías}
   \begin{itemize}\addtolength{\itemsep}{3.1ex}
-  \item Tutorías are there for a reason
-  \item But tutorías are \textbf{not}:
+  \item Tutorías: email us to ask for them.
+  \item Tutorías are \textbf{not}:
     \begin{itemize}
     \item Remedial classes if, for some reason, you cannot come to a class, \textbf{except for exceptional, well justified reasons}. If you cannot come to class, ask your classmates and work on your own with the class notes.
     \item Remedial introductory sessions (i.e., do not use a tutoría if you could not come here today).
@@ -853,7 +859,7 @@ What you get out of this class depends a lot on what you put into
 \begin{frame}
   \frametitle{Forum: examples of poor question titles/subjects}
 
-  \begin{itemize}\addtolength{\itemsep}{3.1ex}
+  \begin{itemize}%\addtolength{\itemsep}{3.1ex}
   \item R does not run. \textit{What does not run, exactly?}
   \item I cannot install R. \textit{Where and what fails?}
   \item I don't understand statistics. \textit{Eh?! None of
@@ -879,7 +885,7 @@ What you get out of this class depends a lot on what you put into
 
 \begin{frame}
   \frametitle{Forum: attachments and error messages}
-  \begin{itemize}\addtolength{\itemsep}{3.1ex}
+  \begin{itemize}\addtolength{\itemsep}{-1.1ex}
   \item Whenever possible, copy and paste the error message(s) as
     \textbf{text} in the body of the question.
 
@@ -891,7 +897,7 @@ What you get out of this class depends a lot on what you put into
 
   \item Text is easy to copy/modify.
 
-  \item (Yes, copying and pasting the text error in an email message is
+  \item (Copying and pasting the text error in an email message is
     much simpler and faster for you too.)
   \end{itemize}
 \end{frame}
@@ -919,14 +925,11 @@ What you get out of this class depends a lot on what you put into
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{The first key lesson}
-\end{frame}
 
 
 \begin{frame}
   \frametitle{The first key lesson}
-  \begin{itemize}\addtolength{\itemsep}{3.1ex}
+  \begin{itemize}%\addtolength{\itemsep}{3.1ex}
   \item Both Blanca Lizarbe and myself have \textbf{failed the mind reading
     courses}.
   \item So ...
@@ -944,7 +947,7 @@ What you get out of this class depends a lot on what you put into
 
 \begin{frame}
   \frametitle{Grading}
-  \begin{itemize}\addtolength{\itemsep}{3.1ex}
+  \begin{itemize}%\addtolength{\itemsep}{3.1ex}
   \item Look at guia docente.
     \begin{itemize}
     \item Available from Moodle (and from % \Burl{https://secretaria-virtual.uam.es/doa/consultaPublica/look[conpub]VolverInfoPubGuiaDocAs})
@@ -1004,7 +1007,7 @@ What you get out of this class depends a lot on what you put into
 
 \begin{frame}
   \frametitle{Exam: using my own computer}
-  \begin{itemize}\addtolength{\itemsep}{1.5ex}
+  \begin{itemize}\addtolength{\itemsep}{-1.15ex}
   % \item You are very welcome to bring your own laptop to class.
   % % \item Make sure you install the required software %% {\scriptsize  \Burl{http://ligarto.org/rdiaz/BM1-software-applied-stats.txt}}
   % % \item \textbf{Wi-Fi (eduroam)}: (google for ``wifi UAM'') %\Burl{http://www.uam.es/servicios/ti/servicios/wifi/}
@@ -1015,7 +1018,7 @@ What you get out of this class depends a lot on what you put into
 
   % \item Note: Wi-Fi/internet will be needed for the exam.
 
-    \item For the exam you will need either a laptop with Wi-Fi, or a
+    \item For the exam you will need either a \textbf{laptop with Wi-Fi}, or a
       smartphone or tablet with an internet connection: you will do the
       exam in Moodle.
     \item Try \textbf{not} to use a smartphone.
