@@ -1,0 +1,302 @@
+%% Simplification and tuning of common-slide-1.tex
+\synctex=1
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+
+
+
+\usepackage[font=itshape]{quoting}
+\usepackage[]{graphicx}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{colortbl}
+
+%%\usepackage{CSIC3}
+
+\usetheme{default}
+% \selectcolormodel{gray} %% Nope, no red for ACTIVITIES, etc
+\usecolortheme{dove}
+\setbeamercolor{frametitle}{fg=black}
+
+
+
+\setbeamercolor{frametitle}{bg=white!90}
+\setbeamertemplate{frametitle}{%
+  \vspace*{6.3pt} %% increase/decrease for space above slide title
+  %% In the next, wd controls width of text
+  \begin{beamercolorbox}[wd=1.05\textwidth, dp=0.024cm]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle
+    \noindent
+    \vspace*{-13pt}
+    \rule{1.05\textwidth}{1.2pt}
+  \end{beamercolorbox}
+  % \vspace*{0.1cm}
+}
+
+
+\setbeamertemplate{headline}{
+   \begin{beamercolorbox}[ignorebg,ht=1.87ex,dp=0.0ex]{section in head/foot}
+     \colorbox{gray!10}{
+       \insertsectionnavigationhorizontal{\paperwidth}{}{}
+     }
+   \end{beamercolorbox}
+}
+
+%% In headline, current section in bold, non-current non-bold
+\setbeamerfont{section in head/foot}{series=\bfseries}
+\setbeamertemplate{section in head/foot shaded}{\mdseries\color{gray}\usebeamertemplate{section in head/foot}}
+
+
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+\begin{beamercolorbox}[wd=1.00\paperwidth,ht=2.25ex,dp=1ex,right]{subsection in head/foot}%
+      \usebeamerfont{subsection in  head/foot}\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+    \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+%% The headline with the section title. It also
+%% moves page numbers to the right, relative to CSIC3. OK, fine.
+%% Actually I do not need it, as it is all above: the headline and footline.
+% \useoutertheme[subsection=false]{mysmoothbars3}
+
+
+%%%%% or the next three and maybe the following three for navigation balls
+% \usetheme{myFrankfurt}
+% \useoutertheme[subsection=false]{mysmoothbars}
+% \usecolortheme{whale} %% wolverine was original
+%% whale OK
+\makeatletter
+  \beamer@compressfalse
+\makeatother
+%%%%% Issues with multiple lines, etc for dots
+%%%% http://tex.stackexchange.com/questions/35796/how-can-i-get-multiple-lines-of-frame-dots-in-beamer-navigation
+
+
+
+
+\setbeamercolor{itemize item}{fg=black}
+%\setbeamertemplate{itemize item}[circle] %% [ball] ball does not change to black
+% \setbeamertemplate{itemize item}[ball]
+%% Larger circle
+\setbeamertemplate{itemize item}{\Huge\raise-5.05pt\hbox{\textbullet}}
+
+
+%% None of the back, forward, etc
+\setbeamertemplate{navigation symbols}{}
+
+
+\usepackage{array}
+%% trying to fix interaction with pfg if using notes on second screen
+\usepackage[absolute,overlay]{textpos}
+% \usepackage[overlay]{textpos}
+
+%\usepackage[spanish]{babel} % can do funny things with \lim \min
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+%%\usepackage{fancybox}
+
+\usepackage{gitinfo}
+
+\usepackage{url}
+
+\usepackage{bm}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{\slshape\footnotesize #1}}
+\newcommand{\Code}[1]{\texttt{\slshape #1}}
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+\newcommand{\R}{{\sf R}}
+
+\newenvironment{myitemize}
+{\begin{itemize}}{\end{itemize}}
+
+\newcommand{\mydes}[2][]{
+  \vspace*{-1pt}
+%%  \renewcommand{\baselinestretch}{0.7}\small\normalsize
+  \begin{description}\item[{#2}]{#1}\end{description}
+\vspace*{-8pt}
+}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,positioning}
+
+\tikzset{
+  % Define standard arrow tip
+  >=stealth',
+  % Define style for boxes
+  punkt/.style={
+    rectangle,
+    rounded corners,
+    draw=black, %very thick,
+    %maximum width=6em,
+    %text width=6.5em,
+    minimum height=2em,
+    text centered},
+  punkt2/.style={
+    rectangle,
+    rounded corners,
+    draw=black, %very thick,
+    text width=2.35cm,
+    %text width=6.5em,
+    minimum height=2em,
+    inner sep = 2pt,
+    text centered},
+  punkt3/.style={
+    rectangle,
+%    rounded corners,
+    draw=black, %very thick,
+%    text width=1.cm,
+    %text width=6.5em,
+    minimum height=2em,
+    inner sep = 3pt,
+    text centered},
+  punkk/.style={
+    rectangle,
+    rounded corners=3mm,
+    draw=black, %very thick,
+    %text width=6.5em,
+    minimum height=2em,
+    text centered},
+  ell1/.style={
+    %ellipse,
+    %draw = black, very thick,
+    text width=1.7cm,
+    inner sep = 0pt,
+    text centered},
+  % Define arrow style
+  pil/.style={
+    ->,
+    thick,
+    shorten <=2pt,
+    shorten >=2pt,}
+}
+
+
+%% Increase spacing between items in itemize and enumerate
+\AddToHook{cmd/itemize/after}{\addtolength{\itemsep}{1.2\baselineskip}}
+\AddToHook{cmd/enumerate/after}{\addtolength{\itemsep}{1.2\baselineskip}}
+
+%% Increase nested item spacing
+\setbeamertemplate{itemize/enumerate subbody begin}{\vspace{.75\baselineskip}}
+
+%% First item
+\setbeamertemplate{itemize/enumerate body begin}{\vspace{1.0\baselineskip}}
+%% Last
+\setbeamertemplate{itemize/enumerate body end}{\vspace{1.5\baselineskip}}
+
+%% When you need to modify spacing
+%%  \begin{itemize}\addtolength{\itemsep}{-1.8ex}
+
+% %%    Nested lists
+% \AddToHook{cmd/itemize/after}{\addtolength{\topsep}{2.5\baselineskip}}
+% \AddToHook{cmd/enumerate/after}{\addtolength{\topsep}{1.5\baselineskip}}
+
+%% Though maybe this? to limit it just to nested lists
+% \makeatletter
+% \AddToHook{cmd/itemize/after}{%
+%   \ifnum\@listdepth>1\relax
+%     \addtolength{\topsep}{1.5\baselineskip}%
+%   \fi
+% }
+% \makeatother
+
+
+
+%% for fbox
+\setlength{\fboxrule}{2pt} %% thicker
+\setlength{\fboxsep}{0pt} %% no padding
+
+
+
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% knitr
+%%% Some slides in -II and probably -III still have some knitr stuff
+%%% It could be easily removed (just formats some text).
+\usepackage{alltt}
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end knitr
+
+
+
+\author[Ramón Díaz-Uriarte]{Ramón Díaz-Uriarte}
+\institute[]{Dept. Bioquímica\\
+Universidad Autónoma de Madrid\\
+Madrid, Spain\\
+\texttt{r.diaz@uam.es}\\
+\Burl{https://ligarto.org/rdiaz}
+}
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% ispell-local-dictionary: "en_US"
+%%% coding: iso-8859-15
+%%% End:
