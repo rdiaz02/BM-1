@@ -13,7 +13,9 @@ require(knitr, quietly = TRUE)
 library(patchSynctex)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
-options(width = 65)
+## Wrapping of the R output, so that it does not run past the right
+## margin; see the comments in knitr-setup.R
+source("knitr-setup.R")
 @
 
 <<packages,echo=FALSE,results='hide',message=FALSE>>=
@@ -479,7 +481,8 @@ AnovaMIT <- aov(activ ~ ftraining, data=dmit)
 summary(AnovaMIT)
 
 ## The next I comment out
-## numSummary(dmit$activ , groups=dmit$ftraining, statistics=c("mean", "sd"))
+## numSummary(dmit$activ , groups=dmit$ftraining,
+##             statistics=c("mean", "sd"))
 
 ## The next two lines carry out the multiple comparisons and the following
 ## lines plot them
@@ -1229,7 +1232,8 @@ cholestanova <- (lm(y ~ Diet*Drug, data=dcholest))
 ## which is a function from the car package.
 Anova(cholestanova)
 
-## Now we are shown the 3 by 2 table of means, standard deviations, and number
+## Now we are shown the 3 by 2 table of means,
+## standard deviations, and number
 ## of observations
 tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
        mean, na.rm=TRUE) # means
@@ -1308,8 +1312,10 @@ different ones, that differ by the order in which factors are specified
 (one or the other might be easier to decode visually):
 
 <<out.width='8cm', out.height='8cm', fig.show='hold'>>=
-boxplot(y ~ Drug * Diet, data = dcholest, col = c("salmon", "gold"))
-boxplot(y ~ Diet * Drug, data = dcholest, col = c("salmon", "gold", "lightblue"))
+boxplot(y ~ Drug * Diet, data = dcholest,
+        col = c("salmon", "gold"))
+boxplot(y ~ Diet * Drug, data = dcholest,
+        col = c("salmon", "gold", "lightblue"))
 @
 
 
@@ -4057,7 +4063,8 @@ summary(mcystL_r)
 Anova(mcystL_r)
 
 ## Manually reducing it. Be careful here!!!
-mcystL_r2 <- update(mcystL_r, . ~ . -age:weight:sex - height:sex - age:weight)
+mcystL_r2 <- update(mcystL_r,
+                    . ~ . -age:weight:sex - height:sex - age:weight)
 Anova(mcystL_r2)
 anova(mcystL_r2, mcystL_r)
 @
@@ -4782,8 +4789,8 @@ What about additive model?
 ## Overall mean:
 mean(df1$y)
 
-## Note what are the estimates of the effects of A and B: the mean deviation
-## of the second level from the first:
+## Note what are the estimates of the effects of A and B:
+## the mean deviation of the second level from the first:
 ## A2
 mean(means[2, ] - means[1, ])
 ## B2
@@ -5251,7 +5258,8 @@ Prestige.c <- within(Prestige, {
   women <- women - mean(women)
 })
 
-mI2.c <- lm(prestige ~ income * women * education * type, data = Prestige.c)
+mI2.c <- lm(prestige ~ income * women * education * type,
+            data = Prestige.c)
 
 ## Now dfs are OK
 Anova(mI2.c)
@@ -5260,8 +5268,10 @@ Anova(mI2.c)
 e <- eigen(vcov(mI2.c))$values
 max(e)/min(e)
 
-m_1.c <- lm(prestige ~ type * income * education, data = Prestige.c)
-m_2.c <- lm(prestige ~ type * income * education + women, data = Prestige.c)
+m_1.c <- lm(prestige ~ type * income * education,
+            data = Prestige.c)
+m_2.c <- lm(prestige ~ type * income * education + women,
+            data = Prestige.c)
 ## These do match women SS
 sum(residuals(m_1.c)^2) - sum(residuals(m_2.c)^2)
 

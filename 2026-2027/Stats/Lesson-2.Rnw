@@ -8,7 +8,9 @@ library(patchSynctex)
 opts_knit$set(concordance = TRUE)
 opts_knit$set(stop_on_error = 2L)
 require(car, quietly = TRUE)
-options(width = 65)
+## Wrapping of the R output, so that it does not run past the right
+## margin; see the comments in knitr-setup.R
+source("knitr-setup.R")
 @
 
 %% Packages needed: knitr, BiocStyle needs to be 1.2.0 or above
@@ -113,7 +115,7 @@ than the page numbers.
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014-2025 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
+This work is Copyright, \copyright, 2014-2026 Ramon Diaz-Uriarte, and is licensed under a \textbf{Creative Commons
 } Attribution-ShareAlike 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
 
@@ -1667,7 +1669,8 @@ wilcox.test(x, y)
 @
 
 <<fig.height=5, fig.width=5>>=
-stripchart(c(x, y) ~ c(rep("x", 10000), rep("y", 10000)), vertical = TRUE,
+stripchart(c(x, y) ~ c(rep("x", 10000), rep("y", 10000)),
+           vertical = TRUE,
            method = "jitter", ylab = "Value")
 @
 
@@ -1699,7 +1702,8 @@ Go do it with the dmyc data we used for the paired t-test (section
 
 
 <<>>=
-wilcox.test(dmycWide$myc.NC, dmycWide$myc.Cancer, alternative='two.sided',
+wilcox.test(dmycWide$myc.NC, dmycWide$myc.Cancer,
+            alternative='two.sided',
             paired=TRUE)
 @
 
@@ -1878,7 +1882,8 @@ Now, let's do a t-test on the aggregated data. Pay attention to the
 degrees of freedom (and the statistic and p-values):
 
 <<>>=
-t.test(brca2~cond, alternative='two.sided', conf.level=.95, var.equal=FALSE,
+t.test(brca2~cond, alternative='two.sided',
+       conf.level=.95, var.equal=FALSE,
   data=aggbrca)
 @
 
