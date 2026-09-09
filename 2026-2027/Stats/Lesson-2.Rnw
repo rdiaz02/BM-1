@@ -1884,7 +1884,7 @@ degrees of freedom (and the statistic and p-values):
 <<>>=
 t.test(brca2~cond, alternative='two.sided',
        conf.level=.95, var.equal=FALSE,
-  data=aggbrca)
+       data=aggbrca)
 @
 
 You can see that doing things correctly makes, in this case, a large
