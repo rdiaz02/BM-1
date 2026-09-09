@@ -136,7 +136,7 @@ suppressMessages(library(RcmdrPlugin.KMggplot2, quietly = TRUE, warn.conflicts =
 
 
 \section*{License and copyright}\label{license}
-This work is Copyright, \copyright, 2026, Ramon Diaz-Uriarte, and is
+This work is Copyright, \copyright, 2024-2026, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
