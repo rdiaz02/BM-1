@@ -854,7 +854,7 @@ We can approach this problem as one of finding evidence against a (new null) hyp
 
 In a sense, this is like inverting the burden of proof: it is as if now we want evidence in favor of a hypothesis that says that things do not differ by more than a given, small, value (i.e., it seems we now want evidence in favor of what is often the null). In other words, we want strong evidence that the true value is inside the equivalence bounds, the bounds that say that ``things are similar, or equivalent''.
 
-Figure \ref{fig-equiv}, from Lakens et al. 2018\footnote{Lakens et al.(2018). Equivalence Testing for Psychological Research: A Tutorial. \textit{Advances in Methods and Practices in Psychological Science}, 1(2): 259--269. \Burl{https://doi.org/10.1177/2515245918770963}}, shows equivalence testing alongside the usual null hypothesis significance testing, as well as other tests. % Which of the four cases represented corresponds to the chlorine example in the notes?
+Figure \ref{fig-equiv}, from Lakens et al.~2018\footnote{Lakens et al.(2018). Equivalence Testing for Psychological Research: A Tutorial. \textit{Advances in Methods and Practices in Psychological Science}, 1(2): 259--269. \Burl{https://doi.org/10.1177/2515245918770963}}, shows equivalence testing alongside the usual null hypothesis significance testing, as well as other tests. % Which of the four cases represented corresponds to the chlorine example in the notes?
 What case would represent examining if the effects of the brand name drug and a generic are similar?
 
 
