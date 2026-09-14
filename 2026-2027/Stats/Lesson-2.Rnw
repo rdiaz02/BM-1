@@ -571,6 +571,24 @@ In class we will very briefly cover how the confidence interval is constructed. 
 \externalf Now, look at file \myhref{CI-p-value-examples.pdf}.
 
 
+This might help understand the CI. It comes from p.~98 of the recommended book by Dalgaard (``Introductory Statistics with R, 2nd ed'', Springer). He refers to a 95\% CI and writes: ``This is a 95\% confidence interval for the true mean; that is, the set of (hypothetical) mean values from which the data do not deviate significantly. It is based on inverting the t test by solving for the values of \(\mu_0\) [\(\mu_0\) is the hypothesized true mean] that cause t to lie within its acceptance region.''
+
+That wording is not contradictory with the usual ``A 95\% CI is something (a range of values) we construct following a procedure that guarantees that, if we were to repeat it many, many times, it would cover/capture the true mean (or the true difference in means, if comparing two groups) 95\% of the time.''
+
+Both definitions are about the same object (the confidence interval). The first describes what that set of values is, the second a crucial property of the procedure we use to construct it.
+
+The CI is not one test; it is the result of asking, for every candidate \(\mu_0\), ``would I reject this?'' and keeping the ones I would not reject. Or, to put it differently: the CI collects the answers to a whole family of tests, one for each possible $\mu_0$: the interval is the set of $\mu_0$ that survive.
+
+The virtue of the first wording is that it is closer to what we often want: what values are compatible with what we observed?
+
+
+
+(This is somewhat technical.) Notice that this ``compatibility'' is in a frequentist sense, \(P(\mbox{rare data}|\mu_0)\), not in a  Bayesian sense, \(P(\mu_0|\mbox{data})\). The frequentist sense compatibility, \(P(\mbox{rare data}|\mu_0)\) means that, if \(\mu_0\) were the true mean, data like ours would not be unusual; this is an assertion about the data given the parameter, not about the parameter given the data. (We mention Bayesian procedures briefly later.)
+
+% I have mu = 4. I construct that CI and it goes from 5 to 6? What gives? Because what this is saying is, since it did not capture 4 (the hypothesized true mean), that something like that, a CI that did not capture 4, will happen 5% of the time, or less.
+% el estadístico no asume H0 = 4. t = (bar{X} - \mu)/se  es un pivote: se distribuye como t_{n-1} sea cual sea la mu verdadera. El test de mu0 = 4 usa el pivote con mu = 4; el CI usa el pivote con mu libre y lo invierte, es decir, corre simultáneamente el test para todos los mu0. Que 4 quede fuera dice exactamente que el test de mu0 = 4 rechazó. No hay contradicción; hay una familia de tests y tú miraste uno. Si los estudiantes no tienen el concepto de pivote, la inversión les parece magia; si lo tienen, es obvia.
+
+
 
 \subsection{Assumptions of the t-test}
 
@@ -653,7 +671,7 @@ For the examples below, suppose, for the sake of the argument, that the denomina
   \begin{itemize}
   \item We observed \(\bar{X}_A - \bar{X}_B = 2\).
   \item The null says \(\mu_A \le \mu_B\).
-  \item A deviation more extreme is any t-statistic larger than \(2\) (something that goes in the opposite direction from what the null says).
+  \item A deviation more extreme is any t-statistic as extreme as, or more extreme than, \(2\): further in the direction of the alternative, i.e., larger values of the t-statistic.
   \item Thus, anything to the right of 2, i.e., to the right of the red line below.
   \end{itemize}
 
@@ -683,7 +701,7 @@ Like the above, but now we flip the observed values (not the null).
   \begin{itemize}
   \item We observed \(\bar{X}_A - \bar{X}_B = -2\).
   \item The null says \(\mu_A \le \mu_B\).
-  \item A deviation more extreme is any t-statistic larger than \(-2\) (something that goes in the opposite direction).
+  \item A deviation more extreme is any t-statistic larger than \(-2\): further in the direction of the alternative, i.e., larger values of the t-statistic.
 
  \item Thus, anything to the right of -2, i.e., to the right of the red line below.
   \end{itemize}
@@ -703,6 +721,8 @@ Like the above, but now we flip the observed values (not the null).
 In this example, we know our p-value will be at least 0.5: we are asking for the area to the right of \(-2\), so we know we already have half of the area (to the right of 0), plus something else.
 
 
+
+Technical point. The null is composite (\(H_0: \mu_A \le \mu_B\)) instead of just a single value (\(\mu_A = \mu_B\) so \(\mu_A - \mu_B = 0\)).  The p-value is computed at the boundary case because that is the value in the null that makes the observed result most likely (it gives the largest p-value over the null)
 
 \subsection{Some issues with one-sided tests}
 
