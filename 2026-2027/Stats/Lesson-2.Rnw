@@ -585,10 +585,18 @@ The virtue of the first wording is that it is closer to what we often want: what
 
 (This is somewhat technical.) Notice that this ``compatibility'' is in a frequentist sense, \(P(\mbox{rare data}|\mu_0)\), not in a  Bayesian sense, \(P(\mu_0|\mbox{data})\). The frequentist sense compatibility, \(P(\mbox{rare data}|\mu_0)\) means that, if \(\mu_0\) were the true mean, data like ours would not be unusual; this is an assertion about the data given the parameter, not about the parameter given the data. (We mention Bayesian procedures briefly later.)
 
-% I have mu = 4. I construct that CI and it goes from 5 to 6? What gives? Because what this is saying is, since it did not capture 4 (the hypothesized true mean), that something like that, a CI that did not capture 4, will happen 5% of the time, or less.
-% el estadístico no asume H0 = 4. t = (bar{X} - \mu)/se  es un pivote: se distribuye como t_{n-1} sea cual sea la mu verdadera. El test de mu0 = 4 usa el pivote con mu = 4; el CI usa el pivote con mu libre y lo invierte, es decir, corre simultáneamente el test para todos los mu0. Que 4 quede fuera dice exactamente que el test de mu0 = 4 rechazó. No hay contradicción; hay una familia de tests y tú miraste uno. Si los estudiantes no tienen el concepto de pivote, la inversión les parece magia; si lo tienen, es obvia.
-
-
+% I have mu = 4. I construct that CI and it goes from 5 to 6? What gives?
+% Because what this is saying is, since it did not capture 4 (the
+% hypothesized true mean), that something like that, a CI that did not
+% capture 4, will happen 5 % of the time, or less.
+% El estadistico no asume H0 = 4. t = (bar{X} - \mu)/se es un pivote: se
+% distribuye como t_{n-1} sea cual sea la mu verdadera. El test de mu0 = 4
+% usa el pivote con mu = 4; el CI usa el pivote con mu libre y lo invierte,
+% es decir, corre simultaneamente el test para todos los mu0. Que 4 quede
+% fuera dice exactamente que el test de mu0 = 4 rejected. No hay
+% contradiccion; hay una familia de tests y tu miraste uno. Si los
+% estudiantes no tienen el concepto de pivote, la inversion les parece
+% magia; si lo tienen, es obvia.
 
 \subsection{Assumptions of the t-test}
 
