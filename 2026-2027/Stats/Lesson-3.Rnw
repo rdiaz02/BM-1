@@ -375,8 +375,7 @@ parameterization (see details in section \nameref{anovaaslm}, or just take it on
 faith). So, often, we will want to explicitly ask ``Which means are different'',
 and that is what we do next.
 
-%% See notes in PRSTR
-%% ~R-basic-stats/R-basic-stats.Rnw
+
 
 %% FIXME: reorganize this material. Follow more the structure in
 %% https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html
@@ -406,6 +405,25 @@ of means when the ANOVA is not significant are rarely
 justified\footnote{Unless some specific, small number of, tests of
   specific pairs had been planned before the experiment.}.
 
+
+Of course, you don't need R Commander: you can get a similar thing building what you want from
+scratch with, for instance, \Rfunction{aggregate}
+<<>>=
+with(dmit, aggregate(activ, list(Training = ftraining),
+                     function(x) c(mean = mean(x),
+                                   sd = sd(x),
+                                   n = sum(!is.na(x)))
+                     ))
+@
+
+or \Rfunction{by}:
+<<>>=
+with(dmit, by(activ, ftraining,
+              function(x) c(mean = mean(x),
+                             sd = sd(x),
+                             n = sum(!is.na(x)))
+              ))
+@
 
 
 
@@ -455,7 +473,9 @@ Now, the following should be clear:
 If the above is still unclear, think about why it is more likely ``B'' will get killed first. Or why it is more likely you will become richer if we give you 20 different lottery tickets.
 
 
-Back to our Anova.  To carry out all pairs of tests and control for multiple testing, fit the ANOVA again, but now make sure to click on ``Pairwise comparisons
+Back to our Anova.
+
+To carry out all pairs of tests and control for multiple testing, fit the ANOVA again, but now make sure to click on ``Pairwise comparisons
 of means''. To be much more explicit, I will also name the model as
 \Robject{AnovaMIT} (entering that in ``Enter name for model'')
 
@@ -510,27 +530,16 @@ of what is happening with the p-values in
 
 
 
-\subsubsection{The plot of pairwise differences}
+%% \subsubsection{The plot of pairwise differences}
 
-
-\subsubsubsection{Side note: Interpreting confidence intervals}
-If this is not obvious to you, ask it in class: a figure that shows an
-estimate (e.g., a mean) and a 95\% confidence interval, where the interval
-goes from, say, 1 to 2, \textbf{should not} be interpreted as saying that
-there is a 95\% probability that the mean is between 1 and 2. That is not
-the correct interpretation of a confidence interval. Make sure you
-understand this!!! But we have discussed this already in Lesson 2.
-
-Now, back to multiple testing.
-
-\subsubsubsection{The 95\% family-wise confidence interval}
+%% \subsubsubsection{The 95\% family-wise confidence interval}
 Look carefully at the plot in Figure \ref{fig:tukey1}: for each difference
 (for each \textbf{contrast}), it shows the estimate and a 95\% confidence
 interval around it. The plot title says ``95\% family-wise confidence
 interval'', and that indicates that multiple testing correction has been
 used. (You might want to make that even more explicit by using a title
 such as ``95\% family-wise confidence interval using Tukey contrasts'').
-Again, notice the output says ``simultaneous'': as emphasized in Lukas Meier's ``ANOVA and Mixed Models'' (2025, CRC Press; HTML from \Burl{https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html#sec-tukey-hsd}), ``these confidence intervals are simultaneous, meaning that the probability that they all cover the corresponding true difference at the same time is 95%.''.
+Again, notice the output says ``simultaneous'': as emphasized in Lukas Meier's ``ANOVA and Mixed Models'' (2025, CRC Press; HTML from \Burl{https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html\#sec-tukey-hsd}), ``these confidence intervals are simultaneous, meaning that the probability that they all cover the corresponding true difference at the same time is 95\%.''.
 
 
 
@@ -555,8 +564,8 @@ Now, answer these questions (we will discuss them in class):
 \end{itemize}
 
 
- Let's go now to the numerical output.
-\subsubsection{The numerical output}
+ Let's go back to the numerical output.
+%% \subsubsection{The numerical output}
 
 This
 
@@ -621,7 +630,7 @@ plot(allEffects(AnovaMIT), ask=FALSE, main = "Training: effect plot")
 <<out.width='12cm'>>=
 .Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
 tmp <- cld(.Pairs) ## silent assignment
-old.oma <- par(oma=c(0,5,0,0))
+old.oma <- par(oma=c(0, 5, 0, 0))
 plot(confint(.Pairs),
      main = "95% family-wise confidence interval using Tukey contrasts")
 par(old.oma) ## restore graphics windows settings
@@ -1129,9 +1138,7 @@ And could you think about how you would estimate the coefficients for the intera
 %% options(opt)
 %% @
 
-%% FIXME: should use an example with, say, four diets and 2 or 3 drugs
-%% so that when I do not use a model with  interaction, some terms
-%% more than 1 df
+
 
 \subsubsection{Parameters and degrees of freedom}\label{param-df}
 
@@ -1675,11 +1682,11 @@ Let us repeat what we just did to make sure we understand what is going on. Writ
 Finally, repeat once more on your own. An experiment with four factors, the first with 2 levels, the second with 7 levels, the third with 4 levels, the fourth with 5 levels. Write the table, degrees of freedom, and think about hypotheses you can test depending on what interactions are or not significant.
 
 
-%% FIXME: this is kinda confusing. Copy this section from PRSTR.
+
 \subsection{Multiple comparisons of means in two-way ANOVA}\label{multcomp-two-way}
 % Can they be done? Yes. You can use the \Rfunction{glht} or the TukeyHDS
 % functions directly. Or you fit the model using \Rfunction{aov} (not
-% \Rfunction{lm}), and use the package \CRANpkg{RcmdrPlugin.HH}, and ask for
+% \Rfunction{lm}), and use the package \CRANpkg{HH}, and ask for
 % the ``MMC plot''. We will not pursue this any further here (among other
 % questions you should ask yourself, at what levels of one variable will you
 % be comparing the other? How does lack of balance affect the contrasts? Do
@@ -1694,7 +1701,6 @@ Finally, repeat once more on your own. An experiment with four factors, the firs
 % %% cholaov <- aov(y ~ Diet * Drug, data = dchol)
 % %% chol_tukey <- TukeyHSD()
 % %% @
-
 
 % Using the example from the help of mmc.
 
@@ -1724,11 +1730,10 @@ Finally, repeat once more on your own. An experiment with four factors, the firs
 
 % % @
 
-
 This section is way too long for this course. We will cover it quickly, focusing
 on the key conceptual issues. But we leave the code, examples, and more advanced
 comments for your future reference. Why is this that long, then? Because we want
-to emphasize that \textbf{``p values are not enough''}: in many/most cases,
+to emphasize that \textbf{``p values are  not enough''}: in many/most cases,
 you will want to look at confidence intervals and other measures of uncertainty
 around the parameters you have estimated and the contrasts (differences in means)
 of interest. And, of course, you will need to correct for multiple testing when
@@ -1738,7 +1743,7 @@ you, well, conduct multiple tests.
 In two-way and, more generally, multi-way ANOVA, computing and displaying multiple comparisons is more complicated than in one-way ANOVA. Among
 other questions you should ask yourself, probably some of the first ones are: At what levels of one variable will I be comparing the other? How does lack of balance affect the contrasts? Do I really want all possible contrasts? A good place to start reading on these issues
 is chapter 14 (and section 5.3.2) of Everitt and Hothorn's ``A handbook of
-statistical analysis using R, 2nd ed'', and then the documentation of \CRANpkg{multcomp}.
+statistical analysis using R, 2nd ed'', and then the documentation of R package \CRANpkg{multcomp}.
 
 \subsubsection{Multiple comparisons in multi-way ANOVA: main messages}
 \label{sec:mult-comp-multi}
@@ -1755,11 +1760,11 @@ Again, it is the main messages that you need to understand. You can skip section
   \end{itemize}
 \item When there are interactions, this is more complicated. For example, at what
   level of each variable do you want to estimate the differences in the other? A
-  very simple numerical example illustrating the problem is shown below in \ref{ci-two-way-int-example}.
+  very simple numerical example illustrating the problem is shown below in \qref{ci-two-way-int-example}.
 \item Finally, in both cases, you might want to think if carrying out comparisons
   between \textbf{all} pairs of means is what you really want to do. (Of course,
   you \textbf{must} report what you really did: carrying out comparisons between
-  all pairs and reporting only a few is incorrect, leads to biases, and is scientifically dishonest and poor practice).
+  all pairs and reporting only a few is incorrect, leads to biases, and is poor practice and constitutes scientific fraud).
 \end{itemize}
 
 
@@ -1795,8 +1800,7 @@ a2 & b2 &  2\\
 Please, draw a figure (by hand) with those means, like any of the interaction
 plots we have seen in class.  Please, \textbf{really draw that figure}. Actually,
 \textbf{draw 2 figures}: the first will have A in the X (abscissas) axis, the
-second will have B in the X axis. You will see that in both plots the lines
-clearly cross.
+second will have B in the X axis. You will see that in both plots the lines cross.
 
 
 Now, suppose we want this: "95\% confidence interval for the difference between the
@@ -1847,61 +1851,74 @@ What matters is understanding that, with interactions, asking a question about
 difference between levels of A") cannot be answered without saying something
 about the level of B at which we want to compute that difference.
 
+
 And this, by the way, is strongly related to the ``marginality principle'' we have already discussed twice (\ref{2way-int}, \ref{more-than-two}).
 
 Now you can skip sections \ref{mult-comp-2-way-no-int} and \ref{mult-comp-2-way-int} and continue to section \ref{nonparanova}.
 
 
 
+
+
+
 \subsubsection{Multiple comparisons in two-way ANOVA: example with no
   interactions}\label{mult-comp-2-way-no-int}
 
-I will show a few examples below. % Let us show confidence intervals for the
-% comparisons of all pairs of means.
-We will use function \Rfunction{mmc} from package \CRANpkg{HH} as well as
-function \Rfunction{glht} from package \CRANpkg{multcomp}. I will skip most of
-the syntax here.
+% I will show a few examples below. % Let us show confidence intervals for the
+% % comparisons of all pairs of means.
+% We will use function \Rfunction{mmc} from package \CRANpkg{HH} as well as
+% function \Rfunction{glht} from package \CRANpkg{multcomp}. I will skip most of
+% the syntax here.
 
-[We could try doing some of the stuff below with menus, but they quickly become
-limiting, so I'll directly write R commands (that you can evaluate from R
-commander, or from RStudio or from the R console itself). (If you wanted to use
-the R commander menus for some of the stuff below, you might want to fit the
-model using \Rfunction{aov}, not \Rfunction{lm}, and you will use the package
-\CRANpkg{RcmdrPlugin.HH}, and ask for the ``MMC plot''.)]
+I will show a few examples below.
+I will use mostly function \Rfunction{glht} from package \CRANpkg{multcomp}. I will skip most of
+the syntax here. Examples using function \Rfunction{mmc} from package \CRANpkg{HH} are provided later (though the figures might need some time to be understood).
+
+
+% [We could try doing some of the stuff below with menus, but they quickly become
+% limiting, so I'll directly write R commands (that you can evaluate from R
+% commander, or from RStudio or from the R console itself). (If you wanted to use
+% the R commander menus for some of the stuff below, you might want to fit the
+% model using \Rfunction{aov}, not \Rfunction{lm}, and you will use the package
+% \CRANpkg{RcmdrPlugin.HH}, and ask for the ``MMC plot''.)]
 
 
 For the sake of illustration, let's pretend (even when we know it is wrong!!!)
 that there is no interaction between Drug and Diet in the cholesterol data.
 
-<<>>=
-## We must make sure we are using factors with mmc
+In this two-way ANOVA we might want to compare, simultaneously, the levels of
+Diet and Drug (see the documentation of \CRANpkg{multcomp} (in particular,
+\Burl{https://cran.r-project.org/web/packages/multcomp/vignettes/multcomp-examples.pdf}). (Ooops, that file is no longer available from the repo, though it can still be found on the internet). %% FIXME: locate it?
+
+
+<<clmAglh>>=
+## We must make sure we are using factors with mmc and
+## turning them to factors is good practice anyway
 dc2 <- dcholest
 dc2$Drug <- as.factor(dc2$Drug)
 dc2$Diet <- as.factor(dc2$Diet)
 clmA <- lm(y ~ Diet + Drug, data = dc2)
-cholA_mmc <- mmc(clmA, focus = "Diet")
-cholA_mmc
-
-mmcplot(cholA_mmc)
-@
-
-In this two-way ANOVA we might want to compare, simultaneously, the levels of
-Diet and Drug (see the documentation of \CRANpkg{multcomp} (in particular,
-\Burl{https://cran.r-project.org/web/packages/multcomp/vignettes/multcomp-examples.pdf}).
-
-
-<<>>=
 KA1 <- glht(clmA, mcp(Diet = "Tukey"))$linfct
 KA2 <- glht(clmA, mcp(Drug = "Tukey"))$linfct
 clmA_glh <- glht(clmA, linfct = rbind(KA1, KA2))
 
 summary(clmA_glh)
-
-## Note that these are wider than the ones above, as we should expect.
 confint(clmA_glh)
-
+## Modify margins to fit the labels
+op <- par(mar = c(5, 6, 4, 1))
 plot(clmA_glh)
+par(op)
 @
+
+We can of course only compare, say, Diet, and these are narrower, as expected:
+<<clmdglhfig>>=
+clmD_glh <- glht(clmA, linfct = KA1)
+confint(clmD_glh)
+op <- par(mar = c(5, 6, 4, 1))
+plot(clmD_glh)
+par(op)
+@
+
 
 You can also obtain the above using \Rfunction{TukeyHSD} (there are further
 comments about the differences below ---bottom line here: when sample sizes are
@@ -1927,54 +1944,36 @@ But we know there are interactions. Let us use that model to compare levels of D
 
 <<>>=
 clm <- lm(y ~ Diet*Drug, data = dc2)
-chol_mmc <- mmc(clm, focus = "Diet")
-
-chol_mmc
-mmcplot(chol_mmc)
-@
-
-What is happening with the interactions? If you read the help of \Rfunction{mmc}
-you will see it mentions options \texttt{interaction\_average} and
-\texttt{covariate\_average}.
-
-What if we set those to false? Notice the warning, and see the differences!
-
-<<>>=
-chol_mmc2 <- mmc(clm,
-                 linfct = mcp(Diet = "Tukey",
-                              `interaction_average`= FALSE,
-                              `covariate_average` = FALSE))
-chol_mmc2
-
-mmcplot(chol_mmc2)
 @
 
 
 
-Using directly \Rfunction{glht} to compare both Diets and Drugs:
+Using directly \Rfunction{glht} to compare both Diets and Drugs (and notice the warnings):
 
 <<>>=
 K1 <- glht(clm, mcp(Diet = "Tukey"))$linfct
 K2 <- glht(clm, mcp(Drug = "Tukey"))$linfct
 
-K1B <- glht(clm, mcp(Diet = "Tukey",
+K1A <- glht(clm, mcp(Diet = "Tukey",
                      interaction_average = TRUE,
                      covariate_average = TRUE))$linfct
 
-K2B <- glht(clm, mcp(Drug = "Tukey",
+K2A <- glht(clm, mcp(Drug = "Tukey",
                      interaction_average = TRUE,
                      covariate_average = TRUE))$linfct
 
 
 confint(glht(clm, linfct = rbind(K1, K2)))
-confint(glht(clm, linfct = rbind(K1B, K2B)))
+confint(glht(clm, linfct = rbind(K1A, K2A)))
 
-## Compare with previously computed ones
-## A few change sign as we do HF - M1 instead
-## of M1 - HF
-## chol_mmc2
-## chol_mmc
+
 @
+
+We could just compare, say, Diets:
+<<gldint2>>=
+confint(glht(clm, linfct = rbind(K1A)))
+@
+
 
 
 
@@ -2019,66 +2018,59 @@ confint(glht(clm, linfct = rbind(K1B, K2B)))
 % @
 
 
+
+
 But in models with interactions, we might be interested in doing other
 things. For example, comparing the levels of Drug within levels of Diet. There
 are examples in the documentation of \CRANpkg{multcomp} (see
-\Burl{https://cran.r-project.org/web/packages/multcomp/vignettes/multcomp-examples.pdf}).
-
-Or comparing, simultaneously, the levels of Diet and Drug (again, see the
-vignette):
-
-
-<<>>=
-
-K1 <- glht(clm, mcp(Diet = "Tukey"))$linfct
-K2 <- glht(clm, mcp(Drug = "Tukey"))$linfct
+\Burl{https://cran.r-project.org/web/packages/multcomp/index.html}).
+%% FIXME: multcomp-examples.pdf was great for this! no longer available
+%% see above
+% \Burl{https://cran.r-project.org/web/packages/multcomp/vignettes/multcomp-examples.pdf}). (Ooops, that file is no longer available from the repo, though it can still be found on the internet). %% FIXME: locate it?
 
 
-K1A <- glht(clm, mcp(Diet = "Tukey",
-                     interaction_average = TRUE,
-                     covariate_average = TRUE))$linfct
 
-K2A <- glht(clm, mcp(Drug = "Tukey",
-                     interaction_average = TRUE,
-                     covariate_average = TRUE))$linfct
+\vspace*{15pt}
 
-
-summary(glht(clm, linfct = rbind(K1, K2)))
-summary(glht(clm, linfct = rbind(K1A, K2A)))
-
-## Compare with previously computed one
-chol_mmc2
-chol_mmc
-@
-
-
-Note that many of those can be obtained, too, using the \Rfunction{TukeyHSD}
+Note that many of those family-wise confidence intervals can be obtained, too, using the \Rfunction{TukeyHSD}
 function. For example, as simple as this:
 <<tukey_multcomp,fig.width=7, fig.height=5,out.width = '12cm', out.height = '10cm'>>=
 ## Fit as aov
 clmaov <- aov(y ~ Diet * Drug, data = dc2)
 
-## Compare to, for example, chol_mmc
+## Compare to, for example, confint(glht(clm, linfct = rbind(K1A)))
 TukeyHSD(clmaov, which = "Diet")
 
-## We want all possible contrasts for all combinations
-TukeyHSD(clmaov, which = "Diet:Drug")
 
+## Diet and Drug. Compare to confint(glht(clm, linfct = rbind(K1A, K2A)))
+TukeyHSD(clmaov, which = c("Diet", "Drug"))
+@
+
+
+What if we want the comparisons for all possible combinations?
+
+<<tukey2wayintall>>=
+## If we want all possible contrasts for all combinations
+TukeyHSD(clmaov, which = "Diet:Drug")
 ## Plot them
 ## But make sure y-axis labels are horizontal
 ## and y-axis labels fit
 op <- par(las = 1, mar = c(5, 8, 4, 4))
 plot(TukeyHSD(clmaov, which = "Diet:Drug"))
 par(op) ## return graphical parameters to previous stage
+@
 
-## Though if we only care about the contrasts
-## between all factor combinations maybe we really just want this?
+We have 15 contrasts. Maybe we do not care about all those (e.g., \texttt{M1:A-HF:B}). Again, we might only care about all comparisons of Drug within each level of Diet, for example (see documentation of R package \CRANpkg{multcomp}).
+
+
+%% FIXME: check emmeans. Maybe simpler and cleaner?
+
+And a minor point:
+<<tukey2wayhsd>>=
+## If we only care about the contrasts
+## this model uses a different parameterization, but is identical
+## to the one specified as Diet*Drug
 TukeyHSD(aov(y ~ Diet:Drug, data = dc2))
-
-
-## Diet and Drug. Compare to summary(glht(clm, linfct = rbind(K1A, K2A)))
-TukeyHSD(clmaov, which = c("Diet", "Drug"))
-
 @
 
 
@@ -2108,6 +2100,73 @@ flexible than the packages used above (see, for instance,
 latest edition of Fox and Weisberg's ``An R companion to applied regression''
 makes extensive use of \CRANpkg{emmeans} (to obtain confidence intervals and many
 other things).
+
+
+
+
+
+\subsubsection{Multiple comparisons in two-way ANOVA, examples using package \texttt{HH} and function \texttt{mmc}}
+
+This is provided without much comment, for the sake of giving you additional examples. Compare these examples with what we did before.
+
+First, pretending there is no interaction (compare with \texttt{clmA\_glh}, before):
+
+<<mmc1>>=
+
+cholA_mmc <- mmc(clmA, focus = "Diet")
+cholA_mmc
+
+mmcplot(cholA_mmc)
+
+## Note that these are wider than the ones for both Diet and Drug
+## with clmA_glh, above, as we should expect.
+@
+
+Now, with interactions:
+
+<<mmcint2>>=
+clm <- lm(y ~ Diet*Drug, data = dc2)
+chol_mmc <- mmc(clm, focus = "Diet")
+
+chol_mmc
+mmcplot(chol_mmc)
+@
+
+
+What is happening with the interactions? If you read the help of \Rfunction{mmc}
+you will see it mentions options \texttt{interaction\_average} and
+\texttt{covariate\_average}.
+
+What if we set those to false? Notice the warning, and see the differences!
+
+<<>>=
+chol_mmc2 <- mmc(clm,
+                 linfct = mcp(Diet = "Tukey",
+                              `interaction_average`= FALSE,
+                              `covariate_average` = FALSE))
+chol_mmc2
+
+mmcplot(chol_mmc2)
+
+chol_mmc3 <- mmc(clm,
+                 linfct = mcp(Diet = "Tukey",
+                              interaction_average= TRUE,
+                              covariate_average = TRUE))
+chol_mmc3
+
+mmcplot(chol_mmc3)
+
+## Compare with glht:
+## A few change sign as we do HF - M1 instead
+## of M1 - HF
+confint(glht(clm, linfct = K1))
+confint(glht(clm, linfct = K1A))
+@
+
+
+
+
+
 
 
 
@@ -2804,7 +2863,7 @@ bootstrap instead of \Rfunction{confint}. See section 5.1.3 in Fox and Weisberg'
 \section{Continuous and discrete independent variables
   and ANCOVA}\label{ancova}
 
-%% FIXME: compare with PRSTR
+
 \subsection{The general scenario for ANCOVA}
 Right now, nothing should stop us from thinking about models where the
 right hand side contains both continuous and discrete variables. ANCOVA refers to this mixture of
@@ -2816,16 +2875,6 @@ covariance''\footnote{But this does not mean that we are comparing
   discrete predictors.}. Regardless, all of ANOVA, regression, and ANCOVA
 are especial types of linear models.
 
-
-% Suppose you have a response variable, Y. And two predictor variables; variable A, which is discrete, and has, say, two levels (a1, a2). And variable X, which is continuous. Now, get a piece of paper and draw the following cases, in turn. Really, \textbf{do draw this}.
-% \begin{itemize}
-% \item The relationship between Y and X increases faster in a1 than in a2. Thus, the regression lines for a1 and a2 are not parallel (and will eventually cross each other).
-% \item The relationships between Y and X change at the same rate for a1 and a2. Thus, they are parallel lines. But individuals of group a1 with value X = x have a larger value of Y than individual of group a2 for that value of X. So, as we said, lines are parallel, but they are separate. They have different intercepts.
-% \item As the previous case, but now the intercept is the same. So you only see one line.
-% \item There is not relationship between Y and X in any of the groups. (Or, if you insisted on putting a line, it would be of slope 0).
-% \end{itemize}
-
-% ANCOVA is a procedure for differentiating the above scenarios, starting from the first and moving down. It also works when the discrete group has more than two levels. And, for that matter, we can deal with more than one discrete variable and more than one continuous one, etc, etc: these are just linear models. As said several times already, we will use the name ANCOVA as this might be familiar. But once you understand the process, these are just linear models that allow to flexibly model scientific problems even if they no longer fit in the simple ANCOVA framework.
 
 
 Suppose you have a response variable, Y. And two predictor variables; variable A, which is discrete, and has, say, two levels (a1, a2). And variable X, which is continuous. Now, get a piece of paper and draw the following cases, in turn. Really, \textbf{do draw this}.
@@ -2852,16 +2901,13 @@ To put it differently, these are the steps:
 
 (I wrote ``not-significant'': use sensible criteria, not just blindly focus on p-values).
 
-
-Oh, and if you want some specific names for variables to draw the above figures, you can do as follows:
+If you want some specific names for variables to draw the above figures, you can do as follows:
 \begin{itemize}
 \item Y is alertness, A is sex (male, female), X is amount of coffee.
 \item Y is metabolic rate, A is tetrapod group (bird, reptile, amphibian, mammal), X is body mass.
 \item Y is number of somatic mutations, A is type of tissue, X is age.
 \item etc, etc.
 \end{itemize}
-
-
 
 
 
