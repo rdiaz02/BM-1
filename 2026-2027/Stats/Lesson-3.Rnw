@@ -677,8 +677,7 @@ Intro Using R '': \Burl{https://stat.ethz.ch/~meier/teaching/anova/contrasts-and
 
 \subsection{t-test as ANOVA}
 Of course, you can just carry out any two-group comparison as
-an ANOVA. There is a simple
-correspondence between a t statistic and an F statistic (and this is the kind of t-test where we assume the variance of the two groups is equal).
+an ANOVA. There is a simple correspondence between a t statistic and an F statistic, and this is the kind of t-test where we assume the variance of the two groups is equal\footnote{It is possible to compare the means of two or more groups, in an ANOVA-like way, without assuming equal variances; see function \texttt{oneway.test}. More complex models, such as mixed-effects models and generalized least squares (e.g., \texttt{lme} and \texttt{gls} in package \texttt{nlme}), also allow variances to differ between groups, or to depend on other factors.}.
 
 
 \subsection{Other ways of obtaining summaries}
@@ -709,7 +708,7 @@ with(dmit, by(activ, ftraining,
 
 
 
-\subsection{Can you do an ANOVA with only one sample per group?}\label{anova-only-one}
+\subsection{Can you do an ANOVA with a sample size of 1 per group?}\label{anova-only-one}
 Why or why not?
 
 
