@@ -435,14 +435,14 @@ better).
 \textbf{Multiple testing corrections} are needed because we are now
 conducting three separate tests (in general, if there are $K$ groups and
 if you compare all pairs of means you carry out ${K \choose 2} = \frac{K
-  (K-1)}{2}$ tests). Here, we will control the family-wise error rate, the
+  (K-1)}{2}$ tests). Here, we will control the family-wise error rate \textbf{(FWER)}, the
 probability of falsely rejecting one or more tests over the family of
 tests performed ---three in our case. The logic is somewhat like that of
 being struck by lightning: the chances of it happening are extremely
 small, but every year people die from lightning because the probability
 that at least one person is killed is huge since we have lots of people
 exposed to the risk. So even if all null hypotheses for our three tests
-are true:
+are true (the ``complete null''):
 \begin{itemize}
 \item $\mu_{Morning} = \mu_{Lunch}$
 \item $\mu_{Morning} = \mu_{Afternoon}$
@@ -453,10 +453,12 @@ if we run the three comparisons, the chances of incorrectly rejecting at
 least one of the null hypotheses is larger than, say, 0.05 if we simply
 look at each one of the three p-values and keep any with a p-value $\leq
 0.05$.  You will see more about multiple testing below
-(\nameref{sec:mult-comp-fdr}).
+(\nameref{sec:mult-comp-fdr}). For now, remember, we are focusing on controlling the FWER: the probability of rejecting one or more null hypotheses when we shouldn't.
 
 
-Understanding what we just said is crucial. So we will use another two examples, a depressing and an uplifting one. If you understand them, you understand why we need multiple comparisons:
+
+
+Since understanding what we just said is crucial, we will use another two examples, a depressing and an uplifting one. If you understand them, you understand why we need multiple comparisons:
 
 \begin{itemize}
 \item Russian roulette. (Important note: we of course strongly discourage playing Russian roulette!). Suppose you have two friends, ``A'' and ``B''. ``A'' intends to play Russian roulette once a year, ``B'' intends to play it ten times a year\footnote{We say ``intends to'': obviously, the first time that the gun fires is the last time the player plays the game.}. Whose funeral are you likely to attend first?
@@ -674,9 +676,9 @@ Intro Using R '': \Burl{https://stat.ethz.ch/~meier/teaching/anova/contrasts-and
 
 
 \subsection{t-test as ANOVA}
-Of course, in general, you can just carry out any two-group comparison as
-an ANOVA. There is nothing wrong with that (and there is a simple
-correspondence between a t statistic and an F statistic).
+Of course, you can just carry out any two-group comparison as
+an ANOVA. There is a simple
+correspondence between a t statistic and an F statistic (and this is the kind of t-test where we assume the variance of the two groups is equal).
 
 
 \subsection{Other ways of obtaining summaries}
@@ -957,8 +959,11 @@ take a look at a three-page one by W.\ Noble, in \textit{Nature
 
 \section{Two-way ANOVA}
 
+In a two-way ANOVA, we are interested in the effects of two factors, not just one. For example, our experiment might involve simultaneously changing diet and drug.
+
+
 A key issue in models with two or more predictor variables (such as two-way
-ANOVA) are interactions. What is an interaction? The phenomenon of interaction should be familiar to you: it is very common in life in general, and in biology you might have previously seen at as epistasis in genetics; or take a look at the `Interactions'' section in the leaflet (prospecto) of any drug you take.
+ANOVA) are interactions. What is an interaction? The phenomenon of interaction should be familiar to you: it is very common in life in general, and in biology you might have previously seen at as epistasis in genetics; or take a look at the `Interactions'' section in the leaflet (prospecto) of any drug.
 
 
 
