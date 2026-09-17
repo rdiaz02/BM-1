@@ -539,7 +539,20 @@ interval around it. The plot title says ``95\% family-wise confidence
 interval'', and that indicates that multiple testing correction has been
 used. (You might want to make that even more explicit by using a title
 such as ``95\% family-wise confidence interval using Tukey contrasts'').
-Again, notice the output says ``simultaneous'': as emphasized in Lukas Meier's ``ANOVA and Mixed Models'' (2025, CRC Press; HTML from \Burl{https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html\#sec-tukey-hsd}), ``these confidence intervals are simultaneous, meaning that the probability that they all cover the corresponding true difference at the same time is 95\%.''.
+Again, notice the output says ``simultaneous'': as emphasized in Lukas Meier's ``ANOVA and Mixed Models'' (2025, CRC Press; HTML from \Burl{https://people.math.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html\#sec-tukey-hsd}):
+``these confidence intervals are simultaneous, meaning that the probability that they all cover the corresponding true difference at the same time is 95\%.''.
+%()%% because emacs gets confused with paren.
+Notice the ``all cover the corresponding true difference is 95\%''; why?
+Because: \(\mbox{FWER} = P( \ge \mbox{1 false rejection})  \le 1 - P(\mbox{all CIs cover the truth}) = 0.05 \)
+%()%% because emacs gets confused with paren.
+\footnote{Technical point: And why the last \( \le \)?
+Because the FWER control has to work both under the complete null, when all nulls are true, but also when only some nulls are true. Under the complete null, when all nulls are true, we would write
+\( P( \ge \mbox{1 false rejection}) = 1 - P(\mbox{all CIs cover the truth}\).
+In the second case, when only some nulls are true,
+\(P( \ge \mbox{1 false rejection})  < 1 - P(\mbox{all CIs cover the truth})\);
+the CI for a truly false null might not cover its true value, and this would not be a Type I error. This is why on this second case, FWER is strictly less than \(1 - P(\mbox{all CIs cover the truth})\).}.
+
+
 
 
 
