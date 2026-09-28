@@ -1,0 +1,15 @@
+\usepackage[%
+		shash={c47932b},
+		lhash={c47932be3bbe621a095a7f482349992b22375608},
+		authname={Ramon @ Triturus},
+		authemail={no_specific_email},
+		authsdate={2026-09-17},
+		authidate={2026-09-17 09:31:33 +0200},
+		authudate={1789630293},
+		commname={Ramon @ Triturus},
+		commemail={no_specific_email},
+		commsdate={2026-09-17},
+		commidate={2026-09-17 09:31:33 +0200},
+		commudate={1789630293},
+		refnames={ (HEAD -> master)}
+	]{gitsetinfo}
