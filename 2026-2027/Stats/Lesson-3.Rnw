@@ -2713,13 +2713,13 @@ There is also an additional document in Moodle about \(R^2\), ``Residuals, R-squ
 
 In our pemax example we saw several problems (e.g., the large standard errors in the estimated regression coefficients and the flip in signs) caused by the strong linear relationships between predictors. In the simplest cases, these can be detected by plots, as we did. But that  will not always show the source of the problem, specially when the linear relationship involves groups of variables, where pairwise plots can fail to show a clear pattern.
 
-The variance inflation factor, that we can compute with function \texttt{vif} estimates, ``the harm produced by collinearity'' (Fox \& Weisberg, ``An R companion to applied regresssion, 3rd ed'', section 8.8):
+The variance inflation factor, that we can compute with function \texttt{vif}, estimates ``the harm produced by collinearity'' (Fox \& Weisberg, ``An R companion to applied regresssion, 3rd ed'', section 8.8):
 
 <<vif1>>=
 vif(mcyst)
 @
 
-We can see that the standard error for age is about \(\sqrt{(8} = 2.8\), so almost three times larger than it would have been without collinearity.
+We can see that the standard error for age is about \(\sqrt{8} = 2.8\), so almost three times larger than it would have been without collinearity.
 
 Compare this with a very different model, where we only have age and sex:
 
