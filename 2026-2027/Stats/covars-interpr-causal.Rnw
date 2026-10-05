@@ -1069,7 +1069,7 @@ Main moral of this story: \textbf{adjusting for all possible pre-treatment
   variables is not always a good idea}. More on that below.
 
 
-Another moral of the story: \(U_c\) might not be an unmeasured variable. Maybe it is there, in the dataset, but you have not used it. If you were to include it in your model, then we would have blocked the backdoor path.
+Another moral of the story: \(U_c\) might not be an unmeasured variable. Maybe the variable has been measured, and it is there, in the dataset, but you have not used it in your analysis. If you were to include it in your model, then we would have blocked the backdoor path.
 
 Still, the main moral of this story remains: \textbf{adjusting for all possible pre-treatment
   variables is not always a good idea}.

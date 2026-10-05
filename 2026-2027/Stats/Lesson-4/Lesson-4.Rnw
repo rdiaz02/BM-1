@@ -420,8 +420,10 @@ prop.test(x = 39, n = 215, p = 0.15, correct = FALSE)
 
 
 
-We are given a p-value and a confidence interval\footnote{This is using the score statistic; when comparing two proportions, \texttt{prop.test} uses a Wald confidence interval; see, e.g., \citet[p.~25, section 2.5]{kateri2014} or \citet[pp.~18 and 31]{agresti2018}}. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 5. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). Note, though, that this interval is often not symmetrical, and this (not being symmetrical) is a good thing\footnote{See \citet[p.~18 and section 1.3.5]{agresti2018}. You can verify that it is not symmetrical using, for example, \texttt{x = 6, n = 7} in the arguments to \texttt{prop.test}. But more generally, there are several different ways to obtain CIs for binomial proportions, and using the binomial distribution itself, as we do in section \ref{sec:exact-binomial-test}, does not guarantee ``the best'' CI either;  in fact, finding two-sided CIs is not a well defined problem. Choosing the right procedure might be important for small sample sizes or estimates very close to 0 or 1. See \citet[sections 1.3.4 and 1.3.5]{agresti2018}, \citet[sections 1.1.2 and 1.1.3]{bilder2024}, exercise 8.5 in \citet{Dalgaard2008}, and R packages \texttt{binom}, \texttt{exactci} and \texttt{PropCIs}.}.
+We are given a p-value and a confidence interval\footnote{This is using the score statistic; when comparing two proportions, \texttt{prop.test} uses a Wald confidence interval; see, e.g., \citet[p.~25, section 2.1.4]{kateri2014} or \citet[pp.~18 and 31]{agresti2018}. Very briefly, these are the key ideas. Both CI's use the expression $(\mbox{estimate} - \mbox{value})/\mbox{standard error}$, but they differ about the value of $p$ (the probability) that goes into the standard error. The Wald CI uses the estimated $p$, $\hat{p}$; the score uses the $p$ under $H_0$. With one proportion, \texttt{prop.test} uses the score statistic for both the test and the CI (and the CI is constructed inverting the testing procedure ---see \citet[section 1.3.5]{agresti2018}). But with two proportions, the test (the p-value computation) uses the score, which uses the pooled $\hat{p}$, but the CI uses Wald's, the $\hat{p}$ of each group. Thus, sometimes test and CI do not fully agree.}. This relies on a normal approximation to the binomial. This approximation is justified if the expected number of successes (in our example, cases with asthma) and failures are both larger than 5. This is the case for us (\(0.15\ *\ 215 = 32.25 \) and \(0.85\ *\ 215 = 182.75\)). Note, though, that this interval is often not symmetrical, and this (not being symmetrical) is a good thing\footnote{See \citet[p.~18 and section 1.3.5]{agresti2018}. You can verify that it is not symmetrical using, for example, \texttt{x = 6, n = 7} in the arguments to \texttt{prop.test}. But more generally, there are several different ways to obtain CIs for binomial proportions, and using the binomial distribution itself, as we do in section \ref{sec:exact-binomial-test}, does not guarantee ``the best'' CI either. There are two main problems: a) coverage (as this is a discrete distribution, most of the time we can't get exactly 95\%, so depending on method, intervals tend to be too wide, or too narrow, and all of them have coverage that oscillates); b) there are several definitions of 2-sided CI (because there are slightly different definitions of two-sided p-value ---doubling the smaller tail, or all events with probability less than or equal to that of the observed outcome, among others). Choosing the right procedure might be important for small sample sizes or estimates very close to 0 or 1. See \citet[sections 1.3.4 and 1.3.5]{agresti2018}, \citet[sections 1.1.2 and 1.1.3]{bilder2024}, exercise 8.5 in \citet{Dalgaard2008}, and R packages \texttt{binom}, \texttt{exactci} and \texttt{PropCIs}.}.
 
+
+Finally, you can see the statistic given is ``X-squared'', a $\chi^{2}$. This is, here, just the square of a $z$ (from the Normal). Why not give a $z$? First, because \texttt{prop.test} can also be used to compare $k$ groups, not just one, and with more than two groups there is no single $z$ and we need to use a $\chi^{2}$ with $k -1$ degrees of freedom. Second,  this is the same as the goodness of fit statistic (which we will see later).
 
 We used the argument \texttt{correct = FALSE} to prevent R from using a continuity correction. The reasons can be found, for example, in \citet[section 1.6.2, p.~18]{agresti2018}, \citet[note 1.5, p.~25]{agresti2012}, \citet[section 2.5]{kateri2014} or \citet[section 1.2.3, p.~35]{bilder2024}; basically, it is a very conservative procedure. In what follows, we will always  avoid the continuity correction. By the way, that is what R Commander does by default.
 
@@ -503,6 +505,8 @@ For these quick tests, instead of typing the command, you can directly enter the
 
 
 
+
+
 There is an additional way to compare those proportions: turning the problem into one of asking whether there is  independence of Outcome from Drug, or of independence of rows and columns. We leave it here, and will return to it later (section \ref{sec:contingency-tables}):
 
 <<>>=
@@ -515,11 +519,15 @@ chisq.test(matrix(c(23, 18, 7, 13), nrow = 2), correct = FALSE)
 @
 
 
+ Is there an analogue of \texttt{binom.test} for two proportions? Yes: Fisher's exact test, which is also a test of independence of rows and columns, as we will see later (section \ref{sec:fishers-exact-test}).
+
+
+
 And, before leaving this section, it is arguable that for many problems, odds ratios are more informative than differences between proportions; see section \ref{sec:odds}.
 
 \section{Goodness of fit: Comparing observed and expected frequencies}\label{sec:goodness-fit}
 
-Let us return to the mouse example:  To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from Chang et al. J Clin Invest. 2013;123(6):2643--2653. \Burl{https://www.jci.org/articles/view/66735}}.  The question was: does the inactivation of this gene affect viability?
+Let us return to the mouse example:  To explore the physiological functions of endothelin-2 (EDN2), a research group generated gene-targeted mouse models. The offspring of the matting between Et2+/- (i.e., heterozygous) animals resulted in 40 Et2 +/+ , 72 Et2 +/\textendash{} , and 42 Et2 \textendash /\textendash{} mice\footnote{Data from Chang et al. J Clin Invest. 2013;123(6):2643--2653. \Burl{https://www.jci.org/articles/view/66735}}.  The question was: does the inactivation of this gene affect viability?
 
 If the gene has no effect on
 embryonic viability, we would expect the typical Mendelian ratio of
@@ -556,7 +564,7 @@ this statistic would support the alternative hypothesis (the observed
 ratios do not fit the expected values)\protect\footnote{Residuals are the difference between the observed and expected values.
   The magnitude of each residual indicates how much each of the observed
   frequencies differs from what is expected. The residuals are typically
-  standardized (by dividing by the square of the expected frequencies)
+  standardized (by dividing by the square root of the expected frequencies)
   to enable individual residuals to be compared relative to one another. We return to residuals in section \ref{sec:residuals}.}.
 
 
@@ -846,7 +854,7 @@ chisq.test(Hx_tab, correct = FALSE)
 % )
 
 
-You should be able to interpret the output from above. We did not talk about degrees of freedom explicitly. They are \(df = (I - 1) (J - 1)\), where \(I\) is the number of categories in the first variable, and \(J\) in the second. So in this example \(2 = (2 - 1)\ (3 - 1)\).
+You should be able to interpret the output from above. We did not talk about degrees of freedom explicitly. They are \(df = (I - 1) (J - 1)\), where \(I\) is the number of categories in the first variable, and \(J\) in the second. So in this example \(2 = (2 - 1)\ (3 - 1)\)\footnote{Where do those degrees of freedom come from? They are the difference between the number of parameters under the alternative hypothesis ---where there is no pattern for cells--- and $H_0$; the number of parameters under $H_0$ are $(I - 1) + (J -1)$ whereas those under the alternative are $J C - 1$; their difference is $(I - 1)\ (J - 1)$; this is explained in detail in \citet[pp.~39-39, section 2.4.3]{agresti2018} or \citet[p.~36, section 2.2.2]{kateri2014} or \citet[p.~178, sections 3.2.3]{bilder2024}. Interestingly, Pearson got the degrees of freedom wrong.}.
 
 
 
@@ -888,7 +896,7 @@ The same logic applies to tables of more than two dimensions, say Drug x  Outcom
 \subsection{Sampling models: details}
 \label{sec:sampl-models:-deta}
 
-I originally had this as a footnote. But I think it is important enough that it deserves to be here. In our discussion above we are ignoring the different statistical models that give rise to contingency tables, but these explain the different emphasis in one question or another. It is customary to differentiate between three research designs (for example, \citealp{richardson2011, campbell2007} and common textbooks about categorical data analysis, including \citealp[section 2.1.4]{agresti2018}, \citealp[section 2.1]{agresti2012} ---a very detailed explanation that includes discussion of sampling models, observational vs.\ experimental studies, and case-control, retrospective, prospective, and cohort studies---, \citealp[section 1.2]{kateri2014}, \citealp[section 2.2]{tang2023a} ).
+I originally had this as a footnote. But I think it is important enough that it deserves to be here. In our discussion above we are ignoring the different statistical models that give rise to contingency tables, but these explain the different emphasis in one question or another. It is customary to differentiate between three research designs. For example, \citealp{richardson2011, campbell2007};  common textbooks about categorical data analysis, including \citealp[section 2.1.4]{agresti2018}; \citealp[section 2.1]{agresti2012} ---a very detailed explanation that includes discussion of sampling models, observational vs.\ experimental studies, and case-control, retrospective, prospective, and cohort studies---; \citealp[section 1.2]{kateri2014}; and \citealp[section 2.2]{tang2023a}.
 
 In one design, both margins are fixed, such as the one in the tea tasting experiment (or lady tasting tea) behind Fisher's exact test (and it is the design that naturally leads to the hypergeometric distribution). We discuss this in section \ref{sec:fishers-exact-test}\footnote{This comes from the Wikipedia, \Burl{https://en.wikipedia.org/wiki/Lady_tasting_tea}:
 ``The experiment provides a subject with eight randomly ordered cups of tea – four prepared by pouring milk and then tea, four by pouring tea and then milk. The subject attempts to select the four cups prepared by one method or the other, and may compare cups directly against each other as desired. The method employed in the experiment is fully disclosed to the subject. '' We now cross-classify each of the 8 cups as ``tea was truly served first (yes or no)'' with ``lady said tea was truly served first (yes or no)''. Since the lady knows about the design, she will say four had tea poured first: so the margins are fixed, in this case each row has a margin of 4 and each column of 4.}.
@@ -1115,12 +1123,21 @@ Suppose this table shows number of patients with different outcomes (recoverd or
 In 2x2 tables, the relative risk or the risk ratio is \(\pi_1 / \pi_2\), where \(\hat{\pi}_1 = \frac{a}{a + b}\), \(\hat{\pi}_2 = \frac{c}{c + d}\). So we are comparing how much larger the probability of recovery is for the patients in the Drug group relative to those in the control group. This is a sensible thing to do. Can you think why?
 
 
+% una razón dice cuántas veces más probable es algo, y eso es relativo al nivel de base. La forma de que los alumnos vean por qué importa es compararla con la diferencia de proporciones de la sección 6:
+
+%     De 0.01 a 0.02: diferencia 0.01, riesgo relativo 2.
+%     De 0.50 a 0.51: diferencia 0.01, riesgo relativo 1.02.
+
+
+
 % Rate = proportion in group with condition present ($Rate_{a}=\frac{a}{a+b}$;$Rate_{b}=\frac{c}{c+d}$)
 
 % Then risk ratio is: $Rr=\frac{Rate_{a}}{Rate_{b}}$
 
 Another very common and statistic, widely used, for example, in epidemiology, is the odds ratio. The odds is defined as \(\frac{\pi}{1 - \pi}\). The odds ratio is then \(\frac{\text{odds}_1}{\text{odds}_2}\). In the table above, the estimate of the odds ratio is thus: \(\hat{\theta} = \frac{a/b}{c/d} = \frac{a\ d}{b\ c}\)
 
+
+Odds give a ``how many yeses for every no'' (or how many recoverd for every non-recovered). So the odds ratio compares how much better are those odds in one treatment vs.~another. Compared to the relative ratio, it does not matter what are rows and what are columns. This is a virtue of the odds ratio: in tables without a clear response variable the odds ratio works fine, because there is no need to choose ``direction''. (The odds ratio is also closely related to logistic regression --which we mention briefly later).
 
 It is possible to obtain estimates and confidence intervals for the odds ratio (for example, see package \texttt{epitools}). When examining odds ratio, often a relevant null hypothesis is that the odds ratio is 1.
 
@@ -1201,7 +1218,7 @@ This should not come as a surprise: we assume all \emph{observations} are indepe
 
 Why be concerned about sample sizes and expected counts? Briefly, because the use of the chi-square distribution involves some asymptotic arguments.
 
-A common rule is that no more than 20\% of the expected (\textbf{expected, not observed!}) frequencies should be less than five; another is 5 or more in all cells of a 2-by-2 table, and 5 or  more in 80\% of cells in larger tables, but no cells with zero expected  count. In \citep[section 2.4.7, p.~42][]{agresti2018} says ``To be cautious, you should instead use a small-sample test whenever at least one expected frequency is less than 5.''
+A common rule is that no more than 20\% of the expected (\textbf{expected, not observed!}) frequencies should be less than five; another is that one should have 5 or more in all cells of a 2-by-2 table, and 5 or  more in 80\% of cells in larger tables, but no cells with zero expected  count. \citet[section 2.4.7, p.~42][]{agresti2018} says ``To be cautious, you should instead use a small-sample test whenever at least one expected frequency is less than 5.''
 
 % Some authors argue that these rules might be overly restrictive and the details can depend strongly on the size of the table (numbers of rows and columns) and the total sample size.
 
@@ -1211,6 +1228,34 @@ And \textbf{what can we do if expected counts are too small?} The standard answe
 \label{sec:fishers-exact-test}
 
 Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just count how many tables there are with \(n_{11}\) as extreme or more extreme than the one we observed.}. For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
+
+
+% The example is shitty because the many fours. This is better
+%            Tea      Milk
+% Tea     8         2
+% Milk     2        13
+
+% so total Tea: 10
+% total Milk 15
+% of course, given the 8, the rest of the cells are fixed.
+% Now
+% dhyper(8, 10, 15, 10) ## upper left 8
+% dhyper(13, 15, 10, 15) ## lower right 13
+
+% La regla general para cualquier celda con dhyper(x, m, n, k): las bolas blancas (m) son el total de su fila, las negras (n) el total de la otra fila, y las extraídas (k) el total de su columna. Con filas = verdad y columnas = lo que ella dice:
+
+% k, las extraidas son las señaladas: sacar es señalar. Ella señala tazas, o sea saca. Ella aparta 10 tazas en las que dice ``tea first'' y aparta 15 en las que dice ``mil first''
+
+% 8 (té, dice té)	dhyper(8, 10, 15, 10)	de las 10 que llama té, 8 son té
+% 2 (leche, dice té)	dhyper(2, 15, 10, 10)	de las 10 que llama té, 2 son leche
+% 2 (té, dice leche)	dhyper(2, 10, 15, 15)	de las 15 que llama leche, 2 son té
+% 13 (leche, dice leche)	dhyper(13, 15, 10, 15)	de las 15 que llama leche, 13 son leche
+
+% Por qué los 2 resultan raros:
+
+%     El 2 de "leche, dice té" es la misma extracción que el 8, contando las bolas del otro color: sacar 8 blancas de 10 es sacar 2 negras. Solo has cambiado qué color llamas "blanco".
+%     El 2 de "té, dice leche" cambia además qué montón miras: ya no las 10 tazas que ella señala como té, sino las 15 que deja como leche. Tu llamada dhyper(2, 15, 10, 10) es la primera lectura, no esta, aunque aquí el número coincide.
+%     En los dos casos estás contando errores, y eso da la vuelta a "más extremo": para el 8 es "8 o más", para el 2 es "2 o menos". Creo que esto es lo que más despista.
 
 
 To take the mystery out of this procedure, this is the classical tea testing example. I copy a couple of tables from \citet{agresti2018} (pp.~47 and 48):
@@ -1279,7 +1324,28 @@ fisher.test(diet.table, simulate.p.value = TRUE)
 fisher.test(diet.table, simulate.p.value = TRUE)
 @
 
-This is an interesting case, because of the small expected cell counts. \citet{bilder2024} discuss it in detail in pp.~180 and ff.\ (and they use a simulation approach, described in p.~182 and section 6.2.2, but a more sophisticated one, that we won't cover here; regardless, the p-value is obtained with a sampling model similar to the one in  \texttt{simulate.p.value}\footnote{Or, at least, that is my understanding of what they do, as they seem to condition on the margins: in p.~182 they write: ``(..) we can use one call to rmultinom(), where we set each \(\pi_{ij}\) (prob argument) to \(n_{i+} n_{+j}/n^2\) (the estimated expected count under the null hypothesis divided by the sample size). We chose to use the one multinomial model  here (...)''}).
+This is an interesting case, because of the small expected cell counts. \citet{bilder2024} discuss it in detail in pp.~180 and ff.\ (and they use a simulation approach, described in p.~182 and section 6.2.2, but a more sophisticated one, that we won't cover here, and they do not condition on fixed margins, unlike \texttt{simulate.p.value}\footnote{Or, at least, that is my understanding of what they do; in p.~182 they write: ``(..) we can use one call to rmultinom(), where we set each \(\pi_{ij}\) (prob argument) to \(n_{i+} n_{+j}/n^2\) (the estimated expected count under the null hypothesis divided by the sample size). We chose to use the one multinomial model  here (...)''}).
+
+
+%% Yeah, they don't fix
+%% This shows that their way of generating does not fix the margins
+% pi0 <- outer(rowSums(diet.table), colSums(diet.table)) / sum(diet.table)^2
+% sim <- matrix(rmultinom(1, sum(diet.table), pi0), nrow = 4)
+% rowSums(sim); colSums(sim)
+%% These numbers differ from their table
+%% row sums of 12, 12, 12, 12,  and colsums of 17, 15, 9, 7
+
+% Or this:
+% r <- rowSums(diet.table); cc <- colSums(diet.table); n <- sum(diet.table)
+
+% ## Scheme in the quote: one multinomial, only n fixed
+% sim1 <- matrix(rmultinom(1, n, outer(r, cc) / n^2), nrow = 4)
+% rowSums(sim1); colSums(sim1)    ## vary from run to run
+
+% ## What simulate.p.value does: both margins fixed
+% sim2 <- r2dtable(1, r, cc)[[1]]
+% rowSums(sim2); colSums(sim2)    ## always 12 12 12 12 and 17 15 9 7
+
 
 
 \subsubsection{Issues with Fisher's exact test}
@@ -1309,13 +1375,18 @@ If you do not want to read the primary statistical literature or consult with a 
 
 \subsubsection{Chi square with \texttt{simulate.p.value}}
 
-This is another alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance in the asymptotic approximation. There is catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but if you have concerns about Fisher's test, this simulation procedure carries the same concerns. But this might be a sensible alternative to using Fisher's test anyway. See a detailed example in \citet[sections 6.2.1 and 6.2.2 and p.~182]{bilder2024}: they show (in the diet example) how Fisher's might be conservative relative to \texttt{chisq}, including \texttt{chisq.test} with \texttt{simulate.p.value = TRUE}, and they explain in detail how to carry out the permutations, and discuss (p.~182) choosing the sampling model.
+This is another alternative: just use your usual \texttt{chisq.test} but with option \texttt{simulate.p.value = TRUE}. No reliance on the asymptotic approximation. There is a catch, though: in R, when you use \texttt{simulate.p.value}, the simulation uses the same sampling model as in Fisher's exact test\footnote{This is copied verbatim from the help of \texttt{chisq.test}: ``In the contingency table case, simulation is done by random sampling from the set of all contingency tables with given marginals (...). (...)  Note that this is not the usual sampling situation assumed for the chi-squared test but rather that for Fisher's exact test.''}. There is nothing wrong with this, but if you have concerns about the sampling model of Fisher's test (conditioning on both margins), this simulation procedure carries the same concerns.
+
+The two procedures (Fisher's and the chi-square with \texttt{simulate.p.value})  use the same set of possible tables, but differ in what counts as ``more extreme'': Fisher's test orders tables by their probability, the simulated chi-square by the value of the $X^{2}$ statistic. This is why their p-values can differ.
+
+
+This might be a sensible alternative to using Fisher's test anyway. See a detailed example in \citet[sections 6.2.1 and 6.2.2 and p.~182]{bilder2024}: they show (in the diet example) how Fisher's might be conservative relative to \texttt{chisq}, including \texttt{chisq.test} with \texttt{simulate.p.value = TRUE}, and they explain in detail how to carry out the permutations, and discuss (p.~182) choosing the sampling model.
 
 
 %% See the help or this discussion https://stats.stackexchange.com/questions/159057/alternatives-for-chi-squared-test-for-independence-for-tables-more-than-2-x-2/159063#159063
 
 
-More sophisticated simulation schemes are possible, but that is beyond the scope of this class (and might run into other problems, like generating marginals that are 0, etc). In R, package \texttt{exact2x2}, \Burl{https://cran.r-project.org/web/packages/exact2x2/index.html} might be of interest.
+More sophisticated simulation schemes are possible, but that is beyond the scope of this class (and might run into other problems, like generating marginals that are 0, etc). In R, package \texttt{exact2x2}, \Burl{https://cran.r-project.org/web/packages/exact2x2/index.html} might be of interest (though it only works for 2x2 tables).
 
 
 
