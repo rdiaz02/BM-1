@@ -1255,11 +1255,13 @@ We give below the classical numbers of the lady testing example, but to make it 
   \hline
 \end{tabular}
 
-To get the p-value we would sum the probabilities of all events as extreme as, or more extreme than, that one (i.e., with as low a probability, or smaller probability, than this one).  In R you can get the probability of this 8, when sampling 10, when there are 10 and 15 as:
+To get the p-value we would sum the probabilities of all events as extreme as, or more extreme than, that one (i.e., with as low a probability, or smaller probability, than this one).  This is not important here, but in case you care, and for reference, in R you can get the probability of this 8, when sampling 10, when there are 10 and 15 as:
 <<dh1alt>>=
 dhyper(8, 10, 15, 10)
 @
-but this is not important, just for reference.
+
+
+\vspace*{30pt}
 
 And now, back to classical example, the lady tasting tea, with the original numbers.
 
