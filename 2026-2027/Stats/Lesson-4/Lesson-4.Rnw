@@ -1756,7 +1756,7 @@ In other words, we do this:
 \item  Within each row, split proportionally according to the horizontal variable given the vertical. This gives rectangles. Vertical lines need not coincide in different rows (unless there is independence --- see below).
 \end{enumerate}
 
-Then, the areas of the rectangles are proportional to the counts (or proportion over the total). Why? Because we are using the product rule: $P(A \mbox{and} B) = P(B|A) * P(A)$.
+Then, the areas of the rectangles are proportional to the counts (or proportion over the total). Why? Because we are using the product rule: $P(A\  \mbox{and} \ B) = P(B|A) * P(A)$.
 
 What would happen if there were independence? The vertical lines of each row would be aligned.
 
