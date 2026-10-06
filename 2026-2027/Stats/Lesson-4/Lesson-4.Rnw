@@ -851,25 +851,6 @@ chisq.test(Hx_tab, correct = FALSE)
 @
 
 
-The height of each row, here given by Effect, is proportional to the marginal proportion of each vale of Effect; that is why ``Non\_regulated'' is the one that takes most of the vertical space.
-
-Within each row (i.e., conditional on each row value, e.g., in the row ``Upregulated'') we split by the proportions of ``HRE+'' and ``HRE-''. In each row, the width of each rectangle is proportional to the conditional frequency of the corresponding value of HRE in that row.
-
-
-In other words, we do this:
-\begin{enumerate}
-\item Divide vertically according to the marginal of the vertical variable ---i.e., split the vertical axis---. This gives horizontal lines across the whole plot.
-\item  Within each row, split proportionally according to the horizontal variable given the vertical. This gives rectangles. Vertical lines need not coincide in different rows (unless there is independence --- see below).
-\end{enumerate}
-
-Then, the areas of the rectangles are proportional to the counts (or proportion over the total). Why? Because we are using the product rule: $P(A \mbox{and} B) = P(B|A) * P(A)$.
-
-What would happen if there were independence? The vertical lines of each row would be aligned.
-
-What if we transposed the axis (put ``HRE'' in the vertical axis)? The areas of each rectangle are still proportional to the cell counts. But the look will change, of course. Now, we first split according to the marginal frequency of the two levels of ``HRE'', etc. And, of course, if there were independence, the vertical lines of each row would be aligned.
-
-
-
 
 % (You can do all, or most, of the above from R Commander:
 % \begin{figure}[h]
@@ -1255,6 +1236,35 @@ And \textbf{what can we do if expected counts are too small?} The standard answe
 Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just count how many tables there are with \(n_{11}\) as extreme or more extreme than the one we observed.}. For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
 
 
+What is this hypergeometric distribution? This is the typical description; suppose there are 12 white balls and 15 black balls in an urn. I sample without replacement (i.e., I take out from the urn) some number of balls, say 8 balls; what is the probability that 6 of those are black? That probability is given by the hypergeometric. In other words, the probability of drawing $x$ black balls when you draw $k$ balls, without replacement, from an urn that contains $N$ black balls and $M$ white balls.
+
+We give below the classical numbers of the lady testing example, but to make it more clear suppose this instead. The lady will be served 10 teas with tea first, 15 with milk first.  She will ``draw'' 10 teas and say ``tea was served first''; she ``draws'' then in the sense that she separates, selects them. Now, among those 10, 8 do, indeed, have tea served first. Now, how likely is that to happen under a random hypergeometric sampling model?
+
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  &  & \multicolumn{2}{c|}{Lady says} & \tabularnewline
+  \hline
+  \hline
+  &  & Tea first & Milk first & Total\tabularnewline
+  \hline
+  \multirow{2}{*}{Truth} & Tea first & 8 & 2 & 10\tabularnewline
+  \cline{2-5}
+  & Milk first & 2 & 13 & 15\tabularnewline
+  \hline
+  & Total & 10 & 15 & 25\tabularnewline
+  \hline
+\end{tabular}
+
+To get the p-value we would sum the probabilities of all events as extreme as, or more extreme than, that one (i.e., with as low a probability, or smaller probability, than this one).  In R you can get the probability of this 8, when sampling 10, when there are 10 and 15 as:
+<<dh1alt>>=
+dhyper(8, 10, 15, 10)
+@
+but this is not important, just for reference.
+
+And now, back to classical example, the lady tasting tea, with the original numbers.
+
+
+
 % The example is shitty because the many fours. This is better
 %            Tea      Milk
 % Tea     8         2
@@ -1283,10 +1293,10 @@ Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Condit
 %     En los dos casos estás contando errores, y eso da la vuelta a "más extremo": para el 8 es "8 o más", para el 2 es "2 o menos". Creo que esto es lo que más despista.
 
 
-To take the mystery out of this procedure, this is the classical tea testing example. I copy a couple of tables from \citet{agresti2018} (pp.~47 and 48):
+This is the classical tea testing example. I copy a couple of tables from \citet{agresti2018} (pp.~47 and 48):
 
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering{}\includegraphics[width=10cm]{fisher-1-agresti.png}\\
   \centering{}\includegraphics[width=10cm]{fisher-2-agresti.png}
     \caption{\label{fig:fisher-agresti} Tables 2.7 and 2.8 from Agresti, 2018, \textit{An introduction to categorical data analysis, 3rd ed}, Wiley.}
@@ -1733,7 +1743,27 @@ mosaic(xtabs(~ Effect + HRE, data = Hx),
 % @
 
 
-Wait!!! What residuals are those??
+The height of each row, here given by Effect, is proportional to the marginal proportion of each vale of Effect; that is why ``Non\_regulated'' is the one that takes most of the vertical space.
+
+Within each row (i.e., conditional on each row value, e.g., in the row ``Upregulated'') we split by the proportions of ``HRE+'' and ``HRE-''. In each row, the width of each rectangle is proportional to the conditional frequency of the corresponding value of HRE in that row.
+
+
+In other words, we do this:
+\begin{enumerate}
+\item Divide vertically according to the marginal of the vertical variable ---i.e., split the vertical axis---. This gives horizontal lines across the whole plot.
+\item  Within each row, split proportionally according to the horizontal variable given the vertical. This gives rectangles. Vertical lines need not coincide in different rows (unless there is independence --- see below).
+\end{enumerate}
+
+Then, the areas of the rectangles are proportional to the counts (or proportion over the total). Why? Because we are using the product rule: $P(A \mbox{and} B) = P(B|A) * P(A)$.
+
+What would happen if there were independence? The vertical lines of each row would be aligned.
+
+What if we transposed the axis (put ``HRE'' in the vertical axis)? The areas of each rectangle are still proportional to the cell counts. But the look will change, of course. Now, we first split according to the marginal frequency of the two levels of ``HRE'', etc. And, of course, if there were independence, the vertical lines of each row would be aligned.
+
+
+
+
+OK, back to the plot. But \ldots What residuals are those??
 
 % Does this help more? What are the values being represented? The residuals are NOT the standardized residuals but, rather, the \(\chi^2\) residuals.
 
@@ -1749,9 +1779,37 @@ hx_res <- chisq.test(Hx_tab, correct = FALSE)$stdres
 mosaic(Hx_tab, residuals = hx_res,
        shade = TRUE,
        residuals_type = "Std\nresiduals",
+       legend = legend_resbased(pvalue = FALSE),
        labeling = labeling_residuals)
 @
 
+That same plot, with axes transposed
+<<moshx2>>=
+Hx_tab2 <- xtabs(~ HRE + Effect, data = Hx)
+hx_res2 <- chisq.test(Hx_tab2, correct = FALSE)$stdres
+mosaic(Hx_tab2, residuals = hx_res2,
+       shade = TRUE,
+       residuals_type = "Std\nresiduals",
+       legend = legend_resbased(pvalue = FALSE),
+       labeling = labeling_residuals)
+@
+
+
+And a mosaic plot for the cookies and bloating data:
+
+<<diet_res>>=
+diet_res <- chisq.test(diet.table, correct = FALSE)$stdres
+mosaic(diet.table, residuals = diet_res,
+       shade = TRUE,
+       residuals_type = "Std\nresiduals",
+       gp_args = list(interpolate = c(2, 3, 4), c = c(100, 100)),
+       legend = legend_resbased(pvalue = FALSE),
+       labeling = labeling_residuals)
+@
+
+There is a residual with a value of 1.9, and that is below the default cut-offs of the plotting code (the first is 2), so it is not shown. I've used custom cut points, $2, 3, 4$, so that 1.9 is still not shown but a residual above 3 is shaded more strongly than one between 2 and 3.
+
+Oh, and the figures show a p-value by default. I set the options not to display the p-value (as it is not correct when we pass the standardized residuals).
 
 % Fourfold plots are very useful to represent 2x2 (or collections of 2x2, such as )
 
