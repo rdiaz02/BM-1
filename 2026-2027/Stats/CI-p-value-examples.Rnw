@@ -233,10 +233,10 @@ The figure shows lines that delimit four regions:
 \item \textbf{0.10}: the blue lines denote rejection regions for tests at the \(\alpha = 0.10\): the area to right of the right blue line + the area to the left of the left blue line adds to 0.10. So any value of the t-statistic larger than 1.74, or smaller than -1.74 will lead to rejection at \(\alpha = 0.10\).  A test with a test statistic of exactly 1.74 will have a p-value of exactly 0.10.
 
 
-\item \textbf{0.05}: the blue lines denote rejection regions for tests at the \(\alpha = 0.05\): the area to right of the right blue line + the area to the left of the left blue line adds to 0.05. So any value of the t-statistic larger than 2.11, or smaller than -2.11 will lead to rejection at \(\alpha = 0.05\).  A test with a test statistic of exactly 2.11 will have a p-value of exactly 0.05.
+\item \textbf{0.05}: the blue lines denote rejection regions for tests at the \(\alpha = 0.05\): the area to right of the right blue line + the area to the left of the left blue line adds to 0.05. So any value of the t-statistic larger than 2.11 or smaller than -2.11 will lead to rejection at \(\alpha = 0.05\).  A test with a test statistic of exactly 2.11 will have a p-value of exactly 0.05.
 
 
-\item \textbf{0.0342}. This is ``our test''.  The black lines denote rejection regions for tests at the \(\alpha = 0.0342\): the area to right of the right black line + the area to the left of the left black line add to 0.0342. So any value of the t-statistic larger than 2.34, or smaller than -2.34 (hey! our test statistic) will lead to rejection at \(\alpha = 0.0342\).  A test with a test statistic of exactly -2.34 will have a p-value of exactly 0.0342; just like our test.
+\item \textbf{0.0342}. This is ``our test''.  The black lines denote rejection regions for tests at the \(\alpha = 0.0342\): the area to right of the right black line + the area to the left of the left black line add to 0.0342. So any value of the t-statistic larger than 2.34 or smaller than -2.34 (hey! our test statistic) will lead to rejection at \(\alpha = 0.0342\).  A test with a test statistic of exactly -2.34 will have a p-value of exactly 0.0342; just like our test.
 
 
 \item \textbf{0.001}. The red line. At test with a test statistic of exactly 3.95 will have a p-value of 0.001.
