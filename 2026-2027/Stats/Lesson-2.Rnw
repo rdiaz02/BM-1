@@ -730,7 +730,7 @@ In this example, we know our p-value will be at least 0.5: we are asking for the
 
 
 
-Technical point. The null is composite (\(H_0: \mu_A \le \mu_B\)) instead of just a single value (\(\mu_A = \mu_B\) so \(\mu_A - \mu_B = 0\)).  The p-value is computed at the boundary case because that is the value in the null that makes the observed result most likely (it gives the largest p-value over the null)
+Technical point. The null is composite (\(H_0: \mu_A \le \mu_B\)) instead of just a single value (\(\mu_A = \mu_B\) so \(\mu_A - \mu_B = 0\)).  The p-value is computed at the boundary because that is the value in the null that makes results as extreme as, or more extreme than, the observed one most likely.
 
 \subsection{Some issues with one-sided tests}
 
@@ -1844,10 +1844,7 @@ There are several problems with the above procedure, among them:
 \begin{itemize}
 \item Tests for normality do not have a power of 1, and in fact can have
   very low power with small sample sizes.
-\item They can have power to detect a minor and irrelevant deviation from
-  normality (e.g., slightly heavy tails) that have no effects on a
-  t-test. So with very large sample size, an a slightlye ``heavier tails than a Normal'', where a t-test is just fine, we might be mislead
-  into doing a Wilcoxon.
+  \item They can have power to detect minor and irrelevant deviations from  normality (e.g., slightly heavy tails) that are not problematic for a t-test. Suppose we have a very large sample size, and slightly heavier tails than a Normal:  we might be mislead  into doing a Wilcoxon.
 \item They might fail to detect a large deviation from normality in a very
   non-normal small sample where we really, given our ignorance, might want
   to conduct a Wilcoxon test.
