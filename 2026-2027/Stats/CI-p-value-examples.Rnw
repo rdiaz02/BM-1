@@ -175,7 +175,8 @@ A document to clarify the relationship between confidence intervals and p-values
 First, we read the data as in Lesson 2:
 
 <<>>=
-dp53 <- read.table("P53.txt", header = TRUE, stringsAsFactors = TRUE)
+dp53 <- read.table("P53.txt", header = TRUE,
+                   stringsAsFactors = TRUE)
 @
 
 
@@ -199,8 +200,10 @@ q001 <- qt(p = 0.0005, df = 17.402)
 <<tdist>>=
 .x <- seq(-4.1, 4.1, length.out=1000)
 
-plotDistr(.x, dt(.x, df=17.402), cdf=FALSE, xlab="x", ylab="Density",
-          main=paste("t Distribution:  Degrees of freedom=17.402"))
+plotDistr(.x, dt(.x, df = 17.402),  cdf = FALSE, xlab = "x",
+          ylab = "Density",
+          main = paste("t Distribution.",
+                       "Degrees of freedom = 17.402"))
 abline(v = -2.34019, lty = 2)
 abline(v = 2.34019, lty = 2)
 
