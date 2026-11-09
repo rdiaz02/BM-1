@@ -1,0 +1,1 @@
+As said: recheck all files for possible blunders or interpretation problems. See this file in R-basic-stats: Claude-blunder-check-prompt.md. I've already used it in Lesson-4.
