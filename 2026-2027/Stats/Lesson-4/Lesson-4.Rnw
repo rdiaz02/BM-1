@@ -376,7 +376,7 @@ mean, median or rank of the genotype. In fact, the only thing we can
 do is count the frequencies of cases (mice in this case) in each of
 the categories of the variable. In other words, we tally up categorical
 variables to generate the frequency of cases in each of the possible
-levels of the variable. In case \#1 above, we would register the number
+levels of the variable. In the mice example above, we would register the number
 of +/+, +/- and -/- mice. Thus, in these cases we would model the
 data on the frequency of cases in each possible level\protect\footnote{For this reason, oftentimes the analysis of categorical data is referred
   to as frequency analysis}.
@@ -397,7 +397,7 @@ this usually involves counting how many cases are in each qualitative category/l
 
 We will use the data set described in \citet[section 8.1 of][]{Dalgaard2008}: 39 of 215 randomly chosen patients are observed to have asthma. We want to test the null hypothesis that the probability of asthma is 0.15 (why? maybe because 0.15 is the reference level for that region).
 
-We can do the test typing in R very easily, but to make it available for R Commander, we create a data set as follows (this is just an object that has ``YES'' repeated 39 types and ``NO'' repeated 215 - 39 times).
+We can do the test typing in R very easily, but to make it available for R Commander, we create a data set as follows (this is just an object that has ``A'' repeated 39 times (we use ``A'' so that it sorts before ``NO'') and ``NO'' repeated 215 - 39 times).
 
 <<asthma-data>>=
 ashtma <- data.frame(X = c(rep("A", 39), rep("NO", 215 - 39)))
@@ -537,7 +537,7 @@ If the gene has no effect on
 embryonic viability, we would expect the typical Mendelian ratio of
 genotypes. So, the question can be rephrased as: are the observed
 genotype frequencies significantly different from the expected Mendelian
-ratio 1:2:1 (0.25:0.5:0.25)? The observed ratios are (40/154):(72/154):(42/152)
+ratio 1:2:1 (0.25:0.5:0.25)? The observed ratios are (40/154):(72/154):(42/154)
 or 0.26:0.47:0.27, which are quite similar to the expected ratios
 but certainly not the same. However, we should not be surprised as
 we would expect some variation due to chance.
@@ -624,7 +624,7 @@ depends on the degrees of freedom\footnote{Recall that degrees of freedom is a m
   free to vary when determining independent estimates of parameters.
   When calculating frequencies in categorical data, the degrees of freedom
   correspond to the total number of categories minus one. For example
-  in case 1, once we know the frequencies of two genotypes the value
+  in the mice example, once we know the frequencies of two genotypes the value
   of the third is calculated from these two, i.e. only two categories
   out of three are \textquotedblleft free to vary\textquotedblright .
   Thus degrees of freedom= 3 categories -1 = 2.}.
@@ -860,7 +860,7 @@ chisq.test(Hx_tab, correct = FALSE)
 % )
 
 
-You should be able to interpret the output from above. We did not talk about degrees of freedom explicitly. They are \(df = (I - 1) (J - 1)\), where \(I\) is the number of categories in the first variable, and \(J\) in the second. So in this example \(2 = (2 - 1)\ (3 - 1)\)\footnote{Where do those degrees of freedom come from? They are the difference between the number of parameters under the alternative hypothesis ---where there is no pattern for cells--- and $H_0$; the number of parameters under $H_0$ are $(I - 1) + (J -1)$ whereas those under the alternative are $J C - 1$; their difference is $(I - 1)\ (J - 1)$; this is explained in detail in \citet[pp.~39-39, section 2.4.3]{agresti2018} or \citet[p.~36, section 2.2.2]{kateri2014} or \citet[p.~178, sections 3.2.3]{bilder2024}. Interestingly, Pearson got the degrees of freedom wrong.}.
+You should be able to interpret the output from above. We did not talk about degrees of freedom explicitly. They are \(df = (I - 1) (J - 1)\), where \(I\) is the number of categories in the first variable, and \(J\) in the second. So in this example \(2 = (2 - 1)\ (3 - 1)\)\footnote{Where do those degrees of freedom come from? They are the difference between the number of parameters under the alternative hypothesis ---where there is no pattern for cells--- and $H_0$; the number of parameters under $H_0$ are $(I - 1) + (J -1)$ whereas those under the alternative are $I J - 1$; their difference is $(I - 1)\ (J - 1)$; this is explained in detail in \citet[pp.~39-39, section 2.4.3]{agresti2018} or \citet[p.~36, section 2.2.2]{kateri2014} or \citet[p.~178, sections 3.2.3]{bilder2024}. Interestingly, Pearson got the degrees of freedom wrong.}.
 
 
 
@@ -1233,7 +1233,7 @@ And \textbf{what can we do if expected counts are too small?} The standard answe
 \subsection{Fisher's exact test}
 \label{sec:fishers-exact-test}
 
-Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just count how many tables there are with \(n_{11}\) as extreme or more extreme than the one we observed.}. For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
+Fisher's exact test can be used for 2x2 tables and for larger rxc tables. Conditioning on the observed row and column margins, we compute the two-tailed p-value as the sum of the probabilities of all the tables that have a probability as extreme as, or more extreme than, the one of the table we observed. The probability of each table is obtained, in the 2x2 case, directly from a hypergeometric distribution\footnote{For one-tailed tests on 2x2 tables we can just focus on the number of cases in the first cell, i.e., the number of observations in the cell in the first row and column, \(n_{11}\). For fixed row and column margins, given \(n_{11}\) the rest of the entries are known. Then, we can just add the probabilities of the tables with \(n_{11}\) as extreme or more extreme than the one we observed.}. For larger tables (e.g., 3x4) similar approaches exist, using the multivariate hypergeometric distribution\footnote{For details, see, for example, \citet[section 16.5.2]{agresti2012}, \citet[section 2.4.1.4]{tang2023a}, \citet[section 6.2.1, p.~4.4.6]{bilder2024}.} and they are implemented in R in function \texttt{fisher.test}.
 
 
 What is this hypergeometric distribution? This is the typical description; suppose there are 12 white balls and 15 black balls in an urn. I sample without replacement (i.e., I take out from the urn) some number of balls, say 8 balls; what is the probability that 6 of those are black? That probability is given by the hypergeometric. In other words, the probability of drawing $x$ black balls when you draw $k$ balls, without replacement, from an urn that contains $N$ black balls and $M$ white balls.
@@ -1978,7 +1978,7 @@ Again the data are not independent (matched data).
 
 
 \item The Cochran\textendash Mantel\textendash Haenszel chi-square test
-computes the probability of the null hypothesis that two nominal variables
+tests the null hypothesis that two nominal variables
 are conditionally independent in each stratum of a third variable.
 
 
@@ -2072,7 +2072,7 @@ variable, whereas stacked bar plots and mosaic plots are used to represent multi
 \section{Exercises}
 \begin{enumerate}
 \item A common assumption in DNA sequence analysis is that the frequency
-of all four nucleotides is the same (0.25\% each). However, the alignment
+of all four nucleotides is the same (0.25 each). However, the alignment
 of several thousand exon-intron boundaries, reveals that the first
 base of the intron (5' splice site) tends to be a G. After recording
 the number of each base at this position in your alignment, which
